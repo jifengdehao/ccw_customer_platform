@@ -1,0 +1,50 @@
+@import "./base.styl"
+.layout
+  .layout-header
+    position absolute
+    top 0
+    left 0
+    right 0
+    height 60px
+    line-height 60px
+    background #495060
+    .layout-logo
+      color #fff
+      text-align center
+      font-size 18px
+    .user-info
+      text-align center
+      font-size 14px
+      .ivu-select-dropdown
+        top 45px !important
+      a
+        color #fff
+  .layout-content
+    position: absolute
+    top: 60px
+    left 0
+    right 0
+    bottom 0
+    .layout-hide-text
+      .layout-text
+        display none
+      .ivu-menu-item,
+      .ivu-menu-submenu
+        text-align center
+      .ivu-menu-submenu-title span > i,
+      .ivu-menu-submenu-title > i
+        margin-right 0
+    .ivu-col
+      transition width .2s ease-in-out
+    .sidebar
+      background #363e4f
+      .close-menu
+        padding: 14px 24px
+        width auto
+        text-align center
+        color #fff
+        cursor pointer
+        background #495060
+
+#custom, #data, #home, #seller, #users, #distribution, #activity, #order
+  height 100%
