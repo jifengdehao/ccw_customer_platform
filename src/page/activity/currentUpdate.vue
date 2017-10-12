@@ -28,11 +28,13 @@ export default {
           key: 'position',
           align: 'center',
           width: '110',
-          height: '168',
           render: (h, params) => {
-            console.log(params)
             return h('div', [
-              h('Input', params.row.position)
+              h('Input', {
+                props: {
+                  value: params.row.position
+                }
+              })
             ])
           }
         },
@@ -42,11 +44,14 @@ export default {
           key: 'picture',
           render: (h, params) => {
             return h('div', [
-              h('Div', {
+              h('img', {
+                props: {
+                  src: params.row.picture
+                },
                 style: {
                   height: '190px'
                 }
-              }, params.row.picture)
+              })
             ])
           }
         },
@@ -73,14 +78,13 @@ export default {
             return h('div', [
               h('Input', {
                 props: {
-                  type: 'primary',
-                  size: 'small'
+                  value: params.row.link
                 },
                 style: {
                   height: '90px !important',
                   lineHeight: '90px'
                 }
-              }, params.row.link)
+              })
             ])
           }
         },
@@ -125,7 +129,7 @@ export default {
                       return false
                     }
                     // 删除表单
-                    console.log(this.$refs.currentRowTable.data.splice(dataLength - 1, 1), dataLength)
+                    this.$refs.currentRowTable.data.splice(dataLength - 1, 1)
                   }
                 }
               }, '删除')
@@ -172,15 +176,15 @@ export default {
     },
     // 保存修改
     getSaveChanges() {
-      if (this.$refs.currentRowTable.data) {
-        for (let i = 0; i < this.$refs.currentRowTable.data.length; i++) {
-          if (!this.$refs.currentRowTable.data[i]) {
-            console.log(123)
-          } else {
-            console.log(22)
-          }
-        }
-      }
+      // if (this.$refs.currentRowTable.data) {
+      //   for (let i = 0; i < this.$refs.currentRowTable.data.length; i++) {
+      //     if (!this.$refs.currentRowTable.data[i]) {
+      //       console.log(123)
+      //     } else {
+      //       console.log(22)
+      //     }
+      //   }
+      // }
     }
   }
 }
