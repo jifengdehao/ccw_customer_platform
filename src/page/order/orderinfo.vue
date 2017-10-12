@@ -20,7 +20,9 @@
     </Row>
     <Row class="mb20">
       <Col span="24">
-      <h2 class="vm-clearfix mb10">交易信息<Button type="primary" class="vm-fr">全部退款</Button></h2>
+      <h2 class="vm-clearfix mb10">交易信息
+        <Button type="primary" class="vm-fr" @click="refundAll">全部退款</Button>
+      </h2>
       <Table :columns="columns4" :data="data4" :border="true"></Table>
       </Col>
     </Row>
@@ -209,6 +211,22 @@
                     click: () => {
                       console.log(orderNumber)
                       // 退款操作
+                      this.$Modal.confirm({
+                        render: (h) => {
+                          return h('Input', {
+                            props: {
+                              value: this.value,
+                              autofocus: true,
+                              placeholder: '请输入金额'
+                            },
+                            on: {
+                              input: (val) => {
+                                this.value = val
+                              }
+                            }
+                          })
+                        }
+                      })
                     }
                   }
                 }, '退款')
@@ -277,6 +295,16 @@
     computed: {
       orderId () {
         return this.$route.query
+      }
+    },
+    methods: {
+      refundAll () {
+        this.$Modal.confirm({
+          content: '确定退还此订单金额？',
+          onOk () {
+            // api 操作
+          }
+        })
       }
     }
   }
