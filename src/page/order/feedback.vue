@@ -2,7 +2,7 @@
   <div class="feedback">
     <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
       <FormItem label="姓名" prop="name" :label-width="80">
-        <Input type="password" v-model="formInline.name" placeholder="请输入查询的名字"></Input>
+        <Input type="text" v-model="formInline.name" placeholder="请输入查询的名字"></Input>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
@@ -44,7 +44,7 @@
         },
         ruleInline: {
           name: [
-            {required: true, message: '请填写手机号', trigger: 'blur'}
+           // {required: true, message: '请填写手机号', trigger: 'blur'}
           ]
         },
         columns1: [
