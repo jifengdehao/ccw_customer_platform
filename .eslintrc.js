@@ -23,11 +23,6 @@ module.exports = {
     'generator-star-spacing': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'space-before-function-paren': 0,
-    "valid-jsdoc": ["error", {
-      "requireReturn": false,
-      "requireParamDescription": false,
-      "requireReturnDescription": true
-    }] //强制JSDoc注释
+    'space-before-function-paren': 0
   }
 }

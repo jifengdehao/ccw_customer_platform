@@ -4,7 +4,6 @@
       <Form-item class="formLogin-title">
         <h3>系统登录</h3>
       </Form-item>
-
       <Form-item prop="username">
         <i-input size="large" type="text" v-model="formLogin.username" placeholder="用户名">
           <Icon type="ios-person-outline" slot="prepend"></Icon>
@@ -34,58 +33,58 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  export default {
-    name: 'login',
-    data() {
-      return {
-        formLogin: {
-          username: '',
-          password: '',
-          remember: []
-        },
-        formLoginRules: {
-          username: [
-            {required: true, message: '请填写用户名', trigger: 'blur'}
-          ],
-          password: [
-            {required: true, message: '请填写密码', trigger: 'blur'},
-            {type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}
-          ]
-        }
-      }
-    },
-    methods: {
-      handleSubmit(name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            sessionStorage.setItem('user', JSON.stringify(this.formLogin))
-            this.$Message.success('提交成功!')
-            this.$router.push({path: '/'})
-          } else {
-            this.$Message.error('表单验证失败!')
-          }
-          if (this.formLogin.remember[0] === '记住密码') {
-            sessionStorage.setItem('username', JSON.stringify(this.formLogin.username))
-            sessionStorage.setItem('password', JSON.stringify(this.formLogin.password))
-          } else {
-            sessionStorage.removeItem('username')
-            sessionStorage.removeItem('password')
-          }
-        })
+export default {
+  name: 'login',
+  data() {
+    return {
+      formLogin: {
+        username: '',
+        password: '',
+        remember: []
       },
-      formLoginReset(name) {
-        this.$refs[name].resetFields()
-      }
-    },
-    mounted() {
-      if (sessionStorage.getItem('username')) {
-        this.formLogin.username = JSON.parse(sessionStorage.getItem('username'))
-      }
-      if (sessionStorage.getItem('password')) {
-        this.formLogin.password = JSON.parse(sessionStorage.getItem('password'))
+      formLoginRules: {
+        username: [
+          { required: true, message: '请填写用户名', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请填写密码', trigger: 'blur' },
+          { type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur' }
+        ]
       }
     }
+  },
+  methods: {
+    handleSubmit(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          sessionStorage.setItem('user', JSON.stringify(this.formLogin))
+          this.$Message.success('提交成功!')
+          this.$router.push({ path: '/' })
+        } else {
+          this.$Message.error('表单验证失败!')
+        }
+        if (this.formLogin.remember[0] === '记住密码') {
+          sessionStorage.setItem('username', JSON.stringify(this.formLogin.username))
+          sessionStorage.setItem('password', JSON.stringify(this.formLogin.password))
+        } else {
+          sessionStorage.removeItem('username')
+          sessionStorage.removeItem('password')
+        }
+      })
+    },
+    formLoginReset(name) {
+      this.$refs[name].resetFields()
+    }
+  },
+  mounted() {
+    if (sessionStorage.getItem('username')) {
+      this.formLogin.username = JSON.parse(sessionStorage.getItem('username'))
+    }
+    if (sessionStorage.getItem('password')) {
+      this.formLogin.password = JSON.parse(sessionStorage.getItem('password'))
+    }
   }
+}
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus">
   #login
