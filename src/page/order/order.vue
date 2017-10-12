@@ -34,6 +34,12 @@
             text: '反馈管理',
             icon: 'ios-telephone',
             noDropdown: true
+          },
+          {
+            name: 'sw',
+            text: '屏蔽词管理',
+            icon: 'ios-telephone',
+            noDropdown: true
           }
         ]
       }

@@ -40,6 +40,7 @@ import DistributionPeopleManage from 'page/distribution/distributionpeoplemanage
 import UsersManage from 'page/users/usersmanage'
 import UsersJurisdiction from 'page/users/usersjurisdiction'
 import UsersLog from 'page/users/userslog'
+import OrderSw from 'page/order/sw'
 
 Vue.use(Router)
 
@@ -66,7 +67,8 @@ export default new Router({
             {path: 'abnormal', component: OrderAbnormal},
             {path: 'evaluate', component: OrderEvaluate},
             {path: 'feedback', component: OrderFeedback},
-            {path: 'feedbackInfo', component: OrderFeedbackInfo}
+            {path: 'feedbackInfo', component: OrderFeedbackInfo},
+            {path: 'sw', component: OrderSw}
           ]
         },
         {
