@@ -111,8 +111,11 @@
               return h('div', [
                 h('Button', {
                   props: {
-                    type: 'text',
+                    type: 'primary',
                     size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
@@ -123,7 +126,7 @@
                 }, '查看'),
                 h('Button', {
                   props: {
-                    type: 'text',
+                    type: 'error',
                     size: 'small'
                   },
                   on: {

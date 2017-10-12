@@ -82,7 +82,7 @@
               return h('div', [
                 h('Button', {
                   props: {
-                    type: 'text',
+                    type: 'primary',
                     size: 'small'
                   },
                   on: {
