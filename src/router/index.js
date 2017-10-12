@@ -6,6 +6,14 @@ import Login from 'page/login/login'
 import Order from 'page/order/order'
 import Custom from 'page/custom/custom'
 import Activity from 'page/activity/activity'
+// 首页banner图管理 查看历史更新子页面
+import ViewHistoryUpdate from 'page/activity/viewHistoryUpdate'
+// 优惠券管理 查看进行中优惠券
+import viewOngoingCoupons from 'page/activity/viewOngoingCoupons'
+// 优惠券管理 进行中添加优惠券
+import addCoupons from 'page/activity/addCoupons'
+// 优惠券管理 待生效查看编辑
+import pendingOpreation from 'page/activity/pendingOpreation'
 import Data from 'page/data/data'
 import Distribution from 'page/distribution/distribution'
 import Users from 'page/users/users'
@@ -113,7 +121,11 @@ export default new Router({
           redirect: '/activity/index_banner_manage',
           children: [
             {path: 'index_banner_manage', component: IndexBannerManage},
-            {path: 'coupon_management', component: CouponManagement}
+            {path: 'coupon_management', component: CouponManagement},
+            {path: 'viewUpdate', component: ViewHistoryUpdate},
+            {path: 'vieOngoingInfo', component: viewOngoingCoupons},
+            {path: 'addCoupons', component: addCoupons},
+            {path: 'pendingDetali', component: pendingOpreation}
           ]
         },
         {
