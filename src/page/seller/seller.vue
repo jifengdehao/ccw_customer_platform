@@ -64,7 +64,6 @@
     },
     methods: {
       route(name) {
-        console.log(name)
         this.$router.push('/seller/' + name)
       }
     },

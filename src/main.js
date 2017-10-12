@@ -8,7 +8,9 @@ import 'iview/dist/styles/iview.css'
 import 'common/stylus/index.styl'
 import VCharts from 'v-charts'
 import store from './store'
+import axios from 'axios'
 
+Vue.prototype.$http = axios
 Vue.config.productionTip = false
 Vue.use(iView)
 Vue.use(VCharts)
