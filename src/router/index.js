@@ -24,6 +24,7 @@ import OrderManage from 'page/order/manage'
 import OrderAbnormal from 'page/order/abnormal'
 import OrderEvaluate from 'page/order/evaluate'
 import SystemMessagePush from 'page/custom/systemmessagepush'
+import AccountDetail from 'page/custrom/accountdetail'
 import ActivityMessagePush from 'page/custom/activitymessagepush'
 import DailyMenuPush from 'page/custom/dailymenupush'
 import AppNoticePush from 'page/custom/appnoticepush'
@@ -75,14 +76,14 @@ export default new Router({
           component: Order,
           redirect: '/order/manage',
           children: [
-            {path: 'manage', component: OrderManage},
-            {path: 'abnormal', component: OrderAbnormal},
-            {path: 'evaluate', component: OrderEvaluate},
-            {path: 'evaluateInfo/:id?', component: OrderEvaluateInfo},
-            {path: 'feedback', component: OrderFeedback},
-            {path: 'feedbackInfo/:id?', component: OrderFeedbackInfo},
-            {path: 'sw', component: OrderSw},
-            {path: 'orderInfo/:id?', component: OrderInfo}
+            { path: 'manage', component: OrderManage },
+            { path: 'abnormal', component: OrderAbnormal },
+            { path: 'evaluate', component: OrderEvaluate },
+            { path: 'evaluateInfo/:id?', component: OrderEvaluateInfo },
+            { path: 'feedback', component: OrderFeedback },
+            { path: 'feedbackInfo/:id?', component: OrderFeedbackInfo },
+            { path: 'sw', component: OrderSw },
+            { path: 'orderInfo/:id?', component: OrderInfo }
           ]
         },
         {
@@ -91,15 +92,16 @@ export default new Router({
           component: Custom,
           redirect: '/custom/account_manage',
           children: [
-            {path: 'account_manage', component: AccountManage},
-            {path: 'system_message_push', component: SystemMessagePush},
-            {path: 'activity_message_push', component: ActivityMessagePush},
-            {path: 'daily_menu_push', component: DailyMenuPush},
-            {path: 'app_notice_push', component: AppNoticePush},
-            {path: 'banner_manage', component: BannerManage},
-            {path: 'market_push', component: MarketPush},
-            {path: 'start_price_see', component: StartPriceSee},
-            {path: 'evaluation_tag_manage', component: EvaluationTagManage}
+            { path: 'account_manage', component: AccountManage },
+            { path: 'account_detail/:id', component: AccountDetail },
+            { path: 'system_message_push', component: SystemMessagePush },
+            { path: 'activity_message_push', component: ActivityMessagePush },
+            { path: 'daily_menu_push', component: DailyMenuPush },
+            { path: 'app_notice_push', component: AppNoticePush },
+            { path: 'banner_manage', component: BannerManage },
+            { path: 'market_push', component: MarketPush },
+            { path: 'start_price_see', component: StartPriceSee },
+            { path: 'evaluation_tag_manage', component: EvaluationTagManage }
           ]
         },
         {
@@ -108,10 +110,10 @@ export default new Router({
           component: Users,
           redirect: '/users/users_manage',
           children: [
-            {path: 'users_manage', component: UsersManage},
-            {path: 'users_jurisdiction', component: UsersJurisdiction},
-            {path: 'users_log', component: UsersLog},
-            {path: 'change_pwd', component: ChangPwd}
+            { path: 'users_manage', component: UsersManage },
+            { path: 'users_jurisdiction', component: UsersJurisdiction },
+            { path: 'users_log', component: UsersLog },
+            { path: 'change_pwd', component: ChangPwd }
           ]
         },
         {
@@ -120,12 +122,12 @@ export default new Router({
           component: Activity,
           redirect: '/activity/index_banner_manage',
           children: [
-            {path: 'index_banner_manage', component: IndexBannerManage},
-            {path: 'coupon_management', component: CouponManagement},
-            {path: 'viewUpdate', component: ViewHistoryUpdate},
-            {path: 'vieOngoingInfo', component: viewOngoingCoupons},
-            {path: 'addCoupons', component: addCoupons},
-            {path: 'pendingDetali', component: pendingOpreation}
+            { path: 'index_banner_manage', component: IndexBannerManage },
+            { path: 'coupon_management', component: CouponManagement },
+            { path: 'viewUpdate', component: ViewHistoryUpdate },
+            { path: 'vieOngoingInfo', component: viewOngoingCoupons },
+            { path: 'addCoupons', component: addCoupons },
+            { path: 'pendingDetali', component: pendingOpreation }
           ]
         },
         {
@@ -134,7 +136,7 @@ export default new Router({
           component: Data,
           redirect: '/data/index',
           children: [
-            {path: 'index', component: DataIndex}
+            { path: 'index', component: DataIndex }
           ]
         },
         {
@@ -143,8 +145,8 @@ export default new Router({
           component: Distribution,
           redirect: '/distribution/distribution_people_data',
           children: [
-            {path: 'distribution_people_data', component: DistributionPeopleData},
-            {path: 'distribution_people_manage', component: DistributionPeopleManage}
+            { path: 'distribution_people_data', component: DistributionPeopleData },
+            { path: 'distribution_people_manage', component: DistributionPeopleManage }
           ]
         },
         {
@@ -153,14 +155,14 @@ export default new Router({
           component: Seller,
           redirect: '/seller/seller_settled_manage',
           children: [
-            {path: 'seller_settled_manage', component: SellerSettledManage},
-            {path: 'seller_video_manage', component: SellerVideoManage},
-            {path: 'seller_account_manage', component: SellerAccountManage},
-            {path: 'seller_observant_manage', component: SellerObservantManage},
-            {path: 'bd_manage', component: BdManage},
-            {path: 'food_template_manage', component: FoodTemplateManage},
-            {path: 'seller_message_push', component: SellerMessagePush},
-            {path: 'seller_message_remind', component: SellerMessageRemind}
+            { path: 'seller_settled_manage', component: SellerSettledManage },
+            { path: 'seller_video_manage', component: SellerVideoManage },
+            { path: 'seller_account_manage', component: SellerAccountManage },
+            { path: 'seller_observant_manage', component: SellerObservantManage },
+            { path: 'bd_manage', component: BdManage },
+            { path: 'food_template_manage', component: FoodTemplateManage },
+            { path: 'seller_message_push', component: SellerMessagePush },
+            { path: 'seller_message_remind', component: SellerMessageRemind }
           ]
         }
       ]
