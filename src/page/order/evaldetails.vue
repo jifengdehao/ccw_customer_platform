@@ -3,12 +3,28 @@
     <div class="close-eval" @click="closeEval">
       <Button type="text" icon="close"></Button>
     </div>
-    <template v-for="item in evalDetails">
+   <!-- <template v-for="item in evalDetails">
       <i-row>
         <i-col span="10" class="vm-textRight">{{item.title}}</i-col>
         <i-col span="12" offset="2">{{item.value}}</i-col>
       </i-row>
-    </template>
+    </template>-->
+    <Row>
+      <Col span="24">用户信息</Col>
+    </Row>
+    <Row>
+      <Col span="2">用户ID：</Col>
+      <Col span="22">10086</Col>
+    </Row>
+    <Row>
+      <Col span="2">收货人手机：</Col>
+      <Col span="22">10086</Col>
+    </Row>
+    <Row>
+      <Col span="2">收货人：</Col>
+      <Col span="22">小菜</Col>
+    </Row>
+    <Table :columns="columns" :data="data" class="mt20"></Table>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -18,109 +34,81 @@
         type: Object
       }
     },
-    data() {
+    data () {
       return {
-        evalDetails: [
+        columns: [
           {
-            title: '订单编号',
-            key: 'orderNumber',
-            value: 11111
+            title: '交易号',
+            key: 'transactionNumber',
+            align: 'center'
           },
           {
             title: '下单时间',
             key: 'orderTime',
-            value: '2017/07/07 07:07'
+            align: 'center'
           },
           {
-            title: '商品名称',
-            key: 'goodName',
-            value: '白菜'
+            title: '评价星级',
+            key: 'evalStar',
+            align: 'center'
           },
           {
-            title: '数量',
-            key: 'goodNum',
-            value: 1
+            title: '评价时间',
+            key: 'evalTime',
+            align: 'center'
           },
           {
-            title: '规格',
-            key: 'goodSpec',
-            value: '500g'
-          },
-          {
-            title: '属性',
-            key: 'goodAttr',
-            value: '不切'
-          },
-          {
-            title: '订单金额',
-            key: 'orderSum',
-            value: 999
-          },
-          {
-            title: '优惠金额',
-            key: 'discountSum',
-            value: 9
-          },
-          {
-            title: '优惠券',
-            key: 'coupon',
-            value: '9元优惠卷'
-          },
-          {
-            title: '实际金额',
-            key: 'actualSum',
-            value: 990
-          },
-          {
-            title: '收货人',
-            key: 'consignee',
-            value: '张三'
-          },
-          {
-            title: '收货电话',
-            key: 'consigneeTel',
-            value: 13265306476
-          },
-          {
-            title: '收货地址',
-            key: 'consigneeAdr',
-            value: '广州番禺市桥桥南菜城科技'
-          },
-          {
-            title: '收货时间段',
-            key: 'consigneeTime',
-            value: '07:30-08:30'
-          },
-          {
-            title: '收货方式',
-            key: 'consigneeMode',
-            value: '自提'
-          },
-          {
-            title: '配送员ID',
-            key: 'delivery _clerk_id',
-            value: 161616161
-          },
-          {
-            title: '配送员名称',
-            key: 'delivery _clerk_name',
-            value: '张益达'
-          },
-          {
-            title: '送达时间',
-            key: 'serviceTime',
-            value: '08:00'
+            title: '评价内容',
+            key: 'evalContent',
+            align: 'center'
           }
         ],
-        showFlag: true
+        data: [
+          {
+            transactionNumber: 21891,
+            orderTime: '2017/07/07 07:07',
+            evalStar: '4',
+            evalTime: '2017/8/16  9:35',
+            evalContent: '非常好吃，猴赛雷啊'
+          },
+          {
+            transactionNumber: 21891,
+            orderTime: '2017/07/07 07:07',
+            evalStar: '4',
+            evalTime: '2017/8/16  9:35',
+            evalContent: '非常好吃，猴赛雷啊'
+          },
+          {
+            transactionNumber: 21891,
+            orderTime: '2017/07/07 07:07',
+            evalStar: '4',
+            evalTime: '2017/8/16  9:35',
+            evalContent: '非常好吃，猴赛雷啊'
+          },
+          {
+            transactionNumber: 21891,
+            orderTime: '2017/07/07 07:07',
+            evalStar: '4',
+            evalTime: '2017/8/16  9:35',
+            evalContent: '非常好吃，猴赛雷啊'
+          },
+          {
+            transactionNumber: 21891,
+            orderTime: '2017/07/07 07:07',
+            evalStar: '4',
+            evalTime: '2017/8/16  9:35',
+            evalContent: '非常好吃，猴赛雷啊'
+          }
+        ]
       }
     },
-    created() {},
+    created () {
+      console.log(this.$route.query)
+    },
     computed: {},
     methods: {
-      closeEval() {
-        this.showFlag = !this.showFlag
-        this.$emit('closeEval', this.showFlag)
+      closeEval () {
+        this.$router.back()
       }
     }
   }

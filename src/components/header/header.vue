@@ -75,7 +75,7 @@
 </template>
 <script type="text/ecmascript-6">
   export default {
-    data() {
+    data () {
       return {
         activeName: 'home',
         userinfo: {
@@ -83,18 +83,15 @@
         }
       }
     },
-    mounted() {
+    mounted () {
       this.activeName = this.$route.name
     },
     methods: {
-      toggleClick() {
-        console.log('收起菜单或者展开菜单')
-      },
-      changePwd(item) {
+      changePwd (item) {
         console.log(item)
         switch (item) {
           case 'change':
-            this.$router.push('/users/change')
+            this.$router.push('/users/change_pwd')
             break
           case 'logout':
             window.sessionStorage.removeItem('user')

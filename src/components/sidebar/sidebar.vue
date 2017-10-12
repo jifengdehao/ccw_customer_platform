@@ -1,4 +1,4 @@
-<template>
+ <template>
   <i-row type="flex" style="height: 100%;">
     <i-col :span="spanLeft" :class="{'layout-hide-text': spanLeft < 3}" class="sidebar">
       <div class="close-menu" @click="toggleClick()">

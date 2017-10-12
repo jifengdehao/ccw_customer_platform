@@ -41,6 +41,10 @@ import UsersManage from 'page/users/usersmanage'
 import UsersJurisdiction from 'page/users/usersjurisdiction'
 import UsersLog from 'page/users/userslog'
 import OrderSw from 'page/order/sw'
+import ChangPwd from 'page/users/changepwd'
+import OrderEvaluateInfo from 'page/order/evaldetails'
+import NotFound from 'page/404'
+import OrderInfo from 'page/order/orderinfo'
 
 Vue.use(Router)
 
@@ -66,9 +70,11 @@ export default new Router({
             {path: 'manage', component: OrderManage},
             {path: 'abnormal', component: OrderAbnormal},
             {path: 'evaluate', component: OrderEvaluate},
+            {path: 'evaluateInfo/:id?', component: OrderEvaluateInfo},
             {path: 'feedback', component: OrderFeedback},
-            {path: 'feedbackInfo', component: OrderFeedbackInfo},
-            {path: 'sw', component: OrderSw}
+            {path: 'feedbackInfo/:id?', component: OrderFeedbackInfo},
+            {path: 'sw', component: OrderSw},
+            {path: 'orderInfo/:id?', component: OrderInfo}
           ]
         },
         {
@@ -96,7 +102,8 @@ export default new Router({
           children: [
             {path: 'users_manage', component: UsersManage},
             {path: 'users_jurisdiction', component: UsersJurisdiction},
-            {path: 'users_log', component: UsersLog}
+            {path: 'users_log', component: UsersLog},
+            {path: 'change_pwd', component: ChangPwd}
           ]
         },
         {
@@ -152,6 +159,10 @@ export default new Router({
       components: {
         blank: Login
       }
+    },
+    {
+      path: '*',
+      component: NotFound
     }
   ]
 })

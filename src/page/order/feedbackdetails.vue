@@ -49,7 +49,9 @@
   #order
     .feedback-details
       line-height 35px
+      border 1px solid #e9eaec
       position relative
+      padding 20px
       .close
         position absolute
         top 0

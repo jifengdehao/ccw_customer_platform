@@ -1,53 +1,51 @@
 <template>
   <div class="order-evaluate">
-    <div v-show="!showEvalDetails">
-      <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
-        <FormItem label="手机号" prop="phone" :label-width="80">
-          <Input type="password" v-model="formInline.phone" placeholder="请输入手机号"></Input>
-        </FormItem>
-        <FormItem>
-          <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
-        </FormItem>
-      </i-form>
-      <i-row>
-        <i-col span="24" style="margin-bottom: 20px;">
-          <Button type="primary" class="vm-fr" @click="exportData()">导出</Button>
-        </i-col>
-        <i-col span="24">
-          <Table :columns="columns1" :data="data1" ref="table"></Table>
-        </i-col>
-        <i-col span="24" style="margin-top: 20px;">
-          <Page
-            :total="tableTotal"
-            :current="curr"
-            :page-size="pageNum"
-            @on-change="changePage"
-            show-total
-            class="vm-fr"
-          ></Page>
-        </i-col>
-      </i-row>
-    </div>
-    <eval-details :eval="selectEval" @closeEval="openEval" v-show="showEvalDetails"></eval-details>
+    <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
+      <FormItem prop="phone" label="手机号" :label-width="80">
+        <Input type="text" v-model="formInline.phone" placeholder="请输入手机号"></Input>
+      </FormItem>
+      <FormItem prop="orderNumber" label="订单编号" :label-width="80">
+        <Input type="text" v-model="formInline.orderNumber" placeholder="请输入订单编号"></Input>
+      </FormItem>
+      <FormItem>
+        <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
+      </FormItem>
+    </i-form>
+    <Tabs :animated="false" @on-click="selectTab" value="good_eval">
+      <Tab-pane label="商品评价" name="good_eval">
+        <Table :columns="columns1" :data="data1" ref="table"></Table>
+        <Page
+          :total="tableTotal"
+          :current="curr"
+          :page-size="pageNum"
+          @on-change="changePage"
+          show-total
+          class="vm-fr mt20"
+        ></Page>
+      </Tab-pane>
+      <Tab-pane label="商家评价" name="seller_eval">商家评价</Tab-pane>
+      <Tab-pane label="配送员评价" name="delivery_eval">配送员评价</Tab-pane>
+      <Tab-pane label="差评订单" name="bad_eval"></Tab-pane>
+      <Button type="primary" class="vm-fr" @click="exportData()" slot="extra">导出</Button>
+    </Tabs>
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import EvalDetails from 'page/order/evaldetails'
-
   export default {
-    data() {
+    data () {
       return {
         curr: 1,
         pageNum: 10,
         showEvalDetails: false,
-        selectEval: {},
         formInline: {
-          phone: ''
+          phone: '',
+          orderNumber: ''
         },
         ruleInline: {
           phone: [
-            {required: true, message: '请填写手机号', trigger: 'blur'}
-          ]
+            // {required: true, message: '请填写手机号', trigger: 'blur'}
+          ],
+          orderNumber: []
         },
         columns1: [
           {
@@ -95,8 +93,7 @@
                   on: {
                     click: () => {
                       // 查询单个订单详情
-                      this.showEvalDetails = true
-                      this.selectEval = params.row
+                      this.$router.push('/order/evaluateInfo?id=' + id)
                     }
                   }
                 }, '查看'),
@@ -151,611 +148,17 @@
             time: '2017/8/16  9:35',
             status: '正常',
             content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
-          },
-          {
-            id: 10086,
-            phone: 13317769149,
-            name: '王小明',
-            age: 18,
-            time: '2017/8/16  9:35',
-            status: '正常',
-            content: '非常好吃，猴赛雷啊'
           }
         ]
       }
     },
     computed: {
-      tableTotal() {
+      tableTotal () {
         return this.data1.length
       }
     },
     methods: {
-      handleSubmit(name) {
+      handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.$Message.success('提交成功!')
@@ -764,29 +167,26 @@
           }
         })
       },
-      remove(id) {
+      remove (id) {
         this.$Modal.confirm({
           content: '确定将此条评论隐藏？',
-          onOk() {
+          onOk () {
             // api 操作
             console.log(id)
           }
         })
       },
-      changePage(index) {
+      changePage (index) {
         console.log(index)
       },
-      openEval(flag) {
-        this.showEvalDetails = flag
-      },
-      exportData() {
+      exportData () {
         this.$refs.table.exportCsv({
-          filename: '评价订单列表'
+          filename: '商品评价订单列表'
         })
+      },
+      selectTab (name) {
+        console.log(name)
       }
-    },
-    components: {
-      EvalDetails
     }
   }
 </script>
