@@ -29,7 +29,7 @@
               <Table :columns="classifColumns" :data="templatedata"></Table>
               </Col>
               <Col span="2">
-              <h1>''</h1>
+              -
               </Col>
               <Col span="11">
               <Button type="primary">二级分类管理</Button>

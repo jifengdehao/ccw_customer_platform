@@ -24,7 +24,7 @@
     <section>
       <Tabs type="card" :animated="false" @on-click="changedata">
         <TabPane v-for="tab in tabs" key :label="tab.title">
-          <Table border :columns="columns" :data="auditdata">
+          <Table border :columns="columns" :data="sellervideodata">
           </Table>
         </TabPane>
         <Button type="success" @click="" size="small" slot="extra">批量通过</Button>
@@ -39,24 +39,23 @@
 </template>
 <script>
 import * as api from 'api/common.js'
-// import axios from 'axios'
 // 商品图片
 let producttitle = [
   {
     title: '商品标题',
-    key: 'mobileno'
+    key: 'productName'
   },
   {
     title: '商品主图',
-    key: 'marketName'
+    key: 'picUrls'
   },
   {
     title: '商品介绍图片',
-    key: 'businessType'
+    key: 'picDesc'
   },
   {
     title: '商品添加或修改时间',
-    key: 'businessType'
+    key: 'lastUpdateTime'
   },
   {
     title: '操作',
@@ -205,7 +204,7 @@ export default {
   props: {},
   data() {
     return {
-      auditdata: [],
+      sellervideodata: [],
       formItem: {},
       tabs: [
         { title: '商品图片审核' },
@@ -220,11 +219,9 @@ export default {
       pageSize: 10
     }
     api.getProductPic(params).then(response => {
-      console.log(response)
-    }).catch(error => {
-      console.log(error)
+      this.sellervideodata = response.records
     })
-    //   this.columns = producttitle
+    this.columns = producttitle
   },
   // mounted: {},
   activited: {},
@@ -232,12 +229,6 @@ export default {
   methods: {
     changedata(index) {
       if (index === 0) {
-        //   axios.get('seller/pic/product/list/1', {
-        //   }).then((response) => {
-        //     console.log(response)
-        //   }).catch(error => {
-        //     console.log(error)
-        //   })
         this.columns = producttitle
       } else if (index === 1) {
         this.columns = shoptitle
