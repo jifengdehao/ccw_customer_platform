@@ -77,7 +77,6 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
             sessionStorage.setItem('user', JSON.stringify(this.formLogin))
-            console.log(this.formLogin)
             this.$Message.success('提交成功!')
             api.Login(this.formLogin).then((user) => {
               console.log(user)

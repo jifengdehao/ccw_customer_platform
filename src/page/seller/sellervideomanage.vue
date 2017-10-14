@@ -38,6 +38,8 @@
   </div>
 </template>
 <script>
+import * as api from 'api/common.js'
+// import axios from 'axios'
 // 商品图片
 let producttitle = [
   {
@@ -214,7 +216,15 @@ export default {
     }
   },
   created() {
-    this.columns = producttitle
+    let params = {
+      pageSize: 10
+    }
+    api.getProductPic(params).then(response => {
+      console.log(response)
+    }).catch(error => {
+      console.log(error)
+    })
+    //   this.columns = producttitle
   },
   // mounted: {},
   activited: {},
@@ -222,6 +232,12 @@ export default {
   methods: {
     changedata(index) {
       if (index === 0) {
+        //   axios.get('seller/pic/product/list/1', {
+        //   }).then((response) => {
+        //     console.log(response)
+        //   }).catch(error => {
+        //     console.log(error)
+        //   })
         this.columns = producttitle
       } else if (index === 1) {
         this.columns = shoptitle

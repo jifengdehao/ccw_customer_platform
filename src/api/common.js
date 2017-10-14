@@ -128,3 +128,15 @@ export const exportOrderEval = (params) => {
 }
 
 /** 订单管理 end **/
+
+/** 商户端管理
+ * 胡上军
+ * start**/
+
+/**
+ * 获取商品图片审核列表
+ * @param params ={}
+ */
+export const getProductPic = (params) => {
+  return ax.g('/seller/pic/product/list/1', params)
+}

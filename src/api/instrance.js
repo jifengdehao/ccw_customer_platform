@@ -10,7 +10,7 @@ var ax = axios.create({
   baseURL: URI,
   timeout: 30000,
   headers: {
-    // 'Content-Type':'application/x-www-form-urlencoded',
+    // 'Content-Type': 'application/x-www-form-urlencoded',
     'TOKEN': ''
   }
 })

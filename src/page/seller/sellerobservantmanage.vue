@@ -1,5 +1,7 @@
 <template>
-  <div class="seller-observant-manager">商户守约管理</div>
+  <div class="seller-observant-manager">
+    <h1>商户守约管理模块延期...</h1>
+  </div>
 </template>
 <script type="text/ecmascript-6">
     export default {}
