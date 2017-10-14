@@ -77,15 +77,17 @@
   export default {
     data () {
       return {
-        activeName: 'home',
         userinfo: {
           name: 'admin'
         }
       }
     },
-    mounted () {
-      this.activeName = this.$route.name
+    computed: {
+      activeName () {
+        return this.$route.path.split('/')[1]
+      }
     },
+    mounted () {},
     methods: {
       changePwd (item) {
         console.log(item)

@@ -1,10 +1,10 @@
- <template>
+<template>
   <i-row type="flex" style="height: 100%;">
     <i-col :span="spanLeft" :class="{'layout-hide-text': spanLeft < 3}" class="sidebar">
       <div class="close-menu" @click="toggleClick()">
         <Icon type="navicon-round" :size="iconSize"></Icon>
       </div>
-      <Menu theme="dark" @on-select="route" width="auto">
+      <Menu theme="dark" @on-select="route" width="auto" :active-name="activeName">
         <template v-for="item in menu">
           <MenuItem v-if="item.noDropdown && item.name" :name="item.name">
             <Icon :type="item.icon" :size="iconSize"></Icon>
@@ -35,20 +35,23 @@
         type: Array
       }
     },
-    data() {
+    data () {
       return {
         spanLeft: 3,
         spanRight: 21
       }
     },
-    mounted() {},
+    mounted () {},
     computed: {
-      iconSize() {
+      iconSize () {
         return this.spanLeft === 3 ? 14 : 24
+      },
+      activeName () {
+        return this.$route.path.split('/')[2]
       }
     },
     methods: {
-      toggleClick() {
+      toggleClick () {
         if (this.spanLeft === 3) {
           this.spanLeft = 1
           this.spanRight = 23
@@ -57,7 +60,7 @@
           this.spanRight = 21
         }
       },
-      route(name) {
+      route (name) {
         this.$emit('route', name)
       }
     }
