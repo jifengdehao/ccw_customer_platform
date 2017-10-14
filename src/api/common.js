@@ -138,5 +138,5 @@ export const exportOrderEval = (params) => {
  * @param params ={}
  */
 export const getProductPic = (params) => {
-  return ax.g('/seller/pic/product/list/1', params)
+  return ax.g('seller/pic/product/list/1', params)
 }
