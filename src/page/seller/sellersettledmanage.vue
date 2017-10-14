@@ -26,7 +26,7 @@
         </FormItem>
       </Form>
     </section>
-    <!-- 标签页 -->
+    <!-- 标签页 表格内容 -->
     <section>
       <Tabs type="card" :animated="false" @on-click="changedata">
         <TabPane v-for="tab in tabs" key :label="tab.title">
