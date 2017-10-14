@@ -35,7 +35,7 @@ export const getFeedBackInfo = (params) => {
  * @param params =>{status,mobileno,pageSize,pageNo}
  */
 export const getOrderList = (params) => {
-  return ax.g('/order', params)
+  return ax.g('/order/', params)
 }
 
 /**
