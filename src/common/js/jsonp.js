@@ -1,3 +1,9 @@
+/**
+ * 2017/10/16
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com
+ * 功能模块: jsonp的promise封装
+ */
 import originJsonp from 'jsonp'
 
 export default function jsonp(url, data, option) {

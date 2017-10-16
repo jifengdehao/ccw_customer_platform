@@ -1,3 +1,9 @@
+/**
+ * 2017/10/16
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com
+ * 功能模块: axios底层的封装
+ */
 import axios from 'axios'
 import config from '../../config/config.js'
 import qs from 'qs'
@@ -59,7 +65,6 @@ export const uploadUrl = config.imgUpload
 export function base (type, url, params) {
   return new Promise((resolve, reject) => {
     itr(type, url, params).then((response) => {
-      console.log(response)
       if (response.data.code === 200) {
         resolve(response.data.data)
       } else {

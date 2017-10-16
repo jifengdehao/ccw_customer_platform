@@ -1,3 +1,9 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：公共组件-侧栏组件
+*/
 <template>
   <i-row type="flex" style="height: 100%;">
     <i-col :span="spanLeft" :class="{'layout-hide-text': spanLeft < 3}" class="sidebar">

@@ -1,3 +1,9 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：公共组件-头部组件
+*/
 <template>
   <div class="layout-header">
     <i-row type="flex">

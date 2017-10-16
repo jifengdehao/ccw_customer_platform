@@ -1,10 +1,9 @@
 /*
- * @Author: ZengFanlu 
- * @Date: 2017-10-11 14:34:42 
- * DeveloperMailbox:   zengfanlu@ccw163.com 
- * FunctionPoint: 查看进行中优惠券页面 
+ * @Author: ZengFanlu
+ * @Date: 2017-10-11 14:34:42
+ * DeveloperMailbox:   zengfanlu@ccw163.com
+ * FunctionPoint: 查看进行中优惠券页面
  */
-
 <template>
   <div class="going-coupons">
     <h2>进行中的优惠券</h2>

@@ -1,3 +1,9 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：业务组件-登录
+*/
 <template>
   <div id="login">
     <i-form ref="formLogin" :model="formLogin" :rules="formLoginRules" class="card-box">

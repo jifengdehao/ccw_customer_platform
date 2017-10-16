@@ -1,3 +1,9 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：公共组件-反馈管理
+*/
 <template>
   <div class="feedback">
     <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
