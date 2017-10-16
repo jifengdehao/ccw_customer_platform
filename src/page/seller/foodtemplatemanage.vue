@@ -7,11 +7,22 @@
 <template>
   <div class="seller-template-manager">
     <!-- 搜索 -->
-    <section class="seller-template-manager-search">
+    <section class="seller-template-manager-search" v-if="search">
       <Form :model="formItem" ref="formItem" inline>
         <FormItem>
-          <span class="label">分类搜索：</span>
+          <span class="label">搜索商品：</span>
           <Input v-model="formItem.input" placeholder="请输入" style="width: 200px"></Input>
+        </FormItem>
+        <FormItem>
+          <span class="label">筛选条件：</span>
+          <i>一级分类</i>
+          <Select v-model="model1" style="width:150px">
+            <Option v-for="item in firstclassify" :value="item.value" :key="item.value" placeholder="一级分类">{{ item.label }}</Option>
+          </Select>
+          <i>二级分类</i>
+          <Select v-model="model1" style="width:150px">
+            <Option v-for="item in secondclassify" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
         </FormItem>
         <FormItem>
           <Button type="primary">搜索</Button>
@@ -21,8 +32,8 @@
     <!-- 表格内容 -->
     <section seller-template-manager-container>
       <Tabs type="card" :animated="false" @on-click="changedata">
-        <TabPane v-for="tab in tabs" key :label="tab.title">
-          <div class="seller-template-manager-container-classify" v-if="classify">
+        <TabPane label="商品分类管理">
+          <div class="seller-template-manager-container-classify">
             <Row>
               <Col span="11">
               <Button size="small" type="primary" @click="showModal1">一级分类管理</Button>
@@ -30,7 +41,7 @@
                 <li>
                   <h4>一级分类</h4>
                 </li>
-                <li v-for="item in templatedata" @click="test(item)">{{item.catName}}</li>
+                <li v-for="item in templatedata" @click="test(item.catName)">{{item.catName}}</li>
               </ul>
               </Col>
               <Col span="11">
@@ -44,7 +55,9 @@
               </Col>
             </Row>
           </div>
-          <Table :columns="columns" :data="templatedata" v-else></Table>
+        </TabPane>
+        <TabPane label="商品模板管理">
+          <v-foodtemplate></v-foodtemplate>
         </TabPane>
       </Tabs>
     </section>
@@ -56,15 +69,21 @@
   </div>
 </template>
 <script>
+import vFoodtemplate from './foodtemplatetable/foodtemplate'
 export default {
-  components: {},
+  components: { vFoodtemplate },
   props: {},
   data() {
     return {
-      formItem: {},
-      classify: true,
+      formItem: {
+        input: ''
+      },
+      model1: '',
+      search: false,
       classifydata: [],
       classifytitle: '',
+      firstclassify: [],
+      secondclassify: [],
       templatedata: [
         { catName: '水果' },
         { catName: '海鲜' },
@@ -79,7 +98,6 @@ export default {
             return h('div', [
               h('Input', {
                 props: {
-                  type: 'warning',
                   size: 'small',
                   value: params.row.catName
                 },
@@ -111,11 +129,7 @@ export default {
           }
         }
       ],
-      columns: [],
-      tabs: [
-        { title: '商品分类管理' },
-        { title: '商品模板管理' }
-      ]
+      columns: []
     }
   },
   //   mounted: {},
@@ -124,9 +138,9 @@ export default {
   methods: {
     changedata(index) {
       if (index === 0) {
-        this.classify = true
+        this.search = false
       } else if (index === 1) {
-        this.classify = false
+        this.search = true
       }
     },
     test(value) {

@@ -62,7 +62,7 @@ export const op = (url, params) => {
 // 上传地址
 export const uploadUrl = config.imgUpload
 
-export function base (type, url, params) {
+export function base(type, url, params) {
   return new Promise((resolve, reject) => {
     itr(type, url, params).then((response) => {
       if (response.data.code === 200) {
