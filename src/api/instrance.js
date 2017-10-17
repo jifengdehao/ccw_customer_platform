@@ -1,3 +1,9 @@
+/**
+ * 2017/10/16
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com
+ * 功能模块: axios底层的封装
+ */
 import axios from 'axios'
 import config from '../../config/config.js'
 import qs from 'qs'
@@ -10,7 +16,7 @@ var ax = axios.create({
   baseURL: URI,
   timeout: 30000,
   headers: {
-    // 'Content-Type':'application/x-www-form-urlencoded',
+    // 'Content-Type': 'application/x-www-form-urlencoded',
     'TOKEN': ''
   }
 })
@@ -59,23 +65,23 @@ export const uploadUrl = config.imgUpload
 export function base(type, url, params) {
   return new Promise((resolve, reject) => {
     itr(type, url, params).then((response) => {
-      if (response.data.success) {
+      if (response.data.code === 200) {
         resolve(response.data.data)
       } else {
         iview.Notice.error({
           title: '操作失败',
-          desc: `<p><span style="color:#ff3300">${response.data.errors.code}</span>   ${response.data.errors.message}</p>`
+          desc: `<p><span style="color:#ff3300">${response.data.code}</span>   ${response.data.msg}</p>`
         })
-        reject(response.data.errors.message)
+        reject(response.data.msg)
       }
     }).catch((msg) => {
-      if (msg !== 'code') {
+      if (msg) {
         iview.Notice.error({
           title: '网络访问错误',
           desc: msg
         })
       }
-      // reject(msg);
+      // reject(msg)
     })
   })
 }

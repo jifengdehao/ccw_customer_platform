@@ -1,3 +1,9 @@
+/**
+ * 2017/10/16
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com
+ * 功能模块: render 封装
+ */
 import iview from 'iview'
 
 // 基础操纵

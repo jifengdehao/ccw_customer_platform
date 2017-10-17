@@ -1,5 +1,14 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：业务组件-订单详情
+*/
 <template>
-  <div>
+  <div class="orderInfo">
+    <div class="close" @click="close">
+      <Button type="text" icon="close"></Button>
+    </div>
     <Row class="mb20">
       <Col span="24">
       <h2 class="mb10">订单信息</h2>
@@ -305,7 +314,22 @@
             // api 操作
           }
         })
+      },
+      close() {
+        this.$router.back()
       }
     }
   }
 </script>
+<style scoped lang="stylus" rel="stylesheet/stylus">
+  #order
+  .orderInfo
+    position relative
+    border 1px solid #e9eaec
+    padding 20px
+    .close
+      position absolute
+      top 0
+      right 0
+      z-index 10
+</style>

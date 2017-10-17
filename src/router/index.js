@@ -1,3 +1,9 @@
+/**
+ * 2017/10/16
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com
+ * 功能模块: 路由
+ */
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from 'page/home/home'
@@ -27,9 +33,9 @@ import OrderAbnormal from 'page/order/abnormal'
 import OrderEvaluate from 'page/order/evaluate'
 import SystemMessagePush from 'page/custom/systemmessagepush'
 import AccountDetail from 'page/custom/accountdetail'
-import ActivityMessagePush from 'page/custom/activitymessagepush'
-import DailyMenuPush from 'page/custom/dailymenupush'
-import AppNoticePush from 'page/custom/appnoticepush'
+// import ActivityMessagePush from 'page/custom/activitymessagepush'
+// import DailyMenuPush from 'page/custom/dailymenupush'
+// import AppNoticePush from 'page/custom/appnoticepush'
 import BannerManage from 'page/custom/bannermanage'
 import MarketPush from 'page/custom/marketpush'
 import StartPriceSee from 'page/custom/startpricesee'
@@ -60,7 +66,6 @@ import OrderInfo from 'page/order/orderinfo'
 Vue.use(Router)
 
 export default new Router({
-  linkActiveClass: 'active',
   routes: [
     {
       path: '/',
@@ -97,9 +102,9 @@ export default new Router({
             { path: 'account_manage', component: AccountManage },
             { path: 'account_detail/:id', component: AccountDetail },
             { path: 'system_message_push', component: SystemMessagePush },
-            { path: 'activity_message_push', component: ActivityMessagePush },
-            { path: 'daily_menu_push', component: DailyMenuPush },
-            { path: 'app_notice_push', component: AppNoticePush },
+            { path: 'activity_message_push', component: SystemMessagePush },
+            { path: 'daily_menu_push', component: SystemMessagePush },
+            { path: 'app_notice_push', component: SystemMessagePush },
             { path: 'banner_manage', component: BannerManage },
             { path: 'market_push', component: MarketPush },
             { path: 'start_price_see', component: StartPriceSee },

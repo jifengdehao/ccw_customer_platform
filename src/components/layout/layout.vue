@@ -1,3 +1,9 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：公共组件-布局组件
+*/
 <template>
   <div class="layout">
     <m-header></m-header>

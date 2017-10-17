@@ -24,7 +24,7 @@
     <section>
       <Tabs type="card" :animated="false" @on-click="changedata">
         <TabPane v-for="tab in tabs" key :label="tab.title">
-          <Table border :columns="columns" :data="auditdata">
+          <Table border :columns="columns" :data="sellervideodata">
           </Table>
         </TabPane>
         <Button type="success" @click="" size="small" slot="extra">批量通过</Button>
@@ -38,23 +38,24 @@
   </div>
 </template>
 <script>
+import * as api from 'api/common.js'
 // 商品图片
 let producttitle = [
   {
     title: '商品标题',
-    key: 'mobileno'
+    key: 'productName'
   },
   {
     title: '商品主图',
-    key: 'marketName'
+    key: 'picUrls'
   },
   {
     title: '商品介绍图片',
-    key: 'businessType'
+    key: 'picDesc'
   },
   {
     title: '商品添加或修改时间',
-    key: 'businessType'
+    key: 'lastUpdateTime'
   },
   {
     title: '操作',
@@ -203,7 +204,7 @@ export default {
   props: {},
   data() {
     return {
-      auditdata: [],
+      sellervideodata: [],
       formItem: {},
       tabs: [
         { title: '商品图片审核' },
@@ -214,6 +215,12 @@ export default {
     }
   },
   created() {
+    let params = {
+      pageSize: 10
+    }
+    api.getProductPic(params).then(response => {
+      this.sellervideodata = response.records
+    })
     this.columns = producttitle
   },
   // mounted: {},

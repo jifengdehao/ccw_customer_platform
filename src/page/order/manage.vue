@@ -1,3 +1,9 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：业务组件-订单管理
+*/
 <template>
   <div class="order-manage">
     <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
@@ -47,6 +53,7 @@
 </template>
 <script type="text/ecmascript-6">
   import expandRow from 'components/table/expand-row'
+  import * as api from 'api/common.js'
 
   export default {
     data () {
@@ -270,6 +277,9 @@
         return this.data1.length
       }
     },
+    created () {
+      this._getOrderData()
+    },
     methods: {
       // 搜索
       handleSubmit (name) {
@@ -298,6 +308,15 @@
       // 分页
       changePage (index) {
         console.log(index)
+      },
+      _getOrderData () {
+        let params = {
+          pageSize: this.pageNum,
+          pageNo: this.curr
+        }
+        api.getOrderList(params).then((data) => {
+          console.log(data)
+        })
       }
     },
     components: {
