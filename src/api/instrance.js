@@ -26,7 +26,7 @@ export const itr = (type, url, params) => {
     params = {}
   }
   let arg = qs.stringify(params)
-  // url = type == 'get' || type == 'delete' ? url + '?' + arg : url;
+  url = type === 'get' || type === 'delete' ? url + '?' + arg : url
   var userInfo = ac.getData('userInfo')
   var token = ''
   if (userInfo) {
@@ -62,7 +62,7 @@ export const op = (url, params) => {
 // 上传地址
 export const uploadUrl = config.imgUpload
 
-export function base(type, url, params) {
+export function base (type, url, params) {
   return new Promise((resolve, reject) => {
     itr(type, url, params).then((response) => {
       if (response.data.code === 200) {
@@ -70,7 +70,7 @@ export function base(type, url, params) {
       } else {
         iview.Notice.error({
           title: '操作失败',
-          desc: `<p><span style="color:#ff3300">${response.data.code}</span>   ${response.data.msg}</p>`
+          desc: `<p><span style="color:#ff3300">${response.data.code}</span>&nbsp;&nbsp;${response.data.msg}</p>`
         })
         reject(response.data.msg)
       }

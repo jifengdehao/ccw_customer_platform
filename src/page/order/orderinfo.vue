@@ -303,8 +303,11 @@
     },
     computed: {
       orderId () {
-        return this.$route.query
+        return this.$route.query.orderNumber
       }
+    },
+    created () {
+      console.log(this.orderId)
     },
     methods: {
       refundAll () {
@@ -315,21 +318,21 @@
           }
         })
       },
-      close() {
+      close () {
         this.$router.back()
       }
     }
   }
 </script>
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus" rel="stylesheet/stylus" type="text/stylus">
   #order
-  .orderInfo
-    position relative
-    border 1px solid #e9eaec
-    padding 20px
-    .close
-      position absolute
-      top 0
-      right 0
-      z-index 10
+    .orderInfo
+      position relative
+      border 1px solid #e9eaec
+      padding 20px
+      .close
+        position absolute
+        top 0
+        right 0
+        z-index 10
 </style>

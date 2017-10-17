@@ -23,6 +23,8 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import * as api from 'api/common.js'
+
   export default {
     data () {
       return {
@@ -39,6 +41,7 @@
     },
     created () {
       // 获取默认数据库里的屏蔽词
+      this._getSwData()
     },
     methods: {
       handleSubmit (name) {
@@ -46,10 +49,34 @@
           if (valid) {
             // 发送数据
             console.log(this.formValidate)
-            this.$Message.success('提交成功!')
+            // this.$Message.success('提交成功!')
+            let params = {
+              startTime: this.formValidate.dateTime,
+              words: this.formValidate.desc
+            }
+            this._posSwData(params).then((data) => {
+              console.log(data)
+            })
           } else {
-            this.$Message.error('提交失败!')
+            this.$Message.error('提交失败 !')
           }
+        })
+      },
+      _getSwData () {
+        api.getOrderSw().then((data) => {
+          console.log(data)
+          this.formValidate.desc = data
+        })
+      },
+      _posSwData (params) {
+        return new Promise((resolve, reject) => {
+          api.postOrderSw(params).then((data) => {
+            if (data) {
+              resolve(data)
+            } else {
+              reject(data)
+            }
+          })
         })
       }
     }
