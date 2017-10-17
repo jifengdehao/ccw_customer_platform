@@ -10,7 +10,7 @@ var ax = axios.create({
   baseURL: URI,
   timeout: 30000,
   headers: {
-    // 'Content-Type': 'application/x-www-form-urlencoded',
+    'Content-Type': 'application/json;charset=UTF-8',
     'TOKEN': ''
   }
 })
@@ -20,7 +20,7 @@ export const itr = (type, url, params) => {
     params = {}
   }
   let arg = qs.stringify(params)
-  // url = type == 'get' || type == 'delete' ? url + '?' + arg : url;
+  url = type === 'get' || type === 'delete' ? url + '?' + arg : url
   var userInfo = ac.getData('userInfo')
   var token = ''
   if (userInfo) {
@@ -64,7 +64,7 @@ export function base(type, url, params) {
       } else {
         iview.Notice.error({
           title: '操作失败',
-          desc: `<p><span style="color:#ff3300">${response.data.code}</span>   ${response.data.msg}</p>`
+          desc: `<p><span style="color:#ff3300">${response.data.code}</span>${response.data.msg}</p>`
         })
         reject(response.data.msg)
       }

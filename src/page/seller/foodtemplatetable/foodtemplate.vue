@@ -98,13 +98,13 @@
         </FormItem>
       </Form>
     </Modal>
-    <Modal v-model="moveModal">
+    <Modal v-model="moveModal" title="移动至分类">
       <i>一级分类</i>
       <Select v-model="model1" size="small" style="width:100px">
         <Option v-for="item in firstclassify" :value="item.value" :key="item.value" placeholder="一级分类">{{ item.label }}</Option>
       </Select>
       <i>二级分类</i>
-      <Select v-model="model1" size="small" title="移动至分类" style="width:100px">
+      <Select v-model="model1" size="small" style="width:100px">
         <Option v-for="item in secondclassify" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select> <br>
     </Modal>

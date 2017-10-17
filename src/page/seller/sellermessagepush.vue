@@ -1,84 +1,132 @@
 /*
  * @Author: huShangJun 
- * @Date: 2017-10-12 22:40:30 
+ * @Date: 2017-10-16 13:58:58 
  * DeveloperMailbox:   hsjcc@ccw163.com 
- * FunctionPoint:  商品模板库管理 测试
+ * FunctionPoint: 商户消息推送 
  */
+
 <template>
-  <div class="seller-template-manager">
-    <!-- 搜索 -->
-    <section class="seller-template-manager-search">
-      <Form :model="formItem" ref="formItem" inline>
-        <FormItem>
-          <span class="label">分类搜索：</span>
-          <Input v-model="formItem.input" placeholder="请输入" style="width: 200px"></Input>
-        </FormItem>
-        <FormItem>
-          <Button type="primary">搜索</Button>
-        </FormItem>
-      </Form>
-    </section>
-    <!-- 表格内容 -->
-    <section seller-template-manager-container>
-      <Tabs type="card" :animated="false" @on-click="changedata">
-        <TabPane v-for="tab in tabs" key :label="tab.title">
-          <div class="seller-template-manager-container-classify" v-if="classify">
-            <Row>
-              <Col span="11">
-              <Button type="primary" @click="showModal">增加一级分类</Button>
-              <Table :columns="classifColumns" :data="templatedata"></Table>
-              </Col>
-              <Col span="2">
-              -
-              </Col>
-              <Col span="11">
-              <Button type="primary">二级分类管理</Button>
-             <Table :columns="classifColumns" :data="templatedata"></Table>
-              </Col>
-            </Row>
-          </div>
-          <Table :columns="columns" :data="templatedata" v-else></Table>
-        </TabPane>
-      </Tabs>
-    </section>
-    <!-- 查看图片 -->
-    <Modal v-model="classifymodal" :title="title" width="500">
-      分类名称：
-      <input type="text" v-model="value">
-    </Modal>
+  <div>
+    <Input v-model="single.title" placeholder="输入标题" style="width: 200px;float:left;margin-right:200px;"></Input>
+    <div style="line-height:1.5;float:right">
+      <label>推送时间设置</label>
+      <Select v-model="pushStyle" style="width:150px;margin-left:10px;">
+        <Option value="0">定时推送</Option>
+        <Option value="1">立即推送</Option>
+      </Select>
+      <Select v-model="single.year" style="width:70px;margin-left:10px;">
+        <Option value="2017">2017</Option>
+        <Option value="2018">2018</Option>
+      </Select>
+      <span>年</span>
+      <Select v-model="single.month" style="width:60px;" @on-change='loadDays'>
+        <Option value="1">01</Option>
+        <Option value="2">02</Option>
+        <Option value="3">03</Option>
+        <Option value="4">04</Option>
+        <Option value="5">05</Option>
+        <Option value="6">06</Option>
+        <Option value="7">07</Option>
+        <Option value="8">08</Option>
+        <Option value="9">09</Option>
+        <Option value="10">10</Option>
+        <Option value="11">11</Option>
+        <Option value="12">12</Option>
+      </Select>
+      <span>月</span>
+      <Select v-model="single.day" style="width:70px">
+        <Option v-for="item in single.days" :value="item" :key="item">{{ item >= 10 ? item : '0' + item }}</Option>
+      </Select>
+      <span>日</span>
+      <Select v-model="single.hour" style="width:60px;" @on-change='loadDays'>
+        <Option v-for="item in single.hours" :value="item" :key="item">{{ item >= 10 ? item : '0' + item }}</Option>
+      </Select>
+      <span>时</span>
+      <Select v-model="single.second" style="width:60px;" @on-change='loadDays'>
+        <Option v-for="item in single.seconds" :value="item" :key="item">{{ item >= 10 ? item : '0' + item }}</Option>
+      </Select>
+      <span>分</span>
+    </div>
+    <textarea placeholder="输入您要推送的系统消息的内容"></textarea>
+    <div class="btn-ok">
+      <Button type="primary">确定</Button>
+    </div>
+    <Tabs type="card" @on-click="chooseTabs">
+      <TabPane label="全部"></TabPane>
+      <TabPane label="待推送"></TabPane>
+      <TabPane label="历史推送"></TabPane>
+      <TabPane label="推送失败"></TabPane>
+    </Tabs>
+    <Table border :columns="pushMessageTitle" :data="pushMessageData"></Table>
+    <Page class="page-style" :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
   </div>
 </template>
 <script>
+import * as api from 'api/common.js'
 export default {
-  components: {},
-  props: {},
+  name: 'systemMessagePush',
+  components: {
+  },
+  props: {
+  },
   data() {
     return {
-      value: '',
-      title: '',
-      formItem: {},
-      classify: true,
-      classifydata: [],
-      templatedata: [
-        { chargeman: '水果' },
-        { chargeman: '海鲜' },
-        { chargeman: '野味' }
-      ],
-      classifymodal: false,
-      classifColumns: [
+      total: 1,
+      pageSize: 1,
+      data: [],
+      pushStyle: '0', //  推送方式值
+      single: { //  时间相关数据
+        title: '', //  标题
+        msgContent: '',  //  推送内容
+        year: '2017', //  年
+        month: '1', //  月
+        day: 1, //  日
+        hours: 24,  //  （时）集合
+        hour: 1, //  时
+        seconds: 60,  //  分（集合）
+        second: 1, //  分
+        days: [1]  //  每个与多少天
+      },
+      pushMessageTitle: [ //  推送table表头
         {
-          title: '一级分类',
-          key: 'chargeman'
+          title: '序号',
+          type: 'index',
+          width: 80,
+          align: 'center'
+        },
+        {
+          title: '标题',
+          key: 'title',
+          align: 'center'
+        },
+        {
+          title: '内容',
+          key: 'msgContent',
+          align: 'center'
+        },
+        {
+          title: '推送时间',
+          key: 'pushTime',
+          align: 'center'
+        },
+        {
+          title: '推送状态',
+          key: 'status',
+          align: 'center'
+        },
+        {
+          title: '操作人员',
+          key: 'lastUpdatorName',
+          align: 'center'
         },
         {
           title: '操作',
-          key: 'operation',
-          width: 140,
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h('Button', {
                 props: {
-                  type: 'warning',
+                  type: 'primary',
                   size: 'small'
                 },
                 style: {
@@ -86,86 +134,140 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.value = params.row.chargeman
-                    console.log(this.value)
-                    this.title = '修改'
-                    this.classifymodal = true
+                    console.log(params.row)
                   }
                 }
-              }, '修改'),
+              }, '查看'),
               h('Button', {
                 props: {
-                  type: 'success',
+                  type: 'primary',
                   size: 'small'
                 },
                 on: {
                   click: () => {
+                    console.log(params.row)
                   }
                 }
-              }, '删除')
+              }, '编辑')
             ])
           }
         }
       ],
-      columns: [],
-      tabs: [
-        { title: '商品分类管理' },
-        { title: '商品模板管理' }
+      pushMessageData: [  //  推送数据集合
+        {
+          title: '测试数据',
+          msgContent: '我只是测试一下',
+          pushTime: '2017/8/16  18:30',
+          status: '失败',
+          lastUpdatorName: '王五'
+        }
       ]
     }
   },
-  // created: {},
-  //   mounted: {},
-  activited: {},
-  update: {},
+  created() {
+    this.firstLoadDays()
+  },
+  activited: {
+  },
+  update: {
+  },
+  beforeRouteUpdate: {
+  },
   methods: {
-    changedata(index) {
-      if (index === 0) {
-        this.classify = true
-      } else if (index === 1) {
-        this.classify = false
+    //  加载每月中的天数集合
+    loadDays(month) {
+      this.date.month = month
+      this.firstLoadDays()
+    },
+    //  首次加载月份的天数
+    firstLoadDays() {
+      this.single.days.length = 0
+      let dayArr = new Date(this.single.year, this.single.month, 0).getDate()//  获取这个月的天数
+      for (let i = 1; i <= dayArr; i++) {
+        this.single.days.push(i)
       }
     },
-    test(value) {
-      alert(value)
+    //  tab切换
+    chooseTabs(index) {
+
     },
-    showModal() {
-      this.value = ''
-      this.title = '增加'
-      this.classifymodal = true
+    // 获取商户端系统消息列表
+    getSysMessage(pageNo, pageSize, pushStatus) {
+      let params = {
+        pageNo: pageNo,
+        pageSize: pageSize,
+        pushStatus: pushStatus // 消息推送状态
+      }
+      api.getSysMessage(params).then(response => {
+        this.pushMessageData = response.records
+        this.total = response.total
+        this.pageSize = response.size
+      })
+    },
+    // 新增商户端系统消息
+    addSysMessage(title, pushType, msgContent, pushTime) {
+      let params = {
+        title: title,  // 消息标题
+        pushType: pushType, // 推送消息类型
+        msgContent: msgContent, // 推送消息内容
+        pushTime: pushTime
+      }
+      api.addSysMessage(params).then(response => {
+      })
+    },
+    // 查看商户端系统消息
+    seeSysMessage(id) {
+      api.seeSysMessage(id).then(response => {
+      })
+    },
+    // 编辑商户端系统消息
+    modifySysMessage(id, title, pushType, msgContent, pushTime) {
+      let params = {
+        title: title,  // 消息标题
+        pushType: pushType, // 推送消息类型
+        msgContent: msgContent, // 推送消息内容
+        pushTime: pushTime
+      }
+      api.modifySysMessage(params, id).then(response => {
+      })
     }
   },
-  filfter: {},
-  computed: {},
-  watch: {}
+  filter: {
+  },
+  computed: {
+  },
+  watch: {
+  }
 }
 </script>
 <style lang="css" scoped>
-.seller-template-manager-search span {
-  font-size: 16px;
-  vertical-align: middle;
-}
-
-.seller-template-manager-container-classify {
+textarea {
+  clear: both;
   width: 100%;
-  padding: 40px;
-  background-color: #eee;
+  min-height: 100px;
+  margin: 20px auto;
+  border: 1px solid #dddee1;
+  resize: none;
 }
 
-.seller-template-manager-container-classify ul,
-.seller-template-manager-container-classify Button {
-  /* float: left;
-  margin-right: 20px; */
-  margin-bottom: 10px;
+textarea:focus {
+  border-color: #57a3f3;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(45, 140, 240, .2);
 }
 
-.seller-template-manager-container-classify li {
-  position: relative;
-  width: 120px;
-  height: 30px;
-  line-height: 30px;
-  margin-top: -1px;
-  border: 1px solid #555;
-  text-align: center
+.btn-ok {
+  margin: 10px auto 40px;
+  text-align: center;
+}
+
+.btn-ok button {
+  width: 100px;
+  height: 40px;
+}
+
+.page-style {
+  margin: 20px auto;
+  float: right;
 }
 </style>
