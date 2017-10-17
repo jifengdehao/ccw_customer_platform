@@ -7,7 +7,7 @@
 
 <template>
   <div>
-    <Table border :columns="columns1" :data="data1"></Table>
+    <Table :columns="columns1" :data="data1"></Table>
   </div>
 </template>
 <script>
@@ -52,25 +52,12 @@ export default {
                 props: {
                   type: 'primary'
                 },
-                style: {
-                  marginRight: '5px'
-                },
                 on: {
                   click: () => {
                     this.$router.push('/activity/pendingDetali?detail=' + params.row._index)
                   }
                 }
-              }, '查看'),
-              h('Button', {
-                props: {
-                  type: 'error'
-                },
-                on: {
-                  click: () => {
-                    this.$router.push('/activity/pendingDetali?detail=' + params.row._index)
-                  }
-                }
-              }, '编辑')
+              }, '查看编辑')
             ])
           }
         }
