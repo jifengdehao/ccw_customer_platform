@@ -8,13 +8,13 @@
 <template>
   <div>
     <div class="add-image">
-      <Button class="add-button" @click="addImage">新增</Button>
+      <Button class="add-button" @click="addImage" type="primary" size="small">新增</Button>
     </div>
     <div>
       <Table border ref="currentRowTable" :columns="columns3" :data="data1"></Table>
     </div>
     <div class="save-change">
-      <Button @click="getSaveChanges">保存修改</Button>
+      <Button @click="getSaveChanges" type="primary" size="small">保存修改</Button>
     </div>
   </div>
 </template>
@@ -41,15 +41,18 @@ export default {
         {
           title: '图片',
           align: 'center',
-          key: 'picture',
+          key: 'pictureUrl',
           render: (h, params) => {
+            console.log(params.row.pictureUrl)
             return h('div', [
-              h('img', {
-                props: {
-                  src: params.row.picture
+              h('Img', {
+                attrs: {
+                  src: params.row.pictureUrl
                 },
                 style: {
-                  height: '190px'
+                  width: '100%',
+                  height: '180px',
+                  padding: '10px'
                 }
               })
             ])
@@ -96,14 +99,25 @@ export default {
             return h('div', [
               h('DatePicker', {
                 props: {
-                  format: 'yyyy-MM-dd HH:mm',
                   placement: 'left',
                   placeholder: '选择日期和时间（不含秒）',
-                  type: 'datetimerange'
+                  type: 'datetime'
                 },
                 style: {
                   zIndex: '40',
-                  width: '300px'
+                  width: '200px'
+                }
+              }),
+              h('DatePicker', {
+                props: {
+                  placement: 'left',
+                  placeholder: '选择日期和时间（不含秒）',
+                  type: 'datetime'
+                },
+                style: {
+                  zIndex: '40',
+                  width: '200px',
+                  marginTop: '7px'
                 }
               })
             ])
@@ -140,25 +154,25 @@ export default {
       data1: [
         {
           position: '1',
-          picture: 'common/img/loginbg.jpg',
+          pictureUrl: './common/img/loginbg.jpg',
           link: 'https://www.baidu.com',
           time: ''
         },
         {
           position: '2',
-          picture: '',
+          pictureUrl: '',
           link: 'https://www.baidu.com',
           time: ''
         },
         {
           position: '3',
-          picture: '',
+          pictureUrl: '',
           link: 'https://www.baidu.com',
           time: ''
         },
         {
           position: '4',
-          picture: '',
+          pictureUrl: '',
           link: 'https://www.baidu.com',
           time: ''
         }

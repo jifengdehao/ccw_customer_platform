@@ -16,6 +16,8 @@ import addCoupons from 'page/activity/addCoupons'
 import pendingOpreation from 'page/activity/pendingOpreation'
 import Data from 'page/data/data'
 import Distribution from 'page/distribution/distribution'
+// 查看分销用户页面
+import viewDistributionUser from 'page/distribution/viewDistributionUser'
 import Users from 'page/users/users'
 import Seller from 'page/seller/seller'
 import OrderFeedback from 'page/order/feedback'
@@ -146,7 +148,8 @@ export default new Router({
           redirect: '/distribution/distribution_people_data',
           children: [
             { path: 'distribution_people_data', component: DistributionPeopleData },
-            { path: 'distribution_people_manage', component: DistributionPeopleManage }
+            { path: 'distribution_people_manage', component: DistributionPeopleManage },
+            { path: 'distributionUserInfo', component: viewDistributionUser }
           ]
         },
         {

@@ -66,20 +66,20 @@
                 <th>发放数量</th>
                 <th style="width: 14%;">操作</th>
               </tr>
-              <tr>
-                <td>1</td>
+              <tr v-for="(item, index) in couponsMessages">
+                <td>{{ index + 1 }}</td>
                 <td>
-                  订单满<input type="text" v-model="setCondition">元使用
+                  订单满<input type="text" v-model="item.setCondition">元使用
                 </td>
                 <td>
-                  折扣<input type="text" v-model="setDiscount">%
+                  折扣<input type="text" v-model="item.setDiscount"> %
                 </td>
                 <td>
-                  <input type="text" v-model="numCoupons">
+                  <input type="text" v-model="item.setDiscount">
                 </td>
                 <td style="cursor: pointer;">
-                  <span @click="onAddCoupons">添加</span>
-                  <span>删除</span>
+                  <span @click="onAddCoupons" v-if="(index === couponsMessages.length -1)">添加</span>
+                  <span @click="removeCoupons">删除</span>
                 </td>
               </tr>
             </tbody>
@@ -98,10 +98,15 @@ export default {
       animal: '仅使用一张', // 每单使用用户选择
       fruit: ['新用户可领'], // 领券设置
       couponsType: '', // 获取优惠券类型
-      userNumber: '', // 用户领券数
-      setCondition: '2323', // 订单满参数
-      setDiscount: '11', // 折扣参数
-      numCoupons: '11111', // 发送优惠券数量
+      userNumber: '', // 用户领券数,
+      flag: false, // 新增判断
+      couponsMessages: [
+        {
+          setCondition: '11', // 订单满参数
+          setDiscount: '223', // 折扣参数
+          numCoupons: '334' // 发送优惠券数量
+        }
+      ],
       cityList: [ // 优惠券类型数据
         {
           value: 'discount',
@@ -121,6 +126,18 @@ export default {
     },
     // 新增折扣管理
     onAddCoupons() {
+      this.couponsMessages.push({
+        setCondition: '', // 订单满参数
+        setDiscount: '', // 折扣参数
+        numCoupons: '' // 发送优惠券数量
+      })
+    },
+    // 删除折扣管理
+    removeCoupons() {
+      if (this.couponsMessages.length === 1) {
+        return false
+      }
+      this.couponsMessages.splice(1, 1)
     },
     // 保存
     onSaveCoupons() { }
@@ -157,8 +174,21 @@ export default {
 }
 
 .buL {
-  margin-left: 0 !important; 
+  margin-left: 0 !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

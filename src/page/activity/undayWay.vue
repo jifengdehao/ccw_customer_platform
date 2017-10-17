@@ -7,9 +7,6 @@
 
 <template>
   <div>
-    <div class="getAdd">
-      <Button @click="addCoupons">添加</Button>
-    </div>
     <div>
       <Table stripe :columns="columns1" :data="data1"></Table>
     </div>
@@ -103,28 +100,12 @@ export default {
       ]
     }
   },
-  methods: {
-    // 添加优惠券 进入路由
-    addCoupons() {
-      this.$router.push('/activity/addCoupons')
-    }
-  }
+  methods: {}
 }
 </script>
 <style lang="css" scoped>
 .page {
   float: right;
   margin-top: 20px;
-}
-
-.getAdd {
-  text-align: right;
-  margin-bottom: 20px;
-}
-
-.getAdd Button {
-  background-color: #2d8cf0;
-  border-color: #2d8cf0;
-  color: #fff;
 }
 </style>
