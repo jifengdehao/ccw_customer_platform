@@ -16,6 +16,7 @@
     <TabPane label="已结束" name="complete">
       <complete></complete>
     </TabPane>
+    <Button type="primary" @click="addCoupons" size="small" slot="extra">添加</Button>
   </Tabs>
 </template>
 <script type="text/ecmascript-6">
@@ -32,6 +33,12 @@ export default {
     undayWay,
     pendingEffect,
     complete
+  },
+  methods: {
+    // 添加优惠券 进入路由
+    addCoupons() {
+      this.$router.push('/activity/addCoupons')
+    }
   }
 }
 </script>

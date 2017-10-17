@@ -1,3 +1,9 @@
+/**
+ * 2017/10/16
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com
+ * 功能模块: api模块的封装
+ */
 import * as ax from './instrance'
 
 // 用户登录

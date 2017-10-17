@@ -7,7 +7,7 @@
 
 <template>
   <div>
-    <Input v-model="single.title" placeholder="输入标题" style="width: 200px;float:left;margin-right:200px;"></Input>
+    <Input v-model="single.title" :placeholder="'请输入'+tipsMsg + '标题'" style="width: 200px;float:left;margin-right:200px;"></Input>
     <div style="line-height:1.5;float:right">
       <label>推送时间设置</label>
       <Select v-model="pushStyle" style="width:150px;margin-left:10px;">
@@ -47,7 +47,23 @@
       </Select>
       <span>分</span>
     </div>
-    <textarea placeholder="输入您要推送的系统消息的内容"></textarea>
+    <textarea v-if="routerName !== 'daily_menu_push'" :placeholder="'请输入'+tipsMsg + '推送内容'"></textarea>
+    <!-- 每日菜谱 -->
+    <div class="cookbook" v-else>
+      <h3>食材：</h3>
+      <textarea placeholder="请输入你要推送菜谱的食材"></textarea>
+      <h3>烹饪方法：</h3>
+      <textarea placeholder="请输入你要推送菜谱的烹饪方法"></textarea>
+      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" disabled><input type="button" value="上传图片"><input type="file" filetype="image/*"></p>
+    </div>
+    <!-- 每日菜谱 -->
+
+    <!-- 活动消息 -->
+    <div class="cookbook" v-if="routerName === 'activity_message_push'">
+      <p><input type="text" class="activity-link" placeholder="设置活动链接"></p>
+      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" disabled><input type="button" value="上传图片"><input type="file" filetype="image/*"></p>
+    </div>
+    <!-- 活动消息 -->
     <div class="btn-ok">
       <Button type="primary">确定</Button>
     </div>
@@ -84,6 +100,8 @@ export default {
         second: 1, //  分
         days: [1]  //  每个与多少天
       },
+      tipsMsg: '系统', //  设置标题和placeholder值
+      routerName: '',  //  路由名
       pushMessageTitle: [ //  推送table表头
         {
           title: '序号',
@@ -164,6 +182,9 @@ export default {
   created() {
     this.firstLoadDays()
   },
+  mounted() {
+    this.checkRouteName()
+  },
   activited: {
   },
   update: {
@@ -171,9 +192,29 @@ export default {
   beforeRouteUpdate: {
   },
   methods: {
+    //  校验路由地址
+    checkRouteName() {
+      let routerName = this.$route.path
+      if (!routerName.startsWith('/custom/')) return
+      this.routerName = routerName.split('/custom/')[1] //  获取当前路由地址
+      switch (this.routerName) {
+        case 'system_message_push':
+          this.tipsMsg = '系统消息'
+          break
+        case 'activity_message_push':
+          this.tipsMsg = '活动消息'
+          break
+        case 'daily_menu_push':
+          this.tipsMsg = '每日菜谱'
+          break
+        case 'app_notice_push':
+          this.tipsMsg = '应用通知'
+          break
+      }
+    },
     //  加载每月中的天数集合
     loadDays(month) {
-      this.date.month = month
+      this.single.month = month
       this.firstLoadDays()
     },
     //  首次加载月份的天数
@@ -194,6 +235,9 @@ export default {
   computed: {
   },
   watch: {
+    '$route'(to, from) {
+      this.checkRouteName()
+    }
   }
 }
 </script>
@@ -202,7 +246,8 @@ textarea {
   clear: both;
   width: 100%;
   min-height: 100px;
-  margin: 20px auto;
+  text-indent: 4px;
+  margin: 15px auto;
   border: 1px solid #dddee1;
   resize: none;
 }
@@ -226,5 +271,49 @@ textarea:focus {
 .page-style {
   margin: 20px auto;
   float: right;
+}
+
+.cookbook {
+  clear: both;
+  padding: 20px 0;
+}
+
+.cookbook h3 {
+  font-weight: normal;
+}
+
+.cookbook p {
+  position: relative;
+}
+
+.cookbook input {
+  height: 40px;
+  text-indent: 4px;
+}
+
+.cookbook input[type='text'] {
+  width: 200px;
+}
+
+.cookbook input.activity-link {
+  width: 320px;
+  margin-bottom: 20px;
+}
+
+.cookbook input[type='button'],
+.cookbook input[type='file'] {
+  width: 100px;
+  margin-left: 20px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  outline: none;
+}
+
+.cookbook input[type='file'] {
+  position: absolute;
+  top: 0;
+  left: 200px;
+  opacity: 0;
 }
 </style>

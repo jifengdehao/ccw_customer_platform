@@ -1,3 +1,9 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：业务组件-用户端管理侧栏菜单配置
+*/
 <template>
   <div id="custom">
     <side-bar :menu="menu" @route="route"></side-bar>

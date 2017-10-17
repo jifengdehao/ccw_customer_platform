@@ -8,7 +8,7 @@
 <template>
   <div>
     <div class="add-image">
-      <Button class="add-button" @click="addImage">新增</Button>
+      <Button class="add-button" @click="addImage" type="primary" size="small">新增</Button>
     </div>
     <div>
       <Table border ref="currentRowTable" :columns="columns3" :data="data1"></Table>

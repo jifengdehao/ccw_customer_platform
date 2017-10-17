@@ -1,3 +1,9 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：业务组件-订单管理
+*/
 <template>
   <div class="order-manage">
     <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
@@ -11,9 +17,9 @@
         <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
       </FormItem>
     </i-form>
-    <Tabs value="all_order" @on-click="selectTab" :animated="false">
-      <Tab-pane label="全部订单" name="all_order">
-        <i-table :columns="columns1" :data="data1" ref="all_order" stripe></i-table>
+    <Tabs value="0" @on-click="selectTab" :animated="false">
+      <Tab-pane label="全部订单" name="0">
+        <i-table :columns="columns" :data="data" stripe :loading="isShowTable"></i-table>
         <i-col span="24" class="mt20">
           <Page
             :total="tableTotal"
@@ -25,12 +31,12 @@
           ></Page>
         </i-col>
       </Tab-pane>
-      <Tab-pane label="待付款" name="pending_pay">待付款的内容</Tab-pane>
-      <Tab-pane label="待接单" name="waiting_list">待接单的内容</Tab-pane>
-      <Tab-pane label="待发货" name="shipment_pending">待发货的内容</Tab-pane>
-      <Tab-pane label="配送中" name="in_delivery">配送中的内容</Tab-pane>
-      <Tab-pane label="待评价" name="pending_evaluation">待评价的内容</Tab-pane>
-      <Tab-pane label="已完成" name="completed">已完成的内容</Tab-pane>
+      <Tab-pane label="待付款" name="1">待付款的内容</Tab-pane>
+      <Tab-pane label="待接单" name="2">待接单的内容</Tab-pane>
+      <Tab-pane label="待发货" name="3">待发货的内容</Tab-pane>
+      <Tab-pane label="配送中" name="4">配送中的内容</Tab-pane>
+      <Tab-pane label="待评价" name="5">待评价的内容</Tab-pane>
+      <Tab-pane label="已完成" name="6">已完成的内容</Tab-pane>
       <Button type="primary" class="vm-fr" @click="exportModal=true" slot="extra">导出</Button>
     </Tabs>
     <Modal v-model="exportModal" width="300">
@@ -52,10 +58,12 @@
   export default {
     data () {
       return {
-        curr: 1,
-        pageNum: 10,
-        exportModal: false,
+        curr: 1, // 当前页
+        pageNum: 10, // 当前页的显示的数据数量
+        tableTotal: 0, // 当前页的数据总数
+        status: 0, // 状态
         modal_loading: false,
+        isShowTable: true,
         formInline: {
           phone: '',
           orderNumber: ''
@@ -66,7 +74,7 @@
           ],
           orderNumber: []
         },
-        columns1: [
+        columns: [
           {
             type: 'expand',
             width: 50,
@@ -121,7 +129,7 @@
                   on: {
                     click: () => {
                       console.log(orderNumber)
-                      this.$router.push('/order/orderInfo?orderNumber=' + orderNumber)
+                      this.$router.push('/order/orderInfo?orderNumber=' + orderNumber + '&options=1')
                     }
                   }
                 }, '查看'),
@@ -133,6 +141,7 @@
                   on: {
                     click: () => {
                       console.log(orderNumber)
+                      this.$router.push('/order/orderInfo?orderNumber=' + orderNumber + '&options=2')
                     }
                   }
                 }, '编辑')
@@ -140,137 +149,11 @@
             }
           }
         ],
-        data1: [
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待付款',
-            transactionNumber: 912912291,
-            sellerId: 372382382,
-            goodPrice: '¥59.2'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '已完成'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待发货'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待接单'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '配送中'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          },
-          {
-            orderNumber: 10086,
-            consigneeTel: 13317769149,
-            consignee: '王小明',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待评价'
-          }
-        ]
+        data: [],
+        exportModal: false
       }
     },
-    computed: {
-      tableTotal () {
-        return this.data1.length
-      }
-    },
+    computed: {},
     created () {
       this._getOrderData()
     },
@@ -288,17 +171,10 @@
       // 选择tab
       selectTab (name) {
         console.log(name)
+        this.status = name
       },
       // 导出数据
-      exportData () {
-        this.modal_loading = true
-        setTimeout(() => {
-          this.$refs.all_order.exportCsv({
-            filename: '全部订单'
-          })
-          this.modal_loading = false
-        }, 2000)
-      },
+      exportData () {},
       // 分页
       changePage (index) {
         console.log(index)
@@ -306,10 +182,15 @@
       _getOrderData () {
         let params = {
           pageSize: this.pageNum,
-          pageNo: this.curr
+          pageNo: this.curr,
+          status: this.status
         }
         api.getOrderList(params).then((data) => {
           console.log(data)
+          if (data) {
+            this.isShowTable = false
+            this.tableTotal = data.total
+          }
         })
       }
     },
