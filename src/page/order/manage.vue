@@ -19,7 +19,7 @@
     </i-form>
     <Tabs value="0" @on-click="selectTab" :animated="false">
       <Tab-pane label="全部订单" name="0">
-        <i-table :columns="columns" :data="data" stripe :loading="isShowTable"></i-table>
+        <i-table :columns="columns" :data="data" stripe></i-table>
         <i-col span="24" class="mt20">
           <Page
             :total="tableTotal"
@@ -31,12 +31,84 @@
           ></Page>
         </i-col>
       </Tab-pane>
-      <Tab-pane label="待付款" name="1">待付款的内容</Tab-pane>
-      <Tab-pane label="待接单" name="2">待接单的内容</Tab-pane>
-      <Tab-pane label="待发货" name="3">待发货的内容</Tab-pane>
-      <Tab-pane label="配送中" name="4">配送中的内容</Tab-pane>
-      <Tab-pane label="待评价" name="5">待评价的内容</Tab-pane>
-      <Tab-pane label="已完成" name="6">已完成的内容</Tab-pane>
+      <Tab-pane label="待付款" name="1">
+        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-col span="24" class="mt20">
+          <Page
+            :total="tableTotal"
+            :current="curr"
+            :page-size="pageNum"
+            @on-change="changePage"
+            show-total
+            class="vm-fr"
+          ></Page>
+        </i-col>
+      </Tab-pane>
+      <Tab-pane label="待接单" name="2">
+        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-col span="24" class="mt20">
+          <Page
+            :total="tableTotal"
+            :current="curr"
+            :page-size="pageNum"
+            @on-change="changePage"
+            show-total
+            class="vm-fr"
+          ></Page>
+        </i-col>
+      </Tab-pane>
+      <Tab-pane label="待发货" name="3">
+        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-col span="24" class="mt20">
+          <Page
+            :total="tableTotal"
+            :current="curr"
+            :page-size="pageNum"
+            @on-change="changePage"
+            show-total
+            class="vm-fr"
+          ></Page>
+        </i-col>
+      </Tab-pane>
+      <Tab-pane label="配送中" name="4">
+        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-col span="24" class="mt20">
+          <Page
+            :total="tableTotal"
+            :current="curr"
+            :page-size="pageNum"
+            @on-change="changePage"
+            show-total
+            class="vm-fr"
+          ></Page>
+        </i-col>
+      </Tab-pane>
+      <Tab-pane label="待评价" name="5">
+        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-col span="24" class="mt20">
+          <Page
+            :total="tableTotal"
+            :current="curr"
+            :page-size="pageNum"
+            @on-change="changePage"
+            show-total
+            class="vm-fr"
+          ></Page>
+        </i-col>
+      </Tab-pane>
+      <Tab-pane label="已完成" name="6">
+        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-col span="24" class="mt20">
+          <Page
+            :total="tableTotal"
+            :current="curr"
+            :page-size="pageNum"
+            @on-change="changePage"
+            show-total
+            class="vm-fr"
+          ></Page>
+        </i-col>
+      </Tab-pane>
       <Button type="primary" class="vm-fr" @click="exportModal=true" slot="extra">导出</Button>
     </Tabs>
     <Modal v-model="exportModal" width="300">
@@ -63,7 +135,6 @@
         tableTotal: 0, // 当前页的数据总数
         status: 0, // 状态
         modal_loading: false,
-        isShowTable: true,
         formInline: {
           phone: '',
           orderNumber: ''
@@ -88,27 +159,27 @@
           },
           {
             title: '订单编号',
-            key: 'orderNumber',
+            key: 'orderId',
             align: 'center'
           },
           {
             title: '收货人手机',
-            key: 'consigneeTel',
+            key: 'contactNumber',
             align: 'center'
           },
           {
             title: '收货人',
-            key: 'consignee',
+            key: 'receiver',
             align: 'center'
           },
           {
             title: '下单时间',
-            key: 'orderTime',
+            key: 'submitTime',
             align: 'center'
           },
           {
             title: '订单状态',
-            key: 'orderStatus',
+            key: 'status',
             align: 'center'
           },
           {
@@ -116,7 +187,7 @@
             key: 'options',
             align: 'center',
             render: (h, params) => {
-              let orderNumber = params.row.orderNumber
+              let orderId = params.row.orderId
               return h('div', [
                 h('Button', {
                   props: {
@@ -128,8 +199,8 @@
                   },
                   on: {
                     click: () => {
-                      console.log(orderNumber)
-                      this.$router.push('/order/orderInfo?orderNumber=' + orderNumber + '&options=1')
+                      console.log(orderId)
+                      this.$router.push('/order/orderInfo/' + orderId)
                     }
                   }
                 }, '查看'),
@@ -140,8 +211,8 @@
                   },
                   on: {
                     click: () => {
-                      console.log(orderNumber)
-                      this.$router.push('/order/orderInfo?orderNumber=' + orderNumber + '&options=2')
+                      console.log(orderId)
+                      this.$router.push('/order/orderInfo/' + orderId)
                     }
                   }
                 }, '编辑')
@@ -172,12 +243,15 @@
       selectTab (name) {
         console.log(name)
         this.status = name
+        this._getOrderData()
       },
       // 导出数据
       exportData () {},
       // 分页
       changePage (index) {
         console.log(index)
+        this.curr = index
+        this._getOrderData()
       },
       _getOrderData () {
         let params = {
@@ -188,8 +262,8 @@
         api.getOrderList(params).then((data) => {
           console.log(data)
           if (data) {
-            this.isShowTable = false
             this.tableTotal = data.total
+            this.data = data.records
           }
         })
       }

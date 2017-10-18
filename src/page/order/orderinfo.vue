@@ -41,6 +41,9 @@
   export default {
     data () {
       return {
+        orderId: (() => {
+          return this.$route.params
+        })(),
         columns1: [
           {
             title: '订单编号',
@@ -299,11 +302,6 @@
             isRefund: false
           }
         ]
-      }
-    },
-    computed: {
-      orderId () {
-        return this.$route.query.orderNumber
       }
     },
     created () {
