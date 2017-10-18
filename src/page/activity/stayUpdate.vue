@@ -8,7 +8,7 @@
 <template>
   <div>
     <div class="add-image">
-      <Button class="add-button" @click="addImage" type="primary" size="small">新增</Button>
+      <!-- <Button class="add-button" @click="addImage" type="primary" size="small">新增</Button> -->
     </div>
     <div>
       <Table border ref="currentRowTable" :columns="columns3" :data="data1"></Table>
@@ -25,17 +25,24 @@ export default {
     return {
       columns3: [
         {
-          title: '图片位置',
-          key: 'position',
-          type: 'index',
-          align: 'center',
-          width: '110',
-          height: '168'
-        },
-        {
           title: '图片',
           align: 'center',
-          key: 'picture'
+          key: 'pictureUrl',
+          render: (h, params) => {
+            return h('div', [
+              h('Img', {
+                // attrs: {
+                //   src: params.row.pictureUrl
+                // },
+                style: {
+                  width: '100%',
+                  height: '180px',
+                  padding: '10px',
+                  backgroundImage: params.row.pictureUrl
+                }
+              })
+            ])
+          }
         },
         {
           title: '图片管理',
@@ -53,17 +60,34 @@ export default {
           }
         },
         {
-          title: '链接',
+          title: '跳转链接',
           align: 'center',
           key: 'link',
           render: (h, params) => {
             return h('div', [
-              h('a', {
+              h('Input', {
                 props: {
-                  type: 'primary',
-                  size: 'small'
+                  value: params.row.link
+                },
+                style: {
+                  height: '90px !important',
+                  lineHeight: '90px'
                 }
-              }, params.row.link)
+              })
+            ])
+          }
+        },
+        {
+          title: '上传说明',
+          key: 'upload',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('Input', {
+                props: {
+                  value: params.row.upload
+                }
+              })
             ])
           }
         },
@@ -75,14 +99,25 @@ export default {
             return h('div', [
               h('DatePicker', {
                 props: {
-                  format: 'yyyy-MM-dd HH:mm',
                   placement: 'left',
                   placeholder: '选择日期和时间（不含秒）',
-                  type: 'datetimerange'
+                  type: 'datetime'
                 },
                 style: {
                   zIndex: '40',
-                  width: '300px'
+                  width: '200px'
+                }
+              }),
+              h('DatePicker', {
+                props: {
+                  placement: 'left',
+                  placeholder: '选择日期和时间（不含秒）',
+                  type: 'datetime'
+                },
+                style: {
+                  zIndex: '40',
+                  width: '200px',
+                  marginTop: '7px'
                 }
               })
             ])
@@ -108,7 +143,7 @@ export default {
                       return false
                     }
                     // 删除表单
-                    console.log(this.$refs.currentRowTable.data.splice(dataLength - 1, 1), dataLength)
+                    this.$refs.currentRowTable.data.splice(dataLength - 1, 1)
                   }
                 }
               }, '删除')
@@ -118,22 +153,22 @@ export default {
       ],
       data1: [
         {
-          picture: 'common/img/loginbg.jpg',
+          pictureUrl: './common/img/loginbg.jpg',
           link: 'https://www.baidu.com',
           time: ''
         },
         {
-          picture: '',
+          pictureUrl: '',
           link: 'https://www.baidu.com',
           time: ''
         },
         {
-          picture: '',
+          pictureUrl: '',
           link: 'https://www.baidu.com',
           time: ''
         },
         {
-          picture: '',
+          pictureUrl: '',
           link: 'https://www.baidu.com',
           time: ''
         }

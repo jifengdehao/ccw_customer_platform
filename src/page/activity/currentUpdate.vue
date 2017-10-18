@@ -8,7 +8,7 @@
 <template>
   <div>
     <div class="add-image">
-      <Button class="add-button" @click="addImage" type="primary" size="small">新增</Button>
+      <!-- <Button class="add-button" @click="addImage" type="primary" size="small">新增</Button> -->
     </div>
     <div>
       <Table border ref="currentRowTable" :columns="columns3" :data="data1"></Table>
@@ -22,37 +22,23 @@
 export default {
   data() {
     return {
+      bannerState: '结束',
       columns3: [
-        {
-          title: '图片位置',
-          key: 'position',
-          align: 'center',
-          width: '110',
-          render: (h, params) => {
-            return h('div', [
-              h('Input', {
-                props: {
-                  value: params.row.position
-                }
-              })
-            ])
-          }
-        },
         {
           title: '图片',
           align: 'center',
           key: 'pictureUrl',
           render: (h, params) => {
-            console.log(params.row.pictureUrl)
             return h('div', [
               h('Img', {
-                attrs: {
-                  src: params.row.pictureUrl
-                },
+                // attrs: {
+                //   src: params.row.pictureUrl
+                // },
                 style: {
                   width: '100%',
                   height: '180px',
-                  padding: '10px'
+                  padding: '10px',
+                  backgroundImage: params.row.pictureUrl
                 }
               })
             ])
@@ -74,7 +60,7 @@ export default {
           }
         },
         {
-          title: '链接',
+          title: '跳转链接',
           align: 'center',
           key: 'link',
           render: (h, params) => {
@@ -86,6 +72,20 @@ export default {
                 style: {
                   height: '90px !important',
                   lineHeight: '90px'
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '上传说明',
+          key: 'upload',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('Input', {
+                props: {
+                  value: params.row.upload
                 }
               })
             ])
@@ -137,41 +137,37 @@ export default {
                 },
                 on: {
                   click: () => {
-                    // 获取表单长度
-                    const dataLength = this.$refs.currentRowTable.data.length
-                    if (dataLength === 1) {    // 表单不能全部删除
-                      return false
-                    }
-                    // 删除表单
-                    this.$refs.currentRowTable.data.splice(dataLength - 1, 1)
+                    // // 获取表单长度
+                    // const dataLength = this.$refs.currentRowTable.data.length
+                    // if (dataLength === 1) {    // 表单不能全部删除
+                    //   return false
+                    // }
+                    // // 删除表单
+                    // this.$refs.currentRowTable.data.splice(dataLength - 1, 1)
                   }
                 }
-              }, '删除')
+              }, this.bannerState)
             ])
           }
         }
       ],
       data1: [
         {
-          position: '1',
           pictureUrl: './common/img/loginbg.jpg',
           link: 'https://www.baidu.com',
           time: ''
         },
         {
-          position: '2',
           pictureUrl: '',
           link: 'https://www.baidu.com',
           time: ''
         },
         {
-          position: '3',
           pictureUrl: '',
           link: 'https://www.baidu.com',
           time: ''
         },
         {
-          position: '4',
           pictureUrl: '',
           link: 'https://www.baidu.com',
           time: ''
@@ -181,13 +177,13 @@ export default {
   },
   methods: {
     // 新增对象
-    addImage() {
-      this.$refs.currentRowTable.data.push({
-        picture: '',
-        link: '',
-        time: ''
-      })
-    },
+    // addImage() {
+    //   this.$refs.currentRowTable.data.push({
+    //     picture: '',
+    //     link: '',
+    //     time: ''
+    //   })
+    // },
     // 保存修改
     getSaveChanges() {
       // if (this.$refs.currentRowTable.data) {
