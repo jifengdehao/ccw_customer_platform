@@ -2,7 +2,7 @@
  * @Author: huShangJun 
  * @Date: 2017-10-12 17:33:51 
  * DeveloperMailbox:   hsjcc@ccw163.com 
- * FunctionPoint: 功能开发点 
+ * FunctionPoint: BD及邀请码管理 
  */
 <template>
   <div class="bd-manager">
@@ -33,7 +33,7 @@
     </section>
     <!-- 分页 -->
     <section class="bd-manager-page">
-      <Page :total="100" show-total></Page>
+      <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 修改BD -->
     <Modal v-model="BDmodal" :title="modelTitle" width="600">
@@ -41,11 +41,14 @@
   </div>
 </template>
 <script>
+import * as api from 'api/common.js'
 export default {
   components: {},
   props: {},
   data() {
     return {
+      total: 1,
+      pageSize: 1,
       formItem: {},
       charge: [],
       BDmodal: false,
@@ -53,15 +56,15 @@ export default {
       columns: [
         {
           title: 'BD姓名',
-          key: 'mobileno'
+          key: 'name'
         },
         {
           title: '邀请码',
-          key: 'marketName'
+          key: 'invitCode'
         },
         {
           title: '负责市场',
-          key: 'businessType'
+          key: 'market'
         },
         {
           title: '操作',
@@ -80,7 +83,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.BDmodel = true
+                    this.BDmodal = true
                   }
                 }
               }, '修改'),
@@ -91,6 +94,7 @@ export default {
                 },
                 on: {
                   click: () => {
+                    this.modelTitle = '修改BD'
                     this.remove(params.index)
                   }
                 }
@@ -99,7 +103,9 @@ export default {
           }
         }
       ],
-      BDdata: []
+      BDdata: [
+        { name: '小二' }
+      ]
     }
   },
   // created: {},
@@ -107,6 +113,48 @@ export default {
   activited: {},
   update: {},
   methods: {
+    // 获取BD用户列表
+    getBDlist(pageStartIndex, pageSize, market, name) {
+      let params = {
+        pageStartIndex: pageStartIndex,
+        pageSize: pageSize,
+        market: market,
+        name: name
+      }
+      api.getBDlist(params).then(response => {
+        this.BDdata = response.records
+        this.total = response.total
+        this.pageSize = response.size
+      })
+    },
+    // 添加BD
+    addPlatformBD(name, mobileno, invitCode, market) {
+      let params = {
+        name: name,
+        mobileno: mobileno,
+        invitCode: invitCode,
+        marketId: market
+      }
+      api.addPlatformBD(params).then(response => {
+      })
+    },
+    // 删除BD
+    delPlatformBD(id) {
+      api.addPlatformBD(id).then(response => {
+      })
+    },
+    // 修改BD
+    modifyBD(id, name, mobileno, invitCode, market) {
+      let params = {
+        name: name,
+        mobileno: mobileno,
+        invitCode: invitCode,
+        marketId: market
+      }
+      api.modifyBD(params, id).then(response => {
+      })
+    },
+    changepage(index) { },
     remove(index) {
       this.BDdata.splice(index, 1)
     },

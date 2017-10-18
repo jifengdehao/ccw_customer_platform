@@ -36,18 +36,21 @@
     </section>
     <!-- 分页 -->
     <section class="seller-settled-manage-page">
-       <Page :total="100" show-total></Page>
+      <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 查看图片 -->
     <Modal v-model="modal" title="商家证件图片" width="726">
     </Modal>
   </div>
 </template>
-<script type="text/ecmascript-6">
+<script>
 import { auditdata, approvaldata } from './sellerdata/sellersettledmanage-data'
+import * as api from 'api/common.js'
 export default {
   data() {
     return {
+      total: 1,
+      pageSize: 1,
       modal: false,
       charge: [],
       formItem: {
@@ -146,6 +149,7 @@ export default {
                 },
                 on: {
                   click: () => {
+                    this.remove(params.index)
                   }
                 }
               }, '通过')
@@ -167,6 +171,33 @@ export default {
       } else if (index === 1) {
         this.auditdata = approvaldata
       }
+    },
+    changepage(index) { },
+    remove(index) {
+      this.auditdata.splice(index, 1)
+    },
+    // 获取商品图片审核列表
+    getSellerApplyList(pageNo, pageSize, applyStatus, chargeMan, applyStartTime, applyEndTime) {
+      let params = {
+        pageSize: pageSize,
+        applyStatus: applyStatus, // 申请的状态
+        chargeMan: chargeMan, // 负责人
+        applyStartTime: applyStartTime,
+        applyEndTime: applyEndTime
+      }
+      api.getSellerApplyList(params, pageNo).then(response => {
+        this.auditdata = response.records
+        this.total = response.total
+        this.pageSize = response.size
+      })
+    },
+    // 更新商户入驻信息审核状态
+    updateApplyStatus(id, appltStatus) {
+      let params = {
+        appltStatus: appltStatus // 商家入驻申请状态
+      }
+      api.updateApplyStatus(params, id).then(response => {
+      })
     }
   },
   computed: {},
@@ -174,8 +205,12 @@ export default {
 }
 </script>
 <style scoped>
-.seller-settled-manage-select .label{font-size: 16px;vertical-align: middle;}
-.seller-settled-manage-page{
+.seller-settled-manage-select .label {
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.seller-settled-manage-page {
   margin-top: 10px;
   text-align: right;
 }

@@ -1,3 +1,9 @@
+/**
+ * 2017/10/16
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com
+ * 功能模块: 登录登出状态管理
+ */
 import Vue from 'vue'
 
 export const USER_SIGNIN = 'USER_SIGNIN' // 登录成功

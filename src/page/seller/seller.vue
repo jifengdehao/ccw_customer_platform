@@ -1,3 +1,9 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：业务组件-商家端管理侧栏菜单配置
+*/
 <template>
   <div id="seller">
     <side-bar :menu="menu" @route="route"></side-bar>
@@ -49,13 +55,13 @@
           },
           {
             name: 'seller_message_push',
-            text: '商家消息推送',
+            text: '消息推送',
             icon: 'clock',
             noDropdown: true
           },
           {
             name: 'seller_message_remind',
-            text: '商家消息提醒',
+            text: '商户消息提醒',
             icon: 'chatbubble-working',
             noDropdown: true
           }

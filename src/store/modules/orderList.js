@@ -1,4 +1,9 @@
-// 示例
+/**
+ * 2017/10/16
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com
+ * 功能模块: 示例
+ */
 import Vue from 'vue'
 const state = {
   orderList: [],

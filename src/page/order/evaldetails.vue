@@ -1,3 +1,9 @@
+/**
+* 2017/10/16
+* author zhangwenlong
+* email zhangwenlong@ccw163.com
+* 功能：业务组件-评价详情
+*/
 <template>
   <div class="eval-details">
     <div class="close-eval" @click="closeEval">
