@@ -7,13 +7,13 @@
 
 <template>
   <Tabs value="current" :animated="false">
-    <TabPane label="当前" name="current">
+    <TabPane label="已开始" name="current">
       <current-update></current-update>
     </TabPane>
-    <TabPane label="待更新" name="stayUpdate">
+    <TabPane label="未开始" name="stayUpdate">
       <stay-update></stay-update>
     </TabPane>
-    <TabPane label="历史更新" name="historyUpdate">
+    <TabPane label="已结束" name="historyUpdate">
       <history-update></history-update>
     </TabPane>
   </Tabs>

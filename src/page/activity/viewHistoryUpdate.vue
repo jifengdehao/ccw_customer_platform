@@ -27,7 +27,7 @@ export default {
           key: 'picture'
         },
         {
-          title: '链接',
+          title: '跳转链接',
           align: 'center',
           key: 'link'
         },

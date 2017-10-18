@@ -40,11 +40,11 @@
     </section>
     <!-- 表格内容 -->
     <section class="seller-account-manager-table">
-      <Table border :columns="columns" :data="data"></Table>
+      <Table border :columns="columns" :data="sellerAccountData"></Table>
     </section>
     <!-- 分页 -->
     <section class="seller-account-manager-page">
-      <Page :total="100" show-total></Page>
+      <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 商家信息模态框 -->
     <Modal v-model="shopMessagemModal" title="商家信息" width="900" okText="保存">
@@ -96,7 +96,6 @@
             <span>店铺地址：</span>
             <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
             </br>
-
           </FormItem>
           </Col>
           <Col span="15">
@@ -135,15 +134,20 @@
   </div>
 </template>
 <script>
+import * as api from 'api/common.js'
 export default {
   components: {},
   props: {},
   data() {
     return {
+      total: 1,
+      pageSize: 1,
       formItem: {},
       shopMessagemModal: false,
       shopManageModal: false,
-      data: [],
+      sellerAccountData: [
+        { sellerId: 1 }
+      ],
       charge: [
         { value: '全部' },
         { value: '关档' },
@@ -157,7 +161,7 @@ export default {
         },
         {
           title: '商家账号',
-          key: 'shopNo'
+          key: 'sellerId'
         },
         {
           title: '商家手机',
@@ -209,11 +213,11 @@ export default {
         },
         {
           title: '账号状态',
-          key: 'bussinessStatus'
+          key: 'status'
         },
         {
           title: '备注说明',
-          key: 'age'
+          key: 'remark'
         }
       ]
     }
@@ -222,7 +226,36 @@ export default {
   // mounted: {},
   activited: {},
   update: {},
-  methods: {},
+  methods: {
+    // 获取商户账号列表
+    getSellerAccountList(pageNo, pageSize, shopName, mobileno, sellerId, status, settleStartdate, settleEnddate) {
+      let params = {
+        pageSize: pageSize,
+        shopName: shopName,
+        mobileno: mobileno,
+        sellerId: sellerId,
+        status: status,
+        settleStartdate: settleStartdate,
+        settleEnddate: settleEnddate
+      }
+      api.getSellerAccountList(params, pageNo).then(response => {
+        this.sellerAccountData = response.records
+        this.total = response.total
+        this.pageSize = response.size
+      })
+    },
+    // 更新商户状态
+    updataShopStatus(sellerId, status, remark) {
+      let params = {
+        sellerId: sellerId,
+        status: status,
+        remark: remark
+      }
+      api.updataShopStatus(params).then(response => {
+      })
+    },
+    changepage(index) { }
+  },
   filfter: {},
   computed: {},
   watch: {}
@@ -254,7 +287,8 @@ export default {
   background-color: #eee;
 }
 
-.shopMessagemModal-user span, .shopMessagemModal-shopinfo span{
+.shopMessagemModal-user span,
+.shopMessagemModal-shopinfo span {
   display: inline-block;
   width: 80px;
 }

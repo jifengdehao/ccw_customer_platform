@@ -33,7 +33,7 @@
     </section>
     <!-- 分页 -->
     <section class="seller-video-manager-page">
-      <Page :total="100" show-total></Page>
+      <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
   </div>
 </template>
@@ -204,6 +204,8 @@ export default {
   props: {},
   data() {
     return {
+      total: 1,
+      pageSize: 1,
       sellervideodata: [],
       formItem: {},
       tabs: [
@@ -215,12 +217,7 @@ export default {
     }
   },
   created() {
-    let params = {
-      pageSize: 10
-    }
-    api.getProductPic(params).then(response => {
-      this.sellervideodata = response.records
-    })
+    this.getProductPic(1, 5)
     this.columns = producttitle
   },
   // mounted: {},
@@ -235,6 +232,46 @@ export default {
       } else if (index === 2) {
         this.columns = avatar
       }
+    },
+    // 获取商品图片审核列表
+    getProductPic(pageNo, pageSize, updateStartTime, updateEndTime) {
+      let params = {
+        pageSize: pageSize,
+        updateStartTime: updateStartTime,
+        updateEndTime: updateEndTime
+      }
+      api.getProductPic(params, pageNo).then(response => {
+        this.sellervideodata = response.records
+        this.total = response.total
+        this.pageSize = response.size
+      })
+    },
+    // 获取档口图片和档口头像审核列表
+    getShopPic(pageNo, pageSize, picType, updateStartTime, updateEndTime) {
+      let params = {
+        pageSize: pageSize,
+        picType: picType, // 档口图片类型 (1 档口图片，2 档口头像）
+        updateStartTime: updateStartTime,
+        updateEndTime: updateEndTime
+      }
+      api.getShopPic(params, pageNo).then(response => {
+        this.sellervideodata = response.records
+        this.total = response.total
+        this.pageSize = response.size
+      })
+    },
+    // 更新商户状态
+    updataShopStatus(sellerId, status, remark) {
+      let params = {
+        sellerId: sellerId,
+        status: status,
+        remark: remark
+      }
+      api.updataShopStatus(params).then(response => {
+      })
+    },
+    changepage(index) {
+      this.getProductPic(index, 5)
     }
   },
   filfter: {},

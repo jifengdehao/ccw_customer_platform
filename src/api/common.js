@@ -139,10 +139,111 @@ export const exportOrderEval = (params) => {
  * 胡上军
  * start**/
 
-/**
- * 获取商品图片审核列表
- * @param params ={}
- */
-export const getProductPic = (params) => {
-  return ax.g('seller/pic/product/list/1', params)
+//  ******************** 商户入驻审核接口 *****************************
+// 获取商品图片审核列表
+export const getSellerApplyList = (params, pageNo) => {
+  return ax.g(`/seller/apply/list/${pageNo}`, params)
+}
+
+// 更新商户入驻信息审核状态
+export const updateApplyStatus = (params, id) => {
+  return ax.pa(`/seller/apply/${id}`, params)
+}
+//  ******************** 商户视屏图片审核 *****************************
+// 获取商品图片审核列表、
+export const getProductPic = (params, pageNo) => {
+  return ax.g(`seller/pic/product/list/${pageNo}`, params)
+}
+// 获取档口图片和档口头像审核列表
+export const getShopPic = (params, pageNo) => {
+  return ax.g(`seller/pic/shop/list/${pageNo}`, params)
+}
+
+//  ********************** 商户账号管理 *******************************
+// 获取商户账号列表
+export const getSellerAccountList = (params, pageNo) => {
+  return ax.g(`seller/list/${pageNo}`, params)
+}
+// 更新商户状态
+export const updataShopStatus = (params) => {
+  return ax.pa(`/seller/changeState`, params)
+}
+
+//  ********************* BD及邀请码管理 ******************************
+// 获取BD用户列表
+export const getBDlist = (params) => {
+  return ax.g(`platform/bd`, params)
+}
+// 添加BD
+export const addPlatformBD = (params) => {
+  return ax.p(`platform/bd`, params)
+}
+// 删除BD
+export const delPlatformBD = (id) => {
+  return ax.d(`platform/bd/${id}`)
+}
+// 修改BD
+export const modifyBD = (params, id) => {
+  return ax.u(`platform/bd/${id}`, params)
+}
+
+//  ********************* 商品模板库管理 ******************************
+// 获取一级分类列表
+export const getCategoryParentList = (params) => {
+  return ax.g(`product/category/parent`, params)
+}
+// 获取二级分类列表
+export const getCategoryChildList = (params) => {
+  return ax.g(`product/category/child`, params)
+}
+// 获取一级分类
+export const getCategoryParent = (params, id) => {
+  return ax.g(`product/category/parent/${id}`, params)
+}
+// 获取二级分类
+export const getCategoryChild = (params, id) => {
+  return ax.g(`product/category/child/${id}`, params)
+}
+// 增加一级分类
+export const addCategoryParent = (params) => {
+  return ax.p(`product/category/parent`, params)
+}
+// 增加二级分类
+export const addCategoryChild = (params) => {
+  return ax.p(`product/category/child`, params)
+}
+// 修改一级分类
+export const modifyCategoryParent = (params, id) => {
+  return ax.u(`product/category/parent/${id}`, params)
+}
+// 修改二级分类
+export const modifyCategoryChild = (params, id) => {
+  return ax.u(`product/category/child/${id}`, params)
+}
+
+//  ********************* 商户消息推送 ******************************
+// 获取商户端系统消息列表
+export const getSysMessage = (params) => {
+  return ax.g(`seller/message/sys`, params)
+}
+// 新增商户端系统消息
+export const addSysMessage = (params) => {
+  return ax.p(`seller/message/sys`, params)
+}
+// 查看商户端系统消息
+export const seeSysMessage = (id) => {
+  return ax.g(`seller/message/sys/${id}`)
+}
+// 编辑商户端系统消息
+export const modifySysMessage = (params, id) => {
+  return ax.u(`seller/message/sys/${id}`, params)
+}
+//  ********************* 商户消息提醒 ******************************
+// 获取消息提醒列表
+export const getAlertsMessageList = (params) => {
+  return ax.g(`seller/message/alerts`, params)
+}
+// 更新消息提醒状态
+export const updateAlertsMessage = (params, id) => {
+  return ax.p(`seller/message/alerts/${id}`, params)
 }
