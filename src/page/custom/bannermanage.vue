@@ -2,7 +2,7 @@
  * @Author: WuFengliang 
  * @Date: 2017-10-18 10:34:07 
  * DeveloperMailbox:   wufengliang@ccw163.com 
- * FunctionPoint: banner图管理 市场推送 
+ * FunctionPoint: banner图管理、市场推送 
  */
 <template>
   <div class="banner-manager">
