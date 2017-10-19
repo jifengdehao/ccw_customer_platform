@@ -7,10 +7,10 @@
 
 <template>
   <Tabs value="undayWay" :animated="false">
-    <TabPane label="进行中" name="undayWay">
+    <TabPane label="已开始" name="undayWay">
       <unday-way></unday-way>
     </TabPane>
-    <TabPane label="待生效" name="pendingEffect">
+    <TabPane label="未开始" name="pendingEffect">
       <pending-effect></pending-effect>
     </TabPane>
     <TabPane label="已结束" name="complete">

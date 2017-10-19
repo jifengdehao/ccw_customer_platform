@@ -26,10 +26,6 @@ export default {
           key: 'endTime'
         },
         {
-          title: '操作人员',
-          key: 'staff'
-        },
-        {
           title: '操作',
           key: 'operation',
           align: 'center',
@@ -54,26 +50,22 @@ export default {
         {
           uplode: '宣传平台、发放优惠券100张入口',
           time: '2017/10/11 9:30',
-          endTime: '2017/11/11 9:20',
-          staff: '管理A'
+          endTime: '2017/11/11 9:20'
         },
         {
           uplode: '宣传平台、发放优惠券100张入口',
           time: '2017/10/11 9:30',
-          endTime: '2017/11/12 9:20',
-          staff: '管理A'
+          endTime: '2017/11/12 9:20'
         },
         {
           uplode: '宣传平台、发放优惠券100张入口',
           time: '2017/10/11 9:30',
-          endTime: '2017/11/13 9:20',
-          staff: '管理A'
+          endTime: '2017/11/13 9:20'
         },
         {
           uplode: '宣传平台、发放优惠券100张入口',
           time: '2017/10/11 9:30',
-          endTime: '2017/11/14 9:20',
-          staff: '管理A'
+          endTime: '2017/11/14 9:20'
         }
       ]
     }
