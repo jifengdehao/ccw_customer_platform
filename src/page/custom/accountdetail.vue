@@ -2,7 +2,7 @@
  * @Author: WuFengliang 
  * @Date: 2017-10-12 20:38:20 
  * DeveloperMailbox:   wufengliang@ccw163.com 
- * FunctionPoint:  账户详情
+ * FunctionPoint:  账户详情 
  */
 
 <template>

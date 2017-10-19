@@ -2,7 +2,7 @@
  * @Author: WuFengliang 
  * @Date: 2017-10-19 14:17:28 
  * DeveloperMailbox:   wufengliang@ccw163.com 
- * FunctionPoint: 评价标签管理 
+ * FunctionPoint: 评价标签管理   
  */
 <template>
   <div class="evaluation-tag-manager">

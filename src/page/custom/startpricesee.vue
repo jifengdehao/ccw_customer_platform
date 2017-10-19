@@ -2,7 +2,7 @@
  * @Author: WuFengliang 
  * @Date: 2017-10-19 10:47:36 
  * DeveloperMailbox:   wufengliang@ccw163.com 
- * FunctionPoint: 运费查看 
+ * FunctionPoint: 运费查看
  */
 <template>
   <div class="start-price-see">
