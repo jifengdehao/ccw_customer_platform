@@ -165,7 +165,7 @@ const EvaluationTagManage = (resolve) => {
 }
 // 平台用户管理
 const UsersManage = (resolve) => {
-  import('page/custom/evaluationtagmanage').then((module) => {
+  import('page/users/usersmanage').then((module) => {
     resolve(module)
   })
 }
