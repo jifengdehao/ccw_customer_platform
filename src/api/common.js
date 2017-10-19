@@ -22,7 +22,7 @@ export const getUserList = (params) => {
 
 /**
  * 获取反馈列表
- * @param params =>{mobileno,pageSize,pageNo}
+ * @param params =>{mobileno,pageSize,pageNo,types}
  */
 export const getFeedBackList = (params) => {
   return ax.g('/order/feedback', params)
@@ -30,10 +30,10 @@ export const getFeedBackList = (params) => {
 
 /**
  * 获取反馈详情
- * @param params =>id
+ * @param params =>ptFeedbackId
  */
 export const getFeedBackInfo = (params) => {
-  return ax.g('/order/feedback', params)
+  return ax.g(`/order/feedback/${params}`)
 }
 
 /**

@@ -21,37 +21,54 @@
       </i-col>
       <i-col span="21">
         <ul>
-          <li>10086</li>
-          <li>张三</li>
-          <li>嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻</li>
-          <li>2017-10-07 13：54</li>
+          <li>{{feedbackDetails.creatorId}}</li>
+          <li>{{feedbackDetails.creatorName}}</li>
+          <li>{{feedbackDetails.content}}</li>
+          <li>{{feedbackDetails.createdDt}}</li>
         </ul>
       </i-col>
     </i-row>
-    <i-row>
-      <i-col span="8"><img src="../../common/img/logo.png" height="200" width="200"/></i-col>
-      <i-col span="8"><img src="../../common/img/logo.png" height="200" width="200"/></i-col>
-      <i-col span="8"><img src="../../common/img/logo.png" height="200" width="200"/></i-col>
-    </i-row>
+    <Row class="mt20" :gutter="16">
+      <Col span="8">
+      <img :src="feedbackDetails.picUrl1"/></Col>
+      <Col span="8">
+      <img :src="feedbackDetails.picUrl2"/></Col>
+      <Col span="8">
+      <img :src="feedbackDetails.picUrl3"/></Col>
+    </Row>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import * as api from 'api/common.js'
+
   export default {
-    mounted() {
-      this._getParams()
+    data () {
+      return {
+        ptFeedbackId: (() => {
+          return this.$route.params.id
+        })(),
+        feedbackDetails: {}
+      }
+    },
+    created () {
+      console.log(this.ptFeedbackId)
+      this._getFeedbackDetails()
     },
     methods: {
-      close() {
+      close () {
         this.$router.back()
       },
-      _getParams() {
-        console.log(this.$route.query)
+      _getFeedbackDetails () {
+        api.getFeedBackInfo(this.ptFeedbackId).then((data) => {
+          console.log(data)
+          this.feedbackDetails = data
+        })
       }
     }
   }
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus" rel="stylesheet/stylus" type="text/stylus">
   #order
     .feedback-details
       line-height 35px

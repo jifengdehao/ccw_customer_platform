@@ -16,22 +16,36 @@
     </i-form>
     <i-row>
       <i-col span="24">
-        <Tabs value="custom" :animated="false">
-          <Tab-pane label="用户端" name="custom">
-            <i-table :columns="columns1" :data="data1" ref="custom_table"></i-table>
+        <Tabs :value="this.types" :animated="false" @on-click="selectTab">
+          <Tab-pane label="用户端" name="0">
+            <i-table :columns="columns" :data="data"></i-table>
             <i-page :total="tableTotal"
                     :current="curr"
                     :page-size="pageNum"
                     @on-change="changePage"
                     show-total
-                    class="vm-fr" style="margin-top: 20px;">
+                    class="vm-fr mt20">
             </i-page>
           </Tab-pane>
-          <Tab-pane label="商户端" name="seller">
-
+          <Tab-pane label="商户端" name="1">
+            <i-table :columns="columns" :data="data"></i-table>
+            <i-page :total="tableTotal"
+                    :current="curr"
+                    :page-size="pageNum"
+                    @on-change="changePage"
+                    show-total
+                    class="vm-fr mt20">
+            </i-page>
           </Tab-pane>
-          <Tab-pane label="配送端" name="delivery">
-
+          <Tab-pane label="配送端" name="2">
+            <i-table :columns="columns" :data="data"></i-table>
+            <i-page :total="tableTotal"
+                    :current="curr"
+                    :page-size="pageNum"
+                    @on-change="changePage"
+                    show-total
+                    class="vm-fr mt20">
+            </i-page>
           </Tab-pane>
           <Button type="primary" class="vm-fr" @click="exportData()" slot="extra">导出</Button>
         </Tabs>
@@ -40,51 +54,63 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import * as api from 'api/common.js'
+
   export default {
-    data() {
+    data () {
       return {
-        curr: 1,
-        pageNum: 10,
+        curr: 1, // 当前页
+        pageNum: 10, // 当前页展示的数据量
+        tableTotal: 0, // 数据总数
+        types: 0, // 评价类型
         formInline: {
           name: ''
         },
         ruleInline: {
           name: [
-           // {required: true, message: '请填写手机号', trigger: 'blur'}
+            // {required: true, message: '请填写手机号', trigger: 'blur'}
           ]
         },
-        columns1: [
+        columns: [
           {
             title: '用户ID',
-            key: 'custom_id',
+            key: 'creatorId',
             align: 'center'
           },
           {
             title: '用户名',
-            key: 'custom_name',
+            key: 'creatorName',
             align: 'center'
           },
           {
             title: '反馈内容',
-            key: 'feedback_content',
+            key: 'content',
             align: 'center'
           },
           {
             title: '反馈时间',
-            key: 'feedback_time',
+            key: 'createdDt',
             align: 'center'
           },
           {
             title: '反馈图片',
-            key: 'feedback_img',
-            align: 'center'
+            key: 'noPicture',
+            align: 'center',
+            render: (h, params) => {
+              let noPicture = params.row.noPicture
+              if (noPicture) {
+                return h('span', '有')
+              } else {
+                return h('span', '无')
+              }
+            }
           },
           {
             title: '操作',
             key: 'options',
             align: 'center',
             render: (h, params) => {
-              let row = params.row
+              let id = params.row.pt_feedback_id
               return h('div', [
                 h('Button', {
                   props: {
@@ -93,7 +119,7 @@
                   },
                   on: {
                     click: () => {
-                      this.$router.push('/order/feedbackInfo?id=' + row.custom_id)
+                      this.$router.push('/order/feedbackInfo/' + id)
                     }
                   }
                 }, '查看')
@@ -101,7 +127,7 @@
             }
           }
         ],
-        data1: [
+        /* data: [
           {
             'custom_id': 1233,
             'custom_name': '张三',
@@ -158,16 +184,15 @@
             'feedback_time': '2017/8/16  9:35',
             'feedback_img': '有'
           }
-        ]
+        ] */
+        data: []
       }
     },
-    computed: {
-      tableTotal() {
-        return this.data1.length
-      }
+    created () {
+      this.getFeedbackListData()
     },
     methods: {
-      handleSubmit(name) {
+      handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.$Message.success('提交成功!')
@@ -176,12 +201,25 @@
           }
         })
       },
-      changePage(index) {
-        console.log(index)
+      changePage (index) {
+        this.curr = index
+        this.getFeedbackListData()
       },
-      exportData() {
-        this.$refs.custom_table.exportCsv({
-          filename: '用户反馈列表'
+      selectTab (name) {
+        this.types = name
+        this.getFeedbackListData()
+      },
+      exportData () {},
+      getFeedbackListData () {
+        let params = {
+          pageSize: this.pageNum,
+          pageNo: this.curr,
+          types: this.types
+        }
+        api.getFeedBackList(params).then((data) => {
+          console.log(data)
+          this.tableTotal = data.total
+          this.data = data.records
         })
       }
     }

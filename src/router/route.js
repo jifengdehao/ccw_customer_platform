@@ -117,7 +117,7 @@ const OrderSw = (resolve) => {
 }
 // 订单详情
 const OrderInfo = (resolve) => {
-  import('page/order/sw').then((module) => {
+  import('page/order/orderinfo').then((module) => {
     resolve(module)
   })
 }
@@ -317,9 +317,9 @@ export default [
           {path: 'evaluate', component: OrderEvaluate},
           {path: 'evaluateInfo', component: OrderEvaluateInfo},
           {path: 'feedback', component: OrderFeedback},
-          {path: 'feedbackInfo', component: OrderFeedbackInfo},
+          {path: 'feedbackInfo/:id', component: OrderFeedbackInfo},
           {path: 'sw', component: OrderSw},
-          {path: 'orderInfo', component: OrderInfo}
+          {path: 'orderInfo/:id', component: OrderInfo}
         ]
       },
       {
