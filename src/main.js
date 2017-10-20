@@ -13,11 +13,11 @@ import 'common/stylus/index.styl'
 import VCharts from 'v-charts'
 import store from './store'
 import axios from 'axios'
-
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 Vue.use(iView)
 Vue.use(VCharts)
+
 router.beforeEach((to, from, next) => {
   let path = to.path.substr(1)
   let user = window.sessionStorage.getItem('user')
