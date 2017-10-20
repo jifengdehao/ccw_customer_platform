@@ -5,7 +5,6 @@
  * 功能模块: api模块的封装
  */
 import * as ax from './instrance'
-
 // 用户登录
 export const Login = (params) => {
   return ax.p('/user/login', params)
@@ -188,39 +187,14 @@ export const modifyBD = (params, id) => {
 }
 
 //  ********************* 商品模板库管理 ******************************
-// 获取一级分类列表
-export const getCategoryParentList = (params) => {
-  return ax.g(`product/category/parent`, params)
+// 获取分类列表
+export const getProductCategory = (params) => {
+  return ax.g(`product/category`, params)
 }
-// 获取二级分类列表
-export const getCategoryChildList = (params) => {
-  return ax.g(`product/category/child`, params)
+// 更新分类信息
+export const updateProductCategory = (params) => {
+  return ax.p(`product/category`, params)
 }
-// 获取一级分类
-export const getCategoryParent = (params, id) => {
-  return ax.g(`product/category/parent/${id}`, params)
-}
-// 获取二级分类
-export const getCategoryChild = (params, id) => {
-  return ax.g(`product/category/child/${id}`, params)
-}
-// 增加一级分类
-export const addCategoryParent = (params) => {
-  return ax.p(`product/category/parent`, params)
-}
-// 增加二级分类
-export const addCategoryChild = (params) => {
-  return ax.p(`product/category/child`, params)
-}
-// 修改一级分类
-export const modifyCategoryParent = (params, id) => {
-  return ax.u(`product/category/parent/${id}`, params)
-}
-// 修改二级分类
-export const modifyCategoryChild = (params, id) => {
-  return ax.u(`product/category/child/${id}`, params)
-}
-
 //  ********************* 商户消息推送 ******************************
 // 获取商户端系统消息列表
 export const getSysMessage = (params) => {

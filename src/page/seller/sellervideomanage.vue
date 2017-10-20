@@ -16,7 +16,7 @@
           <DatePicker type="date" v-model="formItem.lastdate" placement="bottom-start" placeholder="选择结束日期" style="width: 200px"></DatePicker>
         </FormItem>
         <FormItem>
-          <Button type="primary">搜索</Button>
+          <Button type="primary" @click="searchdata(formItem)">搜索</Button>
         </FormItem>
       </Form>
     </section>
@@ -24,10 +24,10 @@
     <section>
       <Tabs type="card" :animated="false" @on-click="changedata">
         <TabPane v-for="tab in tabs" key :label="tab.title">
-          <Table border :columns="columns" :data="sellervideodata">
+          <Table border ref="selection" :columns="columns" :data="sellervideodata" @on-select="showselect">
           </Table>
         </TabPane>
-        <Button type="success" @click="" size="small" slot="extra">批量通过</Button>
+        <Button type="success" @click="" size="small" slot="extra" @click="allpass()">批量通过</Button>
         <Button type="warning" @click="" size="small" slot="extra" style="marginLeft:5px">批量不通过</Button>
       </Tabs>
     </section>
@@ -43,11 +43,24 @@ import * as api from 'api/common.js'
 let producttitle = [
   {
     title: '商品标题',
-    key: 'productName'
+    key: 'productName',
+    width: 100
   },
   {
     title: '商品主图',
-    key: 'picUrls'
+    key: 'picUrls',
+    render: (h, params) => {
+      return h('div', [
+        h('img', {
+          props: {
+            src: '../../../static/update-browser/images/chrome.png',
+            alt: ''
+          }
+        }),
+        h('img', {
+        })
+      ])
+    }
   },
   {
     title: '商品介绍图片',
@@ -206,8 +219,16 @@ export default {
     return {
       total: 1,
       pageSize: 1,
-      sellervideodata: [],
-      formItem: {},
+      sellervideodata: [
+        { productName: '大银杰' },
+        { productName: '小银杰' },
+        { productName: '大小银杰' },
+        { productName: '淫杰' }
+      ],
+      formItem: {
+        startdate: '',
+        lastdate: ''
+      },
       tabs: [
         { title: '商品图片审核' },
         { title: '档口图片审核' },
@@ -217,7 +238,7 @@ export default {
     }
   },
   created() {
-    this.getProductPic(1, 5)
+    // this.getProductPic(1, 5)
     this.columns = producttitle
   },
   // mounted: {},
@@ -272,6 +293,12 @@ export default {
     },
     changepage(index) {
       this.getProductPic(index, 5)
+    },
+    searchdata(formItem) {
+      console.log(formItem)
+    },
+    showselect(selection) {
+      console.log(selection)
     }
   },
   filfter: {},

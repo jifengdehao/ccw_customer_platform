@@ -16,7 +16,7 @@ var ax = axios.create({
   baseURL: URI,
   timeout: 30000,
   headers: {
-    'Content-Type': 'application/json;charset=UTF-8',
+    'Content-Type': 'application/json;charset=utf-8',
     'TOKEN': ''
   }
 })
@@ -34,7 +34,7 @@ export const itr = (type, url, params) => {
     token = userInfo.token ? userInfo.token : ''
   }
   ax.defaults.headers.TOKEN = token
-  return ax[type](url, arg)
+  return ax[type](url, params)
 }
 
 export const g = (url, params) => {
@@ -62,7 +62,7 @@ export const op = (url, params) => {
 // 上传地址
 export const uploadUrl = config.imgUpload
 
-export function base (type, url, params) {
+export function base(type, url, params) {
   return new Promise((resolve, reject) => {
     itr(type, url, params).then((response) => {
       if (response.data.code === 200) {
