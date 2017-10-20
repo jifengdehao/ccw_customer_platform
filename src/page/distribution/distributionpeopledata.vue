@@ -1,3 +1,10 @@
+/*
+ * @Author: ZengFanlu 
+ * @Date: 2017-10-14 14:44:05 
+ * DeveloperMailbox:   zengfanlu@ccw163.com 
+ * FunctionPoint: 分销用户数据页面 
+ */
+
 <template>
   <div>
     <div class="header">

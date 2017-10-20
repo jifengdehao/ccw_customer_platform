@@ -57,7 +57,8 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.$router.push('/activity/pendingDetali?detail=' + params.row._index)
+                    // 查看进行中优惠券
+                    this.$router.push('/activity/vieOngoingInfo?number=' + params.row._index)
                   }
                 }
               }, '查看')

@@ -21,7 +21,7 @@ export const getUserList = (params) => {
 
 /**
  * 获取反馈列表
- * @param params =>{mobileno,pageSize,pageNo}
+ * @param params =>{mobileno,pageSize,pageNo,types}
  */
 export const getFeedBackList = (params) => {
   return ax.g('/order/feedback', params)
@@ -29,10 +29,10 @@ export const getFeedBackList = (params) => {
 
 /**
  * 获取反馈详情
- * @param params =>id
+ * @param params =>ptFeedbackId
  */
 export const getFeedBackInfo = (params) => {
-  return ax.g('/order/feedback', params)
+  return ax.g(`/order/feedback/${params}`)
 }
 
 /**
@@ -221,3 +221,42 @@ export const getAlertsMessageList = (params) => {
 export const updateAlertsMessage = (params, id) => {
   return ax.p(`seller/message/alerts/${id}`, params)
 }
+
+/**
+ * 用户端相关接口
+ * @author by WuFengliang
+ */
+
+/**
+ * 获取用户端所有用户列表
+ * @param params =>{status,mobileno,pageSize,pageNo}
+ */
+export const getUsersList = (params) => {
+  return ax.g(`customer/`, params)
+}
+
+/**
+ * 获取用户端昨日新增用户量和当前用户量
+ */
+export const getCustomerCount = (params) => {
+  return ax.g(`customer/customerCount`, params)
+}
+
+/**
+ * 冻结与恢复账户
+ */
+export const changeStatus = (params) => {
+  return ax.pa(`customer/changeState`, params)
+}
+
+/**
+ * 获取用户信息
+ */
+export const getUserInfoData = (params) => {
+  return ax.g(`customer/${params.custId}`)
+}
+
+ /**
+ * 用户端相关接口
+ * @author by WuFengliang
+ */
