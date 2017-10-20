@@ -213,10 +213,9 @@
       getFeedbackListData () {
         let params = {
           pageSize: this.pageNum,
-          pageNo: this.curr,
           types: this.types
         }
-        api.getFeedBackList(params).then((data) => {
+        api.getFeedBackList(params, this.curr).then((data) => {
           console.log(data)
           this.tableTotal = data.total
           this.data = data.records

@@ -24,8 +24,8 @@ export const getUserList = (params) => {
  * 获取反馈列表
  * @param params =>{mobileno,pageSize,pageNo,types}
  */
-export const getFeedBackList = (params) => {
-  return ax.g('/order/feedback', params)
+export const getFeedBackList = (params, pageNo) => {
+  return ax.g(`/order/feedback/list/${pageNo}`, params)
 }
 
 /**
@@ -40,8 +40,8 @@ export const getFeedBackInfo = (params) => {
  * 获取订单列表
  * @param params =>{status,mobileno,pageSize,pageNo}
  */
-export const getOrderList = (params) => {
-  return ax.g('/order/', params)
+export const getOrderList = (params, pageNo) => {
+  return ax.g(`/order/list/${pageNo}`, params)
 }
 
 /**
@@ -57,7 +57,15 @@ export const exportOrderList = (params) => {
  * @param params => orderId
  */
 export const getOrderInfo = (params) => {
-  return ax.g('/order', params)
+  return ax.g(`/order/${params}`)
+}
+/**
+ *  获取订单的子订单列表
+ * @param params => orderId
+ */
+
+export const getSeedOrderData = (params) => {
+  return ax.g(`/order/seed/${params}`)
 }
 
 /**
@@ -97,24 +105,24 @@ export const getOrderGoodListEval = (params) => {
  * 获取商家评价列表
  * @param params =>{pageSize,pageNo,mobileno,orderId}
  */
-export const getOrderSellerListEval = (params) => {
-  return ax.g('/order/remark/shop', params)
+export const getOrderSellerListEval = (params, pageNo) => {
+  return ax.g(`/order/remark/shop/list/${pageNo}`, params)
 }
 
 /**
  * 获取配送员的评价列表
  * @param params =>{pageSize,pageNo,mobileno,orderId}
  */
-export const getOrderDeliverListeEval = (params) => {
-  return ax.g('/order/remark/deliver', params)
+export const getOrderDeliverListeEval = (params, pageNo) => {
+  return ax.g(`/order/remark/deliver/list/${pageNo}`, params)
 }
 
 /**
  * 获取差评评价列表
  * @param params =>{pageSize,pageNo,mobileno,orderId}
  */
-export const getOrderBadListEval = (params) => {
-  return ax.g('/order/remark/bad', params)
+export const getOrderBadListEval = (params, pageNo) => {
+  return ax.g(`/order/remark/bad/list/${pageNo}`, params)
 }
 
 /**
