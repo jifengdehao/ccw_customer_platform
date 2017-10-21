@@ -199,12 +199,7 @@ const CouponManagement = (resolve) => {
     resolve(module)
   })
 }
-// 首页banner图管理 查看历史更新子页面
-const ViewHistoryUpdate = (resolve) => {
-  import('page/activity/viewHistoryUpdate').then((module) => {
-    resolve(module)
-  })
-}
+
 // 优惠券管理 查看进行中优惠券
 const viewOngoingCoupons = (resolve) => {
   import('page/activity/viewOngoingCoupons').then((module) => {
@@ -360,7 +355,6 @@ export default [
         children: [
           {path: 'index_banner_manage', component: IndexBannerManage},
           {path: 'coupon_management', component: CouponManagement},
-          {path: 'viewUpdate', component: ViewHistoryUpdate},
           {path: 'vieOngoingInfo', component: viewOngoingCoupons},
           {path: 'addCoupons', component: addCoupons},
           {path: 'pendingDetali', component: pendingOpreation}

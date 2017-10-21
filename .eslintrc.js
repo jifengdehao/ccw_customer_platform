@@ -26,6 +26,12 @@ module.exports = {
 
     'space-before-function-paren': 0,
 
-    'spaced-comment': [2, 'always', {'markers': ['*!']}] // 注释风格， 双斜杠后面空一格空格再写注释
+    //关闭额外的分号检查
+    //0:关闭，1:警告，2:异常
+    "semi": 0,
+
+    'spaced-comment': [2, 'always', {
+      'markers': ['*!']
+    }] // 注释风格， 双斜杠后面空一格空格再写注释
   }
 }
