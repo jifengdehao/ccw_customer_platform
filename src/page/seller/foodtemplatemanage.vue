@@ -61,7 +61,7 @@
     <Modal v-model="classifymodal" :title="classifytitle" width="300" @on-ok="postdata" @on-cancel="">
       <draggable v-model="templatedata" @update="datadragEnd">
         <transition-group>
-          <div v-for="(item,index) in templatedata" key="index" style="lineHeight:30px">
+          <div v-for="(item,index) in templatedata" :key="index" style="lineHeight:30px">
             <Input v-model="item.name" size="small" style="width: 200px" v-if="item.operation !== 0"></Input>
             <Button type="error" size="small" @click="delClassify(index)" v-if="item.operation !== 0">删除</Button>
           </div>
