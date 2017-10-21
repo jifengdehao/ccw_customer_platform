@@ -10,10 +10,6 @@
     <section class="seller-template-manager-search" v-if="search">
       <Form :model="formItem" ref="formItem" inline>
         <FormItem>
-          <span class="label">搜索商品：</span>
-          <Input v-model="formItem.input" placeholder="请输入" style="width: 200px"></Input>
-        </FormItem>
-        <FormItem>
           <span class="label">筛选条件：</span>
           <i>一级分类</i>
           <Select v-model="model1" style="width:150px">
@@ -41,7 +37,7 @@
                 <li>
                   <h4>一级分类</h4>
                 </li>
-                <li v-for="item in templatedata" @click="test(item.catName)">{{item.catName}}</li>
+                <li v-for="item in templatedata" key @click="test(item.name)">{{item.name}}</li>
               </ul>
               </Col>
               <Col span="11">
@@ -62,16 +58,26 @@
       </Tabs>
     </section>
     <!-- 查看图片 -->
-    <Modal v-model="classifymodal" :title="classifytitle" width="500">
-      <Table :columns="classifyColumns" :data="templatedata"></Table>
-      <Button size="small" style="marginTop:10px">新增分类</Button>
+    <Modal v-model="classifymodal" :title="classifytitle" width="300" @on-ok="postdata" @on-cancel="">
+      <draggable v-model="templatedata" @update="datadragEnd">
+        <transition-group>
+          <div v-for="(item,index) in templatedata" key="index" style="lineHeight:30px">
+            <Input v-model="item.name" size="small" style="width: 200px" v-if="item.operation !== 0"></Input>
+            <Button type="error" size="small" @click="delClassify(index)" v-if="item.operation !== 0">删除</Button>
+          </div>
+        </transition-group>
+      </draggable>
+      </Table>
+      <Button size="small" style="marginTop:10px" @click="addClassify">新增分类</Button>
     </Modal>
   </div>
 </template>
 <script>
-import vFoodtemplate from './foodtemplatetable/foodtemplate'
+import * as api from 'api/common.js'
+import vFoodtemplate from './sellercomponents/foodtemplate'
+import draggable from 'vuedraggable'
 export default {
-  components: { vFoodtemplate },
+  components: { vFoodtemplate, draggable },
   props: {},
   data() {
     return {
@@ -84,11 +90,7 @@ export default {
       classifytitle: '',
       firstclassify: [],
       secondclassify: [],
-      templatedata: [
-        { catName: '水果' },
-        { catName: '海鲜' },
-        { catName: '野味' }
-      ],
+      templatedata: [],
       classifymodal: false,
       classifyColumns: [
         {
@@ -107,7 +109,6 @@ export default {
               })
             ])
           }
-
         },
         {
           title: '操作',
@@ -115,16 +116,19 @@ export default {
           width: 140,
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'error',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {}
                   }
-                }
-              }, '删除')
+                },
+                '删除'
+              )
             ])
           }
         }
@@ -132,10 +136,26 @@ export default {
       columns: []
     }
   },
+  created() {
+    this.getProductCategory()
+  },
   //   mounted: {},
   activited: {},
   update: {},
   methods: {
+    getProductCategory() {
+      let params = {
+        parentId: -1
+      }
+      api.getProductCategory(params).then(response => {
+        this.templatedata = response
+      })
+    },
+    // updateProductCategory(categories) {
+    //   api.updateProductCategory(categories).then(response => {
+    //     console.log(response)
+    //   })
+    // },
     changedata(index) {
       if (index === 0) {
         this.search = false
@@ -153,6 +173,28 @@ export default {
     showModal2() {
       this.classifytitle = '二级分类管理'
       this.classifymodal = true
+    },
+    datadragEnd(evt) {
+      console.log('拖动前的索引 :' + evt.oldIndex)
+      console.log('拖动后的索引 :' + evt.newIndex)
+      console.log(this.templatedata)
+    },
+    addClassify() {
+      let addli = { name: '', operation: 3 }
+      this.templatedata.push(addli)
+      // console.log(this.templatedata)
+    },
+    delClassify(index) {
+      if (this.templatedata[index].operation === 3) {
+        this.templatedata.splice(index, 1)
+      } else {
+        this.templatedata[index].operation = 0
+      }
+    },
+    postdata() {
+      api.updateProductCategory(this.templatedata).then(response => {
+        console.log(response)
+      })
     }
   },
   filfter: {},
@@ -173,7 +215,7 @@ export default {
 }
 
 .seller-template-manager-container-classify ul,
-.seller-template-manager-container-classify Button {
+.seller-template-manager-container-classify button {
   float: left;
   margin-right: 20px;
 }
@@ -185,6 +227,6 @@ export default {
   line-height: 30px;
   margin-top: -1px;
   border: 1px solid #555;
-  text-align: center
+  text-align: center;
 }
 </style>

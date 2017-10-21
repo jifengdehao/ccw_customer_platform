@@ -181,12 +181,7 @@ const UsersLog = (resolve) => {
     resolve(module)
   })
 }
-// 修改密码
-const ChangPwd = (resolve) => {
-  import('page/users/changepwd').then((module) => {
-    resolve(module)
-  })
-}
+
 // 首页banner图管理
 const IndexBannerManage = (resolve) => {
   import('page/activity/indexbannermanage').then((module) => {
@@ -286,6 +281,13 @@ const SellerMessageRemind = (resolve) => {
   })
 }
 
+// 个人中心
+const User = (resolve) => {
+  import('page/users/user').then((module) => {
+    resolve(module)
+  })
+}
+
 // import ActivityMessagePush from 'page/custom/activitymessagepush'
 // import DailyMenuPush from 'page/custom/dailymenupush'
 // import AppNoticePush from 'page/custom/appnoticepush'
@@ -344,7 +346,7 @@ export default [
           {path: 'users_manage', component: UsersManage},
           {path: 'users_jurisdiction', component: UsersJurisdiction},
           {path: 'users_log', component: UsersLog},
-          {path: 'change_pwd', component: ChangPwd}
+          {path: 'user', component: User}
         ]
       },
       {

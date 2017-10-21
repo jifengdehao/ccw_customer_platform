@@ -7,49 +7,14 @@
 
 <template>
   <div>
-    <Input v-model="single.title" placeholder="输入标题" style="width: 200px;float:left;margin-right:200px;"></Input>
+    <Input v-model="single.title" placeholder="输入标题" value="single.title" style="width: 200px;float:left;margin-right:200px;"></Input>
     <div style="line-height:1.5;float:right">
-      <label>推送时间设置</label>
-      <Select v-model="pushStyle" style="width:150px;margin-left:10px;">
-        <Option value="0">定时推送</Option>
-        <Option value="1">立即推送</Option>
-      </Select>
-      <Select v-model="single.year" style="width:70px;margin-left:10px;">
-        <Option value="2017">2017</Option>
-        <Option value="2018">2018</Option>
-      </Select>
-      <span>年</span>
-      <Select v-model="single.month" style="width:60px;" @on-change='loadDays'>
-        <Option value="1">01</Option>
-        <Option value="2">02</Option>
-        <Option value="3">03</Option>
-        <Option value="4">04</Option>
-        <Option value="5">05</Option>
-        <Option value="6">06</Option>
-        <Option value="7">07</Option>
-        <Option value="8">08</Option>
-        <Option value="9">09</Option>
-        <Option value="10">10</Option>
-        <Option value="11">11</Option>
-        <Option value="12">12</Option>
-      </Select>
-      <span>月</span>
-      <Select v-model="single.day" style="width:70px">
-        <Option v-for="item in single.days" :value="item" :key="item">{{ item >= 10 ? item : '0' + item }}</Option>
-      </Select>
-      <span>日</span>
-      <Select v-model="single.hour" style="width:60px;" @on-change='loadDays'>
-        <Option v-for="item in single.hours" :value="item" :key="item">{{ item >= 10 ? item : '0' + item }}</Option>
-      </Select>
-      <span>时</span>
-      <Select v-model="single.second" style="width:60px;" @on-change='loadDays'>
-        <Option v-for="item in single.seconds" :value="item" :key="item">{{ item >= 10 ? item : '0' + item }}</Option>
-      </Select>
-      <span>分</span>
+      <label>推送时间设置:</label>
+      <DatePicker v-model="single.pushTime" value="single.pushTime" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="选择日期和时间（不含秒）" style="width: 300px"></DatePicker>
     </div>
-    <textarea placeholder="输入您要推送的系统消息的内容"></textarea>
+    <textarea v-model="single.msgContent" placeholder="输入您要推送的系统消息的内容" value="single.msgContent"></textarea>
     <div class="btn-ok">
-      <Button type="primary">确定</Button>
+      <Button type="primary" @click="pushMessage">{{pushButton}}</Button>
     </div>
     <Tabs type="card" @on-click="chooseTabs">
       <TabPane label="全部"></TabPane>
@@ -65,29 +30,23 @@
 import * as api from 'api/common.js'
 export default {
   name: 'systemMessagePush',
-  components: {
-  },
-  props: {
-  },
+  components: {},
+  props: {},
   data() {
     return {
-      total: 1,
+      total: 15,
       pageSize: 1,
       data: [],
+      pushButton: '确定',
       pushStyle: '0', //  推送方式值
-      single: { //  时间相关数据
+      single: {
+        //  时间相关数据
         title: '', //  标题
-        msgContent: '',  //  推送内容
-        year: '2017', //  年
-        month: '1', //  月
-        day: 1, //  日
-        hours: 24,  //  （时）集合
-        hour: 1, //  时
-        seconds: 60,  //  分（集合）
-        second: 1, //  分
-        days: [1]  //  每个与多少天
+        pushTime: '',
+        msgContent: ''
       },
-      pushMessageTitle: [ //  推送table表头
+      pushMessageTitle: [
+        //  推送table表头
         {
           title: '序号',
           type: 'index',
@@ -124,36 +83,47 @@ export default {
           align: 'center',
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    console.log(params.row)
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.single = params.row
+                      this.pushButton = '查看完毕'
+                    }
                   }
-                }
-              }, '查看'),
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
                 },
-                on: {
-                  click: () => {
-                    console.log(params.row)
+                '查看'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.single = params.row
+                      this.pushButton = '确定修改'
+                    }
                   }
-                }
-              }, '编辑')
+                },
+                '编辑'
+              )
             ])
           }
         }
       ],
-      pushMessageData: [  //  推送数据集合
+      pushMessageData: [
+        //  推送数据集合
         {
           title: '测试数据',
           msgContent: '我只是测试一下',
@@ -164,32 +134,19 @@ export default {
       ]
     }
   },
-  created() {
-    this.firstLoadDays()
-  },
-  activited: {
-  },
-  update: {
-  },
-  beforeRouteUpdate: {
-  },
+  created() {},
+  activited: {},
+  update: {},
+  beforeRouteUpdate: {},
   methods: {
-    //  加载每月中的天数集合
-    loadDays(month) {
-      this.date.month = month
-      this.firstLoadDays()
-    },
-    //  首次加载月份的天数
-    firstLoadDays() {
-      this.single.days.length = 0
-      let dayArr = new Date(this.single.year, this.single.month, 0).getDate()//  获取这个月的天数
-      for (let i = 1; i <= dayArr; i++) {
-        this.single.days.push(i)
-      }
+    changepage(index) {
+      console.log(index)
     },
     //  tab切换
-    chooseTabs(index) {
-
+    chooseTabs(index) {},
+    pushMessage() {
+      this.single = {}
+      this.pushButton = '确定'
     },
     // 获取商户端系统消息列表
     getSysMessage(pageNo, pageSize, pushStatus) {
@@ -207,37 +164,31 @@ export default {
     // 新增商户端系统消息
     addSysMessage(title, pushType, msgContent, pushTime) {
       let params = {
-        title: title,  // 消息标题
+        title: title, // 消息标题
         pushType: pushType, // 推送消息类型
         msgContent: msgContent, // 推送消息内容
         pushTime: pushTime
       }
-      api.addSysMessage(params).then(response => {
-      })
+      api.addSysMessage(params).then(response => {})
     },
     // 查看商户端系统消息
     seeSysMessage(id) {
-      api.seeSysMessage(id).then(response => {
-      })
+      api.seeSysMessage(id).then(response => {})
     },
     // 编辑商户端系统消息
     modifySysMessage(id, title, pushType, msgContent, pushTime) {
       let params = {
-        title: title,  // 消息标题
+        title: title, // 消息标题
         pushType: pushType, // 推送消息类型
         msgContent: msgContent, // 推送消息内容
         pushTime: pushTime
       }
-      api.modifySysMessage(params, id).then(response => {
-      })
+      api.modifySysMessage(params, id).then(response => {})
     }
   },
-  filter: {
-  },
-  computed: {
-  },
-  watch: {
-  }
+  filter: {},
+  computed: {},
+  watch: {}
 }
 </script>
 <style lang="css" scoped>
@@ -253,7 +204,7 @@ textarea {
 textarea:focus {
   border-color: #57a3f3;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(45, 140, 240, .2);
+  box-shadow: 0 0 0 2px rgba(45, 140, 240, 0.2);
 }
 
 .btn-ok {

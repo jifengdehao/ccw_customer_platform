@@ -27,14 +27,11 @@ export default {
   props: {},
   data() {
     return {
+      datavalue: true,
       total: 1,
       pageSize: 1,
       status: '待处理',
-      tabs: [
-        { title: '待处理' },
-        { title: '已处理' },
-        { title: '全部' }
-      ],
+      tabs: [{ title: '待处理' }, { title: '已处理' }, { title: '全部' }],
       remindColumns: [
         {
           title: '序号',
@@ -65,33 +62,35 @@ export default {
           title: '操作',
           key: 'operation',
           width: 140,
-          if() {
-
-          },
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'info',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    console.log(params.Button)
+              h(
+                'Button',
+                {
+                  props: {
+                    type: params.row.status === 0 ? 'info' : 'disabled',
+                    size: 'small',
+                    disabled: params.row.status === 0 ? null : true
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: index => {
+                      params.row.status = 1
+                    }
                   }
-                }
-              }, '待处理')
+                },
+                params.row.status === 0 ? '待处理' : '已处理'
+              )
             ])
           }
         }
       ],
       remindData: [
-        { id: 1, type: '找回密码', sellerId: 'ABC123' },
-        { type: '找回密码' },
-        { sellerId: 'ABC123' }
+        { id: 1, type: '找回密码', sellerId: 'ABC123', status: 0 },
+        { type: '找回密码', status: 0 },
+        { sellerId: 'ABC123', sellertatus: '营业中', status: 0 }
       ]
     }
   },
@@ -118,10 +117,11 @@ export default {
       let params = {
         stasus: status
       }
-      api.updateAlertsMessage(params, id).then(response => {
-      })
+      api.updateAlertsMessage(params, id).then(response => {})
     },
-    changepage(index) { }
+    changepage(index) {
+      console.log(index)
+    }
   },
   filfter: {},
   computed: {},

@@ -2,7 +2,7 @@
  * @Author: WuFengliang 
  * @Date: 2017-10-12 20:38:20 
  * DeveloperMailbox:   wufengliang@ccw163.com 
- * FunctionPoint:  账户详情
+ * FunctionPoint:  账户详情 
  */
 
 <template>
@@ -16,6 +16,7 @@
   </div>
 </template>
 <script>
+import * as http from 'api/common'
 import expandRow from 'page/custom/unfold'
 
 export default {
@@ -41,7 +42,7 @@ export default {
         },
         {
           title: '注册时间',
-          key: 'regTime'
+          key: 'createdAt'
         },
         {
           title: '最近登录时间',
@@ -127,7 +128,8 @@ export default {
           submitAt: '2017/8/16  9:35',
           orderStatus: '待付款'
         }
-      ]
+      ],
+      params: {}  //  http传递的参数
     }
   },
   activited: {
@@ -136,7 +138,19 @@ export default {
   },
   beforeRouteUpdate: {
   },
+  mounted() {
+    this.params.custId = this.$route.params.id
+    this.getUserInfoData()
+  },
   methods: {
+    //  获取用户信息
+    getUserInfoData() {
+      http.getUserInfoData(this.params).then((data) => {
+        this.userInfoData = data.custInfo
+        this.userAcceptData = data.custAddress
+        this.userBuyData = data.custOrderRecord
+      })
+    }
   },
   filter: {
   },

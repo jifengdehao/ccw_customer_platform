@@ -32,16 +32,12 @@
     .layout-hide-text
       .layout-text
         display none
-      .ivu-menu-item
-        padding: 14px 24px !important
+      .ivu-menu
         text-align center
-      .ivu-menu-item,
-      .ivu-menu-submenu
-        text-align: center
-      .ivu-menu-submenu-title>i:first-child
-        margin-right 0
-
-
+        & > li > i, & > li > div > i:first-child
+          margin-right 0
+        & > li > div > i:last-child
+          right 4px
     .ivu-col
       transition width .2s ease-in-out
     .sidebar
@@ -80,7 +76,6 @@
     .login-no-bottom
       margin-bottom 10px
 
-
 .ivu-menu
-  .ivu-menu-item>a
+  .ivu-menu-item > a
     display block

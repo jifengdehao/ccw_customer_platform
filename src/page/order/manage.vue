@@ -7,7 +7,7 @@
 <template>
   <div class="order-manage">
     <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
-      <FormItem prop="phone" label="订单编号" :label-width="80">
+      <FormItem prop="phone" label="手机号" :label-width="80">
         <Input type="text" v-model="formInline.phone" placeholder="请输入手机号"></Input>
       </FormItem>
       <FormItem prop="phone" label="订单编号" :label-width="80">
@@ -112,6 +112,7 @@
       <Button type="primary" class="vm-fr" @click="exportModal=true" slot="extra">导出</Button>
     </Tabs>
     <Modal v-model="exportModal" width="300">
+      <div slot="header">导出表格</div>
       <div class="vm-textCenter">
         <DatePicker type="date" placeholder="选择日期" style="width: 100%"></DatePicker>
         <div class="mtb10">到</div>
@@ -141,18 +142,21 @@
         },
         ruleInline: {
           phone: [
-            // {required: true, message: '请填写手机号', trigger: 'blur'}
+            {required: true, message: '请填写手机号', trigger: 'blur'}
           ],
-          orderNumber: []
+          orderNumber: [
+            {required: true, message: '请填写订单号', trigger: 'blur'}
+          ]
         },
         columns: [
           {
             type: 'expand',
             width: 50,
             render: (h, params) => {
+              let orderId = params.row.orderId
               return h(expandRow, {
                 props: {
-                  row: params.row
+                  orderId: orderId
                 }
               })
             }
@@ -180,7 +184,34 @@
           {
             title: '订单状态',
             key: 'status',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              let status = params.row.status
+              let statusName
+              switch (status) {
+                case 1:
+                  statusName = '待付款'
+                  break
+                case 2:
+                  statusName = '待接单'
+                  break
+                case 3:
+                  statusName = '待发货'
+                  break
+                case 4:
+                  statusName = '配送中'
+                  break
+                case 5:
+                  statusName = '待评价'
+                  break
+                case 6:
+                  statusName = '已完成'
+                  break
+                default:
+                  statusName = '无'
+              }
+              return h('span', statusName)
+            }
           },
           {
             title: '操作',
@@ -233,7 +264,7 @@
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            this.$Message.success('提交成功!')
+            // this.$Message.success('提交成功!')
           } else {
             this.$Message.error('表单验证失败!')
           }
@@ -241,7 +272,6 @@
       },
       // 选择tab
       selectTab (name) {
-        console.log(name)
         this.status = name
         this._getOrderData()
       },
@@ -249,22 +279,18 @@
       exportData () {},
       // 分页
       changePage (index) {
-        console.log(index)
         this.curr = index
         this._getOrderData()
       },
       _getOrderData () {
         let params = {
           pageSize: this.pageNum,
-          pageNo: this.curr,
           status: this.status
         }
-        api.getOrderList(params).then((data) => {
-          console.log(data)
-          if (data) {
-            this.tableTotal = data.total
-            this.data = data.records
-          }
+        api.getOrderList(params, this.curr).then((res) => {
+          console.log(res)
+          this.tableTotal = res.total
+          this.data = res.records
         })
       }
     },

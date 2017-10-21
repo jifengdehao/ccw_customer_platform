@@ -64,13 +64,13 @@
       </i-col>
       <i-col :span="3">
         <div class="user-info">
-          <Dropdown trigger="click" @on-click="changePwd">
-            <a href="javascript:void(0)">
+          <Dropdown trigger="click" @on-click="selectDown">
+            <a href="javascript:void(0);">
               {{userinfo.name}}&nbsp;
               <Icon type="arrow-down-b"></Icon>
             </a>
             <DropdownMenu slot="list">
-              <DropdownItem name="change">修改密码</DropdownItem>
+              <DropdownItem name="user">个人中心</DropdownItem>
               <DropdownItem divided name="logout">退出登录</DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -95,11 +95,10 @@
     },
     mounted () {},
     methods: {
-      changePwd (item) {
-        console.log(item)
+      selectDown (item) {
         switch (item) {
-          case 'change':
-            this.$router.push('/users/change_pwd')
+          case 'user':
+            this.$router.push('/users/' + item)
             break
           case 'logout':
             window.sessionStorage.removeItem('user')

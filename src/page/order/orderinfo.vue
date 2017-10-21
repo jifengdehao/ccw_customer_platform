@@ -38,16 +38,18 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import * as api from 'api/common.js'
+
   export default {
     data () {
       return {
         orderId: (() => {
-          return this.$route.params
+          return this.$route.params.id
         })(),
         columns1: [
           {
             title: '订单编号',
-            key: 'orderNumber',
+            key: 'orderId',
             align: 'center'
           },
           {
@@ -81,17 +83,6 @@
             align: 'center'
           }
         ],
-        data1: [
-          {
-            orderNumber: 10086,
-            orderTime: '2017/07/07 07:07:07',
-            consignee: '张三',
-            consigneeTel: '18812345678',
-            consigneeAdr: 'XXXXX',
-            consigneeTime: '7:30-8:30',
-            consigneeStatus: '送货上门'
-          }
-        ],
         columns2: [
           {
             title: '配送员ID',
@@ -112,14 +103,6 @@
             title: '送达时间',
             key: 'endTime',
             align: 'center'
-          }
-        ],
-        data2: [
-          {
-            deliveryId: 1212,
-            deliveryName: '张三',
-            startTime: '7:15',
-            endTime: '8:00'
           }
         ],
         columns3: [
@@ -154,55 +137,45 @@
             align: 'center'
           }
         ],
-        data3: [
-          {
-            orderSum: '¥79.2',
-            deliverySum: '¥10',
-            discountSum: '¥30',
-            coupon: '满50减30',
-            actualSum: '¥59.2',
-            payStatus: '未付款'
-          }
-        ],
         columns4: [
           {
-            title: '商户ID',
-            key: 'sellerId',
+            title: '商户名称',
+            key: 'shopName',
             align: 'center'
           },
-          {
-            title: '交易号',
-            key: 'transactionNumber',
-            align: 'center'
-          },
+//          {
+//            title: '交易号',
+//            key: 'transactionNumber',
+//            align: 'center'
+//          },
           {
             title: '商品名称',
-            key: 'goodName',
+            key: 'productName',
             align: 'center'
           },
           {
             title: '数量',
-            key: 'goodNumber',
+            key: 'unit',
             align: 'center'
           },
           {
             title: '规格',
-            key: 'spec',
+            key: 'productProperty',
             align: 'center'
           },
           {
             title: '属性',
-            key: 'attr',
+            key: 'names',
             align: 'center'
           },
           {
             title: '单价',
-            key: 'unitPrice',
+            key: 'price',
             align: 'center'
           },
           {
             title: '小计',
-            key: 'total',
+            key: 'amount',
             align: 'center'
           },
           {
@@ -261,6 +234,42 @@
             align: 'center'
           }
         ],
+        /*
+        data1: [
+          {
+            orderNumber: 10086,
+            orderTime: '2017/07/07 07:07:07',
+            consignee: '张三',
+            consigneeTel: '18812345678',
+            consigneeAdr: 'XXXXX',
+            consigneeTime: '7:30-8:30',
+            consigneeStatus: '送货上门'
+          }
+        ],
+        */
+        /*
+        data2: [
+          {
+            deliveryId: 1212,
+            deliveryName: '张三',
+            startTime: '7:15',
+            endTime: '8:00'
+          }
+        ],
+        */
+        /*
+        data3: [
+          {
+            orderSum: '¥79.2',
+            deliverySum: '¥10',
+            discountSum: '¥30',
+            coupon: '满50减30',
+            actualSum: '¥59.2',
+            payStatus: '未付款'
+          }
+        ],
+        */
+        /*
         data4: [
           {
             sellerId: 9329328,
@@ -302,10 +311,16 @@
             isRefund: false
           }
         ]
+        */
+        data1: [],
+        data2: [],
+        data3: [],
+        data4: []
       }
     },
     created () {
       console.log(this.orderId)
+      this.getOrderDetails()
     },
     methods: {
       refundAll () {
@@ -318,6 +333,14 @@
       },
       close () {
         this.$router.back()
+      },
+      getOrderDetails () {
+        api.getOrderInfo(this.orderId).then((res) => {
+          console.log(res)
+          if (res) {
+            this.data4 = res.dealInfoS
+          }
+        })
       }
     }
   }

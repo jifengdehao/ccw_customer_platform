@@ -22,7 +22,7 @@
           </Select>
         </FormItem>
         <FormItem>
-          <Button type="primary">搜索</Button>
+          <Button type="primary" @click="searchdata(formItem)">搜索</Button>
         </FormItem>
       </Form>
     </section>
@@ -54,7 +54,8 @@ export default {
       modal: false,
       charge: [],
       formItem: {
-        date: '',
+        startdate: '',
+        lastdate: '',
         select: ''
       },
       auditdata: [],
@@ -93,13 +94,15 @@ export default {
           key: 'upstatus',
           render: (h, params) => {
             return h('div', [
+              h('span', {
+              }, params.row.upstatus),
               h('Button', {
                 props: {
                   type: 'primary',
                   size: 'small'
                 },
                 style: {
-                  marginRight: '5px'
+                  marginLeft: '5px'
                 },
                 on: {
                   click: () => {
@@ -198,6 +201,9 @@ export default {
       }
       api.updateApplyStatus(params, id).then(response => {
       })
+    },
+    searchdata(formItem) {
+      console.log(formItem)
     }
   },
   computed: {},

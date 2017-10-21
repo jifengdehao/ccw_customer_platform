@@ -5,7 +5,6 @@
  * 功能模块: api模块的封装
  */
 import * as ax from './instrance'
-
 // 用户登录
 export const Login = params => {
   return ax.p('/user/login', params)
@@ -24,8 +23,8 @@ export const getUserList = params => {
  * 获取反馈列表
  * @param params =>{mobileno,pageSize,pageNo,types}
  */
-export const getFeedBackList = params => {
-  return ax.g('/order/feedback', params)
+export const getFeedBackList = (params, pageNo) => {
+  return ax.g(`/order/feedback/list/${pageNo}`, params)
 }
 
 /**
@@ -40,8 +39,8 @@ export const getFeedBackInfo = params => {
  * 获取订单列表
  * @param params =>{status,mobileno,pageSize,pageNo}
  */
-export const getOrderList = params => {
-  return ax.g('/order/', params)
+export const getOrderList = (params, pageNo) => {
+  return ax.g(`/order/list/${pageNo}`, params)
 }
 
 /**
@@ -56,8 +55,16 @@ export const exportOrderList = params => {
  * 获取订单详情
  * @param params => orderId
  */
-export const getOrderInfo = params => {
-  return ax.g('/order', params)
+export const getOrderInfo = (params) => {
+  return ax.g(`/order/${params}`)
+}
+/**
+ *  获取订单的子订单列表
+ * @param params => orderId
+ */
+
+export const getSeedOrderData = (params) => {
+  return ax.g(`/order/seed/${params}`)
 }
 
 /**
@@ -97,24 +104,24 @@ export const getOrderGoodListEval = params => {
  * 获取商家评价列表
  * @param params =>{pageSize,pageNo,mobileno,orderId}
  */
-export const getOrderSellerListEval = params => {
-  return ax.g('/order/remark/shop', params)
+export const getOrderSellerListEval = (params, pageNo) => {
+  return ax.g(`/order/remark/shop/list/${pageNo}`, params)
 }
 
 /**
  * 获取配送员的评价列表
  * @param params =>{pageSize,pageNo,mobileno,orderId}
  */
-export const getOrderDeliverListeEval = params => {
-  return ax.g('/order/remark/deliver', params)
+export const getOrderDeliverListeEval = (params, pageNo) => {
+  return ax.g(`/order/remark/deliver/list/${pageNo}`, params)
 }
 
 /**
  * 获取差评评价列表
  * @param params =>{pageSize,pageNo,mobileno,orderId}
  */
-export const getOrderBadListEval = params => {
-  return ax.g('/order/remark/bad', params)
+export const getOrderBadListEval = (params, pageNo) => {
+  return ax.g(`/order/remark/bad/list/${pageNo}`, params)
 }
 
 /**
@@ -188,39 +195,14 @@ export const modifyBD = (params, id) => {
 }
 
 //  ********************* 商品模板库管理 ******************************
-// 获取一级分类列表
-export const getCategoryParentList = params => {
-  return ax.g(`product/category/parent`, params)
+// 获取分类列表
+export const getProductCategory = (params) => {
+  return ax.g(`product/category`, params)
 }
-// 获取二级分类列表
-export const getCategoryChildList = params => {
-  return ax.g(`product/category/child`, params)
+// 更新分类信息
+export const updateProductCategory = (params) => {
+  return ax.p(`product/category`, params)
 }
-// 获取一级分类
-export const getCategoryParent = (params, id) => {
-  return ax.g(`product/category/parent/${id}`, params)
-}
-// 获取二级分类
-export const getCategoryChild = (params, id) => {
-  return ax.g(`product/category/child/${id}`, params)
-}
-// 增加一级分类
-export const addCategoryParent = params => {
-  return ax.p(`product/category/parent`, params)
-}
-// 增加二级分类
-export const addCategoryChild = params => {
-  return ax.p(`product/category/child`, params)
-}
-// 修改一级分类
-export const modifyCategoryParent = (params, id) => {
-  return ax.u(`product/category/parent/${id}`, params)
-}
-// 修改二级分类
-export const modifyCategoryChild = (params, id) => {
-  return ax.u(`product/category/child/${id}`, params)
-}
-
 //  ********************* 商户消息推送 ******************************
 // 获取商户端系统消息列表
 export const getSysMessage = params => {
@@ -280,3 +262,40 @@ export const deleteBanner = id => {
 export const seeBanner = id => {
   return ax.g(`/activity/banner/${id}`)
 }
+ /* 用户端相关接口
+ * @author by WuFengliang
+ */
+
+/**
+ * 获取用户端所有用户列表
+ * @param params =>{status,mobileno,pageSize,pageNo}
+ */
+export const getUsersList = (params) => {
+  return ax.g(`customer/`, params)
+}
+
+/**
+ * 获取用户端昨日新增用户量和当前用户量
+ */
+export const getCustomerCount = (params) => {
+  return ax.g(`customer/customerCount`, params)
+}
+
+/**
+ * 冻结与恢复账户
+ */
+export const changeStatus = (params) => {
+  return ax.pa(`customer/changeState`, params)
+}
+
+/**
+ * 获取用户信息
+ */
+export const getUserInfoData = (params) => {
+  return ax.g(`customer/${params.custId}`)
+}
+
+ /**
+ * 用户端相关接口
+ * @author by WuFengliang
+ */
