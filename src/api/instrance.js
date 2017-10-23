@@ -36,7 +36,7 @@ export const itr = (type, url, params) => {
     token = userInfo.token ? userInfo.token : ''
   }
   ax.defaults.headers.TOKEN = token
-  return ax[type](url, params)
+  return ax[type](url, arg)
 }
 
 export const g = (url, params) => {
