@@ -6,14 +6,14 @@
  */
 import * as ax from './instrance'
 // 用户登录
-export const Login = (params) => {
+export const Login = params => {
   return ax.p('/user/login', params)
 }
 // 上传地址
 export const uploadUrl = ax.uploadUrl
 
 // 单个用户列表用户详细数据
-export const getUserList = (params) => {
+export const getUserList = params => {
   return ax.g('/user/search', params)
 }
 
@@ -31,7 +31,7 @@ export const getFeedBackList = (params, pageNo) => {
  * 获取反馈详情
  * @param params =>ptFeedbackId
  */
-export const getFeedBackInfo = (params) => {
+export const getFeedBackInfo = params => {
   return ax.g(`/order/feedback/${params}`)
 }
 
@@ -47,7 +47,7 @@ export const getOrderList = (params, pageNo) => {
  * 导出订单列表
  * @param params
  */
-export const exportOrderList = (params) => {
+export const exportOrderList = params => {
   return ax.g('/order/export', params)
 }
 
@@ -77,7 +77,7 @@ export const getSeedOrderData = (params) => {
  * @param params ={orderId}
  */
 
-export const putOrderInfo = (params) => {
+export const putOrderInfo = params => {
   return ax.u('/order', params)
 }
 
@@ -85,7 +85,7 @@ export const putOrderInfo = (params) => {
  * 查看屏蔽词
  * @param params =>null
  */
-export const getOrderSw = (params) => {
+export const getOrderSw = params => {
   return ax.g('/order/remark/hidden', params)
 }
 
@@ -93,7 +93,7 @@ export const getOrderSw = (params) => {
  * 更新屏蔽词
  * @param params =>null
  */
-export const postOrderSw = (params) => {
+export const postOrderSw = params => {
   return ax.p('/order/remark/hidden', params)
 }
 
@@ -101,7 +101,7 @@ export const postOrderSw = (params) => {
  * 获取商品评价列表
  * @type params =>{pageSize,pageNo,mobileno,orderId}
  */
-export const getOrderGoodListEval = (params) => {
+export const getOrderGoodListEval = params => {
   return ax.g('/order/remark/item', params)
 }
 
@@ -133,7 +133,7 @@ export const getOrderBadListEval = (params, pageNo) => {
  * 隐藏订单评价
  * @param params ={id}
  */
-export const patchOrderEval = (params) => {
+export const patchOrderEval = params => {
   return ax.pa('/order/remark', params)
 }
 
@@ -141,7 +141,7 @@ export const patchOrderEval = (params) => {
  * 导出评价列表
  * @param params ={startTime,endTime,status}
  */
-export const exportOrderEval = (params) => {
+export const exportOrderEval = params => {
   return ax.g('/order/remark/export', params)
 }
 
@@ -177,21 +177,21 @@ export const getSellerAccountList = (params, pageNo) => {
   return ax.g(`seller/list/${pageNo}`, params)
 }
 // 更新商户状态
-export const updataShopStatus = (params) => {
+export const updataShopStatus = params => {
   return ax.pa(`/seller/changeState`, params)
 }
 
 //  ********************* BD及邀请码管理 ******************************
 // 获取BD用户列表
-export const getBDlist = (params) => {
+export const getBDlist = params => {
   return ax.g(`platform/bd`, params)
 }
 // 添加BD
-export const addPlatformBD = (params) => {
+export const addPlatformBD = params => {
   return ax.p(`platform/bd`, params)
 }
 // 删除BD
-export const delPlatformBD = (id) => {
+export const delPlatformBD = id => {
   return ax.d(`platform/bd/${id}`)
 }
 // 修改BD
@@ -210,15 +210,15 @@ export const updateProductCategory = (params) => {
 }
 //  ********************* 商户消息推送 ******************************
 // 获取商户端系统消息列表
-export const getSysMessage = (params) => {
+export const getSysMessage = params => {
   return ax.g(`seller/message/sys`, params)
 }
 // 新增商户端系统消息
-export const addSysMessage = (params) => {
+export const addSysMessage = params => {
   return ax.p(`seller/message/sys`, params)
 }
 // 查看商户端系统消息
-export const seeSysMessage = (id) => {
+export const seeSysMessage = id => {
   return ax.g(`seller/message/sys/${id}`)
 }
 // 编辑商户端系统消息
@@ -227,7 +227,7 @@ export const modifySysMessage = (params, id) => {
 }
 //  ********************* 商户消息提醒 ******************************
 // 获取消息提醒列表
-export const getAlertsMessageList = (params) => {
+export const getAlertsMessageList = params => {
   return ax.g(`seller/message/alerts`, params)
 }
 // 更新消息提醒状态
@@ -236,7 +236,38 @@ export const updateAlertsMessage = (params, id) => {
 }
 
 /**
- * 用户端相关接口
+ * 活动管理
+ * zengFanLu
+ * start
+ */
+
+// ********************* 首页banner图管理****************************/
+
+// 开始 未开始 已结束列表/activity/banner/list/
+export const seeBannerList = (params, id) => {
+  return ax.g(`/activity/banner/list/${id}`, params)
+}
+
+// 保存未开始自增banner
+export const addUpdataBanner = params => {
+  return ax.p('/activity/banner', params)
+}
+
+// 已开始 结束banner
+export const endBanner = Id => {
+  return ax.u(`/activity/banner/${Id}`)
+}
+
+// 未开始 删除banner
+export const deleteBanner = id => {
+  return ax.d(`/activity/banner/${id}`)
+}
+
+// 查看banner数据
+export const seeBanner = id => {
+  return ax.g(`/activity/banner/${id}`)
+}
+ /* 用户端相关接口
  * @author by WuFengliang
  */
 

@@ -61,7 +61,7 @@
     <Modal v-model="classifymodal" :title="classifytitle" width="300" @on-ok="postdata" @on-cancel="">
       <draggable v-model="templatedata" @update="datadragEnd">
         <transition-group>
-          <div v-for="(item,index) in templatedata" key="index" style="lineHeight:30px">
+          <div v-for="(item,index) in templatedata" :key="index" style="lineHeight:30px">
             <Input v-model="item.name" size="small" style="width: 200px" v-if="item.operation !== 0"></Input>
             <Button type="error" size="small" @click="delClassify(index)" v-if="item.operation !== 0">删除</Button>
           </div>
@@ -74,7 +74,7 @@
 </template>
 <script>
 import * as api from 'api/common.js'
-import vFoodtemplate from './foodtemplatetable/foodtemplate'
+import vFoodtemplate from './sellercomponents/foodtemplate'
 import draggable from 'vuedraggable'
 export default {
   components: { vFoodtemplate, draggable },
@@ -109,7 +109,6 @@ export default {
               })
             ])
           }
-
         },
         {
           title: '操作',
@@ -117,16 +116,19 @@ export default {
           width: 140,
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'error',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {}
                   }
-                }
-              }, '删除')
+                },
+                '删除'
+              )
             ])
           }
         }
@@ -213,7 +215,7 @@ export default {
 }
 
 .seller-template-manager-container-classify ul,
-.seller-template-manager-container-classify Button {
+.seller-template-manager-container-classify button {
   float: left;
   margin-right: 20px;
 }
@@ -225,6 +227,6 @@ export default {
   line-height: 30px;
   margin-top: -1px;
   border: 1px solid #555;
-  text-align: center
+  text-align: center;
 }
 </style>

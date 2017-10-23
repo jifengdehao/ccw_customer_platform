@@ -40,13 +40,18 @@
     </section>
     <!-- 查看图片 -->
     <Modal v-model="modal" title="商家证件图片" width="726">
+      <table-img ></table-img>
     </Modal>
   </div>
 </template>
 <script>
 import { auditdata, approvaldata } from './sellerdata/sellersettledmanage-data'
 import * as api from 'api/common.js'
+import tableImg from './sellercomponents/tableimage'
 export default {
+  components: {
+    tableImg
+  },
   data() {
     return {
       total: 1,
@@ -59,11 +64,7 @@ export default {
         select: ''
       },
       auditdata: [],
-      tabs: [
-        { title: '商家待审核' },
-        { title: '商家待审批' },
-        { title: '已通过' }
-      ],
+      tabs: [{ title: '商家待审核' }, { title: '商家待审批' }, { title: '已通过' }],
       columns: [
         {
           title: '商家手机',
@@ -94,22 +95,25 @@ export default {
           key: 'upstatus',
           render: (h, params) => {
             return h('div', [
-              h('span', {
-              }, params.row.upstatus),
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginLeft: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.modal = true
+              h('span', {}, params.row.upstatus),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginLeft: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.modal = true
+                    }
                   }
-                }
-              }, '查看')
+                },
+                '查看'
+              )
             ])
           }
         },
@@ -131,31 +135,39 @@ export default {
           width: 140,
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'warning',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.remove(params.index)
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'warning',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.remove(params.index)
+                    }
                   }
-                }
-              }, '不通过'),
-              h('Button', {
-                props: {
-                  type: 'success',
-                  size: 'small'
                 },
-                on: {
-                  click: () => {
-                    this.remove(params.index)
+                '不通过'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.remove(params.index)
+                    }
                   }
-                }
-              }, '通过')
+                },
+                '通过'
+              )
             ])
           }
         }
@@ -165,8 +177,7 @@ export default {
   created() {
     this.auditdata = auditdata
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     changedata(index) {
       if (index === 0) {
@@ -175,12 +186,19 @@ export default {
         this.auditdata = approvaldata
       }
     },
-    changepage(index) { },
+    changepage(index) {},
     remove(index) {
       this.auditdata.splice(index, 1)
     },
     // 获取商品图片审核列表
-    getSellerApplyList(pageNo, pageSize, applyStatus, chargeMan, applyStartTime, applyEndTime) {
+    getSellerApplyList(
+      pageNo,
+      pageSize,
+      applyStatus,
+      chargeMan,
+      applyStartTime,
+      applyEndTime
+    ) {
       let params = {
         pageSize: pageSize,
         applyStatus: applyStatus, // 申请的状态
@@ -199,8 +217,7 @@ export default {
       let params = {
         appltStatus: appltStatus // 商家入驻申请状态
       }
-      api.updateApplyStatus(params, id).then(response => {
-      })
+      api.updateApplyStatus(params, id).then(response => {})
     },
     searchdata(formItem) {
       console.log(formItem)

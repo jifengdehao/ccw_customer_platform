@@ -39,6 +39,18 @@
 </template>
 <script>
 import * as api from 'api/common.js'
+import tableImg from './sellercomponents/tableimage'
+let pic = [
+  'http://img0.imgtn.bdimg.com/it/u=2407460519,1296478327&fm=27&gp=0.jpg',
+  'http://pic.92to.com/360/201603/31/38793361_2.jpg',
+  'http://img1.imgtn.bdimg.com/it/u=3274409375,3587973930&fm=27&gp=0.jpg'
+]
+let pics = [
+  'http://img1.50tu.com/meinv/xinggan/2013-11-16/e65e7cd83f37eed87067299266152807.jpg',
+  'http://img1.imgtn.bdimg.com/it/u=1205165919,1619656090&fm=27&gp=0.jpg',
+  'http://a.hiphotos.baidu.com/image/pic/item/3bf33a87e950352a8e511db15943fbf2b2118b52.jpg',
+  'http://a3.topitme.com/7/ed/28/11292759210ce28ed7o.jpg'
+]
 // 商品图片
 let producttitle = [
   {
@@ -51,24 +63,32 @@ let producttitle = [
     key: 'picUrls',
     render: (h, params) => {
       return h('div', [
-        h('img', {
+        h(tableImg, {
           props: {
-            src: '../../../static/update-browser/images/chrome.png',
-            alt: ''
+            picUrls: params.row.picUrls
           }
-        }),
-        h('img', {
         })
       ])
     }
   },
   {
     title: '商品介绍图片',
-    key: 'picDesc'
+    key: 'picDesc',
+    render: (h, params) => {
+      return h('div', [
+        h(tableImg, {
+          props: {
+            picUrls: params.row.picDesc
+          }
+        })
+      ])
+    }
   },
   {
     title: '商品添加或修改时间',
-    key: 'lastUpdateTime'
+    key: 'lastUpdateTime',
+    width: 200,
+    align: 'center'
   },
   {
     title: '操作',
@@ -76,29 +96,37 @@ let producttitle = [
     width: 140,
     render: (h, params) => {
       return h('div', [
-        h('Button', {
-          props: {
-            type: 'warning',
-            size: 'small'
+        h(
+          'Button',
+          {
+            props: {
+              type: 'warning',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              // click: () => {
+              // }
+            }
           },
-          style: {
-            marginRight: '5px'
+          '不通过'
+        ),
+        h(
+          'Button',
+          {
+            props: {
+              type: 'success',
+              size: 'small'
+            },
+            on: {
+              // click: () => {
+              // }
+            }
           },
-          on: {
-            // click: () => {
-            // }
-          }
-        }, '不通过'),
-        h('Button', {
-          props: {
-            type: 'success',
-            size: 'small'
-          },
-          on: {
-            // click: () => {
-            // }
-          }
-        }, '通过')
+          '通过'
+        )
       ])
     }
   },
@@ -128,29 +156,37 @@ let shoptitle = [
     width: 140,
     render: (h, params) => {
       return h('div', [
-        h('Button', {
-          props: {
-            type: 'warning',
-            size: 'small'
+        h(
+          'Button',
+          {
+            props: {
+              type: 'warning',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              // click: () => {
+              // }
+            }
           },
-          style: {
-            marginRight: '5px'
+          '不通过'
+        ),
+        h(
+          'Button',
+          {
+            props: {
+              type: 'success',
+              size: 'small'
+            },
+            on: {
+              // click: () => {
+              // }
+            }
           },
-          on: {
-            // click: () => {
-            // }
-          }
-        }, '不通过'),
-        h('Button', {
-          props: {
-            type: 'success',
-            size: 'small'
-          },
-          on: {
-            // click: () => {
-            // }
-          }
-        }, '通过')
+          '通过'
+        )
       ])
     }
   },
@@ -180,29 +216,37 @@ let avatar = [
     width: 140,
     render: (h, params) => {
       return h('div', [
-        h('Button', {
-          props: {
-            type: 'warning',
-            size: 'small'
+        h(
+          'Button',
+          {
+            props: {
+              type: 'warning',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              // click: () => {
+              // }
+            }
           },
-          style: {
-            marginRight: '5px'
+          '不通过'
+        ),
+        h(
+          'Button',
+          {
+            props: {
+              type: 'success',
+              size: 'small'
+            },
+            on: {
+              // click: () => {
+              // }
+            }
           },
-          on: {
-            // click: () => {
-            // }
-          }
-        }, '不通过'),
-        h('Button', {
-          props: {
-            type: 'success',
-            size: 'small'
-          },
-          on: {
-            // click: () => {
-            // }
-          }
-        }, '通过')
+          '通过'
+        )
       ])
     }
   },
@@ -213,15 +257,17 @@ let avatar = [
   }
 ]
 export default {
-  components: {},
+  components: {
+    tableImg
+  },
   props: {},
   data() {
     return {
       total: 1,
       pageSize: 1,
       sellervideodata: [
-        { productName: '大银杰' },
-        { productName: '小银杰' },
+        { productName: '大银杰', picUrls: pic },
+        { productName: '小银杰', picDesc: pics },
         { productName: '大小银杰' },
         { productName: '淫杰' }
       ],
@@ -229,11 +275,7 @@ export default {
         startdate: '',
         lastdate: ''
       },
-      tabs: [
-        { title: '商品图片审核' },
-        { title: '档口图片审核' },
-        { title: '档口头像审核' }
-      ],
+      tabs: [{ title: '商品图片审核' }, { title: '档口图片审核' }, { title: '档口头像审核' }],
       columns: []
     }
   },
@@ -288,8 +330,7 @@ export default {
         status: status,
         remark: remark
       }
-      api.updataShopStatus(params).then(response => {
-      })
+      api.updataShopStatus(params).then(response => {})
     },
     changepage(index) {
       this.getProductPic(index, 5)
