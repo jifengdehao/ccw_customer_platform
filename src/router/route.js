@@ -264,7 +264,7 @@ const BdManage = (resolve) => {
 }
 // 商品模版库管理
 const FoodTemplateManage = (resolve) => {
-  import('page/seller/foodtemplatetable/foodtemplate').then((module) => {
+  import('page/seller/foodtemplatemanage').then((module) => {
     resolve(module)
   })
 }
