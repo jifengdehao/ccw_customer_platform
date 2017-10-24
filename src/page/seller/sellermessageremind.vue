@@ -68,7 +68,7 @@ export default {
                 'Button',
                 {
                   props: {
-                    type: params.row.status === 0 ? 'info' : 'disabled',
+                    type: 'info',
                     size: 'small',
                     disabled: params.row.status === 0 ? null : true
                   },

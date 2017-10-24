@@ -5,12 +5,13 @@
  * FunctionPoint: 功能开发点 
  */
 <template>
-  <div class="tableImg">
+  <div class="tableImg vm-clearfix">
     <img class="preview-img imgs" v-for="(item, index) in picUrls" :src="item"  @click="bigpic(item)">
     <Modal
         v-model="modal"
         title="查看大图"
-        width="900">
+        width="900"
+        class="bigimgs">
         <img class="bigimg" :src="url" alt="">
     </Modal>
   </div>
@@ -42,6 +43,9 @@ export default {
 }
 </script>
 <style lang="css" scoped>
+/* .tableImg{
+  height: 100px;
+} */
 .imgs {
   width: 100px;
   height: 100px;
@@ -51,5 +55,8 @@ export default {
 .bigimg {
   width: 800px;
   height: 800px;
+}
+.bigimgs{
+  z-index: 1008;
 }
 </style>

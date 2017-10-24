@@ -12,8 +12,9 @@
       <Button @click="showmoveModal">批量转移</Button>
     </section>
     <Table border :columns="templatecolumns" :data="templatedata"></Table>
+     <!-- 分页 -->
     <section class="foodtemplate-page">
-      <Page :total="100" show-total></Page>
+      <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 增加和编辑的模板 -->
     <Modal v-model="templateModal" :title="templateTitle" width="600">
@@ -115,6 +116,8 @@ export default {
   props: {},
   data() {
     return {
+      total: 1,
+      pageSize: 1,
       model1: '',
       firstclassify: [],
       secondclassify: [],
@@ -129,7 +132,7 @@ export default {
           align: 'center'
         },
         {
-          title: '三级列表',
+          title: '商品名称',
           key: 'name'
         },
         {
@@ -142,21 +145,25 @@ export default {
           width: 140,
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'warning',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.templateTitle = '修改模板'
-                    this.templateModal = true
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'warning',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.templateTitle = '修改模板'
+                      this.templateModal = true
+                    }
                   }
-                }
-              }, '修改模板')
+                },
+                '修改模板'
+              )
             ])
           }
         },
@@ -180,7 +187,8 @@ export default {
     },
     showmoveModal() {
       this.moveModal = true
-    }
+    },
+    changepage() {}
   },
   filfter: {},
   computed: {},
@@ -189,17 +197,17 @@ export default {
 </script>
 <style lang="css" scoped>
 .foodtemplate-button {
-  text-align: right
+  text-align: right;
 }
 
-.foodtemplate Button {
-  margin-bottom: 10px
+.foodtemplate button {
+  margin-bottom: 10px;
 }
 
 .templateModal-from span {
   display: inline-block;
   width: 80px;
-  vertical-align: top
+  vertical-align: top;
 }
 
 .templateModal-from ul {

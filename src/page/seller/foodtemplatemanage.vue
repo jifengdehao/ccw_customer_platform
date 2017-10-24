@@ -37,7 +37,7 @@
                 <li>
                   <h4>一级分类</h4>
                 </li>
-                <li v-for="item in templatedata" key @click="test(item.name)">{{item.name}}</li>
+                <li v-for="(item,index) in parentdata" :key="index" @click="test(item.name,index)" :class="{current:selected==index}">{{item.name}}</li>
               </ul>
               </Col>
               <Col span="11">
@@ -46,7 +46,7 @@
                 <li>
                   <h4>二级分类</h4>
                 </li>
-                <li v-for="item in 12">素材</li>
+                <li v-for="(item,index) in childdata" :key="index">{{item.name}}</li>
               </ul>
               </Col>
             </Row>
@@ -59,9 +59,9 @@
     </section>
     <!-- 查看图片 -->
     <Modal v-model="classifymodal" :title="classifytitle" width="300" @on-ok="postdata" @on-cancel="">
-      <draggable v-model="templatedata" @update="datadragEnd">
+      <draggable v-model="parentdata" @update="datadragEnd">
         <transition-group>
-          <div v-for="(item,index) in templatedata" :key="index" style="lineHeight:30px">
+          <div v-for="(item,index) in parentdata" :key="index" style="lineHeight:30px">
             <Input v-model="item.name" size="small" style="width: 200px" v-if="item.operation !== 0"></Input>
             <Button type="error" size="small" @click="delClassify(index)" v-if="item.operation !== 0">删除</Button>
           </div>
@@ -81,6 +81,8 @@ export default {
   props: {},
   data() {
     return {
+      idx: Number,
+      selected: 0,
       formItem: {
         input: ''
       },
@@ -90,7 +92,8 @@ export default {
       classifytitle: '',
       firstclassify: [],
       secondclassify: [],
-      templatedata: [],
+      parentdata: [],
+      childdata: [],
       classifymodal: false,
       classifyColumns: [
         {
@@ -137,18 +140,18 @@ export default {
     }
   },
   created() {
-    this.getProductCategory()
+    this.getProductCategory(-1)
   },
   //   mounted: {},
   activited: {},
   update: {},
   methods: {
-    getProductCategory() {
+    getProductCategory(parentId) {
       let params = {
-        parentId: -1
+        parentId: parentId
       }
       api.getProductCategory(params).then(response => {
-        this.templatedata = response
+        this.parentdata = response
       })
     },
     // updateProductCategory(categories) {
@@ -163,8 +166,8 @@ export default {
         this.search = true
       }
     },
-    test(value) {
-      alert(value)
+    test(value, index) {
+      this.selected = index
     },
     showModal1() {
       this.classifytitle = '一级分类管理'
@@ -177,22 +180,32 @@ export default {
     datadragEnd(evt) {
       console.log('拖动前的索引 :' + evt.oldIndex)
       console.log('拖动后的索引 :' + evt.newIndex)
-      console.log(this.templatedata)
+      console.log(this.parentdata)
+      this.parentdata.forEach((item, index) => {
+        item.idx = index + 1
+      })
     },
-    addClassify() {
-      let addli = { name: '', operation: 3 }
-      this.templatedata.push(addli)
+    addClassify(index) {
+      console.log(index)
+      let addli = {
+        name: '',
+        operation: 2,
+        parentId: -1,
+        idx: this.parentdata.length + 1
+      }
+      this.parentdata.push(addli)
       // console.log(this.templatedata)
     },
     delClassify(index) {
-      if (this.templatedata[index].operation === 3) {
-        this.templatedata.splice(index, 1)
+      if (this.parentdata[index].operation === 2) {
+        this.parentdata.splice(index, 1)
       } else {
-        this.templatedata[index].operation = 0
+        this.parentdata[index].operation = 0
       }
     },
     postdata() {
-      api.updateProductCategory(this.templatedata).then(response => {
+      console.log(this.parentdata)
+      api.updateProductCategory(this.parentdata).then(response => {
         console.log(response)
       })
     }
@@ -207,7 +220,9 @@ export default {
   font-size: 16px;
   vertical-align: middle;
 }
-
+.current {
+  background-color: #ccc;
+}
 .seller-template-manager-container-classify {
   width: 100%;
   padding: 40px;

@@ -11,13 +11,13 @@
       <Form :model="formItem" ref="formItem" inline>
         <FormItem>
           <span class="label">市场：</span>
-          <Select v-model="formItem.select" placeholder="请选择" style="width: 200px">
-            <Option v-for="item in charge" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Select v-model="formItem.market" placeholder="请选择" style="width: 200px">
+            <Option v-for="item in market" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </FormItem>
         <FormItem>
           <span class="label">负责人筛选：</span>
-          <Select v-model="formItem.select" placeholder="请选择" style="width: 200px">
+          <Select v-model="formItem.charge" placeholder="请选择" style="width: 200px">
             <Option v-for="item in charge" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </FormItem>
@@ -36,7 +36,24 @@
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 修改BD -->
-    <Modal v-model="BDmodal" :title="modelTitle" width="600">
+    <Modal v-model="BDmodal" :title="modelTitle" width="400" class="BDmodal">
+      <Form :model="modelFormItem" ref="formItem" inline>
+        <FormItem>
+          <span class="label">姓名：</span>
+          <Input size="small" v-model="modelFormItem.name" :value="modelFormItem.name" placeholder="请输入" style="width: 150px"></Input>
+          </br>
+          <span class="label">电话：</span>
+          <Input size="small" v-model="modelFormItem.tel" :value="modelFormItem.tel" placeholder="请输入" style="width: 150px"></Input>
+          </br>
+          <span class="label">邀请码：</span>
+          <Input size="small" v-model="modelFormItem.invitCode" :value="modelFormItem.invitCode" placeholder="请输入" style="width: 150px"></Input>
+          </br>
+          <span class="label">负责市场：</span>
+          <Select v-model="modelFormItem.market" :value="modelFormItem.market" size="small" placeholder="请选择" style="width: 150px">
+            <Option v-for="item in market" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
+        </FormItem>
+      </Form>
     </Modal>
   </div>
 </template>
@@ -50,7 +67,9 @@ export default {
       total: 1,
       pageSize: 1,
       formItem: {},
+      modelFormItem: {},
       charge: [],
+      market: [],
       BDmodal: false,
       modelTitle: '',
       columns: [
@@ -73,39 +92,45 @@ export default {
           align: 'center',
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.BDmodal = true
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.modelTitle = '修改BD'
+                      this.BDmodal = true
+                    }
                   }
-                }
-              }, '修改'),
-              h('Button', {
-                props: {
-                  type: 'error',
-                  size: 'small'
                 },
-                on: {
-                  click: () => {
-                    this.modelTitle = '修改BD'
-                    this.remove(params.index)
+                '修改'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.remove(params.index)
+                    }
                   }
-                }
-              }, '删除')
+                },
+                '删除'
+              )
             ])
           }
         }
       ],
-      BDdata: [
-        { name: '小二' }
-      ]
+      BDdata: [{ name: '小二' }]
     }
   },
   // created: {},
@@ -135,13 +160,11 @@ export default {
         invitCode: invitCode,
         marketId: market
       }
-      api.addPlatformBD(params).then(response => {
-      })
+      api.addPlatformBD(params).then(response => {})
     },
     // 删除BD
     delPlatformBD(id) {
-      api.addPlatformBD(id).then(response => {
-      })
+      api.addPlatformBD(id).then(response => {})
     },
     // 修改BD
     modifyBD(id, name, mobileno, invitCode, market) {
@@ -151,10 +174,9 @@ export default {
         invitCode: invitCode,
         marketId: market
       }
-      api.modifyBD(params, id).then(response => {
-      })
+      api.modifyBD(params, id).then(response => {})
     },
-    changepage(index) { },
+    changepage(index) {},
     remove(index) {
       this.BDdata.splice(index, 1)
     },
@@ -172,5 +194,9 @@ export default {
 .bd-manager-page {
   margin-top: 10px;
   text-align: right;
+}
+.BDmodal span {
+  display: inline-block;
+  width: 60px;
 }
 </style>

@@ -165,7 +165,14 @@ export const getProductPic = (params, pageNo) => {
 export const getShopPic = (params, pageNo) => {
   return ax.g(`seller/pic/shop/list/${pageNo}`, params)
 }
-
+// 商品图片审核
+export const auditProductPicStatus = (params) => {
+  return ax.g(`seller/pic/product/audit`, params)
+}
+// 审核店铺图片
+export const auditShopPicStatus = (params) => {
+  return ax.g(`seller/pic/shop/audit`, params)
+}
 //  ********************** 商户账号管理 *******************************
 // 获取商户账号列表
 export const getSellerAccountList = (params, pageNo) => {
@@ -175,7 +182,10 @@ export const getSellerAccountList = (params, pageNo) => {
 export const updataShopStatus = (params) => {
   return ax.pa(`/seller/changeState`, params)
 }
-
+// 获取商家信息详情
+export const getsellerInfo = (params, sellerId) => {
+  return ax.g(`seller/${sellerId}`, params)
+}
 //  ********************* BD及邀请码管理 ******************************
 // 获取BD用户列表
 export const getBDlist = (params) => {

@@ -27,8 +27,8 @@
           <Table border ref="selection" :columns="columns" :data="sellervideodata" @on-select="showselect">
           </Table>
         </TabPane>
-        <Button type="success" @click="" size="small" slot="extra" @click="allpass()">批量通过</Button>
-        <Button type="warning" @click="" size="small" slot="extra" style="marginLeft:5px">批量不通过</Button>
+        <Button type="success" size="small" slot="extra" @click="batchpass()">批量通过</Button>
+        <Button type="warning" @click="batchnotpass()" size="small" slot="extra" style="marginLeft:5px">批量不通过</Button>
       </Tabs>
     </section>
     <!-- 分页 -->
@@ -107,8 +107,9 @@ let producttitle = [
               marginRight: '5px'
             },
             on: {
-              // click: () => {
-              // }
+              click: () => {
+                this.auditProductPicStatus(params.row.spProductId, 2)
+              }
             }
           },
           '不通过'
@@ -121,8 +122,9 @@ let producttitle = [
               size: 'small'
             },
             on: {
-              // click: () => {
-              // }
+              click: () => {
+                this.auditProductPicStatus(params.row.spProductId, 3)
+              }
             }
           },
           '通过'
@@ -167,8 +169,9 @@ let shoptitle = [
               marginRight: '5px'
             },
             on: {
-              // click: () => {
-              // }
+              click: () => {
+                this.auditShopPicStatus(params.row.shopId, 1, 2)
+              }
             }
           },
           '不通过'
@@ -181,8 +184,9 @@ let shoptitle = [
               size: 'small'
             },
             on: {
-              // click: () => {
-              // }
+              click: () => {
+                this.auditShopPicStatus(params.row.shopId, 1, 3)
+              }
             }
           },
           '通过'
@@ -227,8 +231,9 @@ let avatar = [
               marginRight: '5px'
             },
             on: {
-              // click: () => {
-              // }
+              click: () => {
+                this.auditShopPicStatus(params.row.shopId, 2, 2)
+              }
             }
           },
           '不通过'
@@ -241,8 +246,9 @@ let avatar = [
               size: 'small'
             },
             on: {
-              // click: () => {
-              // }
+              click: () => {
+                this.auditShopPicStatus(params.row.shopId, 2, 3)
+              }
             }
           },
           '通过'
@@ -265,6 +271,7 @@ export default {
     return {
       total: 1,
       pageSize: 1,
+      selectiondata: [],
       sellervideodata: [
         { productName: '大银杰', picUrls: pic },
         { productName: '小银杰', picDesc: pics },
@@ -280,7 +287,7 @@ export default {
     }
   },
   created() {
-    // this.getProductPic(1, 5)
+    this.getProductPic(1, 5)
     this.columns = producttitle
   },
   // mounted: {},
@@ -289,10 +296,13 @@ export default {
   methods: {
     changedata(index) {
       if (index === 0) {
+        this.getProductPic(1, 5)
         this.columns = producttitle
       } else if (index === 1) {
+        this.getShopPic(1, 5, 1)
         this.columns = shoptitle
       } else if (index === 2) {
+        this.getShopPic(1, 5, 2)
         this.columns = avatar
       }
     },
@@ -323,23 +333,66 @@ export default {
         this.pageSize = response.size
       })
     },
-    // 更新商户状态
-    updataShopStatus(sellerId, status, remark) {
+    // 审核商品图片
+    auditProductPicStatus(productId, auditStatus) {
       let params = {
-        sellerId: sellerId,
-        status: status,
-        remark: remark
+        productId: productId,
+        auditStatus: auditStatus // 通过是3 不通过是2
       }
-      api.updataShopStatus(params).then(response => {})
+      api.auditProductPicStatus(params).then(response => {
+        if (response.msg === '更新成功') {
+          // remove(1)
+        }
+      })
     },
+    // 审核店铺图片
+    auditShopPicStatus(shopId, picType, auditStatus) {
+      let params = {
+        shopId: shopId,
+        picType: picType, // 1：档口图片，2：档口头像
+        auditStatus: auditStatus // 通过是3 不通过是2
+      }
+      api.auditShopPicStatus(params).then(response => {
+        if (response.msg === '更新成功') {
+          // remove(1)
+        }
+      })
+    },
+    // 分页
     changepage(index) {
       this.getProductPic(index, 5)
     },
+    // 搜索
     searchdata(formItem) {
       console.log(formItem)
     },
+    // 多选
     showselect(selection) {
-      console.log(selection)
+      this.selectiondata = selection
+    },
+    // 批量通过
+    batchpass() {
+      this.selectiondata.forEach(item => {
+        if (item.spProductId) {
+          this.auditProductPicStatus(item.spProductId, 3)
+        } else if (item.msShopId && item.headUrl) {
+          this.auditShopPicStatus(item.msShopId, 1, 3)
+        } else if (item.msShopId && item.shopPicUrl) {
+          this.auditShopPicStatus(item.msShopId, 2, 3)
+        }
+      })
+    },
+    // 批量不通过
+    batchnotpass() {
+      this.selectiondata.forEach(item => {
+        if (item.spProductId) {
+          this.auditProductPicStatus(item.spProductId, 2)
+        } else if (item.msShopId && item.headUrl) {
+          this.auditShopPicStatus(item.msShopId, 1, 2)
+        } else if (item.msShopId && item.shopPicUrl) {
+          this.auditShopPicStatus(item.msShopId, 2, 2)
+        }
+      })
     }
   },
   filfter: {},
