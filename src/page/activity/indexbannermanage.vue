@@ -24,7 +24,7 @@
                   <img style="width: 100%; height: 100%" :src="data.picUrl">
                 </td>
                 <td>
-                  <input type="button" value="重新上传">
+                  <input type="button" @change="onUpload" value="重新上传">
                   <input type="file" @change="onUpload" title="上传图片" filetype="image/*">
                 </td>
                 <td>
@@ -39,7 +39,7 @@
                 </td>
                 <td><Button type="error" @click="onChangButton(data)">{{ bannerState }}</Button></td>
               </tr>
-              <tr v-if="bannerData && bannerData.length <= 0">
+              <tr v-if="bannerData && bannerData.length <= 0" style="height: 40px;">
                 <td colspan="12">暂无数据</td>
               </tr>
             </tbody>
@@ -57,14 +57,14 @@
                 <td>{{ data.endTime }}</td>
                 <td><Button type="primary" @click="seeModal(data)">查看</Button></td>
               </tr>
-              <tr v-if="bannerData && bannerData.length <= 0">
+              <tr v-if="bannerData && bannerData.length <= 0" style="height: 40px;">
                 <td colspan="12">暂无数据</td>
               </tr>
             </tbody>
           </table>
           <!-- 已结束end -->
         </div>
-        <div class="save-change" v-if="saveShow">
+        <div class="save-change" v-if="saveShow && bannerData.length > 0" style="margin-bottom: 40px;">
           <Button @click="getSaveChanges" type="primary" size="large">保存修改</Button>
         </div>
         <!-- 查看banner模态框start -->
@@ -259,7 +259,7 @@ export default {
     onUpload(e) {
       this.formData = new FormData()
       this.formData.append('file', e.target.files[0])
-      console.log(this.formData)
+      console.log(this.formData, e)
     }
   }
 }

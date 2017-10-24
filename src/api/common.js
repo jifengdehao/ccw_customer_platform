@@ -55,7 +55,7 @@ export const exportOrderList = params => {
  * 获取订单详情
  * @param params => orderId
  */
-export const getOrderInfo = (params) => {
+export const getOrderInfo = params => {
   return ax.g(`/order/${params}`)
 }
 /**
@@ -63,7 +63,7 @@ export const getOrderInfo = (params) => {
  * @param params => orderId
  */
 
-export const getSeedOrderData = (params) => {
+export const getSeedOrderData = params => {
   return ax.g(`/order/seed/${params}`)
 }
 
@@ -196,11 +196,11 @@ export const modifyBD = (params, id) => {
 
 //  ********************* 商品模板库管理 ******************************
 // 获取分类列表
-export const getProductCategory = (params) => {
+export const getProductCategory = params => {
   return ax.g(`product/category`, params)
 }
 // 更新分类信息
-export const updateProductCategory = (params) => {
+export const updateProductCategory = params => {
   return ax.p(`product/category`, params)
 }
 //  ********************* 商户消息推送 ******************************
@@ -262,7 +262,7 @@ export const deleteBanner = id => {
 export const seeBanner = id => {
   return ax.g(`/activity/banner/${id}`)
 }
- /* 用户端相关接口
+/* 用户端相关接口
  * @author by WuFengliang
  */
 
@@ -270,32 +270,55 @@ export const seeBanner = id => {
  * 获取用户端所有用户列表
  * @param params =>{status,mobileno,pageSize,pageNo}
  */
-export const getUsersList = (params) => {
+export const getUsersList = params => {
   return ax.g(`customer/`, params)
 }
 
 /**
  * 获取用户端昨日新增用户量和当前用户量
  */
-export const getCustomerCount = (params) => {
+export const getCustomerCount = params => {
   return ax.g(`customer/customerCount`, params)
 }
 
 /**
  * 冻结与恢复账户
  */
-export const changeStatus = (params) => {
+export const changeStatus = params => {
   return ax.pa(`customer/changeState`, params)
 }
 
 /**
  * 获取用户信息
  */
-export const getUserInfoData = (params) => {
+export const getUserInfoData = params => {
   return ax.g(`customer/${params.custId}`)
 }
 
- /**
+/**
  * 用户端相关接口
  * @author by WuFengliang
  */
+
+/**
+ * 平台用户管理相关接口
+ * ZengFanlu
+ */
+export const getplatformUser = (params, pageNo) => {
+  return ax.g(`/platform/user/list/${pageNo}`, params)
+}
+
+// 查看平台用户个人信息
+export const getplatformUserId = id => {
+  return ax.g(`/platform/user/${id}`)
+}
+
+// 新增用户
+export const getAddUser = params => {
+  return ax.p('/platform/user', params)
+}
+
+// 冻结。解冻用户
+export const getpaltformUserChange = params => {
+  return ax.pa('/platform/user/changeState', params)
+}
