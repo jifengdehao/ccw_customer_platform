@@ -1,5 +1,5 @@
 <template>
-  <div class="users-log">操作日志</div>
+  <div class="users-log"><h1>此功能延迟下期开发………………</h1></div>
 </template>
 <script type="text/ecmascript-6">
     export default {}

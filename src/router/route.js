@@ -194,12 +194,7 @@ const CouponManagement = (resolve) => {
     resolve(module)
   })
 }
-// 首页banner图管理 查看历史更新子页面
-const ViewHistoryUpdate = (resolve) => {
-  import('page/activity/viewHistoryUpdate').then((module) => {
-    resolve(module)
-  })
-}
+
 // 优惠券管理 查看进行中优惠券
 const viewOngoingCoupons = (resolve) => {
   import('page/activity/viewOngoingCoupons').then((module) => {
@@ -269,7 +264,7 @@ const BdManage = (resolve) => {
 }
 // 商品模版库管理
 const FoodTemplateManage = (resolve) => {
-  import('page/seller/foodtemplatemanage').then((module) => {
+  import('page/seller/foodtemplatetable/foodtemplate').then((module) => {
     resolve(module)
   })
 }
@@ -317,7 +312,7 @@ export default [
           {path: 'manage', component: OrderManage},
           {path: 'abnormal', component: OrderAbnormal},
           {path: 'evaluate', component: OrderEvaluate},
-          {path: 'evaluateInfo', component: OrderEvaluateInfo},
+          {path: 'evaluateInfo/:id', component: OrderEvaluateInfo},
           {path: 'feedback', component: OrderFeedback},
           {path: 'feedbackInfo/:id', component: OrderFeedbackInfo},
           {path: 'sw', component: OrderSw},
@@ -362,7 +357,6 @@ export default [
         children: [
           {path: 'index_banner_manage', component: IndexBannerManage},
           {path: 'coupon_management', component: CouponManagement},
-          {path: 'viewUpdate', component: ViewHistoryUpdate},
           {path: 'vieOngoingInfo', component: viewOngoingCoupons},
           {path: 'addCoupons', component: addCoupons},
           {path: 'pendingDetali', component: pendingOpreation}

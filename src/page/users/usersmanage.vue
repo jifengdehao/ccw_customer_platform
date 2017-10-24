@@ -2,17 +2,18 @@
   <div>
     <div class="searchInput">
       <p>手机号码：</p>
-      <input type="text">
-      <Button type="primary" icon="ios-search">搜索</Button>
+      <input type="text" v-model="searchMobileno">
+      <Button type="primary"@click="onSearchMobile" icon="ios-search">搜索</Button>
     </div>
     <div>
       <Tabs @on-click="onSwitch" :animated="false">
         <TabPane v-for="menu in userMenu" :key="menu.id" :label="menu">
           <Table border stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
         </TabPane>
+         <Page v-if="userDate && userDate.length > 0" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
         <Button type="primary" style="margin-right: 7px;" slot="extra" size="large" @click="exportModal=true">
           <Icon type="ios-download-outline"></Icon> 导出</Button>
-        <Button type="ghost" size="large" slot="extra" @click="showUser=true" v-if="addHidden">增加</Button>
+        <Button type="ghost" size="large" slot="extra" @click="onShowUser" v-if="addHidden">增加</Button>
       </Tabs>
     </div>
     <!-- 导出数据弹框start -->
@@ -50,36 +51,42 @@
     <!-- 查看数据弹框start -->
     <Modal v-model="checkUser" title="查看用户" class="userShowModal">
       <p>
-        <span>用户ID</span>
-        <span>10086</span>
+        <span>用户ID:</span>
+        <span>{{ seeInformation.ptUserId }}</span>
       </p>
       <p>
-        <span>用户昵称</span>
-        <span>Louis</span>
+        <span>用户昵称:</span>
+        <span>{{ seeInformation.nickname }}</span>
       </p>
       <p>
-        <span>用户手机</span>
-        <span>11111111</span>
+        <span>用户手机:</span>
+        <span>{{ seeInformation.mobileno }}</span>
       </p>
       <p>
-        <span>用户邮箱</span>
-        <span>wwwwwwwwww</span>
+        <span>用户邮箱:</span>
+        <span>{{ seeInformation.email }}</span>
       </p>
     </Modal>
     <!-- 查看数据弹框end -->
     <!-- 冻结用户 解冻用户start -->
-    <Modal v-model="userFrozen" title="冻结用户" ok-text="确定" cancel-text="取消">
+    <Modal v-model="userFrozen" :title="userStatus" @on-ok="onUserStatus" ok-text="确定" cancel-text="取消">
       <p style="line-height: 78px; text-align: center; font-size: 18px">{{ userProcessu }}</p>
     </Modal>
     <!-- 冻结用户 解冻用户end -->
   </div>
 </template>
 <script type="text/ecmascript-6">
+import * as api from 'api/common'
 export default {
   data() {
     return {
+      searchMobileno: '', // 搜索电话
       userMenu: ['正常用户', '冻结用户'], // 导航 table切换数据
-      userDate: [],
+      userDate: [], // 列表数据
+      status: 0, // 默认切换teble 状态
+      pageSize: 10, // 分页参数，表示每页显示多少条记录
+      pageNo: 1, // 分页参数，表示当前页
+      total: '', // 总页数
       exportModal: false, // 显示弹出弹框
       modal_loading: false, // 确定显示loading导出 图
       showUser: false, // 显示查看用户弹框
@@ -87,111 +94,145 @@ export default {
       userFrozen: false, // 冻结用户弹框
       userProcessu: '确定将用户冻结？', // 冻结用户 解冻用户字段
       addHidden: false, // 新增判断显隐
+      userStatus: '冻结', // 用户操作状态
+      saveStatus: '', // 保存冻结 解冻 ID 发送请求
+      seeInformation: [], // 查看个人信息
       userId: '', // 用户ID
       userName: '', // 用户昵称
       userPhone: '', // 用户手机
       userMailBox: '', // 用户邮箱
       columns1: [
+        // title 信息数据
         {
           title: '用户Id',
-          key: 'userId',
+          key: 'ptUserId',
           width: '110'
         },
         {
           title: '昵称',
-          key: 'name'
+          key: 'nickname'
         },
         {
           title: '手机号码',
-          key: 'phoneNum'
+          key: 'mobileno'
         },
         {
           title: '邮箱',
-          key: 'mailbox'
+          key: 'email'
         },
         {
           title: '最后一次登录时间',
-          key: 'lastSignIn'
+          key: 'lastLoginTime'
         },
         {
           title: '最后一次登录IP',
-          key: 'IP'
+          key: 'lastLoginIp'
         },
         {
           title: '操作',
           key: 'operation',
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.checkUser = true
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.checkUser = true
+                      if (this.status === 0) {
+                        api.getplatformUserId(params.row.ptUserId).then(res => {
+                          this.seeInformation = res
+                        })
+                      }
+                    }
                   }
-                }
-              }, '查看'),
-              h('Button', {
-                props: {
-                  type: 'error',
-                  size: 'small'
                 },
-                on: {
-                  click: () => {
-                    this.userFrozen = true
+                '查看'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      // 打开冻结 解冻弹框
+                      this.userFrozen = true
+                      this.saveStatus = params.row.ptUserId // 保存冻结 解冻 ID 发送请求
+                    }
                   }
-                }
-              }, '冻结')
+                },
+                this.userStatus
+              )
             ])
           }
-        }
-      ],
-      data1: [
-        {
-          userId: '10086',
-          name: 'xiaocai',
-          phoneNum: '1111111111',
-          mailbox: '18883jjfnf@qq`11',
-          lastSignIn: '2017/8/16  9:35',
-          IP: '192.168.1.1'
-        }
-      ],
-      data2: [
-        {
-          userId: '10096',
-          name: 'xiaocai',
-          phoneNum: '1111111111',
-          mailbox: '18883jjfnf@qq`11',
-          lastSignIn: '2017/8/16  9:35',
-          IP: '192.168.1.1'
         }
       ]
     }
   },
   created: function() {
-    this.userMenu[0] // 初始化 默认导航为 0
-    this.userDate = this.data1 // 初始化数据
+    this.getUserData() // 初始化列表数据
     this.userProcessu = '确定将用户冻结？' // 冻结弹出框数据
+    this.userStatus = '冻结' // 初始化用户状态
     this.addHidden = true // 显隐新增弹框
   },
   methods: {
-    onSwitch(value) { // 切换导航
+    // 处理列表数据
+    getUserData() {
+      let params = {
+        mobileno: this.searchMobileno, // 搜索电话
+        status: this.status, // 获取状态
+        pageSize: this.pageSize // 分页参数，表示每页显示多少条记录
+      }
+      api.getplatformUser(params, this.pageNo).then(res => {
+        this.userDate = res.records // 获取列表数据
+        this.total = res.total // 总页数
+      })
+    },
+    // 搜索电话
+    onSearchMobile() {
+      this.getUserData() // 初始化列表数据
+    },
+    onSwitch(value) {
+      this.status = value // 获取当前点击状态
+      this.pageNo = 1 // 每次切换 初始化页面 1
+      this.getUserData() // 数据调用
+      // 切换导航
       if (value === 0) {
-        this.userDate = this.data1 // 正常用户数据
         this.userProcessu = '确定将用户冻结？' // 冻结用户弹框内容
+        this.userStatus = '冻结' // 用户状态
         this.addHidden = true // 新增弹框显示
       } else if (value === 1) {
-        this.userDate = this.data2 // 冻结用户数据
+        this.userStatus = '解冻' // 用户状态更换
         this.userProcessu = '确定将用户解冻？' // 解冻用户弹框内容
         this.addHidden = false
       }
     },
-    getExportData() { // 导出数据
+    // 更新状态
+    onUserStatus() {
+      let params = {
+        userId: this.saveStatus, // 获取当前点击ID
+        status: this.status // 当前所在页
+      }
+      api.getpaltformUserChange(params).then(data => {})
+      this.getUserData() // 数据调用
+    },
+    // 获取当前分页
+    onChange(name) {
+      this.pageNo = name
+      this.getUserData() // 数据调用
+    },
+    getExportData() {
+      // 导出数据
       this.modal_loading = true
       setTimeout(() => {
         this.$refs.all_order.exportCsv({
@@ -201,10 +242,26 @@ export default {
         this.exportModal = false
       }, 2000)
     },
-    addUser() { // 确定新增用户
-      console.log(this.userId, this.userName, this.userPhone, this.userMailBox)
+    // 新增用户 打开弹框 清空默认值
+    onShowUser() {
+      this.userName = ''
+      this.userPhone = ''
+      this.userMailBox = ''
+      this.userId = ''
+      this.showUser = true
     },
-    addCancel() { }
+    addUser() {
+      // 确定新增用户
+      let params = {
+        nickname: this.userName,
+        mobileno: this.userPhone,
+        email: this.userMailBox,
+        ptUserId: this.userId
+      }
+      api.getAddUser(params).then(res => {})
+      this.getUserData() // 数据调用
+    },
+    addCancel() {}
   }
 }
 </script>
