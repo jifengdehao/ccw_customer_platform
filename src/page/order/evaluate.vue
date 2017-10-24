@@ -113,7 +113,7 @@
             key: 'options',
             align: 'center',
             render: (h, params) => {
-              let id = params.row.id
+              let id = params.row.custId
               return h('div', [
                 h('Button', {
                   props: {
@@ -126,7 +126,7 @@
                   on: {
                     click: () => {
                       // 查询单个订单详情
-                      this.$router.push('/order/evaluateInfo?id=' + id)
+                      this.$router.push('/order/evaluateInfo/' + id)
                     }
                   }
                 }, '查看'),

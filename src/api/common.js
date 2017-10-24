@@ -58,6 +58,11 @@ export const exportOrderList = params => {
 export const getOrderInfo = params => {
   return ax.g(`/order/${params}`)
 }
+
+export const putRefundOrder = (params) => {
+  return ax.u(`/order/order/refund/${params}`)
+}
+
 /**
  *  获取订单的子订单列表
  * @param params => orderId

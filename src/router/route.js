@@ -264,7 +264,7 @@ const BdManage = (resolve) => {
 }
 // 商品模版库管理
 const FoodTemplateManage = (resolve) => {
-  import('page/seller/foodtemplatemanage').then((module) => {
+  import('page/seller/foodtemplatetable/foodtemplate').then((module) => {
     resolve(module)
   })
 }
@@ -312,7 +312,7 @@ export default [
           {path: 'manage', component: OrderManage},
           {path: 'abnormal', component: OrderAbnormal},
           {path: 'evaluate', component: OrderEvaluate},
-          {path: 'evaluateInfo', component: OrderEvaluateInfo},
+          {path: 'evaluateInfo/:id', component: OrderEvaluateInfo},
           {path: 'feedback', component: OrderFeedback},
           {path: 'feedbackInfo/:id', component: OrderFeedbackInfo},
           {path: 'sw', component: OrderSw},

@@ -39,6 +39,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common.js'
+  import * as time from '@/until/time'
 
   export default {
     data () {
@@ -54,72 +55,93 @@
           },
           {
             title: '下单时间',
-            key: 'orderTime',
-            align: 'center'
+            key: 'submitTime',
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.submitTime)
+            }
           },
           {
             title: '收货人',
-            key: 'consignee',
+            key: 'receiver',
             align: 'center'
           },
           {
             title: '收货电话',
-            key: 'consigneeTel',
+            key: 'contactNumber',
             align: 'center'
           },
           {
             title: '收货地址',
-            key: 'consigneeAdr',
+            key: 'address',
             align: 'center'
           },
           {
             title: '收货时间段',
-            key: 'consigneeTime',
+            key: 'deliveryZone',
             align: 'center'
           },
           {
             title: '收货方式',
-            key: 'consigneeStatus',
+            key: 'deliveryMode',
             align: 'center'
           }
         ],
         columns2: [
           {
             title: '配送员ID',
-            key: 'deliveryId',
+            key: 'psDeliverId',
             align: 'center'
           },
           {
             title: '配送员姓名',
-            key: 'deliveryName',
+            key: 'name',
             align: 'center'
           },
           {
             title: '取货时间',
             key: 'startTime',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.startTime)
+            }
           },
           {
             title: '送达时间',
             key: 'endTime',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.endTime)
+            }
           }
         ],
         columns3: [
           {
             title: '订单金额',
-            key: 'orderSum',
-            align: 'center'
+            key: 'amount',
+            align: 'center',
+            render: (h, params) => {
+              let text = params.row.amount
+              return ('span', '¥' + text)
+            }
           },
           {
             title: '配送费',
-            key: 'deliverySum',
-            align: 'center'
+            key: 'transCost',
+            align: 'center',
+            render: (h, params) => {
+              let text = params.row.transCost
+              return ('span', '¥' + text)
+            }
           },
           {
             title: '优惠金额',
-            key: 'discountSum',
-            align: 'center'
+            key: 'discount',
+            align: 'center',
+            render: (h, params) => {
+              let text = params.row.discount
+              return ('span', '¥' + text)
+            }
           },
           {
             title: '优惠券',
@@ -128,13 +150,12 @@
           },
           {
             title: '实际金额',
-            key: 'actualSum',
-            align: 'center'
-          },
-          {
-            title: '支付状态',
-            key: 'payStatus',
-            align: 'center'
+            key: 'realPayAmount',
+            align: 'center',
+            render: (h, params) => {
+              let text = params.row.realPayAmount
+              return ('span', '¥' + text)
+            }
           }
         ],
         columns4: [
@@ -183,31 +204,32 @@
             key: 'options',
             align: 'center',
             render: (h, params) => {
-              let orderNumber = params.row.transactionNumber
-              let isRefund = params.row.isRefund
+              let foodId = params.row.coOrderDetailId
+              let isRefunded = params.row.isRefunded
+              if (isRefunded === 0) {
+                isRefunded = false
+              } else if (isRefunded === 1) {
+                isRefunded = true
+              }
               return h('div', [
                 h('Button', {
                   props: {
                     type: 'error',
                     size: 'small',
-                    disabled: isRefund
+                    disabled: isRefunded
                   },
                   on: {
                     click: () => {
-                      console.log(orderNumber)
-                      // 退款操作
+                      let _this = this // 这里有个bug this指向重新来
                       this.$Modal.confirm({
-                        render: (h) => {
-                          return h('Input', {
-                            props: {
-                              value: this.value,
-                              autofocus: true,
-                              placeholder: '请输入金额'
-                            },
-                            on: {
-                              input: (val) => {
-                                this.value = val
-                              }
+                        content: '确定退还此商品金额？',
+                        onOk () {
+                          // api 操作
+                          api.putRefundOrder(foodId).then((res) => {
+                            console.log(res)
+                            if (res === null) {
+                              // window.location.reload()
+                              _this.getOrderDetails()
                             }
                           })
                         }
@@ -220,17 +242,20 @@
           },
           {
             title: '退款金额',
-            key: 'refundSum',
+            key: 'refundAmount',
             align: 'center'
           },
           {
             title: '退款时间',
-            key: 'refundTime',
-            align: 'center'
+            key: 'payTime',
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.payTime)
+            }
           },
           {
             title: '退款方式',
-            key: 'refundMethod',
+            key: 'payWay',
             align: 'center'
           }
         ],
@@ -338,7 +363,10 @@
         api.getOrderInfo(this.orderId).then((res) => {
           console.log(res)
           if (res) {
-            this.data4 = res.dealInfoS
+            this.data4 = res.dealInfoList
+            this.data1 = Array.of(res.orderInfo)
+            this.data2 = Array.of(res.deliverInfo)
+            this.data3 = Array.of(res.paymentInfo)
           }
         })
       }

@@ -35,7 +35,27 @@ router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   next()
 })
-
+Vue.prototype.format = function (oDate, format) {
+  var date = {
+    'M+': oDate.getMonth() + 1,
+    'd+': oDate.getDate(),
+    'h+': oDate.getHours(),
+    'm+': oDate.getMinutes(),
+    's+': oDate.getSeconds(),
+    'q+': Math.floor((oDate.getMonth() + 3) / 3),
+    'S+': oDate.getMilliseconds()
+  }
+  if (/(y+)/i.test(format)) {
+    format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length))
+  }
+  for (var k in date) {
+    if (new RegExp('(' + k + ')').test(format)) {
+      format = format.replace(RegExp.$1, RegExp.$1.length === 1
+        ? date[k] : ('00' + date[k]).substr(('' + date[k]).length))
+    }
+  }
+  return format
+}
 router.afterEach((to, from, next) => {
   window.scrollTo(0, 0)
   iView.LoadingBar.finish()

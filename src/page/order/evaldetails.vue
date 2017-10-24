@@ -9,39 +9,44 @@
     <div class="close-eval" @click="closeEval">
       <Button type="text" icon="close"></Button>
     </div>
-   <!-- <template v-for="item in evalDetails">
-      <i-row>
-        <i-col span="10" class="vm-textRight">{{item.title}}</i-col>
-        <i-col span="12" offset="2">{{item.value}}</i-col>
-      </i-row>
-    </template>-->
+    <!-- <template v-for="item in evalDetails">
+       <i-row>
+         <i-col span="10" class="vm-textRight">{{item.title}}</i-col>
+         <i-col span="12" offset="2">{{item.value}}</i-col>
+       </i-row>
+     </template>-->
     <Row>
-      <Col span="24">用户信息</Col>
+      <Col span="24">
+      用户信息</Col>
     </Row>
     <Row>
-      <Col span="2">用户ID：</Col>
-      <Col span="22">10086</Col>
+      <Col span="2">
+      用户ID：</Col>
+      <Col span="22">
+      10086</Col>
     </Row>
     <Row>
-      <Col span="2">收货人手机：</Col>
-      <Col span="22">10086</Col>
+      <Col span="2">
+      收货人手机：</Col>
+      <Col span="22">
+      10086</Col>
     </Row>
     <Row>
-      <Col span="2">收货人：</Col>
-      <Col span="22">小菜</Col>
+      <Col span="2">
+      收货人：</Col>
+      <Col span="22">
+      小菜</Col>
     </Row>
     <Table :columns="columns" :data="data" class="mt20"></Table>
   </div>
 </template>
 <script type="text/ecmascript-6">
   export default {
-    props: {
-      eval: {
-        type: Object
-      }
-    },
     data () {
       return {
+        id: (() => {
+          return this.$route.params.id
+        })(),
         columns: [
           {
             title: '交易号',
@@ -109,7 +114,7 @@
       }
     },
     created () {
-      console.log(this.$route.query)
+      console.log(this.id)
     },
     computed: {},
     methods: {
@@ -119,15 +124,15 @@
     }
   }
 </script>
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus" rel="stylesheet/stylus" type="text/stylus">
   #order
     .eval-details
       border 1px solid #e9eaec
       line-height 35px
       position relative
       padding 20px
-      .close-eval
-        position absolute
-        top 0
-        right 0
+    .close-eval
+      position absolute
+      top 0
+      right 0
 </style>
