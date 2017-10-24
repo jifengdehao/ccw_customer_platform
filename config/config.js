@@ -6,7 +6,7 @@
  */
 let config = {
   // env: Env,
-  //apiDomain:'/api',
+  // apiDomain:'/api',
   apiDomain: 'http://192.168.0.158:8093',
   imgUpload: ''
 };
