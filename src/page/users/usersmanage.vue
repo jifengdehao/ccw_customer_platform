@@ -217,12 +217,13 @@ export default {
         this.addHidden = false
       }
     },
-    // 更新状态
+    // 更新状态 冻结 解冻
     onUserStatus() {
       let params = {
         userId: this.saveStatus, // 获取当前点击ID
         status: this.status // 当前所在页
       }
+      console.log(params, 'params')
       api.getpaltformUserChange(params).then(data => {})
       this.getUserData() // 数据调用
     },
