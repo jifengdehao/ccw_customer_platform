@@ -18,7 +18,7 @@
       </FormItem>
     </i-form>
     <Tabs :animated="false" @on-click="selectTab" :value="this.status">
-      <Tab-pane label="商家评价" name="0">
+      <Tab-pane label="商户评价" name="0">
         <Table :columns="columns" :data="data" ref="table"></Table>
         <Page
           :total="tableTotal"
@@ -56,7 +56,8 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import * as api from 'api/common.js'
+  import * as api from 'api/common'
+  import * as time from '@/until/time'
 
   export default {
     data () {
@@ -84,23 +85,36 @@
             align: 'center'
           },
           {
-            title: '手机号码',
+            title: '用户手机号',
             key: 'mobileno',
             align: 'center'
           },
           {
-            title: '昵称',
+            title: '用户昵称',
             key: 'shopOwerName',
             align: 'center'
           },
           {
             title: '评价时间',
             key: 'remarkAt',
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.remarkAt)
+            }
+          },
+          {
+            title: '档口ID',
+            key: 'coOrderId',
             align: 'center'
           },
           {
-            title: '评价订单ID',
-            key: 'coOrderId',
+            title: '档口名称',
+            key: '',
+            align: 'center'
+          },
+          {
+            title: '评价星级',
+            key: '',
             align: 'center'
           },
           {
