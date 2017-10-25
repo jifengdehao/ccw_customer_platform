@@ -6,284 +6,290 @@
  */
 
 // 主体
-const Layout = (resolve) => {
-  import('components/layout/layout').then((module) => {
+const Layout = resolve => {
+  import('components/layout/layout').then(module => {
     resolve(module)
   })
 }
 // 首页
-const Home = (resolve) => {
-  import('page/home/home').then((module) => {
+const Home = resolve => {
+  import('page/home/home').then(module => {
     resolve(module)
   })
 }
 // 订单管理
-const Order = (resolve) => {
-  import('page/order/order').then((module) => {
+const Order = resolve => {
+  import('page/order/order').then(module => {
     resolve(module)
   })
 }
 // 用户端管理
-const Custom = (resolve) => {
-  import('page/custom/custom').then((module) => {
+const Custom = resolve => {
+  import('page/custom/custom').then(module => {
     resolve(module)
   })
 }
 // 活动管理
-const Activity = (resolve) => {
-  import('page/activity/activity').then((module) => {
+const Activity = resolve => {
+  import('page/activity/activity').then(module => {
     resolve(module)
   })
 }
 // 数据中心
-const Data = (resolve) => {
-  import('page/data/data').then((module) => {
+const Data = resolve => {
+  import('page/data/data').then(module => {
     resolve(module)
   })
 }
 // 用户平台管理
-const Users = (resolve) => {
-  import('page/users/users').then((module) => {
+const Users = resolve => {
+  import('page/users/users').then(module => {
     resolve(module)
   })
 }
 // 商家端管理
-const Seller = (resolve) => {
-  import('page/seller/seller').then((module) => {
+const Seller = resolve => {
+  import('page/seller/seller').then(module => {
     resolve(module)
   })
 }
 // 分销管理
-const Distribution = (resolve) => {
-  import('page/distribution/distribution').then((module) => {
+const Distribution = resolve => {
+  import('page/distribution/distribution').then(module => {
     resolve(module)
   })
 }
 // 404
-const NotFound = (resolve) => {
-  import('page/404').then((module) => {
+const NotFound = resolve => {
+  import('page/404').then(module => {
     resolve(module)
   })
 }
 // 登录
-const Login = (resolve) => {
-  import('page/login/login').then((module) => {
+const Login = resolve => {
+  import('page/login/login').then(module => {
     resolve(module)
   })
 }
 // 订单管理
-const OrderManage = (resolve) => {
-  import('page/order/manage').then((module) => {
+const OrderManage = resolve => {
+  import('page/order/manage').then(module => {
     resolve(module)
   })
 }
 
 // 异常订单
-const OrderAbnormal = (resolve) => {
-  import('page/order/abnormal').then((module) => {
+const OrderAbnormal = resolve => {
+  import('page/order/abnormal').then(module => {
     resolve(module)
   })
 }
 
 // 评价管理
-const OrderEvaluate = (resolve) => {
-  import('page/order/evaluate').then((module) => {
+const OrderEvaluate = resolve => {
+  import('page/order/evaluate').then(module => {
     resolve(module)
   })
 }
 // 评价详情
-const OrderEvaluateInfo = (resolve) => {
-  import('page/order/evaldetails').then((module) => {
+const OrderEvaluateInfo = resolve => {
+  import('page/order/evaldetails').then(module => {
     resolve(module)
   })
 }
 // 反馈管理
-const OrderFeedback = (resolve) => {
-  import('page/order/feedback').then((module) => {
+const OrderFeedback = resolve => {
+  import('page/order/feedback').then(module => {
     resolve(module)
   })
 }
 // 反馈详情
-const OrderFeedbackInfo = (resolve) => {
-  import('page/order/feedbackdetails').then((module) => {
+const OrderFeedbackInfo = resolve => {
+  import('page/order/feedbackdetails').then(module => {
     resolve(module)
   })
 }
 // 屏蔽词管理
-const OrderSw = (resolve) => {
-  import('page/order/sw').then((module) => {
+const OrderSw = resolve => {
+  import('page/order/sw').then(module => {
     resolve(module)
   })
 }
 // 订单详情
-const OrderInfo = (resolve) => {
-  import('page/order/orderinfo').then((module) => {
+const OrderInfo = resolve => {
+  import('page/order/orderinfo').then(module => {
     resolve(module)
   })
 }
 // 用户账号管理
-const AccountManage = (resolve) => {
-  import('page/custom/accountmanage').then((module) => {
+const AccountManage = resolve => {
+  import('page/custom/accountmanage').then(module => {
     resolve(module)
   })
 }
 // 账号详情
-const AccountDetail = (resolve) => {
-  import('page/custom/accountdetail').then((module) => {
+const AccountDetail = resolve => {
+  import('page/custom/accountdetail').then(module => {
     resolve(module)
   })
 }
 // 系统消息推送
-const SystemMessagePush = (resolve) => {
-  import('page/custom/systemmessagepush').then((module) => {
+const SystemMessagePush = resolve => {
+  import('page/custom/systemmessagepush').then(module => {
     resolve(module)
   })
 }
 // banner图管理
-const BannerManage = (resolve) => {
-  import('page/custom/bannermanage').then((module) => {
+const BannerManage = resolve => {
+  import('page/custom/bannermanage').then(module => {
     resolve(module)
   })
 }
 // 市场推送管理
-const MarketPush = (resolve) => {
-  import('page/custom/marketpush').then((module) => {
+const MarketPush = resolve => {
+  import('page/custom/marketpush').then(module => {
     resolve(module)
   })
 }
 // 起送价查看
-const StartPriceSee = (resolve) => {
-  import('page/custom/startpricesee').then((module) => {
+const StartPriceSee = resolve => {
+  import('page/custom/startpricesee').then(module => {
     resolve(module)
   })
 }
 // 评价标签管理
-const EvaluationTagManage = (resolve) => {
-  import('page/custom/evaluationtagmanage').then((module) => {
+const EvaluationTagManage = resolve => {
+  import('page/custom/evaluationtagmanage').then(module => {
+    resolve(module)
+  })
+}
+//  账户余额
+const AccountBalance = resolve => {
+  import('page/custom/accountBalance').then(module => {
     resolve(module)
   })
 }
 // 平台用户管理
-const UsersManage = (resolve) => {
-  import('page/users/usersmanage').then((module) => {
+const UsersManage = resolve => {
+  import('page/users/usersmanage').then(module => {
     resolve(module)
   })
 }
 // 权限管理
-const UsersJurisdiction = (resolve) => {
-  import('page/users/usersjurisdiction').then((module) => {
+const UsersJurisdiction = resolve => {
+  import('page/users/usersjurisdiction').then(module => {
     resolve(module)
   })
 }
 // 操作日志
-const UsersLog = (resolve) => {
-  import('page/users/userslog').then((module) => {
+const UsersLog = resolve => {
+  import('page/users/userslog').then(module => {
     resolve(module)
   })
 }
 
 // 首页banner图管理
-const IndexBannerManage = (resolve) => {
-  import('page/activity/indexbannermanage').then((module) => {
+const IndexBannerManage = resolve => {
+  import('page/activity/indexbannermanage').then(module => {
     resolve(module)
   })
 }
 // 优惠卷管理
-const CouponManagement = (resolve) => {
-  import('page/activity/couponmanagement').then((module) => {
+const CouponManagement = resolve => {
+  import('page/activity/couponmanagement').then(module => {
     resolve(module)
   })
 }
 
 // 优惠券管理 查看进行中优惠券
-const viewOngoingCoupons = (resolve) => {
-  import('page/activity/viewOngoingCoupons').then((module) => {
+const viewOngoingCoupons = resolve => {
+  import('page/activity/viewOngoingCoupons').then(module => {
     resolve(module)
   })
 }
 // 优惠券管理 进行中添加优惠券
-const addCoupons = (resolve) => {
-  import('page/activity/addCoupons').then((module) => {
+const addCoupons = resolve => {
+  import('page/activity/addCoupons').then(module => {
     resolve(module)
   })
 }
 // 优惠券管理 待生效查看编辑
-const pendingOpreation = (resolve) => {
-  import('page/activity/pendingOpreation').then((module) => {
+const pendingOpreation = resolve => {
+  import('page/activity/pendingOpreation').then(module => {
     resolve(module)
   })
 }
 // 数据中心
-const DataIndex = (resolve) => {
-  import('page/data/index').then((module) => {
+const DataIndex = resolve => {
+  import('page/data/index').then(module => {
     resolve(module)
   })
 }
 // 分销用户数据
-const DistributionPeopleData = (resolve) => {
-  import('page/distribution/distributionpeopledata').then((module) => {
+const DistributionPeopleData = resolve => {
+  import('page/distribution/distributionpeopledata').then(module => {
     resolve(module)
   })
 }
 // 分销用户管理
-const DistributionPeopleManage = (resolve) => {
-  import('page/distribution/distributionpeoplemanage').then((module) => {
+const DistributionPeopleManage = resolve => {
+  import('page/distribution/distributionpeoplemanage').then(module => {
     resolve(module)
   })
 }
 // 商户入驻材料审核
-const SellerSettledManage = (resolve) => {
-  import('page/seller/sellersettledmanage').then((module) => {
+const SellerSettledManage = resolve => {
+  import('page/seller/sellersettledmanage').then(module => {
     resolve(module)
   })
 }
 // 商户视频图片审核
-const SellerVideoManage = (resolve) => {
-  import('page/seller/sellervideomanage').then((module) => {
+const SellerVideoManage = resolve => {
+  import('page/seller/sellervideomanage').then(module => {
     resolve(module)
   })
 }
 // 商户账号管理
-const SellerAccountManage = (resolve) => {
-  import('page/seller/selleraccountmanage').then((module) => {
+const SellerAccountManage = resolve => {
+  import('page/seller/selleraccountmanage').then(module => {
     resolve(module)
   })
 }
 // 商户守约管理
-const SellerObservantManage = (resolve) => {
-  import('page/seller/sellerobservantmanage').then((module) => {
+const SellerObservantManage = resolve => {
+  import('page/seller/sellerobservantmanage').then(module => {
     resolve(module)
   })
 }
 
 // BD及邀请码管理
-const BdManage = (resolve) => {
-  import('page/seller/bdmanage').then((module) => {
+const BdManage = resolve => {
+  import('page/seller/bdmanage').then(module => {
     resolve(module)
   })
 }
 // 商品模版库管理
-const FoodTemplateManage = (resolve) => {
-  import('page/seller/foodtemplatemanage').then((module) => {
+const FoodTemplateManage = resolve => {
+  import('page/seller/foodtemplatemanage').then(module => {
     resolve(module)
   })
 }
 // 商家消息推送
-const SellerMessagePush = (resolve) => {
-  import('page/seller/sellermessagepush').then((module) => {
+const SellerMessagePush = resolve => {
+  import('page/seller/sellermessagepush').then(module => {
     resolve(module)
   })
 }
 // 商家消息提醒
-const SellerMessageRemind = (resolve) => {
-  import('page/seller/sellermessageremind').then((module) => {
+const SellerMessageRemind = resolve => {
+  import('page/seller/sellermessageremind').then(module => {
     resolve(module)
   })
 }
 
 // 个人中心
-const User = (resolve) => {
-  import('page/users/user').then((module) => {
+const User = resolve => {
+  import('page/users/user').then(module => {
     resolve(module)
   })
 }
@@ -309,14 +315,14 @@ export default [
         component: Order,
         redirect: '/order/manage',
         children: [
-          {path: 'manage', component: OrderManage},
-          {path: 'abnormal', component: OrderAbnormal},
-          {path: 'evaluate', component: OrderEvaluate},
-          {path: 'evaluateInfo/:id', component: OrderEvaluateInfo},
-          {path: 'feedback', component: OrderFeedback},
-          {path: 'feedbackInfo/:id', component: OrderFeedbackInfo},
-          {path: 'sw', component: OrderSw},
-          {path: 'orderInfo/:id', component: OrderInfo}
+          { path: 'manage', component: OrderManage },
+          { path: 'abnormal', component: OrderAbnormal },
+          { path: 'evaluate', component: OrderEvaluate },
+          { path: 'evaluateInfo/:id', component: OrderEvaluateInfo },
+          { path: 'feedback', component: OrderFeedback },
+          { path: 'feedbackInfo/:id', component: OrderFeedbackInfo },
+          { path: 'sw', component: OrderSw },
+          { path: 'orderInfo/:id', component: OrderInfo }
         ]
       },
       {
@@ -325,16 +331,17 @@ export default [
         component: Custom,
         redirect: '/custom/account_manage',
         children: [
-          {path: 'account_manage', component: AccountManage},
-          {path: 'account_detail/:id', component: AccountDetail},
-          {path: 'system_message_push', component: SystemMessagePush},
-          {path: 'activity_message_push', component: SystemMessagePush},
-          {path: 'daily_menu_push', component: SystemMessagePush},
-          {path: 'app_notice_push', component: SystemMessagePush},
-          {path: 'banner_manage', component: BannerManage},
-          {path: 'market_push', component: MarketPush},
-          {path: 'start_price_see', component: StartPriceSee},
-          {path: 'evaluation_tag_manage', component: EvaluationTagManage}
+          { path: 'account_manage', component: AccountManage },
+          { path: 'account_detail/:id', component: AccountDetail },
+          { path: 'system_message_push', component: SystemMessagePush },
+          { path: 'activity_message_push', component: SystemMessagePush },
+          { path: 'daily_menu_push', component: SystemMessagePush },
+          { path: 'app_notice_push', component: SystemMessagePush },
+          { path: 'banner_manage', component: BannerManage },
+          { path: 'market_push', component: MarketPush },
+          { path: 'start_price_see', component: StartPriceSee },
+          { path: 'evaluation_tag_manage', component: EvaluationTagManage },
+          { path: 'account_balance', component: AccountBalance }
         ]
       },
       {
@@ -343,10 +350,10 @@ export default [
         component: Users,
         redirect: '/users/users_manage',
         children: [
-          {path: 'users_manage', component: UsersManage},
-          {path: 'users_jurisdiction', component: UsersJurisdiction},
-          {path: 'users_log', component: UsersLog},
-          {path: 'user', component: User}
+          { path: 'users_manage', component: UsersManage },
+          { path: 'users_jurisdiction', component: UsersJurisdiction },
+          { path: 'users_log', component: UsersLog },
+          { path: 'user', component: User }
         ]
       },
       {
@@ -355,11 +362,11 @@ export default [
         component: Activity,
         redirect: '/activity/index_banner_manage',
         children: [
-          {path: 'index_banner_manage', component: IndexBannerManage},
-          {path: 'coupon_management', component: CouponManagement},
-          {path: 'vieOngoingInfo', component: viewOngoingCoupons},
-          {path: 'addCoupons', component: addCoupons},
-          {path: 'pendingDetali', component: pendingOpreation}
+          { path: 'index_banner_manage', component: IndexBannerManage },
+          { path: 'coupon_management', component: CouponManagement },
+          { path: 'vieOngoingInfo', component: viewOngoingCoupons },
+          { path: 'addCoupons', component: addCoupons },
+          { path: 'pendingDetali', component: pendingOpreation }
         ]
       },
       {
@@ -367,9 +374,7 @@ export default [
         name: 'data',
         component: Data,
         redirect: '/data/index',
-        children: [
-          {path: 'index', component: DataIndex}
-        ]
+        children: [{ path: 'index', component: DataIndex }]
       },
       {
         path: '/distribution',
@@ -377,8 +382,14 @@ export default [
         component: Distribution,
         redirect: '/distribution/distribution_people_data',
         children: [
-          {path: 'distribution_people_data', component: DistributionPeopleData},
-          {path: 'distribution_people_manage', component: DistributionPeopleManage}
+          {
+            path: 'distribution_people_data',
+            component: DistributionPeopleData
+          },
+          {
+            path: 'distribution_people_manage',
+            component: DistributionPeopleManage
+          }
         ]
       },
       {
@@ -387,14 +398,14 @@ export default [
         component: Seller,
         redirect: '/seller/seller_settled_manage',
         children: [
-          {path: 'seller_settled_manage', component: SellerSettledManage},
-          {path: 'seller_video_manage', component: SellerVideoManage},
-          {path: 'seller_account_manage', component: SellerAccountManage},
-          {path: 'seller_observant_manage', component: SellerObservantManage},
-          {path: 'bd_manage', component: BdManage},
-          {path: 'food_template_manage', component: FoodTemplateManage},
-          {path: 'seller_message_push', component: SellerMessagePush},
-          {path: 'seller_message_remind', component: SellerMessageRemind}
+          { path: 'seller_settled_manage', component: SellerSettledManage },
+          { path: 'seller_video_manage', component: SellerVideoManage },
+          { path: 'seller_account_manage', component: SellerAccountManage },
+          { path: 'seller_observant_manage', component: SellerObservantManage },
+          { path: 'bd_manage', component: BdManage },
+          { path: 'food_template_manage', component: FoodTemplateManage },
+          { path: 'seller_message_push', component: SellerMessagePush },
+          { path: 'seller_message_remind', component: SellerMessageRemind }
         ]
       }
     ]
@@ -411,4 +422,3 @@ export default [
     component: NotFound
   }
 ]
-
