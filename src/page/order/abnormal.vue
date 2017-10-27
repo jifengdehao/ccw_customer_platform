@@ -5,7 +5,7 @@
 * 功能：业务组件-订单异常
 */
 <template>
-  <div class="order-abnormal">订单异常</div>
+  <div class="order-abnormal">订单异常模块下一期</div>
 </template>
 <script type="text/ecmascript-6">
     export default {}

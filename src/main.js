@@ -35,6 +35,7 @@ router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   next()
 })
+/*
 Vue.prototype.format = function (oDate, format) {
   var date = {
     'M+': oDate.getMonth() + 1,
@@ -56,6 +57,7 @@ Vue.prototype.format = function (oDate, format) {
   }
   return format
 }
+*/
 router.afterEach((to, from, next) => {
   window.scrollTo(0, 0)
   iView.LoadingBar.finish()

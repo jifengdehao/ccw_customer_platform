@@ -76,30 +76,30 @@
             key: 'status',
             align: 'center',
             render: (h, params) => {
-              console.log(params)
+              // console.log(params.row.status) // 1默认值正常，2、商家标记缺货、3商户取消订单、4差评平台退款、5、货损用户拒收退款(货损)、6、超时退款
               let status = params.row.status
               let statusName
               switch (status) {
                 case 1:
-                  statusName = '待付款'
+                  statusName = '正常'
                   break
                 case 2:
-                  statusName = '待接单'
+                  statusName = '商家标记缺货'
                   break
                 case 3:
-                  statusName = '待发货'
+                  statusName = '商户取消订单'
                   break
                 case 4:
-                  statusName = '配送中'
+                  statusName = '差评平台退款'
                   break
                 case 5:
-                  statusName = '待评价'
+                  statusName = '货损用户拒收退款(货损)'
                   break
                 case 6:
-                  statusName = '已完成'
+                  statusName = '超时退款'
                   break
                 default:
-                  statusName = '无'
+                  statusName = '正常'
               }
               return h('span', statusName)
             }
@@ -119,37 +119,6 @@
             }
           }
         ],
-        /*
-        data: [
-          {
-            transactionNumber: 91291,
-            consigneeTel: 1928919231,
-            consignee: '张三',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待付款',
-            sellerId: 9999,
-            goodPrice: '¥123'
-          },
-          {
-            transactionNumber: 91291,
-            consigneeTel: 1928919231,
-            consignee: '张三',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待付款',
-            sellerId: 9999,
-            goodPrice: '¥123'
-          },
-          {
-            transactionNumber: 91291,
-            consigneeTel: 1928919231,
-            consignee: '张三',
-            orderTime: '2017/8/16  9:35',
-            orderStatus: '待付款',
-            sellerId: 9999,
-            goodPrice: '¥123'
-          }
-        ]
-        */
         data: []
       }
     },
@@ -159,7 +128,9 @@
     methods: {
       getExpandData () {
         api.getSeedOrderData(this.orderId).then((res) => {
-          this.data = res
+          if (res) {
+            this.data = res
+          }
         })
       }
     }
