@@ -210,20 +210,20 @@ export const updateProductCategory = params => {
 }
 //  ********************* 商户消息推送 ******************************
 // 获取商户端系统消息列表
-export const getSysMessage = params => {
-  return ax.g(`seller/message/sys`, params)
+export const getSysMessage = (params, ID) => {
+  return ax.g(`/seller/systemMessage/list/${ID}`, params)
 }
 // 新增商户端系统消息
 export const addSysMessage = params => {
-  return ax.p(`seller/message/sys`, params)
+  return ax.p(`/seller/systemMessage`, params)
 }
 // 查看商户端系统消息
 export const seeSysMessage = id => {
-  return ax.g(`seller/message/sys/${id}`)
+  return ax.g(`/seller/systemMessage/${id}`)
 }
 // 编辑商户端系统消息
 export const modifySysMessage = (params, id) => {
-  return ax.u(`seller/message/sys/${id}`, params)
+  return ax.u(`/seller/systemMessage/${id}`, params)
 }
 //  ********************* 商户消息提醒 ******************************
 // 获取消息提醒列表
