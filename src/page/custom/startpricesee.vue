@@ -6,7 +6,7 @@
  */
 <template>
   <div class="start-price-see">
-    <Table :columns="priceTitle" :data="priceData"></Table>
+    <Table border :columns="priceTitle" :data="priceData"></Table>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -44,7 +44,7 @@ export default {
     //  加载数据
     loadData() {
       http.getPirse().then(data => {
-        this.data = data
+        this.priceData = data
       })
     }
   }

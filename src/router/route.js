@@ -139,15 +139,9 @@ const SystemMessagePush = resolve => {
     resolve(module)
   })
 }
-// banner图管理
+// banner图管理/市场推送管理
 const BannerManage = resolve => {
   import('page/custom/bannermanage').then(module => {
-    resolve(module)
-  })
-}
-// 市场推送管理
-const MarketPush = resolve => {
-  import('page/custom/marketpush').then(module => {
     resolve(module)
   })
 }
@@ -166,6 +160,18 @@ const EvaluationTagManage = resolve => {
 //  账户余额
 const AccountBalance = resolve => {
   import('page/custom/accountBalance').then(module => {
+    resolve(module)
+  })
+}
+//  用户余额/积分详情
+const AccountMoneyDetail = resolve => {
+  import('page/custom/accountShowMoney').then(module => {
+    resolve(module)
+  })
+}
+//  用户余额编辑
+const AccountEditMoney = resolve => {
+  import('page/custom/accountEditMoney').then(module => {
     resolve(module)
   })
 }
@@ -338,10 +344,16 @@ export default [
           { path: 'daily_menu_push', component: SystemMessagePush },
           { path: 'app_notice_push', component: SystemMessagePush },
           { path: 'banner_manage', component: BannerManage },
-          { path: 'market_push', component: MarketPush },
+          { path: 'market_push', component: BannerManage },
           { path: 'start_price_see', component: StartPriceSee },
           { path: 'evaluation_tag_manage', component: EvaluationTagManage },
-          { path: 'account_balance', component: AccountBalance }
+          { path: 'account_balance', component: AccountBalance },
+          {
+            path: 'account_balance/detail',
+            name: 'balance_detail',
+            component: AccountMoneyDetail
+          },
+          { path: 'account_balance/edit/:custId', component: AccountEditMoney }
         ]
       },
       {

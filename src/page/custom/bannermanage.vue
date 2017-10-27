@@ -5,315 +5,390 @@
  * FunctionPoint: banner图管理、市场推送 
  */
 <template>
-  <div class="banner-manager">
-    <Tabs size="small" @on-click="getTabIndex">
-      <TabPane label="已开始">
-        <p class="btn-add">
-          <Button class="right" type="primary">新增</Button>
-        </p>
-        <Table border :columns="startTitle" :data="startDatas"></Table>
-        <div class="save-change">
-          <Button @click="getSaveChanges">保存修改</Button>
+  <div>
+    <Tabs @on-click="onBannerMenu" :animated="false" v-model="status">
+      <TabPane v-for="tab in bannerMenu" :key="tab.id" :label="tab">
+        <div class="add-image" v-if="addShow">
+          <Button class="add-button" @click="addImage" type="primary" size="large">新增</Button>
         </div>
-      </TabPane>
-      <TabPane label="未开始">
-        <p class="btn-add">
-          <Button class="right" type="primary">新增</Button>
-        </p>
-        <Table border :columns="startTitle" :data="startDatas"></Table>
-        <div class="save-change">
-          <Button @click="getSaveChanges">保存修改</Button>
+        <div>
+          <!-- <Table ref="currentRowTable" :columns="changeTitle" :data="bannerData"></Table> -->
+          <table class="table-banner" v-if="status === 0 || status === 1">
+            <tbody>
+              <tr>
+                <th v-for="tab in bannerTHdata" :key="tab.id" :width="tab.style">{{ tab.key }}</th>
+              </tr>
+              <tr v-if="bannerData && bannerData.length <= 0" style="height: 40px;">
+                <td colspan="12">暂无数据</td>
+              </tr>
+            </tbody>
+          </table>
+          <draggable @update="datadragEnd" v-if="status === 0 || status === 1" v-model="bannerData">
+            <tr v-for="data in bannerData" :key="data.id" class="draggable">
+                <td class="br">
+                  <img style="height: 100%" :src="data.picUrl">
+                </td>
+                <td class="br" style="width: 10%">
+                  <input type="button" @change="onUpload" value="重新上传">
+                  <input type="file" @change="onUpload" title="上传图片" filetype="image/*">
+                </td>
+                <td class="br" style="width: 20%">
+                  <input v-model="data.linkUrl" type="text" :value="data.linkUrl">
+                  <a :href="data.linkUrl"></a>
+                </td>
+                <td class="br" style="width: 20%">
+                  <input v-model="data.remark" type="text" :value="data.remark">
+                </td>
+                <td style="width: 18%" class="br">
+                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px; margin-bottom: 5px;" v-model="data.startTime" :value="data.startTime"></DatePicker><DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px" v-model="data.endTime" :value="data.endTime"></DatePicker>
+                </td>
+                <td style="width: 10%; border-top: 0 !important;"><Button type="error" @click="onChangButton(data)">{{ bannerState }}</Button></td>
+              </tr>
+          </draggable>
+          <!-- 已结束start -->
+          <table class="table-banner" v-if="status === 2">
+            <tbody>
+              <tr>
+                <th v-for="tab in bannerThENDdata" :key="tab.id" :width="tab.style">{{ tab.key }}</th>
+              </tr>
+              <tr v-for="data in bannerData" :key="data.id">
+                <td>{{ data.position }}</td>
+                <td>{{ data.remark }}</td>
+                <td>{{ data.updateAt }}</td>
+                <td>{{ data.endTime }}</td>
+                <td><Button type="primary" @click="seeModal(data)">查看</Button></td>
+              </tr>
+              <tr v-if="bannerData && bannerData.length <= 0" style="height: 40px;">
+                <td colspan="12">暂无数据</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- 已结束end -->
         </div>
-      </TabPane>
-      <TabPane label="已结束">
-        <Table border :columns="overTitle" :data="overDatas"></Table>
+        <div class="save-change" v-if="saveShow && bannerData.length > 0" style="margin-bottom: 40px;">
+          <Button @click="getSaveChanges" type="primary" size="large">保存修改</Button>
+        </div>
+        <!-- 查看banner模态框start -->
+        <div class="mask-box" v-if="status === 2 && seeBannerClose">
+            <div class="show-box">
+              <div @click="onClose"><Icon style="float: right; margin-bottom: 20px; font-size: 32px; cursor: pointer;" type="ios-close-empty"></Icon></div>
+              <table>
+                <tr>
+                  <th>banner位置</th>
+                  <th>图片</th>
+                  <th>跳转链接</th>
+                  <th>上传说明</th>
+                  <th>时间</th>
+                </tr>
+                <tr>
+                  <td>{{ seeBannerData.ptBannerId }}</td>
+                  <td>
+                    <img :src="seeBannerData.picUrl" alt="">
+                  </td>
+                  <td>{{ seeBannerData.linkUrl }}</td>
+                  <td>{{ seeBannerData.remark }}</td>
+                  <td>
+                    <p>开始时间：{{ seeBannerData.startTime }}</p>
+                    <p>结束时间：{{ seeBannerData.endTime }}</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+      </div>
       </TabPane>
     </Tabs>
-    <div class="mask-box" v-if="tabIndex == 2 && isOpen">
-      <div class="show-box">
-        <table>
-          <tr>
-            <th>banner位置</th>
-            <th>图片</th>
-            <th>跳转链接</th>
-            <th>上传说明</th>
-            <th>时间</th>
-          </tr>
-          <tr>
-            <td>{{bannerDetails.index}}</td>
-            <td>{{bannerDetails.imgPic}}</td>
-            <td>{{bannerDetails.linkuRL}}</td>
-            <td>{{bannerDetails.uplode}}</td>
-            <td>
-              <p>{{'开始时间:' + bannerDetails.time}}</p>
-              <p>{{'结束时间:' + bannerDetails.time}}</p>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+import * as api from 'api/common.js'
+import draggable from 'vuedraggable'
 export default {
   name: 'bannerManage',
+  components: { draggable },
   data() {
     return {
-      tabIndex: 0,  //  tab索引
-      bannerDetails: null, //  tab查看详情数据
-      isOpen: false, //  详细数据boolean值
-      //  已开始标题
-      startTitle: [
+      bannerMenu: ['未开始', '已开始', '已结束'], // 切换导航数据
+      bannerIndex: 0, // 切换id
+      bannerData: [], // 列表数据
+      addBannerData: [], // 自增列表数据
+      addShow: false, // 显示新增按钮
+      saveShow: true, // 保存按钮
+      changeTitle: [], // 切换table 列表title改变
+      bannerState: '结束', // 操作按钮变更
+      bannerTHdata: [
         {
-          title: '图片',
-          key: 'imgPic',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('img', {
-                props: {
-                  src: params.row.picture
-                },
-                style: {
-                  height: '190px'
-                }
-              })
-            ])
-          }
+          key: '图片',
+          style: '22%'
         },
         {
-          title: '图片管理',
-          key: 'picManage',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    alert()
-                  }
-                }
-              }, '重新上传')
-            ])
-          }
+          key: '图片管理',
+          style: '10%'
         },
         {
-          title: '操作',
-          key: 'action',
-          width: 150,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.show(params.index)
-                  }
-                }
-              }, '删除')
-            ])
-          }
+          key: '跳转链接',
+          style: '20%'
         },
         {
-          title: '跳转链接',
-          key: 'linkUrl',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('Input', {
-                props: {
-                  value: params.row.linkUrl
-                }
-              })
-            ])
-          }
+          key: '上传说明',
+          style: '20%'
         },
         {
-          title: '上传说明',
-          key: 'uploadExplain',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('Input', {
-                props: {
-                  value: params.row.uploadExplain
-                }
-              })
-            ])
-          }
+          key: '时间',
+          style: '18%'
         },
         {
-          title: '时间',
-          key: 'time',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('DatePicker', {
-                props: {
-                  value: params.row.time,
-                  format: 'yyyy-MM-dd HH:mm',
-                  placement: 'left',
-                  placeholder: '选择日期和时间(不含秒)',
-                  type: 'datetimerange'
-                },
-                style: {
-                  zIndex: '40'
-                }
-              })
-            ])
-          }
+          key: '操作',
+          style: '10%'
         }
-      ],
-      //  已开始数据
-      startDatas: [
+      ], // th title 内容
+      bannerThENDdata: [
         {
-          imgPic: '王小明',
-          age: 18,
-          linkUrl: 'https://www.baidu.com',
-          uploadExplain: '测试数据暂不知晓',
-          time: '2017/09/01'
+          key: '序号',
+          style: '20%'
         },
         {
-          imgPic: '王小明',
-          age: 18,
-          linkUrl: 'https://www.baidu.com',
-          uploadExplain: '测试数据暂不知晓',
-          time: '2017/09/01'
+          key: '上传说明',
+          style: '20%'
         },
         {
-          imgPic: '王小明',
-          age: 18,
-          linkUrl: 'https://www.baidu.com',
-          uploadExplain: '测试数据暂不知晓',
-          time: '2017/09/01'
-        }, {
-          imgPic: '王小明',
-          age: 18,
-          linkUrl: 'https://www.baidu.com',
-          uploadExplain: '测试数据暂不知晓',
-          time: '2017/09/01'
+          key: '更新时间',
+          style: '20%'
+        },
+        {
+          key: '结束时间',
+          style: '20%'
+        },
+        {
+          key: '操作',
+          style: '20%'
         }
-      ],
-      //  已结束标题
-      overTitle: [
-        {
-          title: '序号',
-          type: 'index',
-          key: 'position'
-        },
-        {
-          title: '上传说明',
-          key: 'uplode'
-        },
-        {
-          title: '更新时间',
-          key: 'time'
-        },
-        {
-          title: '结束时间',
-          key: 'endTime'
-        },
-        {
-          title: '操作人员',
-          key: 'staff'
-        },
-        {
-          title: '操作',
-          key: 'operation',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.bannerDetails = params.row
-                    this.isOpen = true
-                    console.log(this.bannerDetails)
-                  }
-                }
-              }, '查看')
-            ])
-          }
-        }
-      ],
-      //  已结束数据
-      overDatas: [
-        {
-          uplode: '宣传平台、发放优惠券100张入口',
-          time: '2017/10/11 9:30',
-          endTime: '2017/11/11 9:20',
-          staff: '管理A'
-        },
-        {
-          uplode: '宣传平台、发放优惠券100张入口',
-          time: '2017/10/11 9:30',
-          endTime: '2017/11/12 9:20',
-          staff: '管理A'
-        },
-        {
-          uplode: '宣传平台、发放优惠券100张入口',
-          time: '2017/10/11 9:30',
-          endTime: '2017/11/13 9:20',
-          staff: '管理A'
-        },
-        {
-          uplode: '宣传平台、发放优惠券100张入口',
-          time: '2017/10/11 9:30',
-          endTime: '2017/11/14 9:20',
-          staff: '管理A'
-        }
-      ]
+      ], // th title 已结束内容
+      pageNo: 1, // 当前页面
+      pageSize: 10, // 分页参数，表示每页显示多少条
+      status: 0, // banner图状态（目前0、待更新1、历史更新2）
+      seeBannerClose: false, // 查看banner弹框 默认关闭
+      seeBannerData: [], // 保存查看banner数据
+      formData: {}
     }
   },
+  created: function() {
+    this.changeTitle = this.columns1 // 默认title数据
+    this.getCurrentListData() // 初始化已开始数据
+  },
   methods: {
-    getTabIndex(index) {
-      //  获取tab索引
-      console.log(index)
-      this.tabIndex = index
+    // 点击切换导航tabs
+    onBannerMenu(value) {
+      this.status = value // 保存状态值 根据点击table
+      this.addShow = false // 新增按钮 默认隐藏
+      this.bannerState = '结束' // 操作按钮变更
+      this.changeTitle = this.columns1 // title数据变更
+      this.saveShow = true // 保存按钮 默认显示
+      this.getCurrentListData()
+      switch (value) {
+        case 0:
+          break
+        case 1:
+          this.addShow = true // 显示新增按钮
+          this.bannerState = '删除'
+          break
+        case 2:
+          this.changeTitle = this.columns2 // 变更title数据
+          this.saveShow = false // 保存按钮 隐藏
+      }
     },
+    // 新增对象
+    addImage() {
+      this.bannerData.push({
+        picUrl: '',
+        endTime: '',
+        linkUrl: '',
+        startTime: '',
+        position: '',
+        remark: '',
+        addStatus: '1'
+      })
+    },
+    // 请求banner列表数据
+    getCurrentListData() {
+      if (this.$route.path.startsWith('/custom/banner_manage')) {
+        //  banner管理
+        api
+          .getBannerList({
+            types: this.status
+          })
+          .then(data => {
+            this.bannerData = data
+          })
+      } else if (this.$route.path.startsWith('/custom/market_push')) {
+        //  市场推送
+        api
+          .getMarketlist({
+            status: this.status
+          })
+          .then(data => {
+            this.bannerData = data
+          })
+      }
+    },
+    // 点击操作button 结束 删除
+    onChangButton(data) {
+      if (this.$route.path.startsWith('/custom/banner_manage')) {
+        if (this.status === 0) {
+          // 点击结束
+          data.status = 2
+          api.putBannerId(data).then(data => {
+            this.getCurrentListData()
+          })
+        } else if (this.status === 1) {
+          // 点击删除
+          api.delBannerId(data).then(data => {
+            this.getCurrentListData()
+          })
+        }
+      } else if (this.$route.path.startsWith('/custom/market_push')) {
+        if (this.status === 0) {
+          //  点击结束
+          data.status = 2
+          api.putMarketId(data).then(data => {
+            this.getCurrentListData()
+          })
+        } else if (this.status === 1) {
+          //  点击删除
+          api.delMarketId(data).then(data => {
+            this.getCurrentListData()
+          })
+        }
+      }
+    },
+    // 查看banner弹框数据
+    seeModal(data) {
+      api.seeBanner(data.ptBannerId).then(data => {
+        this.seeBannerData = data
+      })
+      this.seeBannerClose = true // 打开查看bnner模态框
+    },
+    //  关闭查看banner弹框
+    onClose() {
+      this.seeBannerClose = false
+    },
+    // 保存修改
     getSaveChanges() {
-      //  保存
+      if (this.$route.path.startsWith('/custom/banner_manage')) {
+        //  banner保存
+        api.saveBannerData(this.bannerData).then(data => {
+          this.getCurrentListData()
+        })
+      } else if (this.$route.path.startsWith('/custom/market_push')) {
+        //  市场保存
+        api.saveMarketData(this.bannerData).then(data => {
+          this.getCurrentListData()
+        })
+      }
+    },
+    // 上传图片
+    onUpload(e) {
+      this.formData = new FormData()
+      this.formData.append('file', e.target.files[0])
+      console.log(this.formData, e)
+    },
+    datadragEnd(evt) {
+      console.log('拖动前的索引 :' + evt.oldIndex)
+      console.log('拖动后的索引 :' + evt.newIndex)
+      console.log(this.bannerData, '22')
     }
   },
   watch: {
-    '$route'(to, from) {
-      console.log(from)
+    $route(to, from) {
+      this.bannerIndex = 0
+      this.status = 0
+      this.addShow = false
+      this.saveShow = true
+      this.getCurrentListData()
     }
   }
 }
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
-.left {
-  float: left;
+<style scoped lang="css">
+.add-image {
+  text-align: right;
+  margin-bottom: 20px;
 }
 
-.right {
-  float: right;
-}
-
-p.btn-add {
-  overflow: hidden;
-  margin: 10px auto 20px;
+.add-image .add-button {
+  background-color: #2d8cf0;
+  border-color: #2d8cf0;
+  color: #fff;
 }
 
 .save-change {
   text-align: center;
-  margin: 20px auto;
+  margin-top: 20px;
 }
 
+.ivu-table td {
+  height: 190px !important;
+}
+
+/* table */
+table.table-banner,
+.draggable {
+  font-family: verdana, arial, sans-serif;
+  font-size: 11px;
+  width: 100%;
+  color: #495060;
+  font-size: 12px;
+  border: 1px solid #666666;
+  border-collapse: collapse;
+}
+
+table.table-banner th {
+  padding: 8px;
+  border: 1px solid #e9eaec;
+  background-color: #f8f8f9;
+}
+
+table.table-banner td,
+.draggable td {
+  position: relative;
+  padding: 8px 0;
+  text-align: center;
+  border: 1px solid #e9eaec;
+  background-color: #ffffff;
+  vertical-align: middle;
+}
+
+table.table-banner td > input[type='text'],
+.draggable td > input[type='text'] {
+  width: 200px;
+  padding-left: 5px;
+  outline: none;
+}
+
+.draggable td > input[type='button'],
+.draggable td > input[type='file'] {
+  padding: 6px 15px 7px 15px;
+  margin-left: 20px;
+  border-radius: 4px;
+  color: #fff;
+  border: 1px solid #2d8cf0;
+  background-color: #2d8cf0;
+  outline: none;
+}
+
+table.table-banner td > input[type='file'],
+.draggable td > input[type='file'] {
+  position: absolute;
+  left: 26px;
+  opacity: 0;
+}
+
+.br {
+  border-top: 0 !important;
+  border-right: 0 !important;
+}
+
+/* 查看模态框 */
 .mask-box {
   width: 100%;
   height: 100%;
@@ -339,14 +414,19 @@ p.btn-add {
 
 .show-box table {
   width: 100%;
-  overflow: hidden;
   border: 1px solid #ccc;
   border-collapse: collapse;
 }
+.show-box table tr th {
+  padding: 8px;
+  border: 1px solid #e9eaec;
+  background-color: #f8f8f9;
+}
 
-.show-box table tr th, .show-box table tr td {
-  height: 50px;
-  border: 1px solid #ccc;
+.show-box table tr td {
+  padding: 8px;
   text-align: center;
+  border: 1px solid #e9eaec;
+  background-color: #ffffff;
 }
 </style>
