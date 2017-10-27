@@ -19,10 +19,11 @@
         <Table border :columns="accountBalance" :data="usersDatas.records"></Table>
       </TabPane>
       <TabPane label="账户积分">
-        <Table border :columns="accountBalance" :data="usersDatas.records"></Table>
+        <Table border :columns="accountCoins" :data="usersDatas.records"></Table>
       </TabPane>
       <TabPane label="账户延期">
-        <Table border :columns="accountBalance" :data="usersDatas.records"></Table>
+        <!-- <Table border :columns="accountBalance" :data="usersDatas.records"></Table> -->
+        本功能点延期
       </TabPane>
     </Tabs>
     <Page :total="usersDatas.total" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
@@ -30,6 +31,7 @@
 </template>
 </template>
 <script>
+import * as http from 'api/common'
 export default {
   name: 'accountBalance',
   props: {},
@@ -38,11 +40,12 @@ export default {
       formInline: {
         phone: ''
       },
+      tabIndex: 0, //  tab索引
       params: {
-        custId: '',
-        types: '',
+        mobileno: '',
         pageSize: 10,
-        pageNo: 1
+        pageNo: 1,
+        selectTypes: 1
       }, //  传递参数
       ruleInline: {
         phone: [
@@ -55,10 +58,11 @@ export default {
           }
         ]
       },
+      //  余额表头
       accountBalance: [
         {
           title: 'ID',
-          key: 'mcCustomerId',
+          key: 'custId',
           align: 'center'
         },
         {
@@ -94,9 +98,10 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.$router.push(
-                        `account_detail/${params.row.mcCustomerId}`
-                      )
+                      this.$router.push({
+                        name: 'balance_detail',
+                        query: { custId: params.row.custId, accountType: 1 }
+                      })
                     }
                   }
                 },
@@ -111,8 +116,10 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.modalBoolean = true
                       this.singleData = params.row
+                      this.$router.push(
+                        `/custom/account_balance/edit/${params.row.custId}`
+                      )
                     }
                   }
                 },
@@ -122,16 +129,106 @@ export default {
           }
         }
       ],
+      //  积分表头
+      accountCoins: [
+        {
+          title: 'ID',
+          key: 'custId',
+          align: 'center'
+        },
+        {
+          title: '手机号码',
+          key: 'mobileno',
+          align: 'center'
+        },
+        {
+          title: '昵称',
+          key: 'custName',
+          align: 'center'
+        },
+        {
+          title: '账户积分',
+          key: 'coins',
+          align: 'center'
+        },
+        {
+          title: '账号状态',
+          key: 'statusName',
+          align: 'center'
+        },
+        {
+          title: '操作',
+          key: 'action',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push({
+                        name: 'balance_detail',
+                        query: { custId: params.row.custId, accountType: 2 }
+                      })
+                    }
+                  }
+                },
+                '查看'
+              )
+            ])
+          }
+        }
+      ],
       usersDatas: [] //  数据集合
     }
   },
+  created() {
+    this.loadData()
+  },
   methods: {
     //  搜索
-    search() {},
+    search() {
+      this.params.mobileno = this.formInline.phone
+      this.loadData()
+    },
     //  Tab切换
-    chooseTabs(name) {},
+    chooseTabs(name) {
+      if (this.tabIndex === name) {
+        return
+      }
+      this.tabIndex = name
+      this.params = {
+        mobileno: '',
+        pageSize: 10,
+        pageNo: 1,
+        selectTypes: this.tabIndex + 1
+      }
+      this.formInline.phone = ''
+      this.loadData()
+    },
     //  下一页
-    loadNext() {}
+    loadNext() {},
+    //  加载数据
+    loadData() {
+      http.getAccountMoney(this.params).then(data => {
+        this.usersDatas = data
+        for (let i = 0; i < this.usersDatas.records.length; i++) {
+          if (this.usersDatas.records[i].status === 1) {
+            this.usersDatas.records[i].statusName = '正常'
+          } else if (this.usersDatas.records[i].status === 2) {
+            this.usersDatas.records[i].statusName = '冻结'
+          }
+        }
+      })
+    }
   }
 }
 </script>

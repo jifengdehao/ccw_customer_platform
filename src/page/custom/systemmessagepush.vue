@@ -7,34 +7,34 @@
 
 <template>
   <div>
-    <Input v-model="title" :disabled="isAbled" :placeholder="'请输入'+tipsMsg + '标题'" style="width: 200px;float:left;margin-right:200px;"></Input>
+    <Input v-model="params.title" :disabled="isAbled"  :placeholder="'请输入'+tipsMsg + '标题'" style="width: 200px;float:left;margin-right:200px;"></Input>
     <div style="line-height:1.5;float:right">
       <label>推送时间设置</label>
-      <Select v-model="pushStyle" style="width:150px;margin-left:10px;" :disabled="isAbled">
+      <Select v-model="params.pushType" style="width:150px;margin-left:10px;" :disabled="isAbled">
         <Option value="1">定时推送</Option>
         <Option value="2">立即推送</Option>
       </Select>
-      <DatePicker :disabled="isAbled" type="datetime" format="yyyy-MM-dd HH:mm" :value="date" placeholder="选择日期和时间（不含秒）" style="width: 200px;margin-left:10px"></DatePicker>
+      <DatePicker :disabled="isAbled"  type="datetime" format="yyyy-MM-dd HH:mm" v-model="params.pushTime" :value="params.pushTime" placeholder="选择日期和时间（不含秒）" style="width: 200px;margin-left:10px"></DatePicker>
     </div>
-    <textarea v-if="routerName !== 'daily_menu_push'" :disabled="isAbled" :placeholder="'请输入'+tipsMsg + '推送内容'" v-model="content"></textarea>
+    <textarea v-if="routerName !== 'daily_menu_push'" :disabled="isAbled"  :placeholder="'请输入'+tipsMsg + '推送内容'" v-model="params.content"></textarea>
     <!-- 每日菜谱 -->
     <div class="cookbook" v-else>
       <h3>食材：</h3>
-      <textarea placeholder="请输入你要推送菜谱的食材"></textarea>
+      <textarea placeholder="请输入你要推送菜谱的食材" v-model="params.ingredient"></textarea>
       <h3>烹饪方法：</h3>
-      <textarea placeholder="请输入你要推送菜谱的烹饪方法"></textarea>
-      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" disabled><input type="button" value="上传图片"><input type="file" filetype="image/*"></p>
+      <textarea placeholder="请输入你要推送菜谱的烹饪方法" v-model="params.cookStep"></textarea>
+      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" ><input type="button" value="上传图片"><input type="file" filetype="image/*"></p>
     </div>
     <!-- 每日菜谱 -->
 
     <!-- 活动消息 -->
     <div class="cookbook" v-if="routerName === 'activity_message_push'">
-      <p><input type="text" class="activity-link" placeholder="设置活动链接"></p>
-      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" disabled><input type="button" value="上传图片"><input type="file" filetype="image/*"></p>
+      <p><input type="text" class="activity-link" placeholder="设置活动链接" :disabled="isAbled" v-model="params.actUrl"></p>
+      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" :disabled="isAbled" ><input type="button" value="上传图片" :disabled="isAbled"><input type="file" filetype="image/*"></p>
     </div>
     <!-- 活动消息 -->
     <div class="btn-ok" v-if="tabIndex != 3">
-      <Button type="primary" :disabled="isAbled" @click="editMessage">确定</Button>
+      <Button type="primary"  @click="editMessage" :disabled="isAbled">确定</Button>
     </div>
     <Tabs type="card" @on-click="chooseTabs" v-model="tabIndex">
       <TabPane label="全部" name="0"></TabPane>
@@ -57,17 +57,23 @@ export default {
     return {
       data: null, //  查看详细数据
       tabIndex: '0',
-      pushStyle: '1', // 推送方式
-      title: '', //  标题
-      content: '', //  内容
-      date: '', //  时间
+      isAbled: false,
+      editStatus: 0, // 状态（确定、查看和修改）
       params: {
-        status: '', //  消息推送状态
-        msgType: '', //  消息类型
+        status: '', //  tab上消息推送状态
         pageSize: 10,
-        pageNo: 1
+        pageNo: 1,
+        actPicUrl: '', // 活动图片url,
+        actUrl: '', // 活动url,
+        content: '', // 消息内容,
+        cookStep: '', // 烹饪方法,
+        ingredient: '', // 食材,
+        msgType: '', // 消息类型,
+        picUrl: '', // 图片url,
+        pushTime: '', // 推送时间,
+        pushType: '', // 推送类型,
+        title: '' // 标题
       },
-      isAbled: true, //  初始化确定按钮不可点击
       tipsMsg: '系统', //  设置标题和placeholder值
       routerName: '', //  路由名
       pushMessageTitle: [
@@ -120,13 +126,13 @@ export default {
                   },
                   on: {
                     click: () => {
-                      console.log(params.row)
-                      this.isAbled = true
                       this.data = params.row
-                      this.title = params.row.title
-                      this.content = params.row.content
-                      this.pushStyle = String(params.row.pushType)
-                      this.date = params.row.pushTime
+                      this.params.title = params.row.title
+                      this.params.content = params.row.content
+                      this.params.pushType = String(params.row.pushType)
+                      this.params.pushTime = params.row.pushTime
+                      this.editStatus = 1
+                      this.isAbled = true
                     }
                   }
                 },
@@ -144,13 +150,14 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.isAbled = false
                       this.data = params.row
-                      this.title = params.row.title
-                      this.content = params.row.content
-                      this.pushStyle = params.row.pushType
-                      this.date = params.row.pushTime
-                      this.pushStyle = params.row.pushType
+                      this.params.title = params.row.title
+                      this.params.content = params.row.content
+                      this.params.pushType = params.row.pushType
+                      this.params.pushTime = params.row.pushTime
+                      this.params.pushType = params.row.pushType
+                      this.editStatus = 2
+                      this.isAbled = false
                     }
                   }
                 },
@@ -215,40 +222,60 @@ export default {
           break
       }
       http.getMessageList(this.params).then(data => {
-        console.log(data)
         this.pushMessageData = data
       })
     },
     //  tab切换
     chooseTabs(index) {
+      this.editStatus = 0
+      this.isAbled = false
       if (parseInt(index) === 0) {
         this.params.status = ''
       } else {
         this.params.status = index - 1
       }
-      console.log(this.params.status)
       //  初始化值
-      this.title = this.content = this.date = ''
+      this.params.title = this.params.content = this.params.pushTime = ''
       this.getMessageList()
     },
     //  确定
     editMessage() {
-      this.data.title = this.title
-      this.data.content = this.content
-      this.data.pushStyle = this.pushType
-      this.data.pushTime = this.date
-      this.data.pushType = this.pushStyle
-      http.putMessage(this.data).then(data => {
-        console.log(data)
-      })
+      switch (this.editStatus) {
+        case 0:
+          //  新增
+          http.addMessage(this.params).then(data => {
+            this.getMessageList()
+            for (let i in this.params) {
+              if (i !== 'pageNo' && i !== 'pageSize') {
+                this.params[i] = ''
+              }
+            }
+          })
+          break
+        case 1:
+          //  查看
+          break
+        case 2:
+          //  编辑
+          this.data.title = this.params.title
+          this.data.content = this.params.content
+          this.data.pushTime = this.params.pushTime
+          this.data.pushType = this.params.pushType
+          http.putMessage(this.data).then(data => {
+            console.log(data)
+          })
+          break
+      }
     }
   },
   watch: {
     $route(to, from) {
       this.params.status = ''
       this.tabIndex = '0'
-      this.pushStyle = '0'
-      this.title = this.content = this.date = ''
+      this.params.pushType = '0'
+      this.params.title = this.params.content = this.params.pushTime = ''
+      this.editStatus = 0
+      this.isAbled = false
       this.checkRouteName()
     }
   }

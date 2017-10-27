@@ -17,7 +17,7 @@ var ax = axios.create({
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json;charset=utf-8',
-    'TOKEN': ''
+    TOKEN: ''
   }
 })
 
@@ -27,7 +27,10 @@ export const itr = (type, url, params) => {
   }
   let arg = qs.stringify(params)
   if (Object.keys(params).length > 0) {
-    url = type === 'get' || type === 'delete' || type === 'put' || type === 'patch' ? url + '?' + arg : url
+    url =
+      type === 'get' || type === 'delete' || type === 'patch'
+        ? url + '?' + arg
+        : url
   }
   var userInfo = ac.getData('userInfo')
   var token = ''
@@ -66,24 +69,27 @@ export const uploadUrl = config.imgUpload
 
 export function base(type, url, params) {
   return new Promise((resolve, reject) => {
-    itr(type, url, params).then((response) => {
-      if (response.data.code === 200) {
-        resolve(response.data.data)
-      } else {
-        iview.Notice.error({
-          title: '操作失败',
-          desc: `<p><span style="color:#ff3300">${response.data.code}</span>&nbsp;&nbsp;${response.data.msg}</p>`
-        })
-        reject(response.data.msg)
-      }
-    }).catch((msg) => {
-      if (msg) {
-        iview.Notice.error({
-          title: '网络访问错误',
-          desc: msg
-        })
-      }
-      // reject(msg)
-    })
+    itr(type, url, params)
+      .then(response => {
+        if (response.data.code === 200) {
+          resolve(response.data.data)
+        } else {
+          iview.Notice.error({
+            title: '操作失败',
+            desc: `<p><span style="color:#ff3300">${response.data
+              .code}</span>&nbsp;&nbsp;${response.data.msg}</p>`
+          })
+          reject(response.data.msg)
+        }
+      })
+      .catch(msg => {
+        if (msg) {
+          iview.Notice.error({
+            title: '网络访问错误',
+            desc: msg
+          })
+        }
+        // reject(msg)
+      })
   })
 }
