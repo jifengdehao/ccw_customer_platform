@@ -9,32 +9,28 @@
     <div class="close" @click="close">
       <Button type="text" icon="close"></Button>
     </div>
-    <i-row>
-      <i-col span="3">
+    <Row>
+      <Col span="3">
         <ul>
           <li>用户ID</li>
           <li>用户名</li>
           <li>反馈内容</li>
           <li>反馈时间</li>
-          <li>反馈图片</li>
+          <li v-if="feedbackDetails.url">反馈图片</li>
         </ul>
-      </i-col>
-      <i-col span="21">
+      </Col>
+      <Col span="21">
         <ul>
           <li>{{feedbackDetails.creatorId}}</li>
           <li>{{feedbackDetails.creatorName}}</li>
           <li>{{feedbackDetails.content}}</li>
           <li>{{feedbackDetails.createdDt}}</li>
         </ul>
-      </i-col>
-    </i-row>
-    <Row class="mt20" :gutter="16">
-      <Col span="8">
-      <img :src="feedbackDetails.picUrl1"/></Col>
-      <Col span="8">
-      <img :src="feedbackDetails.picUrl2"/></Col>
-      <Col span="8">
-      <img :src="feedbackDetails.picUrl3"/></Col>
+      </Col>
+    </Row>
+    <Row class="mt20" :gutter="32" v-if="feedbackDetails.url">
+      <Col span="8" v-for="(item,index) in feedbackDetails.url" :key="index">
+      <img :src="item"/></Col>
     </Row>
   </div>
 </template>
@@ -81,3 +77,4 @@
         right 0
         z-index 10
 </style>
+

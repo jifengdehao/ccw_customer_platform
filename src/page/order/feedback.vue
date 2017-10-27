@@ -6,55 +6,56 @@
 */
 <template>
   <div class="feedback">
-    <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
-      <FormItem label="姓名" prop="name" :label-width="80">
-        <Input type="text" v-model="formInline.name" placeholder="请输入查询的名字"></Input>
+    <Form inline label-position="left">
+      <FormItem label="手机号" :label-width="80">
+        <Input type="text" v-model="phone" placeholder="请输入你的手机号"></Input>
       </FormItem>
       <FormItem>
-        <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
+        <Button type="primary" @click="handleSubmit()">搜索</Button>
       </FormItem>
-    </i-form>
-    <i-row>
-      <i-col span="24">
-        <Tabs :value="this.types" :animated="false" @on-click="selectTab">
-          <Tab-pane label="用户端" name="0">
-            <i-table :columns="columns" :data="data"></i-table>
-            <i-page :total="tableTotal"
-                    :current="curr"
-                    :page-size="pageNum"
-                    @on-change="changePage"
-                    show-total
-                    class="vm-fr mt20">
-            </i-page>
-          </Tab-pane>
-          <Tab-pane label="商户端" name="1">
-            <i-table :columns="columns" :data="data"></i-table>
-            <i-page :total="tableTotal"
-                    :current="curr"
-                    :page-size="pageNum"
-                    @on-change="changePage"
-                    show-total
-                    class="vm-fr mt20">
-            </i-page>
-          </Tab-pane>
-          <Tab-pane label="配送端" name="2">
-            <i-table :columns="columns" :data="data"></i-table>
-            <i-page :total="tableTotal"
-                    :current="curr"
-                    :page-size="pageNum"
-                    @on-change="changePage"
-                    show-total
-                    class="vm-fr mt20">
-            </i-page>
-          </Tab-pane>
-          <Button type="primary" class="vm-fr" @click="exportData()" slot="extra">导出</Button>
-        </Tabs>
-      </i-col>
-    </i-row>
+    </Form>
+    <Row>
+      <Col span="24">
+      <Tabs :value="this.types" :animated="false" @on-click="selectTab">
+        <Tab-pane label="用户端" name="0">
+          <Table :columns="columns" :data="data" :loading="loading"></Table>
+          <Page :total="tableTotal"
+                :current="curr"
+                :page-size="pageNum"
+                @on-change="changePage"
+                show-total
+                class="vm-fr mt20">
+          </Page>
+        </Tab-pane>
+        <Tab-pane label="商户端" name="1">
+          <Table :columns="columns" :data="data" :loading="loading"></Table>
+          <Page :total="tableTotal"
+                :current="curr"
+                :page-size="pageNum"
+                @on-change="changePage"
+                show-total
+                class="vm-fr mt20">
+          </Page>
+        </Tab-pane>
+        <Tab-pane label="配送端" name="2">
+          <Table :columns="columns" :data="data" :loading="loading"></Table>
+          <Page :total="tableTotal"
+                :current="curr"
+                :page-size="pageNum"
+                @on-change="changePage"
+                show-total
+                class="vm-fr mt20">
+          </Page>
+        </Tab-pane>
+        <Button type="primary" class="vm-fr" @click="exportData()" slot="extra">导出</Button>
+      </Tabs>
+      </Col>
+    </Row>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common.js'
+  import * as time from '@/until/time'
 
   export default {
     data () {
@@ -63,14 +64,8 @@
         pageNum: 10, // 当前页展示的数据量
         tableTotal: 0, // 数据总数
         types: 0, // 评价类型
-        formInline: {
-          name: ''
-        },
-        ruleInline: {
-          name: [
-            // {required: true, message: '请填写手机号', trigger: 'blur'}
-          ]
-        },
+        phone: '', // 手机号
+        loading: true,
         columns: [
           {
             title: '用户ID',
@@ -83,6 +78,11 @@
             align: 'center'
           },
           {
+            title: '手机号',
+            key: 'mobileno',
+            align: 'center'
+          },
+          {
             title: '反馈内容',
             key: 'content',
             align: 'center'
@@ -90,7 +90,10 @@
           {
             title: '反馈时间',
             key: 'createdDt',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.createdDt)
+            }
           },
           {
             title: '反馈图片',
@@ -127,64 +130,6 @@
             }
           }
         ],
-        /* data: [
-          {
-            'custom_id': 1233,
-            'custom_name': '张三',
-            'feedback_content': '阿斯顿发送到发得分',
-            'feedback_time': '2017/8/16  9:35',
-            'feedback_img': '有'
-          },
-          {
-            'custom_id': 1233,
-            'custom_name': '张三',
-            'feedback_content': '阿斯顿发送到发得分',
-            'feedback_time': '2017/8/16  9:35',
-            'feedback_img': '有'
-          },
-          {
-            'custom_id': 1233,
-            'custom_name': '张三',
-            'feedback_content': '阿斯顿发送到发得分',
-            'feedback_time': '2017/8/16  9:35',
-            'feedback_img': '有'
-          },
-          {
-            'custom_id': 1233,
-            'custom_name': '张三',
-            'feedback_content': '阿斯顿发送到发得分',
-            'feedback_time': '2017/8/16  9:35',
-            'feedback_img': '有'
-          },
-          {
-            'custom_id': 1233,
-            'custom_name': '张三',
-            'feedback_content': '阿斯顿发送到发得分',
-            'feedback_time': '2017/8/16  9:35',
-            'feedback_img': '有'
-          },
-          {
-            'custom_id': 1233,
-            'custom_name': '张三',
-            'feedback_content': '阿斯顿发送到发得分',
-            'feedback_time': '2017/8/16  9:35',
-            'feedback_img': '有'
-          },
-          {
-            'custom_id': 1233,
-            'custom_name': '张三',
-            'feedback_content': '阿斯顿发送到发得分',
-            'feedback_time': '2017/8/16  9:35',
-            'feedback_img': '有'
-          },
-          {
-            'custom_id': 1233,
-            'custom_name': '张三',
-            'feedback_content': '阿斯顿发送到发得分',
-            'feedback_time': '2017/8/16  9:35',
-            'feedback_img': '有'
-          }
-        ] */
         data: []
       }
     },
@@ -192,14 +137,8 @@
       this.getFeedbackListData()
     },
     methods: {
-      handleSubmit (name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            this.$Message.success('提交成功!')
-          } else {
-            this.$Message.error('表单验证失败!')
-          }
-        })
+      handleSubmit () {
+        this.getFeedbackListData()
       },
       changePage (index) {
         this.curr = index
@@ -213,12 +152,16 @@
       getFeedbackListData () {
         let params = {
           pageSize: this.pageNum,
-          types: this.types
+          types: this.types,
+          mobileno: this.phone
         }
-        api.getFeedBackList(params, this.curr).then((data) => {
-          console.log(data)
-          this.tableTotal = data.total
-          this.data = data.records
+        api.getFeedBackList(params, this.curr).then((res) => {
+          console.log(res)
+          if (res) {
+            this.tableTotal = res.total
+            this.data = res.records
+            this.loading = false
+          }
         })
       }
     }

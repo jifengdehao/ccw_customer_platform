@@ -5,17 +5,42 @@
  * 功能模块: api模块的封装
  */
 import * as ax from './instrance'
-// 用户登录
-export const Login = params => {
-  return ax.p('/user/login', params)
-}
+
 // 上传地址
 export const uploadUrl = ax.uploadUrl
 
-// 单个用户列表用户详细数据
-export const getUserList = params => {
-  return ax.g('/user/search', params)
+/** 用户登录登出，个人信息，修改密码 start**/
+
+/**
+ * 登录
+ * @param params =>{account,password,verificationCode}
+ */
+export const login = params => {
+  return ax.p('/platform/user/login', params)
 }
+/**
+ * 获取验证码
+ * @param params
+ */
+export const getCode = params => {
+  return ax.g('/platform/user/login/changeCode', params)
+}
+/**
+ * 获取登录用户的详细信息
+ * @param params
+ */
+export const getUserList = params => {
+  return ax.g(`/platform/user/${params}`)
+}
+/**
+ * 退出登录
+ * @param params
+ */
+export const logout = params => {
+  return ax.g('/platform/user/logout', params)
+}
+
+/** 用户登录登出，个人信息，修改密码 end**/
 
 /** 订单管理 start **/
 
@@ -53,19 +78,30 @@ export const exportOrderList = params => {
 
 /**
  * 获取订单详情
- * @param params => orderId
+ * @param params => {orderId}
  */
 export const getOrderInfo = params => {
   return ax.g(`/order/${params}`)
 }
+/**
+ * 子订单退款
+ * @param params => {coOrderDetailId}
+ */
 
-export const putRefundOrder = (params) => {
+export const putRefundOrder = params => {
   return ax.u(`/order/order/refund/${params}`)
+}
+/**
+ * 订单全部退款
+ * @param params =>{orderId}
+ */
+export const putRefundOrderAll = (params) => {
+  return ax.u(`/order/order/refund/all/${params}`)
 }
 
 /**
  *  获取订单的子订单列表
- * @param params => orderId
+ * @param params => {orderId}
  */
 
 export const getSeedOrderData = params => {
@@ -112,13 +148,41 @@ export const getOrderGoodListEval = params => {
 export const getOrderSellerListEval = (params, pageNo) => {
   return ax.g(`/order/remark/shop/list/${pageNo}`, params)
 }
+/**
+ * 获取商家评价详情
+ * @param params=>{rkShopId}
+ */
+export const getOrderSellerDetails = (params) => {
+  return ax.g(`/order/remark/shop/${params}`)
+}
 
+/**
+ * 隐藏商家评价
+ * @param params =>{rkShopId}
+ */
+export const putOrderSellerEval = (params) => {
+  return ax.u(`/order/remarkShop/${params}`)
+}
 /**
  * 获取配送员的评价列表
  * @param params =>{pageSize,pageNo,mobileno,orderId}
  */
 export const getOrderDeliverListeEval = (params, pageNo) => {
   return ax.g(`/order/remark/deliver/list/${pageNo}`, params)
+}
+/**
+ * 隐藏配送员评价
+ * @param params=>{rkDeliverId}
+ */
+export const putOrderDeliverEval = (params) => {
+  return ax.u(`/order/remarkDeliver/${params}`)
+}
+/**
+ * 获取配送员评价详情
+ * @param params =>{rkDeliverId}
+ */
+export const getOrderDeliverEvalDetails = (params) => {
+  return ax.g(`/order/remark/deliver/${params}`)
 }
 
 /**
@@ -272,6 +336,11 @@ export const seeBanner = id => {
  */
 
 /**
+ * 用户端相关接口
+ * @author by WuFengliang
+ */
+
+/**
  * 获取用户端所有用户列表
  * @param params =>{status,mobileno,pageSize,pageNo}
  */
@@ -298,6 +367,57 @@ export const changeStatus = params => {
  */
 export const getUserInfoData = params => {
   return ax.g(`customer/${params.custId}`)
+}
+
+/**
+ * 获取消息列表
+ */
+export const getMessageList = params => {
+  return ax.g(
+    `customer/message/list/${params.pageNo}?status=${params.status}&msgType=${params.msgType}&pageSize=${params.pageSize}`
+  )
+}
+
+/**
+ * 编辑消息
+ */
+export const putMessage = params => {
+  return ax.u(`/customer/message`, params)
+}
+
+/**
+ * 获取配送价列表
+ */
+export const getPirse = params => {
+  return ax.g(`/customer/expense`, params)
+}
+
+/**
+ * 获取标签列表
+ */
+export const getTagLists = params => {
+  return ax.g(`/customer/tag`, params)
+}
+
+/**
+ * 新增标签列表
+ */
+export const addTag = params => {
+  return ax.p(`/customer/tag`, params)
+}
+
+/**
+ * 更新标签列表
+ */
+export const putTag = params => {
+  return ax.u(`/customer/tag`, params)
+}
+
+/**
+ * 获取用户账户余额流水
+ */
+export const getAccountMoney = params => {
+  return ax.p(`/customer/account/coins/${params.custId}/${params.pageNo}`)
 }
 
 /**
