@@ -33,6 +33,8 @@
 </template>
 <script>
 import * as api from 'api/common.js'
+import * as date from '@/until/time'
+
 export default {
   name: 'systemMessagePush',
   components: {},
@@ -74,7 +76,10 @@ export default {
         {
           title: '推送时间',
           key: 'pushTime',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.pushTime)
+          }
         },
         {
           title: '推送状态',
@@ -227,7 +232,7 @@ export default {
         })
       })
     },
-     // 更改分页数据
+    // 更改分页数据
     changePage(curren) {
       this.pageNo = curren
       this.getSysMessage() // 初始化历史数据

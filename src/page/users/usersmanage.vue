@@ -223,7 +223,6 @@ export default {
         userId: this.saveStatus, // 获取当前点击ID
         status: this.status // 当前所在页
       }
-      console.log(params, 'params')
       api.getpaltformUserChange(params).then(data => {})
       this.getUserData() // 数据调用
     },
