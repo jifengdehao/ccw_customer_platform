@@ -44,7 +44,7 @@
           {
             name: 'sw',
             text: '屏蔽词管理',
-            icon: 'ios-telephone',
+            icon: 'ios-paperplane',
             noDropdown: true
           }
         ]

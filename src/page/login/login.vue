@@ -8,7 +8,7 @@
   <div id="login">
     <i-form ref="formLogin" :model="formLogin" :rules="formLoginRules" class="card-box">
       <Form-item class="formLogin-title">
-        <h3>系统登录</h3>
+        <h3>用户端系统登录</h3>
       </Form-item>
       <Form-item prop="username">
         <i-input size="large" type="text" v-model="formLogin.username" placeholder="用户名">
@@ -27,7 +27,7 @@
           <Icon type="ios-pulse" slot="prepend"></Icon>
           </Input>
           </Col>
-          <Col span="6" offset="1" @click="putCode">
+          <Col span="6" offset="1" @click="getCode">
           <img src="https://api.it120.cc/jifengdehao/verification/pic/get" style="width: 100%;height: 35px;">
           </Col>
         </Row>
@@ -77,6 +77,9 @@
         }
       }
     },
+    created () {
+      this.getCode()
+    },
     methods: {
       // 登录
       handleSubmit (name) {
@@ -84,7 +87,7 @@
           if (valid) {
             sessionStorage.setItem('user', JSON.stringify(this.formLogin))
             this.$Message.success('提交成功!')
-            api.Login(this.formLogin).then((user) => {
+            api.login(this.formLogin).then((user) => {
               console.log(user)
             })
             this.$router.push({path: '/'})
@@ -105,7 +108,11 @@
         this.$refs[name].resetFields()
       },
       // 请求code 验证码
-      putCode () {}
+      getCode () {
+        api.getCode().then((res) => {
+          console.log(res)
+        })
+      }
     },
     mounted () {
       if (sessionStorage.getItem('username')) {

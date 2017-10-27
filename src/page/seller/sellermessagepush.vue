@@ -9,21 +9,26 @@
   <div>
     <Input v-model="single.title" placeholder="输入标题" value="single.title" style="width: 200px;float:left;margin-right:200px;"></Input>
     <div style="line-height:1.5;float:right">
+      <label>推送时间设置</label>
+      <Select v-model="single.pushType" style="width:150px;margin-left:10px; margin-right: 10px;">
+        <Option value="1">定时推送</Option>
+        <Option value="2">立即推送</Option>
+      </Select>
       <label>推送时间设置:</label>
       <DatePicker v-model="single.pushTime" value="single.pushTime" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="选择日期和时间（不含秒）" style="width: 300px"></DatePicker>
     </div>
-    <textarea v-model="single.msgContent" placeholder="输入您要推送的系统消息的内容" value="single.msgContent"></textarea>
+    <textarea v-model="single.content" placeholder="输入您要推送的系统消息的内容" value="single.content"></textarea>
     <div class="btn-ok">
       <Button type="primary" @click="pushMessage">{{pushButton}}</Button>
     </div>
-    <Tabs type="card" @on-click="chooseTabs">
-      <TabPane label="全部"></TabPane>
-      <TabPane label="待推送"></TabPane>
-      <TabPane label="历史推送"></TabPane>
-      <TabPane label="推送失败"></TabPane>
-    </Tabs>
-    <Table border :columns="pushMessageTitle" :data="pushMessageData"></Table>
-    <Page class="page-style" :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
+     <div>
+       <Tabs type="card" @on-click="onTabsIndex" :animated="false">
+          <TabPane v-for="tab in messgeTabs" :key="tab" :label="tab">
+            <Table border :columns="pushMessageTitle" :data="pushMessageData"></Table>
+          </TabPane>
+            <Page v-if="pushMessageData && pushMessageData.length > 0" class="page-style" :current="pageNo" :total="total" @on-change="changePage"></Page>
+        </Tabs>
+     </div>
   </div>
 </template>
 <script>
@@ -34,24 +39,27 @@ export default {
   props: {},
   data() {
     return {
-      total: 15,
-      pageSize: 1,
+      messgeTabs: ['全部', '待推送', '历史推送', '推送失败'], // table 切换
+      messgeIndex: '', // 保存切换ID
+      total: '', // 总页数
+      pageNo: 1, // 当前页
+      pageSize: 10, // 每页数据
       data: [],
       pushButton: '确定',
-      pushStyle: '0', //  推送方式值
       single: {
         //  时间相关数据
         title: '', //  标题
         pushTime: '',
-        msgContent: ''
+        content: '',
+        pushType: '1'
       },
       pushMessageTitle: [
         //  推送table表头
         {
           title: '序号',
-          type: 'index',
           width: 80,
-          align: 'center'
+          align: 'center',
+          key: 'smMssageId'
         },
         {
           title: '标题',
@@ -60,7 +68,7 @@ export default {
         },
         {
           title: '内容',
-          key: 'msgContent',
+          key: 'content',
           align: 'center'
         },
         {
@@ -75,7 +83,7 @@ export default {
         },
         {
           title: '操作人员',
-          key: 'lastUpdatorName',
+          key: 'creator',
           align: 'center'
         },
         {
@@ -95,7 +103,12 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.single = params.row
+                      api
+                        .seeSysMessage(params.row.smMssageId)
+                        .then(response => {
+                          this.single = response
+                          this.single.pushType = String(this.single.pushType)
+                        })
                       this.pushButton = '查看完毕'
                     }
                   }
@@ -112,6 +125,7 @@ export default {
                   on: {
                     click: () => {
                       this.single = params.row
+                      this.single.pushType = String(params.row.pushType)
                       this.pushButton = '确定修改'
                     }
                   }
@@ -122,73 +136,103 @@ export default {
           }
         }
       ],
-      pushMessageData: [
-        //  推送数据集合
-        {
-          title: '测试数据',
-          msgContent: '我只是测试一下',
-          pushTime: '2017/8/16  18:30',
-          status: '失败',
-          lastUpdatorName: '王五'
-        }
-      ]
+      pushMessageData: [] // 列表数据
     }
   },
-  created() {},
+  created() {
+    this.messgeIndex = '' // 初始化table ID
+    this.getSysMessage() // 初始化历史数据
+  },
   activited: {},
   update: {},
   beforeRouteUpdate: {},
   methods: {
-    changepage(index) {
-      console.log(index)
+    //  tab切换 获取ID
+    onTabsIndex(index) {
+      this.messgeIndex = index
+      this.pageNo = 1
+      this.getSysMessage() // 初始化历史数据
     },
-    //  tab切换
-    chooseTabs(index) {},
+    // 点击button 判断状态
     pushMessage() {
-      this.single = {}
-      this.pushButton = '确定'
+      if (this.pushButton === '确定') {
+        // 新增消息推送
+        this.single.msgType = 6
+        switch (this.single.pushType) {
+          case '1':
+            this.single.pushType = 1
+            break
+          case '2':
+            this.single.pushType = 2
+        }
+        api.addSysMessage(this.single).then(res => {})
+        this.single = {}
+        this.single.pushType = '1'
+      } else if (this.pushButton === '查看完毕') {
+        this.single = {}
+        this.single.pushType = '1'
+        this.pushButton = '确定'
+      } else if (this.pushButton === '确定修改') {
+        switch (this.single.status) { // 过滤推送状态 改为number
+          case '待推送':
+            this.single.status = 0
+            break
+          case '推送成功':
+            this.single.status = 1
+            break
+          case '推送失败':
+            this.single.status = 2
+        }
+        switch (this.single.pushType) {
+          case '1':
+            this.single.pushType = 1
+            break
+          case '2':
+            this.single.pushType = 2
+        }
+        api
+          .modifySysMessage(this.single, this.single.smMssageId)
+          .then(data => {})
+        this.single = {}
+        this.single.pushType = '1'
+        this.pushButton = '确定'
+      } else {
+        return false
+      }
+      this.getSysMessage() // 初始化历史数据
     },
     // 获取商户端系统消息列表
-    getSysMessage(pageNo, pageSize, pushStatus) {
-      let params = {
-        pageNo: pageNo,
-        pageSize: pageSize,
-        pushStatus: pushStatus // 消息推送状态
+    getSysMessage() {
+      if (this.messgeIndex === 0) {
+        this.messgeIndex = '' // 消息推送状态 全部不需要状态
       }
-      api.getSysMessage(params).then(response => {
+      let params = {
+        pageSize: this.pageSize,
+        status: this.messgeIndex
+      }
+      api.getSysMessage(params, this.pageNo).then(response => {
         this.pushMessageData = response.records
         this.total = response.total
-        this.pageSize = response.size
+        this.pushMessageData.forEach((item, index) => {
+          switch (item.status) {
+            case 0:
+              item.status = '待推送'
+              break
+            case 1:
+              item.status = '推送成功'
+              break
+            case 2:
+              item.status = '推送失败'
+          }
+        })
       })
     },
-    // 新增商户端系统消息
-    addSysMessage(title, pushType, msgContent, pushTime) {
-      let params = {
-        title: title, // 消息标题
-        pushType: pushType, // 推送消息类型
-        msgContent: msgContent, // 推送消息内容
-        pushTime: pushTime
-      }
-      api.addSysMessage(params).then(response => {})
-    },
-    // 查看商户端系统消息
-    seeSysMessage(id) {
-      api.seeSysMessage(id).then(response => {})
-    },
-    // 编辑商户端系统消息
-    modifySysMessage(id, title, pushType, msgContent, pushTime) {
-      let params = {
-        title: title, // 消息标题
-        pushType: pushType, // 推送消息类型
-        msgContent: msgContent, // 推送消息内容
-        pushTime: pushTime
-      }
-      api.modifySysMessage(params, id).then(response => {})
+     // 更改分页数据
+    changePage(curren) {
+      this.pageNo = curren
+      this.getSysMessage() // 初始化历史数据
     }
-  },
-  filter: {},
-  computed: {},
-  watch: {}
+  }
 }
 </script>
 <style lang="css" scoped>
@@ -218,7 +262,7 @@ textarea:focus {
 }
 
 .page-style {
-  margin: 20px auto;
+  margin-top: 20px;
   float: right;
 }
 </style>

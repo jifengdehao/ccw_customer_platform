@@ -92,8 +92,14 @@ const OrderEvaluate = resolve => {
   })
 }
 // 评价详情
-const OrderEvaluateInfo = resolve => {
-  import('page/order/evaldetails').then(module => {
+const OrderEvaluateDeliver = resolve => {
+  import('page/order/evalDeliverDetails').then(module => {
+    resolve(module)
+  })
+}
+// 评价详情
+const OrderEvaluateSeller = resolve => {
+  import('page/order/evalSellerDetails').then(module => {
     resolve(module)
   })
 }
@@ -300,10 +306,6 @@ const User = resolve => {
   })
 }
 
-// import ActivityMessagePush from 'page/custom/activitymessagepush'
-// import DailyMenuPush from 'page/custom/dailymenupush'
-// import AppNoticePush from 'page/custom/appnoticepush'
-
 export default [
   {
     path: '/',
@@ -324,7 +326,8 @@ export default [
           { path: 'manage', component: OrderManage },
           { path: 'abnormal', component: OrderAbnormal },
           { path: 'evaluate', component: OrderEvaluate },
-          { path: 'evaluateInfo/:id', component: OrderEvaluateInfo },
+          { path: 'evaluateInfoDeliver/:id', component: OrderEvaluateDeliver },
+          { path: 'evaluateInfoSeller/:id', component: OrderEvaluateSeller },
           { path: 'feedback', component: OrderFeedback },
           { path: 'feedbackInfo/:id', component: OrderFeedbackInfo },
           { path: 'sw', component: OrderSw },

@@ -6,20 +6,17 @@
 */
 <template>
   <div class="order-manage">
-    <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
-      <FormItem prop="phone" label="手机号" :label-width="80">
-        <Input type="text" v-model="formInline.phone" placeholder="请输入手机号"></Input>
-      </FormItem>
-      <FormItem prop="phone" label="订单编号" :label-width="80">
-        <Input type="text" v-model="formInline.orderNumber" placeholder="请输入订单编号"></Input>
+    <i-form inline label-position="left">
+      <FormItem label="手机号" :label-width="80">
+        <Input type="text" v-model="phone" placeholder="请输入手机号"></Input>
       </FormItem>
       <FormItem>
-        <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
+        <Button type="primary" @click="handleSubmit()">搜索</Button>
       </FormItem>
     </i-form>
     <Tabs value="0" @on-click="selectTab" :animated="false">
       <Tab-pane label="全部订单" name="0">
-        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
         <i-col span="24" class="mt20">
           <Page
             :total="tableTotal"
@@ -32,7 +29,7 @@
         </i-col>
       </Tab-pane>
       <Tab-pane label="待付款" name="1">
-        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
         <i-col span="24" class="mt20">
           <Page
             :total="tableTotal"
@@ -45,7 +42,7 @@
         </i-col>
       </Tab-pane>
       <Tab-pane label="待接单" name="2">
-        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
         <i-col span="24" class="mt20">
           <Page
             :total="tableTotal"
@@ -58,7 +55,7 @@
         </i-col>
       </Tab-pane>
       <Tab-pane label="待发货" name="3">
-        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
         <i-col span="24" class="mt20">
           <Page
             :total="tableTotal"
@@ -71,7 +68,7 @@
         </i-col>
       </Tab-pane>
       <Tab-pane label="配送中" name="4">
-        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
         <i-col span="24" class="mt20">
           <Page
             :total="tableTotal"
@@ -84,7 +81,7 @@
         </i-col>
       </Tab-pane>
       <Tab-pane label="待评价" name="5">
-        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
         <i-col span="24" class="mt20">
           <Page
             :total="tableTotal"
@@ -97,7 +94,7 @@
         </i-col>
       </Tab-pane>
       <Tab-pane label="已完成" name="6">
-        <i-table :columns="columns" :data="data" stripe></i-table>
+        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
         <i-col span="24" class="mt20">
           <Page
             :total="tableTotal"
@@ -136,18 +133,8 @@
         tableTotal: 0, // 当前页的数据总数
         status: 0, // 状态
         modal_loading: false,
-        formInline: {
-          phone: '',
-          orderNumber: ''
-        },
-        ruleInline: {
-          phone: [
-            {required: true, message: '请填写手机号', trigger: 'blur'}
-          ],
-          orderNumber: [
-            {required: true, message: '请填写订单号', trigger: 'blur'}
-          ]
-        },
+        phone: '',
+        loading: true,
         columns: [
           {
             type: 'expand',
@@ -231,7 +218,7 @@
                   on: {
                     click: () => {
                       console.log(orderId)
-                      this.$router.push('/order/orderInfo/' + orderId)
+                      this.$router.push('/order/orderInfo/' + orderId + '?options=see')
                     }
                   }
                 }, '查看'),
@@ -243,7 +230,7 @@
                   on: {
                     click: () => {
                       console.log(orderId)
-                      this.$router.push('/order/orderInfo/' + orderId)
+                      this.$router.push('/order/orderInfo/' + orderId + '?options=edit')
                     }
                   }
                 }, '编辑')
@@ -261,14 +248,8 @@
     },
     methods: {
       // 搜索
-      handleSubmit (name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            // this.$Message.success('提交成功!')
-          } else {
-            this.$Message.error('表单验证失败!')
-          }
-        })
+      handleSubmit () {
+        this._getOrderData()
       },
       // 选择tab
       selectTab (name) {
@@ -276,7 +257,15 @@
         this._getOrderData()
       },
       // 导出数据
-      exportData () {},
+      exportData () {
+        let that = this
+        this.$Modal.confirm({
+          content: '尚未开发',
+          onOk () {
+            that.exportModal = false
+          }
+        })
+      },
       // 分页
       changePage (index) {
         this.curr = index
@@ -285,12 +274,16 @@
       _getOrderData () {
         let params = {
           pageSize: this.pageNum,
-          status: this.status
+          status: this.status,
+          mobileno: this.phone
         }
         api.getOrderList(params, this.curr).then((res) => {
           console.log(res)
-          this.tableTotal = res.total
-          this.data = res.records
+          if (res) {
+            this.loading = false
+            this.tableTotal = res.total
+            this.data = res.records
+          }
         })
       }
     },

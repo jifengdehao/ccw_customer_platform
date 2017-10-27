@@ -30,7 +30,7 @@
     <Row class="mb20">
       <Col span="24">
       <h2 class="vm-clearfix mb10">交易信息
-        <Button type="primary" class="vm-fr" @click="refundAll">全部退款</Button>
+        <Button type="primary" class="vm-fr" @click="refundAll" v-show="options==='edit'? true: false ">全部退款</Button>
       </h2>
       <Table :columns="columns4" :data="data4" :border="true"></Table>
       </Col>
@@ -46,6 +46,9 @@
       return {
         orderId: (() => {
           return this.$route.params.id
+        })(),
+        options: (() => {
+          return this.$route.query.options
         })(),
         columns1: [
           {
@@ -259,84 +262,6 @@
             align: 'center'
           }
         ],
-        /*
-        data1: [
-          {
-            orderNumber: 10086,
-            orderTime: '2017/07/07 07:07:07',
-            consignee: '张三',
-            consigneeTel: '18812345678',
-            consigneeAdr: 'XXXXX',
-            consigneeTime: '7:30-8:30',
-            consigneeStatus: '送货上门'
-          }
-        ],
-        */
-        /*
-        data2: [
-          {
-            deliveryId: 1212,
-            deliveryName: '张三',
-            startTime: '7:15',
-            endTime: '8:00'
-          }
-        ],
-        */
-        /*
-        data3: [
-          {
-            orderSum: '¥79.2',
-            deliverySum: '¥10',
-            discountSum: '¥30',
-            coupon: '满50减30',
-            actualSum: '¥59.2',
-            payStatus: '未付款'
-          }
-        ],
-        */
-        /*
-        data4: [
-          {
-            sellerId: 9329328,
-            transactionNumber: 91938919138,
-            goodName: '大白菜',
-            goodNumber: 2,
-            spec: '500g',
-            attr: '不切',
-            unitPrice: '¥9.9',
-            total: '¥19.8',
-            refundSum: '¥10',
-            refundTime: '2017/07/08 07:07:07',
-            refundMethod: '人工退款',
-            isRefund: true
-          },
-          {
-            sellerId: 9329328,
-            transactionNumber: 91938919138,
-            goodName: '大白菜',
-            goodNumber: 2,
-            spec: '500g',
-            attr: '不切',
-            unitPrice: '¥9.9',
-            total: '¥19.8',
-            refundSum: '¥9.8',
-            refundTime: '2017/07/08 07:07:07',
-            refundMethod: '自动退款',
-            isRefund: true
-          },
-          {
-            sellerId: 9329328,
-            transactionNumber: 91938919138,
-            goodName: '大白菜',
-            goodNumber: 2,
-            spec: '500g',
-            attr: '不切',
-            unitPrice: '¥9.9',
-            total: '¥19.8',
-            isRefund: false
-          }
-        ]
-        */
         data1: [],
         data2: [],
         data3: [],
@@ -344,15 +269,23 @@
       }
     },
     created () {
-      console.log(this.orderId)
+      console.log(this.options)
       this.getOrderDetails()
+      this.hiddenOptions()
     },
     methods: {
       refundAll () {
+        let that = this
         this.$Modal.confirm({
           content: '确定退还此订单金额？',
           onOk () {
             // api 操作
+            api.putRefundOrderAll(that.orderId).then((res) => {
+              console.log(res)
+              if (res === null) {
+                that.getOrderDetails()
+              }
+            })
           }
         })
       },
@@ -369,6 +302,11 @@
             this.data3 = Array.of(res.paymentInfo)
           }
         })
+      },
+      hiddenOptions () {
+        if (this.options === 'see') {
+          this.columns4.splice(this.columns4.length - 4, 1)
+        }
       }
     }
   }

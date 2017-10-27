@@ -228,6 +228,9 @@ export default {
         api.endBanner(data.ptBannerId).then(data => {})
       } else if (this.status === 1) {
         // 点击删除
+        if (!data.ptBannerId) { // 如果为空id 不发送请求
+          return false
+        }
         api.deleteBanner(data.ptBannerId).then(data => {})
       }
     },
@@ -245,14 +248,14 @@ export default {
     // 保存修改
     getSaveChanges() {
       if (this.status === 1) {
+        console.log(this.bannerData, 'bannerData')
+        this.bannerData.forEach((item, index) => {
+          console.log(item, 'item')
+        })
         // 调用自增 保存api
-        api.addUpdataBanner(this.bannerData).then(data => {
-          console.log(data)
-        })
+        api.addUpdataBanner(this.bannerData).then(data => {})
       } else if (this.status === 0) {
-        api.addUpdataBanner(this.bannerData).then(data => {
-          console.log(data)
-        })
+        api.addUpdataBanner(this.bannerData).then(data => {})
       }
     },
     // 上传图片
