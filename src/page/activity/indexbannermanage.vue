@@ -56,8 +56,8 @@
               <tr v-for="data in bannerData" :key="data.id">
                 <td>{{ data.position }}</td>
                 <td>{{ data.remark }}</td>
-                <td>{{ data.updateAt }}</td>
-                <td>{{ data.endTime }}</td>
+                <td>{{ formatDateTime(data.updateAt) }}</td>
+                <td>{{ formatDateTime(data.endTime) }}</td>
                 <td><Button type="primary" @click="seeModal(data)">查看</Button></td>
               </tr>
               <tr v-if="bannerData && bannerData.length <= 0" style="height: 40px;">
@@ -90,8 +90,8 @@
                   <td>{{ seeBannerData.linkUrl }}</td>
                   <td>{{ seeBannerData.remark }}</td>
                   <td>
-                    <p>开始时间：{{ seeBannerData.startTime }}</p>
-                    <p>结束时间：{{ seeBannerData.endTime }}</p>
+                    <p>开始时间：{{ formatDateTime(seeBannerData.startTime) }}</p>
+                    <p>结束时间：{{ formatDateTime(seeBannerData.endTime) }}</p>
                   </td>
                 </tr>
               </table>
@@ -104,6 +104,7 @@
 <script type="text/ecmascript-6">
 import * as api from 'api/common.js'
 import draggable from 'vuedraggable'
+
 export default {
   components: { draggable },
   data() {
@@ -228,7 +229,8 @@ export default {
         api.endBanner(data.ptBannerId).then(data => {})
       } else if (this.status === 1) {
         // 点击删除
-        if (!data.ptBannerId) { // 如果为空id 不发送请求
+        if (!data.ptBannerId) {
+          // 如果为空id 不发送请求
           return false
         }
         api.deleteBanner(data.ptBannerId).then(data => {})
@@ -236,8 +238,8 @@ export default {
     },
     // 查看banner弹框数据
     seeModal(data) {
-      api.seeBanner(data.ptBannerId).then(data => {
-        this.seeBannerData = data
+      api.seeBanner(data.ptBannerId).then(res => {
+        this.seeBannerData = res
       })
       this.seeBannerClose = true // 打开查看bnner模态框
     },
@@ -264,10 +266,29 @@ export default {
       this.formData.append('file', e.target.files[0])
       console.log(this.formData, e)
     },
+    // 拖拽
     datadragEnd(evt) {
       console.log('拖动前的索引 :' + evt.oldIndex)
       console.log('拖动后的索引 :' + evt.newIndex)
       console.log(this.bannerData, '22')
+    },
+    // 时间格式化
+    formatDateTime(inputTime) {
+      if (inputTime) {
+        var date = new Date(inputTime)
+        var y = date.getFullYear()
+        var m = date.getMonth() + 1
+        m = m < 10 ? '0' + m : m
+        var d = date.getDate()
+        d = d < 10 ? '0' + d : d
+        var h = date.getHours()
+        h = h < 10 ? '0' + h : h
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+        minute = minute < 10 ? '0' + minute : minute
+        second = second < 10 ? '0' + second : second
+        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second
+      }
     }
   }
 }

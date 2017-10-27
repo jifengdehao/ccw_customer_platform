@@ -21,13 +21,12 @@ import expandRow from 'page/custom/unfold'
 
 export default {
   name: 'accountDetail',
-  components: {
-  },
-  props: {
-  },
+  components: {},
+  props: {},
   data() {
     return {
-      userInfoTitle: [  //  用户信息表头
+      userInfoTitle: [
+        //  用户信息表头
         {
           title: '用户ID',
           key: 'mcCustomerId'
@@ -54,7 +53,8 @@ export default {
         }
       ],
       userInfoData: [], //  用户信息数据
-      userAcceptTitle: [  //  用户收货地址表头
+      userAcceptTitle: [
+        //  用户收货地址表头
         {
           title: '序号',
           type: 'index',
@@ -86,8 +86,9 @@ export default {
           align: 'center'
         }
       ],
-      userAcceptData: [],  //  用户收货地址数据集合
-      userBuyTitle: [  // 用户购买记录表头
+      userAcceptData: [], //  用户收货地址数据集合
+      userBuyTitle: [
+        // 用户购买记录表头
         {
           type: 'expand',
           width: 50,
@@ -120,7 +121,8 @@ export default {
           key: 'orderStatus'
         }
       ],
-      userBuyData: [ //  用户购买记录数据集合
+      userBuyData: [
+        //  用户购买记录数据集合
         {
           orderId: '1001',
           contactNumber: '13838384381',
@@ -129,15 +131,12 @@ export default {
           orderStatus: '待付款'
         }
       ],
-      params: {}  //  http传递的参数
+      params: {} //  http传递的参数
     }
   },
-  activited: {
-  },
-  update: {
-  },
-  beforeRouteUpdate: {
-  },
+  activited: {},
+  update: {},
+  beforeRouteUpdate: {},
   mounted() {
     this.params.custId = this.$route.params.id
     this.getUserInfoData()
@@ -145,19 +144,16 @@ export default {
   methods: {
     //  获取用户信息
     getUserInfoData() {
-      http.getUserInfoData(this.params).then((data) => {
+      http.getUserInfoData(this.params).then(data => {
         this.userInfoData = data.custInfo
         this.userAcceptData = data.custAddress
         this.userBuyData = data.custOrderRecord
       })
     }
   },
-  filter: {
-  },
-  computed: {
-  },
-  watch: {
-  }
+  filter: {},
+  computed: {},
+  watch: {}
 }
 </script>
 <style lang="css" scoped>
