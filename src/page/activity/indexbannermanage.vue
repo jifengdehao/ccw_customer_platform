@@ -246,11 +246,11 @@ export default {
     getSaveChanges() {
       if (this.status === 1) {
         // 调用自增 保存api
-        api.addUpdataBanner(this.bannerData).then((data) => {
+        api.addUpdataBanner(this.bannerData).then(data => {
           console.log(data)
         })
       } else if (this.status === 0) {
-        api.addUpdataBanner(this.bannerData).then((data) => {
+        api.addUpdataBanner(this.bannerData).then(data => {
           console.log(data)
         })
       }

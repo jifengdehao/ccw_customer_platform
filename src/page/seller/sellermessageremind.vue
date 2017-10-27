@@ -8,7 +8,7 @@
   <div class="seller-message-remind">
     <!-- 表格内容 -->
     <section class="seller-message-remind-tab">
-      <Tabs type="card" :animated="false" @on-click="">
+      <Tabs type="card" :animated="false"  @on-click="changeTable">
         <TabPane v-for="tab in tabs" key :label="tab.title">
           <Table :columns="remindColumns" :data="remindData"></Table>
         </TabPane>
@@ -78,6 +78,10 @@ export default {
                   on: {
                     click: index => {
                       params.row.status = 1
+                      this.updateAlertsMessage(
+                        params.row.msSellerId,
+                        params.row.status
+                      )
                     }
                   }
                 },
@@ -87,14 +91,12 @@ export default {
           }
         }
       ],
-      remindData: [
-        { id: 1, type: '找回密码', sellerId: 'ABC123', status: 0 },
-        { type: '找回密码', status: 0 },
-        { sellerId: 'ABC123', sellertatus: '营业中', status: 0 }
-      ]
+      remindData: []
     }
   },
-  // created: {},
+  created() {
+    this.getAlertsMessageList(1, 5, 0)
+  },
   // mounted: {},
   activited: {},
   update: {},
@@ -102,11 +104,10 @@ export default {
     // 获取消息提醒列表
     getAlertsMessageList(pageNo, pageSize, status) {
       let params = {
-        pageNo: pageNo,
         pageSize: pageSize,
         status: status
       }
-      api.getAlertsMessageList(params).then(response => {
+      api.getAlertsMessageList(params, pageNo).then(response => {
         this.remindData = response.records
         this.total = response.total
         this.pageSize = response.size
@@ -119,8 +120,18 @@ export default {
       }
       api.updateAlertsMessage(params, id).then(response => {})
     },
+    // 切换tab
+    changeTable(index) {
+      if (index === 0) {
+        this.getAlertsMessageList(1, 5, 0)
+      } else if (index === 1) {
+        this.getAlertsMessageList(1, 5, 1)
+      } else if (index === 2) {
+        this.getAlertsMessageList(1, 5)
+      }
+    },
     changepage(index) {
-      console.log(index)
+      console.log(this.tab.title)
     }
   },
   filfter: {},

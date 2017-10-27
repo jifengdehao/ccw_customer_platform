@@ -27,7 +27,7 @@ export const itr = (type, url, params) => {
   }
   let arg = qs.stringify(params)
   if (Object.keys(params).length > 0) {
-    url = type === 'get' || type === 'patch' ? url + '?' + arg : url
+    url = type === 'get' || type === 'patch' || type === 'delete' ? url + '?' + arg : url
   }
   var userInfo = ac.getData('userInfo')
   var token = ''
@@ -36,7 +36,7 @@ export const itr = (type, url, params) => {
     token = userInfo.token ? userInfo.token : ''
   }
   ax.defaults.headers.TOKEN = token
-  return ax[type](url, arg)
+  return ax[type](url, params)
 }
 
 export const g = (url, params) => {

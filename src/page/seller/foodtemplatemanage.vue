@@ -6,25 +6,6 @@
  */
 <template>
   <div class="seller-template-manager">
-    <!-- 搜索 -->
-    <section class="seller-template-manager-search" v-if="search">
-      <Form :model="formItem" ref="formItem" inline>
-        <FormItem>
-          <span class="label">筛选条件：</span>
-          <i>一级分类</i>
-          <Select v-model="model1" style="width:150px">
-            <Option v-for="item in firstclassify" :value="item.value" :key="item.value" placeholder="一级分类">{{ item.label }}</Option>
-          </Select>
-          <i>二级分类</i>
-          <Select v-model="model1" style="width:150px">
-            <Option v-for="item in secondclassify" :value="item.value" :key="item.value">{{ item.label }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem>
-          <Button type="primary">搜索</Button>
-        </FormItem>
-      </Form>
-    </section>
     <!-- 表格内容 -->
     <section seller-template-manager-container>
       <Tabs type="card" :animated="false" @on-click="changedata">
@@ -37,7 +18,7 @@
                 <li>
                   <h4>一级分类</h4>
                 </li>
-                <li v-for="(item,index) in parentdata" :key="index" @click="test(item.name,index)" :class="{current:selected==index}">{{item.name}}</li>
+                <li v-for="(item,index) in parentdata" :key="index" @click="changeParent(item.spCategoryId,index)" :class="{current:selected==index}">{{item.name}}</li>
               </ul>
               </Col>
               <Col span="11">
@@ -53,15 +34,15 @@
           </div>
         </TabPane>
         <TabPane label="商品模板管理">
-          <v-foodtemplate></v-foodtemplate>
+          <v-foodtemplate :parentdata="parentdata"></v-foodtemplate>
         </TabPane>
       </Tabs>
     </section>
     <!-- 查看图片 -->
-    <Modal v-model="classifymodal" :title="classifytitle" width="300" @on-ok="postdata" @on-cancel="">
-      <draggable v-model="parentdata" @update="datadragEnd">
+    <Modal v-model="classifymodal" :title="classifytitle" width="300" @on-ok="postdata">
+      <draggable v-model="dragdata" @update="datadragEnd">
         <transition-group>
-          <div v-for="(item,index) in parentdata" :key="index" style="lineHeight:30px">
+          <div v-for="(item,index) in dragdata" :key="index" style="lineHeight:30px">
             <Input v-model="item.name" size="small" style="width: 200px" v-if="item.operation !== 0"></Input>
             <Button type="error" size="small" @click="delClassify(index)" v-if="item.operation !== 0">删除</Button>
           </div>
@@ -83,82 +64,44 @@ export default {
     return {
       idx: Number,
       selected: 0,
-      formItem: {
-        input: ''
-      },
+      addID: -1, // 添加二级分类parentId
       model1: '',
       search: false,
       classifydata: [],
       classifytitle: '',
-      firstclassify: [],
-      secondclassify: [],
-      parentdata: [],
-      childdata: [],
-      classifymodal: false,
-      classifyColumns: [
-        {
-          title: '一级分类',
-          key: 'catName',
-          render: (h, params) => {
-            return h('div', [
-              h('Input', {
-                props: {
-                  size: 'small',
-                  value: params.row.catName
-                },
-                style: {
-                  marginRight: '5px'
-                }
-              })
-            ])
-          }
-        },
-        {
-          title: '操作',
-          key: 'operation',
-          width: 140,
-          render: (h, params) => {
-            return h('div', [
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'error',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {}
-                  }
-                },
-                '删除'
-              )
-            ])
-          }
-        }
-      ],
-      columns: []
+      parentdata: [], // 一级分类列表
+      childdata: [], // 二级分类列表
+      dragdata: [], // 传入的数据 拖拽或者修改
+      classifymodal: false
     }
   },
   created() {
-    this.getProductCategory(-1)
+    let params = {
+      parentId: -1 // 一级分类传入-1
+    }
+    api.getProductCategory(params).then(response => {
+      this.parentdata = response
+      this.getProductCategory(this.parentdata[0].spCategoryId)
+    })
   },
   //   mounted: {},
   activited: {},
   update: {},
   methods: {
+    // 获取分类列表
     getProductCategory(parentId) {
       let params = {
-        parentId: parentId
+        parentId: parentId // 一级分类传入-1 二级分类传入父级分类的spCategoryId
       }
       api.getProductCategory(params).then(response => {
-        this.parentdata = response
+        if (parentId === -1) {
+          this.parentdata = response
+        } else {
+          this.childdata = response
+        }
       })
     },
-    // updateProductCategory(categories) {
-    //   api.updateProductCategory(categories).then(response => {
-    //     console.log(response)
-    //   })
-    // },
+    // 切换tab
     changedata(index) {
       if (index === 0) {
         this.search = false
@@ -166,48 +109,48 @@ export default {
         this.search = true
       }
     },
-    test(value, index) {
-      this.selected = index
+    changeParent(spCategoryId, index) {
+      this.addID = spCategoryId
+      this.selected = index // 点击改变样式
+      this.getProductCategory(spCategoryId) // 获取二级分类列表
     },
+    // 分类管理按钮
     showModal1() {
       this.classifytitle = '一级分类管理'
+      this.dragdata = this.parentdata
       this.classifymodal = true
     },
     showModal2() {
       this.classifytitle = '二级分类管理'
+      this.dragdata = this.childdata
       this.classifymodal = true
     },
+    // 拖拽触发事件
     datadragEnd(evt) {
-      console.log('拖动前的索引 :' + evt.oldIndex)
-      console.log('拖动后的索引 :' + evt.newIndex)
-      console.log(this.parentdata)
-      this.parentdata.forEach((item, index) => {
+      this.dragdata.forEach((item, index) => {
         item.idx = index + 1
       })
     },
+    // 添加分类
     addClassify(index) {
-      console.log(index)
       let addli = {
         name: '',
         operation: 2,
-        parentId: -1,
-        idx: this.parentdata.length + 1
+        parentId: this.classifytitle === '一级分类管理' ? -1 : this.addID,
+        idx: this.dragdata.length + 1
       }
-      this.parentdata.push(addli)
-      // console.log(this.templatedata)
+      this.dragdata.push(addli)
     },
+    // 删除分类
     delClassify(index) {
-      if (this.parentdata[index].operation === 2) {
-        this.parentdata.splice(index, 1)
+      if (this.dragdata[index].operation === 2) {
+        this.dragdata.splice(index, 1)
       } else {
-        this.parentdata[index].operation = 0
+        this.dragdata[index].operation = 0
       }
     },
     postdata() {
-      console.log(this.parentdata)
-      api.updateProductCategory(this.parentdata).then(response => {
-        console.log(response)
-      })
+      api.updateProductCategory(this.dragdata).then(response => {})
     }
   },
   filfter: {},
@@ -216,10 +159,6 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.seller-template-manager-search span {
-  font-size: 16px;
-  vertical-align: middle;
-}
 .current {
   background-color: #ccc;
 }

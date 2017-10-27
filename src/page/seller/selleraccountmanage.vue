@@ -47,7 +47,7 @@
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 商家信息模态框 -->
-    <Modal v-model="shopMessageModal" title="商家信息" width="900" okText="保存">
+    <Modal v-model="shopMessageModal" title="商家信息" width="900" @on-ok="modifySellerInfo(shopMessage)">
       <Form ref="formInline" :model="shopMessage" inline>
         <Row>
           <Col span="9">
@@ -55,17 +55,17 @@
           <FormItem prop="user" class="shopMessagemModal-user">
             <h3>账号信息</h3>
             <span>账号名：</span>
-            <Input size="small" :disabled="true" v-model="shopMessage.msSellerId" :value="shopMessage.msSellerId" placeholder="请输入" style="width: 150px"></Input>
+            <span>{{shopMessage.msSellerId}}</span>
             </br>
             <span>支付宝账号：</span>
-            <Input size="small" :disabled="true" v-model="shopMessage.alipayAccount" :value="shopMessage.alipayAccount" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" :disabled="disabled" v-model="shopMessage.alipayAccount" :value="shopMessage.alipayAccount" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>手机号：</span>
-            <Input size="small" :disabled="true" v-model="shopMessage.mobileno" :value="shopMessage.mobileno" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" :disabled="disabled" v-model="shopMessage.mobileno" :value="shopMessage.mobileno" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>密码：</span>
-            <Input type="password" size="small" :disabled="true" v-model="shopMessage.password" :value="shopMessage.password" placeholder="请输入" style="width: 150px"></Input>
-            <Button size="small">修改</Button>
+            <Input type="password" size="small" :disabled="disabled" v-model="shopMessage.password" :value="shopMessage.password" placeholder="请输入" style="width: 150px"></Input>
+            <Button size="small" @click="modifyDisabled">修改</Button>
           </FormItem>
           <!-- 店铺信息 -->
           <FormItem prop="user" class="shopMessagemModal-shopinfo">
@@ -83,8 +83,11 @@
             <Input size="small"  v-model="shopMessage.shopNo" :value="shopMessage.shopNo" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>营业状态：</span>
-            <Select size="small"  v-model="shopMessage.bussinessStatus" placeholder="请选择" style="width: 150px">
-            <Option v-for="item in bussinessStatus" :value="item.value" key>{{ item.label }}</Option>
+             <Select size="small" v-model="shopMessage.bussinessStatus" :value="shopMessage.bussinessStatus" placeholder="请选择" style="width: 150px">
+                <Option value="1">全部</Option>
+                <Option value="2">关档</Option>
+                <Option value="3">暂停封号</Option>
+                <Option value="4">正常</Option>
             </Select>
             </br>
             <span>营业时间：</span>
@@ -94,7 +97,7 @@
             <Input size="small"  v-model="shopMessage.mobileno" :value="shopMessage.mobileno" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>店铺公告：</span>
-            <textarea v-model="shopMessage.notice" :value="shopMessage.notice" cols="30" rows="5"></textarea>
+            <textarea v-model="shopMessage.notice" :value="shopMessage.notice" cols="30" rows="3"></textarea>
             </br>
             <span>店铺地址：</span>
             <Input size="small" v-model="shopMessage.stallAddress" :value="shopMessage.stallAddress" placeholder="请输入" style="width: 150px"></Input>
@@ -123,21 +126,20 @@
       </Form>
     </Modal>
     <!-- 商家账号管理模态框 -->
-    <Modal v-model="shopManageModal" title="账号管理" width="500">
+    <Modal v-model="shopManageModal" title="账号管理" width="500" @on-ok="modifySellerStatus(sellerAccountData)">
       <Form>
         <FormItem label="设置账号限制：">
-          <Select v-model="shopMessage.select" placeholder="请选择">
-            <Option value="beijing">关档</Option>
-            <Option value="shanghai">账号恢复</Option>
-            <Option value="shenzhen">账号冻结</Option>
+          <Select v-model="sellerAccountData.status" :value="sellerAccountData.status" placeholder="请选择">
+            <Option value="0">关档</Option>
+            <Option value="1">账号恢复</Option>
+            <Option value="2">账号冻结</Option>
           </Select>
         </FormItem>
         <FormItem label="添加备注：">
-          <Input v-model="shopMessage.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
+          <Input v-model="sellerAccountData.textarea" :value="sellerAccountData.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
         </FormItem>
       </Form>
     </Modal>
-
   </div>
 </template>
 <script>
@@ -149,17 +151,13 @@ export default {
     return {
       total: 1,
       pageSize: 5,
+      disabled: true,
       shopMessage: {},
+      bussinessStatus: [],
       shopMessageModal: false,
       shopManageModal: false,
       sellerAccountData: [{ msSellerId: 1 }],
       formItem: {},
-      bussinessStatus: [
-        { value: '全部' },
-        { value: '关档' },
-        { value: '账号封停' },
-        { value: '正常' }
-      ],
       businessDictCode: [],
       columns: [
         {
@@ -274,7 +272,7 @@ export default {
         this.pageSize = response.size
       })
     },
-    // 更新商户状态
+    // 商家账号管理
     updataShopStatus(sellerId, status, remark) {
       let params = {
         sellerId: sellerId,
@@ -283,6 +281,13 @@ export default {
       }
       api.updataShopStatus(params).then(response => {})
     },
+    modifySellerStatus(sellerAccountData) {
+      console.log(sellerAccountData)
+      let sellerId = sellerAccountData.sellerId
+      let status = sellerAccountData.status
+      let remark = sellerAccountData.remark
+      this.updataShopStatus(sellerId, status, remark)
+    },
     // getsellerInfo 查看商家信息详情
     getsellerInfo(msSellerId, shopId) {
       let params = {
@@ -290,6 +295,13 @@ export default {
       }
       api.getsellerInfo(params, msSellerId).then(response => {
         this.shopMessage = response
+      })
+    },
+    // 更新商家信息
+    modifySellerInfo(shopMessage) {
+      let sellerId = shopMessage.msSellerId
+      api.modifysellerInfo(shopMessage, sellerId).then(response => {
+        alert('更新成功')
       })
     },
     // 搜索    ？？？？
@@ -302,6 +314,10 @@ export default {
     },
     changepage(index) {
       this.getSellerAccountList(index, 5)
+    },
+    // 点击修改
+    modifyDisabled() {
+      this.disabled = false
     }
   },
   filfter: {},

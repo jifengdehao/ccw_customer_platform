@@ -11,46 +11,46 @@
       <Form :model="formItem" ref="formItem" inline>
         <FormItem>
           <span class="label">市场：</span>
-          <Select v-model="formItem.market" placeholder="请选择" style="width: 200px">
-            <Option v-for="item in market" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Select v-model="formItem.psMarketId" clearable placeholder="请选择市场" style="width: 200px">
+            <Option v-for="item in allMarket" :value="item.psMarketId" :key="item.psMarketId">{{ item.marketName }}</Option>
           </Select>
         </FormItem>
         <FormItem>
           <span class="label">负责人筛选：</span>
-          <Select v-model="formItem.charge" placeholder="请选择" style="width: 200px">
-            <Option v-for="item in charge" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Select v-model="formItem.ptBdId" clearable placeholder="请选择负责人" style="width: 200px">
+            <Option v-for="item in allCharge" :value="item.ptBdId" :key="item.ptBdId">{{ item.name }}</Option>
           </Select>
         </FormItem>
         <FormItem>
-          <Button type="primary">筛选</Button>
+          <Button type="primary" @click="search(formItem)">筛选</Button>
         </FormItem>
       </Form>
     </section>
     <!-- 表格 -->
     <section class="bd-manager-table">
       <Button style="marginBottom:10px" @click="addBD">新增</Button>
-      <Table :columns="columns" :data="BDdata"></Table>
+      <Table border :columns="columns" :data="BDdata"></Table>
     </section>
     <!-- 分页 -->
     <section class="bd-manager-page">
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
-    <!-- 修改BD -->
-    <Modal v-model="BDmodal" :title="modelTitle" width="400" class="BDmodal">
+    <!-- 新增 修改BD -->
+    <Modal v-model="BDmodal" :title="modelTitle" width="400" class="BDmodal" @on-ok="confirmAdd(modelFormItem,modelTitle)">
       <Form :model="modelFormItem" ref="formItem" inline>
         <FormItem>
           <span class="label">姓名：</span>
           <Input size="small" v-model="modelFormItem.name" :value="modelFormItem.name" placeholder="请输入" style="width: 150px"></Input>
           </br>
           <span class="label">电话：</span>
-          <Input size="small" v-model="modelFormItem.tel" :value="modelFormItem.tel" placeholder="请输入" style="width: 150px"></Input>
+          <Input size="small" v-model="modelFormItem.mobileno" :value="modelFormItem.mobileno" placeholder="请输入" style="width: 150px"></Input>
           </br>
           <span class="label">邀请码：</span>
-          <Input size="small" v-model="modelFormItem.invitCode" :value="modelFormItem.invitCode" placeholder="请输入" style="width: 150px"></Input>
+          <Input size="small" v-model="modelFormItem.invitationCode" :value="modelFormItem.invitationCode" placeholder="请输入" style="width: 150px"></Input>
           </br>
           <span class="label">负责市场：</span>
-          <Select v-model="modelFormItem.market" :value="modelFormItem.market" size="small" placeholder="请选择" style="width: 150px">
-            <Option v-for="item in market" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Select v-model="modelFormItem.psMarketId" :value="modelFormItem.psMarketId" size="small" placeholder="请选择" style="width: 150px">
+             <Option v-for="item in allMarket" :value="item.psMarketId" :key="item.psMarketId">{{ item.marketName }}</Option>
           </Select>
         </FormItem>
       </Form>
@@ -68,8 +68,8 @@ export default {
       pageSize: 1,
       formItem: {},
       modelFormItem: {},
-      charge: [],
-      market: [],
+      allCharge: [],
+      allMarket: [],
       BDmodal: false,
       modelTitle: '',
       columns: [
@@ -79,11 +79,11 @@ export default {
         },
         {
           title: '邀请码',
-          key: 'invitCode'
+          key: 'invitationCode'
         },
         {
           title: '负责市场',
-          key: 'market'
+          key: 'marketName'
         },
         {
           title: '操作',
@@ -104,6 +104,7 @@ export default {
                   },
                   on: {
                     click: () => {
+                      this.modelFormItem = params.row
                       this.modelTitle = '修改BD'
                       this.BDmodal = true
                     }
@@ -120,7 +121,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.remove(params.index)
+                      this.remove(params)
                     }
                   }
                 },
@@ -133,20 +134,35 @@ export default {
       BDdata: [{ name: '小二' }]
     }
   },
-  // created: {},
+  created() {
+    this.getBDlist(1, 5)
+    this.getAllBD()
+    this.getAllMarket()
+  },
   // mounted: {},
   activited: {},
   update: {},
   methods: {
+    // 获取所有BD
+    getAllBD() {
+      api.getAllBD().then(response => {
+        this.allCharge = response
+      })
+    },
+    // 获取所有的菜市场
+    getAllMarket() {
+      api.getAllMarket().then(response => {
+        this.allMarket = response
+      })
+    },
     // 获取BD用户列表
-    getBDlist(pageStartIndex, pageSize, market, name) {
+    getBDlist(pageNo, pageSize, marketId, bdId) {
       let params = {
-        pageStartIndex: pageStartIndex,
         pageSize: pageSize,
-        market: market,
-        name: name
+        marketId: marketId,
+        bdId: bdId
       }
-      api.getBDlist(params).then(response => {
+      api.getBDlist(params, pageNo).then(response => {
         this.BDdata = response.records
         this.total = response.total
         this.pageSize = response.size
@@ -163,9 +179,9 @@ export default {
       api.addPlatformBD(params).then(response => {})
     },
     // 删除BD
-    delPlatformBD(id) {
-      api.addPlatformBD(id).then(response => {})
-    },
+    // delPlatformBD(id) {
+    //   api.addPlatformBD(id).then(response => {})
+    // },
     // 修改BD
     modifyBD(id, name, mobileno, invitCode, market) {
       let params = {
@@ -176,13 +192,42 @@ export default {
       }
       api.modifyBD(params, id).then(response => {})
     },
-    changepage(index) {},
-    remove(index) {
-      this.BDdata.splice(index, 1)
+    // 分页
+    changepage(index) {
+      this.getBDlist(index, 5)
+    },
+    // 删除
+    remove(params) {
+      console.log(params.row.ptBdId)
+      let id = params.row.ptBdId
+      let index = params.index
+      api.delPlatformBD(id).then(response => {
+        this.$Message.info('删除成功')
+        this.BDdata.splice(index, 1)
+      })
     },
     addBD() {
-      this.modelTitle = '添加BD'
+      this.modelFormItem = {}
+      this.modelTitle = '增加BD'
       this.BDmodal = true
+    },
+    // 确定添加或者修改
+    confirmAdd(modelFormItem, modelTitle) {
+      if (modelTitle === '增加BD') {
+        api.addPlatformBD(modelFormItem).then(response => {
+          this.$Message.info('添加成功')
+        })
+      } else if (modelTitle === '修改BD') {
+        let id = modelFormItem.ptBdId
+        api.modifyBD(modelFormItem, id).then(response => {
+          this.$Message.info('修改成功')
+        })
+      }
+      this.getBDlist(1, 5)
+    },
+    // 搜索
+    search(formItem) {
+      this.getBDlist(1, 5, formItem.psMarketId, formItem.ptBdId)
     }
   },
   filfter: {},
