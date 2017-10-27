@@ -88,7 +88,7 @@ export const getOrderInfo = params => {
  * @param params => {coOrderDetailId}
  */
 
-export const putRefundOrder = (params) => {
+export const putRefundOrder = params => {
   return ax.u(`/order/order/refund/${params}`)
 }
 /**
@@ -336,6 +336,11 @@ export const seeBanner = id => {
  */
 
 /**
+ * 用户端相关接口
+ * @author by WuFengliang
+ */
+
+/**
  * 获取用户端所有用户列表
  * @param params =>{status,mobileno,pageSize,pageNo}
  */
@@ -362,6 +367,57 @@ export const changeStatus = params => {
  */
 export const getUserInfoData = params => {
   return ax.g(`customer/${params.custId}`)
+}
+
+/**
+ * 获取消息列表
+ */
+export const getMessageList = params => {
+  return ax.g(
+    `customer/message/list/${params.pageNo}?status=${params.status}&msgType=${params.msgType}&pageSize=${params.pageSize}`
+  )
+}
+
+/**
+ * 编辑消息
+ */
+export const putMessage = params => {
+  return ax.u(`/customer/message`, params)
+}
+
+/**
+ * 获取配送价列表
+ */
+export const getPirse = params => {
+  return ax.g(`/customer/expense`, params)
+}
+
+/**
+ * 获取标签列表
+ */
+export const getTagLists = params => {
+  return ax.g(`/customer/tag`, params)
+}
+
+/**
+ * 新增标签列表
+ */
+export const addTag = params => {
+  return ax.p(`/customer/tag`, params)
+}
+
+/**
+ * 更新标签列表
+ */
+export const putTag = params => {
+  return ax.u(`/customer/tag`, params)
+}
+
+/**
+ * 获取用户账户余额流水
+ */
+export const getAccountMoney = params => {
+  return ax.p(`/customer/account/coins/${params.custId}/${params.pageNo}`)
 }
 
 /**

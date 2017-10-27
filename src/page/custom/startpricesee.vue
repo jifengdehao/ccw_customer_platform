@@ -10,11 +10,13 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import * as http from 'api/common'
 export default {
   name: 'priceSee',
   data() {
     return {
-      priceTitle: [ //  表头
+      priceTitle: [
+        //  表头
         {
           title: '省份',
           key: 'provinceName'
@@ -32,14 +34,23 @@ export default {
           key: 'instant_expense'
         }
       ],
-      priceData: null  //  集合数据
+      priceData: [] //  集合数据
     }
   },
+  created() {
+    this.loadData()
+  },
   methods: {
-
+    //  加载数据
+    loadData() {
+      http.getPirse().then(data => {
+        this.data = data
+      })
+    }
   }
 }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
 </style>
+
