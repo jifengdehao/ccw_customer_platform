@@ -11,13 +11,13 @@
     </p>
     <Form ref="userForm" :model="userForm" :label-width="100" :rules="inforValidate" style="width: 500px;">
       <FormItem label="用户姓名：" prop="name">
-        <Input v-model="userForm.name"></Input>
+        <Input v-model="userForm.name" disabled></Input>
       </FormItem>
       <FormItem label="用户手机：" prop="cellphone">
         <Input v-model="userForm.cellphone" @on-keydown="hasChangePhone"></Input>
       </FormItem>
-      <FormItem label="公司：" prop="company">
-        <Input v-model="userForm.company"></Input>
+      <FormItem label="邮箱：" prop="email">
+        <Input v-model="userForm.email"></Input>
       </FormItem>
       <FormItem label="部门：" prop="department">
         <Input v-model="userForm.department"></Input>
@@ -74,7 +74,7 @@
         userForm: {
           name: '',
           cellphone: '',
-          company: '',
+          email: '',
           department: ''
         },
         save_loading: false,
@@ -92,6 +92,10 @@
           cellphone: [
             {required: true, message: '请输入手机号码', trigger: 'blur'},
             {validator: validePhone}
+          ],
+          email: [
+            { required: true, message: '邮箱不能为空', trigger: 'blur' },
+            { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
           ]
         },
         passwordValidate: {
@@ -146,7 +150,7 @@
       init () {
         this.userForm.name = 'zhangwenlong'
         this.userForm.cellphone = '18620212776'
-        this.userForm.company = '广州菜城科技有限公司'
+        this.userForm.email = '2975830779@qq.com'
         this.userForm.department = '研发部'
       },
       hasChangePhone (event) {

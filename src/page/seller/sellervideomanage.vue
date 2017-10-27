@@ -40,17 +40,6 @@
 <script>
 import * as api from 'api/common.js'
 import tableImg from './sellercomponents/tableimage'
-let pic = [
-  'http://img0.imgtn.bdimg.com/it/u=2407460519,1296478327&fm=27&gp=0.jpg',
-  'http://pic.92to.com/360/201603/31/38793361_2.jpg',
-  'http://img1.imgtn.bdimg.com/it/u=3274409375,3587973930&fm=27&gp=0.jpg'
-]
-let pics = [
-  'http://img1.50tu.com/meinv/xinggan/2013-11-16/e65e7cd83f37eed87067299266152807.jpg',
-  'http://img1.imgtn.bdimg.com/it/u=1205165919,1619656090&fm=27&gp=0.jpg',
-  'http://a.hiphotos.baidu.com/image/pic/item/3bf33a87e950352a8e511db15943fbf2b2118b52.jpg',
-  'http://a3.topitme.com/7/ed/28/11292759210ce28ed7o.jpg'
-]
 // 商品图片
 let producttitle = [
   {
@@ -108,7 +97,7 @@ let producttitle = [
             },
             on: {
               click: () => {
-                this.auditProductPicStatus(params.row.spProductId, 2)
+                this.auditProductPicStatus(params.row.spProductId, 0)
               }
             }
           },
@@ -123,7 +112,7 @@ let producttitle = [
             },
             on: {
               click: () => {
-                this.auditProductPicStatus(params.row.spProductId, 3)
+                this.auditProductPicStatus(params.row.spProductId, 1)
               }
             }
           },
@@ -146,7 +135,16 @@ let shoptitle = [
   },
   {
     title: '档口图片',
-    key: 'shoppic'
+    key: 'shoppic',
+    render: (h, params) => {
+      return h('div', [
+        h(tableImg, {
+          props: {
+            picUrls: params.row.shoppic
+          }
+        })
+      ])
+    }
   },
   {
     title: '商品添加或修改时间',
@@ -170,7 +168,7 @@ let shoptitle = [
             },
             on: {
               click: () => {
-                this.auditShopPicStatus(params.row.shopId, 1, 2)
+                this.auditShopPicStatus(params.row.shopId, 1, 0)
               }
             }
           },
@@ -185,7 +183,7 @@ let shoptitle = [
             },
             on: {
               click: () => {
-                this.auditShopPicStatus(params.row.shopId, 1, 3)
+                this.auditShopPicStatus(params.row.shopId, 1, 1)
               }
             }
           },
@@ -208,7 +206,16 @@ let avatar = [
   },
   {
     title: '档口头像图片',
-    key: 'shoppic'
+    key: 'headUrl',
+    render: (h, params) => {
+      return h('div', [
+        h(tableImg, {
+          props: {
+            picUrls: params.row.headUrl
+          }
+        })
+      ])
+    }
   },
   {
     title: '商品添加或修改时间',
@@ -232,7 +239,7 @@ let avatar = [
             },
             on: {
               click: () => {
-                this.auditShopPicStatus(params.row.shopId, 2, 2)
+                this.auditShopPicStatus(params.row.shopId, 2, 0)
               }
             }
           },
@@ -247,7 +254,7 @@ let avatar = [
             },
             on: {
               click: () => {
-                this.auditShopPicStatus(params.row.shopId, 2, 3)
+                this.auditShopPicStatus(params.row.shopId, 2, 1)
               }
             }
           },
@@ -271,13 +278,9 @@ export default {
     return {
       total: 1,
       pageSize: 1,
+      current: 1,
       selectiondata: [],
-      sellervideodata: [
-        { productName: '大银杰', picUrls: pic },
-        { productName: '小银杰', picDesc: pics },
-        { productName: '大小银杰' },
-        { productName: '淫杰' }
-      ],
+      sellervideodata: [],
       formItem: {
         startdate: '',
         lastdate: ''
@@ -295,6 +298,7 @@ export default {
   update: {},
   methods: {
     changedata(index) {
+      this.current = index
       if (index === 0) {
         this.getProductPic(1, 5)
         this.columns = producttitle
@@ -339,11 +343,7 @@ export default {
         productId: productId,
         auditStatus: auditStatus // 通过是3 不通过是2
       }
-      api.auditProductPicStatus(params).then(response => {
-        if (response.msg === '更新成功') {
-          // remove(1)
-        }
-      })
+      api.auditProductPicStatus(params).then(response => {})
     },
     // 审核店铺图片
     auditShopPicStatus(shopId, picType, auditStatus) {
@@ -360,11 +360,23 @@ export default {
     },
     // 分页
     changepage(index) {
-      this.getProductPic(index, 5)
+      if (this.current === 0) {
+        this.getProductPic(index, 5)
+      } else if (this.current === 1) {
+        this.getShopPic(index, 5, 1)
+      } else if (this.current === 2) {
+        this.getShopPic(index, 5, 2)
+      }
     },
     // 搜索
     searchdata(formItem) {
-      console.log(formItem)
+      if (this.current === 0) {
+        this.getProductPic(1, 5, formItem.startdate, formItem.lastdate)
+      } else if (this.current === 1) {
+        this.getShopPic(1, 5, 1, formItem.startdate, formItem.lastdate)
+      } else if (this.current === 2) {
+        this.getShopPic(1, 5, 2, formItem.startdate, formItem.lastdate)
+      }
     },
     // 多选
     showselect(selection) {
@@ -373,24 +385,24 @@ export default {
     // 批量通过
     batchpass() {
       this.selectiondata.forEach(item => {
-        if (item.spProductId) {
-          this.auditProductPicStatus(item.spProductId, 3)
-        } else if (item.msShopId && item.headUrl) {
-          this.auditShopPicStatus(item.msShopId, 1, 3)
-        } else if (item.msShopId && item.shopPicUrl) {
-          this.auditShopPicStatus(item.msShopId, 2, 3)
+        if (this.current === 0) {
+          this.auditProductPicStatus(item.spProductId, 1)
+        } else if (this.current === 1) {
+          this.auditShopPicStatus(item.msShopId, 1, 1)
+        } else if (this.current === 2) {
+          this.auditShopPicStatus(item.msShopId, 1, 1)
         }
       })
     },
     // 批量不通过
     batchnotpass() {
       this.selectiondata.forEach(item => {
-        if (item.spProductId) {
-          this.auditProductPicStatus(item.spProductId, 2)
-        } else if (item.msShopId && item.headUrl) {
-          this.auditShopPicStatus(item.msShopId, 1, 2)
-        } else if (item.msShopId && item.shopPicUrl) {
-          this.auditShopPicStatus(item.msShopId, 2, 2)
+        if (this.current === 0) {
+          this.auditProductPicStatus(item.spProductId, 0)
+        } else if (this.current === 1) {
+          this.auditShopPicStatus(item.msShopId, 1, 0)
+        } else if (this.current === 2) {
+          this.auditShopPicStatus(item.msShopId, 1, 0)
         }
       })
     }

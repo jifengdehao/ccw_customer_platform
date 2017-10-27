@@ -198,7 +198,6 @@ export default {
     },
     // 删除
     remove(params) {
-      console.log(params.row.ptBdId)
       let id = params.row.ptBdId
       let index = params.index
       api.delPlatformBD(id).then(response => {

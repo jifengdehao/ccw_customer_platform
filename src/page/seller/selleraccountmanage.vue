@@ -18,7 +18,11 @@
         <FormItem>
           <span class="label">账号状态：</span>
           <Select v-model="formItem.status" placeholder="请选择" style="width: 200px">
-            <Option v-for="item in bussinessStatus" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                <Option value="1">全部</Option>
+                <Option value="2">关档</Option>
+                <Option value="3">暂停封号</Option>
+                <Option value="4">正常</Option>
+                <Option value="5">账号冻结</Option>
           </Select>
         </FormItem>
         <FormItem>
@@ -126,17 +130,17 @@
       </Form>
     </Modal>
     <!-- 商家账号管理模态框 -->
-    <Modal v-model="shopManageModal" title="账号管理" width="500" @on-ok="modifySellerStatus(sellerAccountData)">
-      <Form>
+    <Modal v-model="shopManageModal" title="账号管理" width="500" @on-ok="modifySellerStatus(shopManageData)">
+      <Form v-model="shopManageData">
         <FormItem label="设置账号限制：">
-          <Select v-model="sellerAccountData.status" :value="sellerAccountData.status" placeholder="请选择">
+          <Select v-model="shopManageData.status" :value="shopManageData.status" placeholder="请选择">
             <Option value="0">关档</Option>
             <Option value="1">账号恢复</Option>
             <Option value="2">账号冻结</Option>
           </Select>
         </FormItem>
         <FormItem label="添加备注：">
-          <Input v-model="sellerAccountData.textarea" :value="sellerAccountData.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
+          <Input v-model="shopManageData.remark" :value="shopManageData.remark" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
         </FormItem>
       </Form>
     </Modal>
@@ -152,11 +156,13 @@ export default {
       total: 1,
       pageSize: 5,
       disabled: true,
+      sellerId: 0,
       shopMessage: {},
+      shopManageData: {},
       bussinessStatus: [],
       shopMessageModal: false,
       shopManageModal: false,
-      sellerAccountData: [{ msSellerId: 1 }],
+      sellerAccountData: [],
       formItem: {},
       businessDictCode: [],
       columns: [
@@ -219,6 +225,7 @@ export default {
                   },
                   on: {
                     click: () => {
+                      this.sellerId = params.row.sellerId
                       this.shopManageModal = true
                     }
                   }
@@ -281,12 +288,11 @@ export default {
       }
       api.updataShopStatus(params).then(response => {})
     },
+    // 商家账号管理
     modifySellerStatus(sellerAccountData) {
-      console.log(sellerAccountData)
-      let sellerId = sellerAccountData.sellerId
       let status = sellerAccountData.status
       let remark = sellerAccountData.remark
-      this.updataShopStatus(sellerId, status, remark)
+      this.updataShopStatus(this.sellerId, status, remark)
     },
     // getsellerInfo 查看商家信息详情
     getsellerInfo(msSellerId, shopId) {
@@ -304,13 +310,18 @@ export default {
         alert('更新成功')
       })
     },
-    // 搜索    ？？？？
+    // 搜索
     searchAccountData(formItem) {
-      api.getSellerAccountList(formItem, 1).then(response => {
-        this.sellerAccountData = response.records
-        this.total = response.total
-        this.pageSize = response.size
-      })
+      this.getSellerAccountList(
+        1,
+        5,
+        formItem.shopName,
+        formItem.mobileno,
+        formItem.sellerId,
+        formItem.status,
+        formItem.startdate,
+        formItem.lastdate
+      )
     },
     changepage(index) {
       this.getSellerAccountList(index, 5)

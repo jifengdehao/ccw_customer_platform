@@ -29,6 +29,7 @@ export default {
     return {
       datavalue: true,
       total: 1,
+      current: 0,
       pageSize: 1,
       status: '待处理',
       tabs: [{ title: '待处理' }, { title: '已处理' }, { title: '全部' }],
@@ -122,6 +123,7 @@ export default {
     },
     // 切换tab
     changeTable(index) {
+      this.current = index
       if (index === 0) {
         this.getAlertsMessageList(1, 5, 0)
       } else if (index === 1) {
@@ -130,8 +132,15 @@ export default {
         this.getAlertsMessageList(1, 5)
       }
     },
+    // 分页切换
     changepage(index) {
-      console.log(this.tab.title)
+      if (this.current === 0) {
+        this.getAlertsMessageList(index, 5, 0)
+      } else if (this.current === 1) {
+        this.getAlertsMessageList(index, 5, 1)
+      } else if (this.current === 2) {
+        this.getAlertsMessageList(index, 5)
+      }
     }
   },
   filfter: {},

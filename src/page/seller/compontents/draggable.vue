@@ -20,7 +20,6 @@ export default {
   data() {
     return {
       tableDatas: [], // 绑定拖拽后的数据
-      section: [], // 批量选择的数据
       moveModal: false
     }
   },
@@ -35,12 +34,10 @@ export default {
   methods: {
     // 批量选择
     SelectedData(section) {
-      this.section = section
-      console.log(section)
+      this.$store.commit('sections', section)
     },
     // 拖拽后触发事件
     update() {
-      console.log(this.tableDatas)
     }
   },
   mounted() {

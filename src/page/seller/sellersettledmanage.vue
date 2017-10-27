@@ -17,8 +17,8 @@
         </FormItem>
         <FormItem>
           <span class="label">负责人筛选：</span>
-          <Select v-model="formItem.select" placeholder="请选择" style="width: 200px">
-            <Option v-for="item in charge" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Select v-model="formItem.charge" placeholder="请选择" style="width: 200px">
+            <Option v-for="item in allCharge" :value="item.ptBdId" :key="item.ptBdId">{{ item.name }}</Option>
           </Select>
         </FormItem>
         <FormItem>
@@ -56,10 +56,9 @@ export default {
       total: 1,
       pageSize: 5,
       modal: false,
-      sellerpicUrls: [
-        'http://img4.imgtn.bdimg.com/it/u=3875107969,2530319077&fm=27&gp=0.jpg'
-      ],
-      charge: [],
+      current: 1, // 申请的状态
+      sellerpicUrls: [],
+      allCharge: [],
       formItem: {
         startdate: '',
         lastdate: '',
@@ -145,7 +144,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    display: params.row.applyStatus === 0 ? 'none' : 'inline-block'
                   },
                   on: {
                     click: () => {
@@ -164,6 +164,9 @@ export default {
                   props: {
                     type: 'success',
                     size: 'small'
+                  },
+                  style: {
+                    display: params.row.applyStatus === 0 ? 'none' : 'inline-block'
                   },
                   on: {
                     click: () => {
@@ -184,20 +187,25 @@ export default {
   },
   created() {
     this.getSellerApplyList(1, this.pageSize, 1)
+    api.getAllBD().then(response => {
+      this.allCharge = response
+    })
   },
   mounted() {},
   methods: {
     changedata(index) {
       if (index === 0) {
-        this.getSellerApplyList(1, this.pageSize, index + 1)
+        this.current = index + 1
       } else if (index === 1) {
-        this.getSellerApplyList(1, this.pageSize, index + 1)
+        this.current = index + 1
       } else if (index === 2) {
-        this.getSellerApplyList(1, this.pageSize, index + 1)
+        this.current = index + 1
       }
+      this.getSellerApplyList(1, this.pageSize, this.current)
     },
+    // 分页
     changepage(index) {
-      this.getSellerApplyList(index, 5, 1)
+      this.getSellerApplyList(index, 5, this.current)
     },
     remove(index) {
       this.auditdata.splice(index, 1)
@@ -233,8 +241,16 @@ export default {
         this.$Message.success('发送成功')
       })
     },
+    // 搜索
     searchdata(formItem) {
-      this.getSellerApplyList(1, this.pageSize, this.auditdata.applyStatus)
+      this.getSellerApplyList(
+        1,
+        this.pageSize,
+        this.current,
+        formItem.charge,
+        formItem.startdate,
+        formItem.lastdate
+      )
     }
   },
   computed: {},

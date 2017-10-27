@@ -34,7 +34,6 @@ export default {
     bigpic(item) {
       this.url = item
       this.modal = true
-      console.log(this.url)
     }
   },
   filfter: {},

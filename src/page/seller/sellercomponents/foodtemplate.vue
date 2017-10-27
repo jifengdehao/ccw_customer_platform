@@ -233,6 +233,8 @@ export default {
   activited: {},
   update: {},
   methods: {
+    update(el) {
+    },
     handleOnend(el) {
       // console.log(this.table.draggingRecord)
     },
@@ -300,7 +302,6 @@ export default {
     // 批量选择
     SelectedData(section) {
       this.section = section
-      console.log(section)
     },
     // 删除重量单位
     delWeight(index) {
@@ -308,7 +309,6 @@ export default {
     },
     // 删除重量属性
     delweightAttribute(index) {
-      console.log(this.specification)
       this.weightAttribute.splice(index, 1)
     },
     // 删除商品属性
@@ -343,9 +343,13 @@ export default {
       return this.specification.filter(item => {
         return item.attributeType === 3
       })
+    },
+    sections() {
+      return this.$store.state.sections
     }
   },
-  watch: {}
+  watch() {
+  }
 }
 </script>
 <style lang="css" scoped>

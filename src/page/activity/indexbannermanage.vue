@@ -19,31 +19,34 @@
               <tr>
                 <th v-for="tab in bannerTHdata" :key="tab.id" :width="tab.style">{{ tab.key }}</th>
               </tr>
-              <tr v-for="data in bannerData" :key="data.id">
-                <td>
-                  <img style="width: 100%; height: 100%" :src="data.picUrl">
-                </td>
-                <td>
-                  <input type="button" @change="onUpload" value="重新上传">
-                  <input type="file" @change="onUpload" title="上传图片" filetype="image/*">
-                </td>
-                <td>
-                  <input v-model="data.linkUrl" type="text" :value="data.linkUrl">
-                </td>
-                <td>
-                  <input v-model="data.remark" type="text" :value="data.remark">
-                </td>
-                <td>
-                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px; margin-bottom: 5px;" v-model="data.startTime" :value="data.startTime"></DatePicker>
-                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px" v-model="data.endTime" :value="data.endTime"></DatePicker>
-                </td>
-                <td><Button type="error" @click="onChangButton(data)">{{ bannerState }}</Button></td>
-              </tr>
               <tr v-if="bannerData && bannerData.length <= 0" style="height: 40px;">
                 <td colspan="12">暂无数据</td>
               </tr>
             </tbody>
           </table>
+          <draggable @update="datadragEnd" v-if="status === 0 || status === 1" v-model="bannerData">
+            <tr v-for="data in bannerData" :key="data.id" class="draggable">
+                <td class="br">
+                  <img style="height: 100%" :src="data.picUrl">
+                </td>
+                <td class="br" style="width: 10%">
+                  <input type="button" @change="onUpload" value="重新上传">
+                  <input type="file" @change="onUpload" title="上传图片" filetype="image/*">
+                </td>
+                <td class="br" style="width: 20%">
+                  <input v-model="data.linkUrl" type="text" :value="data.linkUrl">
+                  <a :href="data.linkUrl"></a>
+                </td>
+                <td class="br" style="width: 20%">
+                  <input v-model="data.remark" type="text" :value="data.remark">
+                </td>
+                <td style="width: 18%" class="br">
+                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px; margin-bottom: 5px;" v-model="data.startTime" :value="data.startTime"></DatePicker>
+                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px" v-model="data.endTime" :value="data.endTime"></DatePicker>
+                </td>
+                <td style="width: 10%; border-top: 0 !important;"><Button type="error" @click="onChangButton(data)">{{ bannerState }}</Button></td>
+              </tr>
+          </draggable>
           <!-- 已结束start -->
           <table class="table-banner" v-if="status === 2">
             <tbody>
@@ -100,9 +103,9 @@
 </template>
 <script type="text/ecmascript-6">
 import * as api from 'api/common.js'
-
+import draggable from 'vuedraggable'
 export default {
-  components: {},
+  components: { draggable },
   data() {
     return {
       bannerMenu: ['已开始', '未开始', '已结束'], // 切换导航数据
@@ -219,16 +222,16 @@ export default {
     },
     // 点击操作button 结束 删除
     onChangButton(data) {
+      this.getCurrentListData() // 调用列表数据
       if (this.status === 0) {
         // 点击结束
-        api.endBanner(data.ptBannerId).then(data => {
-          console.log(data)
-        })
+        api.endBanner(data.ptBannerId).then(data => {})
       } else if (this.status === 1) {
         // 点击删除
-        api.deleteBanner(data.ptBannerId).then(data => {
-          console.log(data)
-        })
+        if (!data.ptBannerId) { // 如果为空id 不发送请求
+          return false
+        }
+        api.deleteBanner(data.ptBannerId).then(data => {})
       }
     },
     // 查看banner弹框数据
@@ -245,14 +248,14 @@ export default {
     // 保存修改
     getSaveChanges() {
       if (this.status === 1) {
+        console.log(this.bannerData, 'bannerData')
+        this.bannerData.forEach((item, index) => {
+          console.log(item, 'item')
+        })
         // 调用自增 保存api
-        api.addUpdataBanner(this.bannerData).then(data => {
-          console.log(data)
-        })
+        api.addUpdataBanner(this.bannerData).then(data => {})
       } else if (this.status === 0) {
-        api.addUpdataBanner(this.bannerData).then(data => {
-          console.log(data)
-        })
+        api.addUpdataBanner(this.bannerData).then(data => {})
       }
     },
     // 上传图片
@@ -260,6 +263,11 @@ export default {
       this.formData = new FormData()
       this.formData.append('file', e.target.files[0])
       console.log(this.formData, e)
+    },
+    datadragEnd(evt) {
+      console.log('拖动前的索引 :' + evt.oldIndex)
+      console.log('拖动后的索引 :' + evt.newIndex)
+      console.log(this.bannerData, '22')
     }
   }
 }
@@ -287,7 +295,8 @@ export default {
 }
 
 /* table */
-table.table-banner {
+table.table-banner,
+.draggable {
   font-family: verdana, arial, sans-serif;
   font-size: 11px;
   width: 100%;
@@ -303,23 +312,25 @@ table.table-banner th {
   background-color: #f8f8f9;
 }
 
-table.table-banner td {
-  /* height: 200px; */
+table.table-banner td,
+.draggable td {
   position: relative;
   padding: 8px;
   text-align: center;
   border: 1px solid #e9eaec;
   background-color: #ffffff;
+  vertical-align: middle;
 }
 
-table.table-banner td > input[type='text'] {
+table.table-banner td > input[type='text'],
+.draggable td > input[type='text'] {
   width: 200px;
   padding-left: 5px;
   outline: none;
 }
 
-table.table-banner td > input[type='button'],
-table.table-banner td > input[type='file'] {
+.draggable td > input[type='button'],
+.draggable td > input[type='file'] {
   padding: 6px 15px 7px 15px;
   margin-left: 20px;
   border-radius: 4px;
@@ -329,11 +340,16 @@ table.table-banner td > input[type='file'] {
   outline: none;
 }
 
-table.table-banner td > input[type='file'] {
+table.table-banner td > input[type='file'],
+.draggable td > input[type='file'] {
   position: absolute;
-  top: 65px;
   left: 26px;
   opacity: 0;
+}
+
+.br {
+  border-top: 0 !important;
+  border-right: 0 !important;
 }
 
 /* 查看模态框 */

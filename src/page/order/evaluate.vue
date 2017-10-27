@@ -6,20 +6,17 @@
 */
 <template>
   <div class="order-evaluate">
-    <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
-      <FormItem prop="phone" label="手机号" :label-width="80">
-        <Input type="text" v-model="formInline.phone" placeholder="请输入手机号"></Input>
+    <i-form inline label-position="left">
+      <FormItem label="手机号" :label-width="80">
+        <Input type="text" v-model="phone" placeholder="请输入手机号"></Input>
       </FormItem>
-      <!--<FormItem prop="orderNumber" label="订单编号" :label-width="80">
-        <Input type="text" v-model="formInline.orderNumber" placeholder="请输入订单编号"></Input>
-      </FormItem>-->
       <FormItem>
-        <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
+        <Button type="primary" @click="handleSubmit()">搜索</Button>
       </FormItem>
     </i-form>
     <Tabs :animated="false" @on-click="selectTab" :value="this.status">
       <Tab-pane label="商户评价" name="0">
-        <Table :columns="columns" :data="data" ref="table"></Table>
+        <Table :columns="columns1" :data="data1" ref="table" :loading="loading1"></Table>
         <Page
           :total="tableTotal"
           :current="curr"
@@ -30,7 +27,7 @@
         ></Page>
       </Tab-pane>
       <Tab-pane label="配送员评价" name="1">
-        <Table :columns="columns" :data="data" ref="table"></Table>
+        <Table :columns="columns2" :data="data2" ref="table" :loading="loading2"></Table>
         <Page
           :total="tableTotal"
           :current="curr"
@@ -41,7 +38,7 @@
         ></Page>
       </Tab-pane>
       <Tab-pane label="差评订单" name="2">
-        <Table :columns="columns" :data="data" ref="table"></Table>
+        <Table :columns="columns3" :data="data3" ref="table" :loading="loading3"></Table>
         <Page
           :total="tableTotal"
           :current="curr"
@@ -65,20 +62,12 @@
         curr: 1, // 当前分页
         pageNum: 10, // 当前页的显示的数据数量
         tableTotal: 0, // 总数
-        status: 0, // 状态 0===>商户评价 1====>配送员评价  2====>差评订单
-        formInline: {
-          phone: '',
-          orderNumber: ''
-        },
-        ruleInline: {
-          phone: [
-            // {required: true, message: '请填写手机号', trigger: 'blur'}
-          ],
-          orderNumber: [
-            // {required: true, message: '请填写订单号', trigger: 'blur'}
-          ]
-        },
-        columns: [
+        status: '0', // 状态 0===>商户评价 1====>配送员评价  2====>差评订单
+        loading1: true,
+        loading2: true,
+        loading3: true,
+        phone: '', // 搜索手机号
+        columns1: [
           {
             title: '用户ID',
             key: 'custId',
@@ -91,7 +80,7 @@
           },
           {
             title: '用户昵称',
-            key: 'shopOwerName',
+            key: 'custName',
             align: 'center'
           },
           {
@@ -104,17 +93,17 @@
           },
           {
             title: '档口ID',
-            key: 'coOrderId',
+            key: 'msShopId',
             align: 'center'
           },
           {
             title: '档口名称',
-            key: '',
+            key: 'shopName',
             align: 'center'
           },
           {
             title: '评价星级',
-            key: '',
+            key: 'starLevel',
             align: 'center'
           },
           {
@@ -127,7 +116,8 @@
             key: 'options',
             align: 'center',
             render: (h, params) => {
-              let id = params.row.custId
+              let rkShopId = params.row.rkShopId
+              let isDelete = params.row.isDelete
               return h('div', [
                 h('Button', {
                   props: {
@@ -139,8 +129,7 @@
                   },
                   on: {
                     click: () => {
-                      // 查询单个订单详情
-                      this.$router.push('/order/evaluateInfo/' + id)
+                      this.$router.push('/order/evaluateInfoSeller/' + rkShopId)
                     }
                   }
                 }, '查看'),
@@ -151,130 +140,308 @@
                   },
                   on: {
                     click: () => {
-                      this.remove(id)
+                      if (!isDelete) {
+                        this.$Modal.confirm({
+                          content: '确定隐藏这评价？',
+                          onOk () {
+                            // api 操作
+                            api.putOrderSellerEval(rkShopId).then((res) => {
+                              console.log(res)
+                              if (res === null) {
+                                params.row.isDelete = true
+                              }
+                            })
+                          }
+                        })
+                      }
                     }
                   }
-                }, '隐藏')
+                }, isDelete === true ? '已隐藏' : '隐藏')
               ])
             }
           }
         ],
-        data: []
-        /*
-         data: [
-           {
-             id: 10086,
-             phone: 13317769149,
-             name: '王小明',
-             age: 18,
-             time: '2017/8/16  9:35',
-             status: '正常',
-             content: '非常好吃，猴赛雷啊'
-           },
-           {
-             id: 10086,
-             phone: 13317769149,
-             name: '王小明',
-             age: 18,
-             time: '2017/8/16  9:35',
-             status: '正常',
-             content: '非常好吃，猴赛雷啊'
-           },
-           {
-             id: 10086,
-             phone: 13317769149,
-             name: '王小明',
-             age: 18,
-             time: '2017/8/16  9:35',
-             status: '正常',
-             content: '非常好吃，猴赛雷啊'
-           },
-           {
-             id: 10086,
-             phone: 13317769149,
-             name: '王小明',
-             age: 18,
-             time: '2017/8/16  9:35',
-             status: '正常',
-             content: '非常好吃，猴赛雷啊'
-           }
-         ]
-         */
+        data1: [],
+        columns2: [
+          {
+            title: '用户ID',
+            key: 'mcCustomerId',
+            align: 'center'
+          },
+          {
+            title: '用户手机号',
+            key: 'mobileno',
+            align: 'center'
+          },
+          {
+            title: '用户昵称',
+            key: 'custName',
+            align: 'center'
+          },
+          {
+            title: '评价时间',
+            key: 'remarkAt',
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.remarkAt)
+            }
+          },
+          {
+            title: '配送员ID',
+            key: 'psDeliverId',
+            align: 'center'
+          },
+          {
+            title: '配送员名称',
+            key: 'name',
+            align: 'center'
+          },
+          {
+            title: '评价星级',
+            key: 'starLevel',
+            align: 'center'
+          },
+          {
+            title: '评价内容',
+            key: 'content',
+            align: 'center'
+          },
+          {
+            title: '操作',
+            key: 'options',
+            align: 'center',
+            render: (h, params) => {
+              let isDetlete = params.row.isDelete
+              let rkDeliverId = params.row.rkDeliverId
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push('/order/evaluateInfoDeliver/' + rkDeliverId)
+                    }
+                  }
+                }, '查看'),
+                h('Button', {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      if (!isDetlete) {
+                        this.$Modal.confirm({
+                          content: '确定隐藏这评价？',
+                          onOk () {
+                            // api 操作
+                            api.putOrderDeliverEval(rkDeliverId).then((res) => {
+                              console.log(res)
+                              if (res === null) {
+                                params.row.isDelete = true
+                              }
+                            })
+                          }
+                        })
+                      }
+                    }
+                  }
+                }, isDetlete === true ? '已隐藏' : '隐藏')
+              ])
+            }
+          }
+        ],
+        data2: [],
+        columns3: [
+          {
+            title: '用户ID',
+            key: 'custId',
+            align: 'center'
+          },
+          {
+            title: '用户手机号',
+            key: 'mobileno',
+            align: 'center'
+          },
+          {
+            title: '用户昵称',
+            key: 'custName',
+            align: 'center'
+          },
+          {
+            title: '评价时间',
+            key: 'remarkAt',
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.remarkAt)
+            }
+          },
+          {
+            title: '档口ID',
+            key: 'msShopId',
+            align: 'center'
+          },
+          {
+            title: '档口名称',
+            key: 'shopName',
+            align: 'center'
+          },
+          {
+            title: '评价星级',
+            key: 'starLevel',
+            align: 'center'
+          },
+          {
+            title: '评价内容',
+            key: 'content',
+            align: 'center'
+          },
+          {
+            title: '操作',
+            key: 'options',
+            align: 'center',
+            render: (h, params) => {
+              let rkShopId = params.row.rkShopId
+              let isDelete = params.row.isDelete
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push('/order/evaluateInfoSeller/' + rkShopId)
+                    }
+                  }
+                }, '查看'),
+                h('Button', {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      if (!isDelete) {
+                        this.$Modal.confirm({
+                          content: '确定隐藏这评价？',
+                          onOk () {
+                            // api 操作
+                            api.putOrderSellerEval(rkShopId).then((res) => {
+                              console.log(res)
+                              if (res === null) {
+                                params.row.isDelete = true
+                              }
+                            })
+                          }
+                        })
+                      }
+                    }
+                  }
+                }, isDelete === true ? '已隐藏' : '隐藏')
+              ])
+            }
+          }
+        ],
+        data3: []
       }
     },
     created () {
       this.getSellerEvalList()
     },
     methods: {
-      handleSubmit (name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            this.$Message.success('提交成功!')
-          } else {
-            this.$Message.error('表单验证失败!')
-          }
-        })
-      },
-      remove (id) {
-        this.$Modal.confirm({
-          content: '确定将此条评论隐藏？',
-          onOk () {
-            // api 操作
-            console.log(id)
-          }
-        })
-      },
-      changePage (index) {
-        console.log(index)
-        this.curr = index
-      },
-      exportData () {
-//        this.$refs.table.exportCsv({
-//          filename: '商品评价订单列表'
-//        })
-      },
-      selectTab (name) {
-        this.status = name
-        console.log(name)
-        if (this.status === 0) {
+      // 搜索
+      handleSubmit () {
+        this.curr = 1
+        if (this.status === '0') {
           this.getSellerEvalList()
-        } else if (this.status === 1) {
+        } else if (this.status === '1') {
           this.getDeliverEval()
         } else {
           this.getBadEval()
         }
       },
+      // 分页
+      changePage (index) {
+        this.curr = index
+        if (this.status === '0') {
+          this.getSellerEvalList()
+        } else if (this.status === '1') {
+          this.getDeliverEval()
+        } else {
+          this.getBadEval()
+        }
+      },
+      // 导出表格
+      exportData () {
+        this.$Modal.confirm({
+          content: '尚未开发',
+          onOk () {}
+        })
+      },
+      // 切换
+      selectTab (name) {
+        this.status = name
+        this.phone = ''
+        this.curr = 1
+        if (this.status === '0') {
+          this.getSellerEvalList()
+        } else if (this.status === '1') {
+          this.getDeliverEval()
+        } else {
+          this.getBadEval()
+        }
+      },
+      // 获取商户评价数据
       getSellerEvalList () {
         let params = {
-          pageSize: this.pageNum
+          pageSize: this.pageNum,
+          mobileno: this.phone
         }
         api.getOrderSellerListEval(params, this.curr).then((res) => {
           console.log(res)
           if (res) {
+            this.loading1 = false
             this.tableTotal = res.total
-            this.data = res.records
+            this.data1 = res.records
           }
         })
       },
+      // 获取配送员评价数据
       getDeliverEval () {
         let params = {
-          pageSize: this.pageNum
+          pageSize: this.pageNum,
+          mobileno: this.phone
         }
         api.getOrderDeliverListeEval(params, this.curr).then((res) => {
           console.log(res)
           if (res) {
+            this.loading2 = false
             this.tableTotal = res.total
+            this.data2 = res.records
           }
         })
       },
+      // 获取差评数据
       getBadEval () {
         let params = {
-          pageSize: this.pageNum
+          pageSize: this.pageNum,
+          mobileno: this.phone
         }
         api.getOrderBadListEval(params, this.curr).then((res) => {
           console.log(res)
           if (res) {
+            this.loading3 = false
             this.tableTotal = res.total
+            this.data3 = res.records
           }
         })
       }
