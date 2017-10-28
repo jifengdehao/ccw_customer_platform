@@ -1,7 +1,6 @@
 <template>
     <div>
         <Table 
-            v-model="tableDatas"
             :ref="refs" 
             :columns="columnsList" 
             :data="tableData" 
@@ -37,7 +36,8 @@ export default {
       this.$store.commit('sections', section)
     },
     // 拖拽后触发事件
-    update() {
+    update(el) {
+      console.log(el)
     }
   },
   mounted() {
