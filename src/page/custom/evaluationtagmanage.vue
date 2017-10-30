@@ -7,8 +7,8 @@
 <template>
   <div class="evaluation-tag-manager" v-if="data">
     <Tabs type="card" @on-click="chooseTab">
-        <TabPane label="档口评价"></TabPane>
         <TabPane label="配送评价"></TabPane>
+        <TabPane label="档口评价"></TabPane>
     </Tabs>
     <div class="first-tag tag-box">
       <h3>一级标签
@@ -17,7 +17,7 @@
       <div class="tag-content">
         <ul>
           <li v-for="(item,index) in data.oneStar" :key="index">
-            <a @click="deleteTag(index,1)"></a>
+            <a @click="deleteTag(item)"></a>
             <span v-text="item.tagContent" v-if="!item.status" @click="editItem('oneStar',index)"></span>
             <input v-if="item.tagContent.length === 0 || item.status" :value="item.tagContent" type="text" @blur="checkValue($event,'oneStar',index)" v-focus="status">
           </li>
@@ -32,7 +32,7 @@
       <div class="tag-content">
         <ul>
           <li v-for="(item,index) in data.twoStar" :key="index">
-            <a @click="deleteTag(index,2)"></a>
+            <a @click="deleteTag(item)"></a>
             <span v-text="item.tagContent" v-if="!item.status" @click="editItem('twoStar',index)"></span>
             <input v-if="item.tagContent.length === 0 || item.status" :value="item.tagContent"  type="text" @blur="checkValue($event,'twoStar',index)" v-focus="status">
           </li>
@@ -47,7 +47,7 @@
       <div class="tag-content">
         <ul>
           <li v-for="(item,index) in data.threeStar" :key="index">
-            <a @click="deleteTag(index,3)"></a>
+            <a @click="deleteTag(item)"></a>
             <span v-text="item.tagContent" v-if="!item.status" @click="editItem('threeStar',index)"></span>
             <input v-if="item.tagContent.length === 0 || item.status" :value="item.tagContent" type="text" @blur="checkValue($event,'threeStar',index)" v-focus="status">
           </li>
@@ -62,7 +62,7 @@
       <div class="tag-content">
         <ul>
           <li v-for="(item,index) in data.fourStar" :key="index">
-            <a @click="deleteTag(index,4)"></a>
+            <a @click="deleteTag(item)"></a>
             <span v-text="item.tagContent" v-if="!item.status" @click="editItem('fourStar',index)"></span>
             <input v-if="item.tagContent.length === 0 || item.status" :value="item.tagContent" type="text" @blur="checkValue($event,'fourStar',index)" v-focus="status">
           </li>
@@ -77,7 +77,7 @@
       <div class="tag-content">
         <ul>
           <li v-for="(item,index) in data.fiveStar" :key="index">
-            <a @click="deleteTag(index,5)"></a>
+            <a @click="deleteTag(item)"></a>
             <span v-text="item.tagContent" v-if="!item.status" @click="editItem('fiveStar',index)"></span>
             <input v-if="item.tagContent.length === 0 || item.status" :value="item.tagContent" type="text" @blur="checkValue($event,'fiveStar',index)" v-focus="status">
           </li>
@@ -162,7 +162,7 @@ export default {
       let value = event.target.value
 
       if (this.data[name][index].rkTagId) {
-        //  修改
+        //  修改 ——> 值未变
         if (this.data[name][index].tagContent === value) {
           this.$set(this.data[name][index], 'status', false)
           this.$forceUpdate()
@@ -171,7 +171,9 @@ export default {
           //  有修改
           this.data[name][index].tagContent = value
           http.putTag(this.data[name][index]).then(data => {
-            console.log(data)
+            if (data.code === 200) {
+              this.loadData()
+            }
           })
           this.$set(this.data[name][index], 'status', false)
           this.$forceUpdate()
@@ -242,35 +244,27 @@ export default {
           http
             .addTag({
               tagContent: value,
-              tagLevel: this.data[name][0].tagLevel,
-              objType: this.params.tagType
+              // tagLevel: this.data[name][0].tagLevel,
+              tagLevel: parseInt(this.btnIndex),
+              objType: this.params.tagType,
+              tagStatus: 1
             })
             .then(data => {
-              console.log(data, '更新标签')
+              this.loadData()
             })
         }
         this.status = false
       }
     },
-    deleteTag(index, num) {
+    deleteTag(item) {
       //  删除标签
-      switch (num) {
-        case 1:
-          this.data.oneStar.splice(index, 1)
-          break
-        case 2:
-          this.data.twoStar.splice(index, 1)
-          break
-        case 3:
-          this.data.threeStar.splice(index, 1)
-          break
-        case 4:
-          this.data.fourStar.splice(index, 1)
-          break
-        case 5:
-          this.data.fiveStar.splice(index, 1)
-          break
-      }
+      http
+        .delTag({
+          id: item.rkTagId
+        })
+        .then(data => {
+          this.loadData()
+        })
     }
   }
 }

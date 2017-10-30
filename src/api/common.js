@@ -425,10 +425,74 @@ export const getMessageList = params => {
 }
 
 /**
+ * 新增消息
+ */
+
+export const addMessage = params => {
+  return ax.p(`/customer/message`, params)
+}
+
+/**
  * 编辑消息
  */
 export const putMessage = params => {
   return ax.u(`/customer/message`, params)
+}
+
+/**
+ * 获取用户端配送未覆盖banner图
+ */
+export const getBannerList = params => {
+  return ax.g(`/customer/banner?status=0&types=${params.types}`)
+}
+
+/**
+ * 获取配送未覆盖市场推送列表
+ */
+export const getMarketlist = params => {
+  return ax.g(`/customer/market`, params)
+}
+
+/**
+ * 删除banner图
+ */
+export const delBannerId = params => {
+  return ax.d(`/customer/banner/${params.ptBannerId}`)
+}
+
+/**
+ * 更新banner图
+ */
+export const putBannerId = params => {
+  return ax.u(`/customer/banner`, params)
+}
+
+/**
+ * banner图保存修改
+ */
+export const saveBannerData = params => {
+  return ax.p(`/customer/banner`, params)
+}
+
+/**
+ * 删除市场某条数据
+ */
+export const delMarketId = params => {
+  return ax.d(`/customer/market/${params.ptMarketPushId}`)
+}
+
+/**
+ * 更新市场某条数据
+ */
+export const putMarketId = params => {
+  return ax.u(`/customer/market`, params)
+}
+
+/**
+ * 市场数据保存修改
+ */
+export const saveMarketData = params => {
+  return ax.p(`/customer/market`, params)
 }
 
 /**
@@ -460,10 +524,41 @@ export const putTag = params => {
 }
 
 /**
+ * 删除评价标签
+ */
+export const delTag = params => {
+  return ax.d(`/customer/tag`, params)
+}
+
+/**
  * 获取用户账户余额流水
  */
 export const getAccountMoney = params => {
-  return ax.p(`/customer/account/coins/${params.custId}/${params.pageNo}`)
+  return ax.g(`/customer/account/list/${params.pageNo}`, params)
+}
+
+/**
+ * 查看用户账户
+ */
+export const loopAccount = params => {
+  return ax.g(`/customer/account/${params.custId}`)
+}
+
+/**
+ * 获取用户账户余额流水变更记录
+ */
+export const getAccountMoneyChange = params => {
+  return ax.g(
+    `/customer/account/detail/${params.custId}/${params.pageNo}`,
+    params
+  )
+}
+
+/**
+ * 用户账户退款
+ */
+export const refundMoney = params => {
+  return ax.u(`/customer/account/${params.id}`, params)
 }
 
 /**
