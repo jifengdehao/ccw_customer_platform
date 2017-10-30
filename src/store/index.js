@@ -8,13 +8,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import orderList from './modules/orderList'
 import user from './modules/user'
-import template from './modules/template'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     orderList,
-    user,
-    template
+    user
   }
 })
