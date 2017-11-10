@@ -61,6 +61,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common.js'
+  // import hash from 'js-md5'
 
   export default {
     name: 'login',
@@ -92,10 +93,10 @@
     },
     mounted () {
       if (sessionStorage.getItem('username')) {
-        this.formLogin.username = JSON.parse(sessionStorage.getItem('username'))
+        this.formLogin.userName = sessionStorage.getItem('username')
       }
       if (sessionStorage.getItem('password')) {
-        this.formLogin.password = JSON.parse(sessionStorage.getItem('password'))
+        this.formLogin.password = sessionStorage.getItem('password')
       }
     },
     methods: {
@@ -103,22 +104,28 @@
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            sessionStorage.setItem('user', JSON.stringify(this.formLogin))
-            // console.log(this.formLogin)
-            // api.login(this.formLogin).then((res) => {
-            //   console.log(res)
-            // })
-            this.$router.push('/')
+            let params = {
+              userName: this.formLogin.userName,
+              // password: hash(this.formLogin.password),
+              password: this.formLogin.password,
+              verificationCode: this.formLogin.verificationCode
+            }
+            console.log(params)
+            api.login(params).then((res) => {
+              if (res) {
+                this.$store.dispatch('USER_SIGNIN', res)
+                this.$router.push('/')
+                // sessionStorage.setItem('user', JSON.stringify(this.formLogin))
+              }
+              console.log(res)
+            })
           } else {
             this.$Message.error('表单验证失败!')
           }
-//          if (this.formLogin.remember[0] === '记住密码') {
-//            sessionStorage.setItem('username', JSON.stringify(this.formLogin.username))
-//            sessionStorage.setItem('password', JSON.stringify(this.formLogin.password))
-//          } else {
-//            sessionStorage.removeItem('username')
-//            sessionStorage.removeItem('password')
-//          }
+          if (this.remember) {
+            sessionStorage.setItem('username', this.formLogin.userName)
+            sessionStorage.setItem('password', this.formLogin.password)
+          }
         })
       },
       // 重置

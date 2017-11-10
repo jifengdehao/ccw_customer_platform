@@ -13,6 +13,7 @@ import 'common/stylus/index.styl'
 import VCharts from 'v-charts'
 import store from './store'
 import axios from 'axios'
+
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 Vue.use(iView)
@@ -20,7 +21,9 @@ Vue.use(VCharts)
 
 router.beforeEach((to, from, next) => {
   let path = to.path.substr(1)
-  let user = JSON.parse(window.sessionStorage.getItem('user'))
+  // let user = JSON.parse(window.sessionStorage.getItem('user'))
+  let user = store.getters.getUser
+  console.log(user)
   if (path !== 'login') {
     if (!user) {
       next('/login')
