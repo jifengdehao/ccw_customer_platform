@@ -17,8 +17,8 @@
         </FormItem>
         <FormItem>
           <span class="label">负责人筛选：</span>
-          <Select v-model="formItem.select" placeholder="请选择" style="width: 200px">
-            <Option v-for="item in charge" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Select v-model="formItem.charge" placeholder="请选择" style="width: 200px">
+            <Option v-for="item in allCharge" :value="item.ptBdId" :key="item.ptBdId">{{ item.name }}</Option>
           </Select>
         </FormItem>
         <FormItem>
@@ -39,13 +39,12 @@
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 查看图片 -->
-    <Modal v-model="modal" title="商家证件图片" width="726">
-      <table-img ></table-img>
+    <Modal v-model="modal" title="商家证件图片" width="600" height="400" style="z-index:999">
+      <table-img :pic-urls="sellerpicUrls"></table-img>
     </Modal>
   </div>
 </template>
 <script>
-import { auditdata, approvaldata } from './sellerdata/sellersettledmanage-data'
 import * as api from 'api/common.js'
 import tableImg from './sellercomponents/tableimage'
 export default {
@@ -55,9 +54,11 @@ export default {
   data() {
     return {
       total: 1,
-      pageSize: 1,
+      pageSize: 5,
       modal: false,
-      charge: [],
+      current: 1, // 申请的状态
+      sellerpicUrls: [],
+      allCharge: [],
       formItem: {
         startdate: '',
         lastdate: '',
@@ -143,11 +144,15 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    display: params.row.applyStatus === 0 ? 'none' : 'inline-block'
                   },
                   on: {
                     click: () => {
-                      this.remove(params.index)
+                      this.updateApplyStatus(
+                        params.row.msSellerApplyId,
+                        params.row.applyStatus + 2
+                      )
                     }
                   }
                 },
@@ -160,9 +165,15 @@ export default {
                     type: 'success',
                     size: 'small'
                   },
+                  style: {
+                    display: params.row.applyStatus === 0 ? 'none' : 'inline-block'
+                  },
                   on: {
                     click: () => {
-                      this.remove(params.index)
+                      this.updateApplyStatus(
+                        params.row.msSellerApplyId,
+                        params.row.applyStatus + 1
+                      )
                     }
                   }
                 },
@@ -175,22 +186,31 @@ export default {
     }
   },
   created() {
-    this.auditdata = auditdata
+    this.getSellerApplyList(1, this.pageSize, 1)
+    api.getAllBD().then(response => {
+      this.allCharge = response
+    })
   },
   mounted() {},
   methods: {
     changedata(index) {
       if (index === 0) {
-        this.auditdata = auditdata
+        this.current = index + 1
       } else if (index === 1) {
-        this.auditdata = approvaldata
+        this.current = index + 1
+      } else if (index === 2) {
+        this.current = index + 1
       }
+      this.getSellerApplyList(1, this.pageSize, this.current)
     },
-    changepage(index) {},
+    // 分页
+    changepage(index) {
+      this.getSellerApplyList(index, 5, this.current)
+    },
     remove(index) {
       this.auditdata.splice(index, 1)
     },
-    // 获取商品图片审核列表
+    // 获取入驻审核列表
     getSellerApplyList(
       pageNo,
       pageSize,
@@ -213,14 +233,24 @@ export default {
       })
     },
     // 更新商户入驻信息审核状态
-    updateApplyStatus(id, appltStatus) {
+    updateApplyStatus(id, applyStatus) {
       let params = {
-        appltStatus: appltStatus // 商家入驻申请状态
+        applyStatus: applyStatus // 商家入驻申请状态
       }
-      api.updateApplyStatus(params, id).then(response => {})
+      api.updateApplyStatus(params, id).then(response => {
+        this.$Message.success('发送成功')
+      })
     },
+    // 搜索
     searchdata(formItem) {
-      console.log(formItem)
+      this.getSellerApplyList(
+        1,
+        this.pageSize,
+        this.current,
+        formItem.charge,
+        formItem.startdate,
+        formItem.lastdate
+      )
     }
   },
   computed: {},

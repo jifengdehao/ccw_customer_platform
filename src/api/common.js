@@ -23,7 +23,7 @@ export const login = params => {
  * @param params
  */
 export const getCode = params => {
-  return ax.g('/platform/user/login/changeCode', params)
+  return ax.g('/platform/user/login/getCode', params)
 }
 /**
  * 获取登录用户的详细信息
@@ -43,6 +43,14 @@ export const logout = params => {
 /** 用户登录登出，个人信息，修改密码 end**/
 
 /** 订单管理 start **/
+
+/**
+ * 导出反馈列表
+ * @param params =>{startTime,endTime,types,mobileno}
+ */
+export const exportFeedback = params => {
+  return ax.g('/order/feedback/poi', params)
+}
 
 /**
  * 获取反馈列表
@@ -131,6 +139,13 @@ export const getOrderSw = params => {
  */
 export const postOrderSw = params => {
   return ax.p('/order/remark/hidden', params)
+}
+/**
+ * 导出评价列表
+ * @param params =>{startTime,endTime,mobileno,types}
+ */
+export const exportEval = params => {
+  return ax.g('/order/remark/shop/poi', params)
 }
 
 /**
@@ -234,7 +249,14 @@ export const getProductPic = (params, pageNo) => {
 export const getShopPic = (params, pageNo) => {
   return ax.g(`seller/pic/shop/list/${pageNo}`, params)
 }
-
+// 商品图片审核
+export const auditProductPicStatus = (params) => {
+  return ax.g(`seller/pic/product/audit`, params)
+}
+// 审核店铺图片
+export const auditShopPicStatus = (params) => {
+  return ax.g(`seller/pic/shop/audit`, params)
+}
 //  ********************** 商户账号管理 *******************************
 // 获取商户账号列表
 export const getSellerAccountList = (params, pageNo) => {
@@ -244,25 +266,40 @@ export const getSellerAccountList = (params, pageNo) => {
 export const updataShopStatus = params => {
   return ax.pa(`/seller/changeState`, params)
 }
-
+// 获取商家信息详情
+export const getsellerInfo = (params, sellerId) => {
+  return ax.g(`seller/${sellerId}`, params)
+}
+// 更新商家信息
+export const modifysellerInfo = (params, sellerId) => {
+  return ax.u(`seller/${sellerId}`, params)
+}
 //  ********************* BD及邀请码管理 ******************************
 // 获取BD用户列表
-export const getBDlist = params => {
-  return ax.g(`platform/bd`, params)
+export const getBDlist = (params, pageNo) => {
+  return ax.g(`/platform/bd/list/${pageNo}`, params)
 }
 // 添加BD
-export const addPlatformBD = params => {
+export const addPlatformBD = (params) => {
   return ax.p(`platform/bd`, params)
 }
 // 删除BD
-export const delPlatformBD = id => {
+export const delPlatformBD = (id) => {
   return ax.d(`platform/bd/${id}`)
 }
+
 // 修改BD
 export const modifyBD = (params, id) => {
   return ax.u(`platform/bd/${id}`, params)
 }
-
+// 查询所有BD信息
+export const getAllBD = () => {
+  return ax.g(`/platform/bd/all`)
+}
+// 查询所有菜市场信息
+export const getAllMarket = () => {
+  return ax.g(`/platform/market/all`)
+}
 //  ********************* 商品模板库管理 ******************************
 // 获取分类列表
 export const getProductCategory = params => {
@@ -271,6 +308,30 @@ export const getProductCategory = params => {
 // 更新分类信息
 export const updateProductCategory = params => {
   return ax.p(`product/category`, params)
+}
+// 获取商品模板列表
+export const getProductTemplateList = params => {
+  return ax.g(`product/template`, params)
+}
+// 获取单个商品模板
+export const getProductTemplate = templateId => {
+  return ax.g(`product/template/${templateId}`)
+}
+// 添加商品模板
+export const addProductTemplate = params => {
+  return ax.p(`product/template`, params)
+}
+// 修改商品模板
+export const modifyProductTemplate = (params, templateId) => {
+  return ax.u(`product/template/${templateId}`, params)
+}
+// 获取系统参数列表
+export const getPlatformDict = params => {
+  return ax.g(`platform/dict`, params)
+}
+// 修改商品模板所属分类或排序
+export const sortPlatformDict = params => {
+  return ax.pa(`product/template`, params)
 }
 //  ********************* 商户消息推送 ******************************
 // 获取商户端系统消息列表
@@ -291,12 +352,12 @@ export const modifySysMessage = (params, id) => {
 }
 //  ********************* 商户消息提醒 ******************************
 // 获取消息提醒列表
-export const getAlertsMessageList = params => {
-  return ax.g(`seller/message/alerts`, params)
+export const getAlertsMessageList = (params, pageNo) => {
+  return ax.g(`seller/alertMessage/list/${pageNo}`, params)
 }
 // 更新消息提醒状态
-export const updateAlertsMessage = (params, id) => {
-  return ax.p(`seller/message/alerts/${id}`, params)
+export const updateAlertsMessage = (params, assistantId) => {
+  return ax.p(`seller/alertMessage/${assistantId}`, params)
 }
 
 /**

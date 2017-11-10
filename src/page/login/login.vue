@@ -6,48 +6,57 @@
 */
 <template>
   <div id="login">
-    <i-form ref="formLogin" :model="formLogin" :rules="formLoginRules" class="card-box">
+    <Form ref="formLogin" :model="formLogin" :rules="formLoginRules" class="card-box">
       <Form-item class="formLogin-title">
         <h3>用户端系统登录</h3>
       </Form-item>
-      <Form-item prop="username">
-        <i-input size="large" type="text" v-model="formLogin.username" placeholder="用户名">
-          <Icon type="ios-person-outline" slot="prepend"></Icon>
-        </i-input>
+      <Form-item prop="userName">
+        <Input size="large" type="text" v-model="formLogin.userName" placeholder="用户名">
+        <Icon type="ios-person-outline" slot="prepend"></Icon>
+        </Input>
       </Form-item>
       <Form-item prop="password">
-        <i-input size="large" type="password" v-model="formLogin.password" placeholder="密码">
-          <Icon type="ios-locked-outline" slot="prepend"></Icon>
-        </i-input>
+        <Input size="large" type="password" v-model="formLogin.password" placeholder="密码">
+        <Icon type="ios-locked-outline" slot="prepend"></Icon>
+        </Input>
       </Form-item>
-      <Form-item prop="code">
+      <Form-item prop="verificationCode">
         <Row>
           <Col span="17">
-          <Input size="large" type="text" v-model="formLogin.code" placeholder="验证码">
+          <Input size="large" type="text" v-model="formLogin.verificationCode" placeholder="验证码">
           <Icon type="ios-pulse" slot="prepend"></Icon>
           </Input>
           </Col>
-          <Col span="6" offset="1" @click="getCode">
-          <img src="https://api.it120.cc/jifengdehao/verification/pic/get" style="width: 100%;height: 35px;">
+          <Col span="6" offset="1">
+          <div style="height: 36px;line-height: 36px;
+                      text-align: center;
+                      font-size:18px;
+                      cursor: pointer;
+                      color: #ed3f14;
+                      background-color: #ffffff;
+                      font-style:italic;
+                      border: 1px solid #dddee1;
+                      border-radius: 4px;
+                      letter-spacing: .2em;"
+               @click="refCode">{{Code}}
+          </div>
           </Col>
         </Row>
       </Form-item>
       <Form-item class="login-no-bottom">
-        <Checkbox-group v-model="formLogin.remember">
-          <Checkbox label="记住密码" name="remember"></Checkbox>
-        </Checkbox-group>
+        <Checkbox v-model="remember">记住密码</Checkbox>
       </Form-item>
       <Form-item class="login-no-bottom">
         <Row type="flex">
-          <i-col :xs="{ span: 4, offset: 6}">
-            <i-button type="primary" @click="handleSubmit('formLogin')">登录</i-button>
-          </i-col>
-          <i-col :xs="{ span: 4, offset: 4 }">
-            <i-button type="primary" @click="formLoginReset('formLogin')">重置</i-button>
-          </i-col>
+          <Col :xs="{ span: 4, offset: 6}">
+          <Button type="primary" @click="handleSubmit('formLogin')">登录</Button>
+          </Col>
+          <Col :xs="{ span: 4, offset: 4 }">
+          <Button type="primary" @click="formLoginReset('formLogin')">重置</Button>
+          </Col>
         </Row>
       </Form-item>
-    </i-form>
+    </Form>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -57,62 +66,29 @@
     name: 'login',
     data () {
       return {
+        Code: '',
+        remember: false,
         formLogin: {
-          username: '',
+          userName: '',
           password: '',
-          code: '',
-          remember: []
+          verificationCode: ''
         },
         formLoginRules: {
-          username: [
+          userName: [
             {required: true, message: '请填写用户名', trigger: 'blur'}
           ],
           password: [
             {required: true, message: '请填写密码', trigger: 'blur'},
             {type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}
           ],
-          code: [
+          verificationCode: [
             {required: true, message: '请填写验证码', trigger: 'blur'}
           ]
         }
       }
     },
     created () {
-      this.getCode()
-    },
-    methods: {
-      // 登录
-      handleSubmit (name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            sessionStorage.setItem('user', JSON.stringify(this.formLogin))
-            this.$Message.success('提交成功!')
-            api.login(this.formLogin).then((user) => {
-              console.log(user)
-            })
-            this.$router.push({path: '/'})
-          } else {
-            this.$Message.error('表单验证失败!')
-          }
-          if (this.formLogin.remember[0] === '记住密码') {
-            sessionStorage.setItem('username', JSON.stringify(this.formLogin.username))
-            sessionStorage.setItem('password', JSON.stringify(this.formLogin.password))
-          } else {
-            sessionStorage.removeItem('username')
-            sessionStorage.removeItem('password')
-          }
-        })
-      },
-      // 重置
-      formLoginReset (name) {
-        this.$refs[name].resetFields()
-      },
-      // 请求code 验证码
-      getCode () {
-        api.getCode().then((res) => {
-          console.log(res)
-        })
-      }
+      this.initCode()
     },
     mounted () {
       if (sessionStorage.getItem('username')) {
@@ -120,6 +96,46 @@
       }
       if (sessionStorage.getItem('password')) {
         this.formLogin.password = JSON.parse(sessionStorage.getItem('password'))
+      }
+    },
+    methods: {
+      // 登录
+      handleSubmit (name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            sessionStorage.setItem('user', JSON.stringify(this.formLogin))
+            // console.log(this.formLogin)
+            // api.login(this.formLogin).then((res) => {
+            //   console.log(res)
+            // })
+            this.$router.push('/')
+          } else {
+            this.$Message.error('表单验证失败!')
+          }
+//          if (this.formLogin.remember[0] === '记住密码') {
+//            sessionStorage.setItem('username', JSON.stringify(this.formLogin.username))
+//            sessionStorage.setItem('password', JSON.stringify(this.formLogin.password))
+//          } else {
+//            sessionStorage.removeItem('username')
+//            sessionStorage.removeItem('password')
+//          }
+        })
+      },
+      // 重置
+      formLoginReset (name) {
+        this.$refs[name].resetFields()
+      },
+      // 请求code 验证码
+      initCode () {
+        api.getCode().then((res) => {
+          console.log(res)
+          if (res) {
+            this.Code = res
+          }
+        })
+      },
+      refCode () {
+        this.initCode()
       }
     }
   }
