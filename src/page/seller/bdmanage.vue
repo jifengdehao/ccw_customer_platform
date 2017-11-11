@@ -214,6 +214,7 @@ export default {
     confirmAdd(modelFormItem, modelTitle) {
       if (modelTitle === '增加BD') {
         api.addPlatformBD(modelFormItem).then(response => {
+          this.BDdata.push(modelFormItem)
           this.$Message.info('添加成功')
         })
       } else if (modelTitle === '修改BD') {

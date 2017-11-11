@@ -16,8 +16,7 @@ var ax = axios.create({
   baseURL: URI,
   timeout: 30000,
   headers: {
-    'Content-Type': 'application/json;charset=utf-8',
-    TOKEN: ''
+    'Content-Type': 'application/json;charset=utf-8'
   }
 })
 

@@ -10,19 +10,17 @@
     <section class="seller-account-manager-select">
       <Form :model="formItem" inline>
         <FormItem>
-          <span class="label">日期筛选：</span>
+          <span class="label">入驻日期：</span>
           <DatePicker type="date" v-model="formItem.startdate" placement="bottom-start" placeholder="选择开始日期" style="width: 200px"></DatePicker>
           <i> - </i>
           <DatePicker type="date" v-model="formItem.lastdate" placement="bottom-start" placeholder="选择结束日期" style="width: 200px"></DatePicker>
         </FormItem>
         <FormItem>
           <span class="label">账号状态：</span>
-          <Select v-model="formItem.status" placeholder="请选择" style="width: 200px">
-                <Option value="1">全部</Option>
+          <Select v-model="formItem.status" placeholder="请选择" style="width: 200px" clearable>
+                <Option value="1">正常</Option>
                 <Option value="2">关档</Option>
-                <Option value="3">暂停封号</Option>
-                <Option value="4">正常</Option>
-                <Option value="5">账号冻结</Option>
+                <Option value="3">冻结</Option>
           </Select>
         </FormItem>
         <FormItem>
@@ -62,14 +60,13 @@
             <span>{{shopMessage.msSellerId}}</span>
             </br>
             <span>支付宝账号：</span>
-            <Input size="small" :disabled="disabled" v-model="shopMessage.alipayAccount" :value="shopMessage.alipayAccount" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" v-model="shopMessage.alipayAccount" :value="shopMessage.alipayAccount" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>手机号：</span>
-            <Input size="small" :disabled="disabled" v-model="shopMessage.mobileno" :value="shopMessage.mobileno" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" v-model="shopMessage.mobileno" :value="shopMessage.mobileno" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>密码：</span>
-            <Input type="password" size="small" :disabled="disabled" v-model="shopMessage.password" :value="shopMessage.password" placeholder="请输入" style="width: 150px"></Input>
-            <Button size="small" @click="modifyDisabled">修改</Button>
+            <Button size="small" @click="resetPassword(shopMessage.msSellerId)">重置密码</Button>
           </FormItem>
           <!-- 店铺信息 -->
           <FormItem prop="user" class="shopMessagemModal-shopinfo">
@@ -86,12 +83,14 @@
             <span>档口号：</span>
             <Input size="small"  v-model="shopMessage.shopNo" :value="shopMessage.shopNo" placeholder="请输入" style="width: 150px"></Input>
             </br>
+             <span>主营类型：</span>
+            <Select size="small"  v-model="shopMessage.businessDictCode" :value="shopMessage.businessDictCode" placeholder="请选择" style="width: 150px">
+            <Option v-for="item in businessDictCode" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
+            </Select> </br>
             <span>营业状态：</span>
              <Select size="small" v-model="shopMessage.bussinessStatus" :value="shopMessage.bussinessStatus" placeholder="请选择" style="width: 150px">
-                <Option value="1">全部</Option>
-                <Option value="2">关档</Option>
-                <Option value="3">暂停封号</Option>
-                <Option value="4">正常</Option>
+                <Option value="1">营业</Option>
+                <Option value="2">休息</Option>
             </Select>
             </br>
             <span>营业时间：</span>
@@ -106,24 +105,27 @@
             <span>店铺地址：</span>
             <Input size="small" v-model="shopMessage.stallAddress" :value="shopMessage.stallAddress" placeholder="请输入" style="width: 150px"></Input>
             </br>
-            <span>主营类型：</span>
-            <Select size="small"  v-model="shopMessage.businessDictCode" :value="shopMessage.businessDictCode" placeholder="请选择" style="width: 150px">
-            <Option v-for="item in businessDictCode" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
           </FormItem>
           </Col>
           <Col span="15">
           <!-- 店铺图片 -->
           <FormItem prop="password" class="shopMessagemModal-shopimag">
             <h3>店铺图片</h3>
+               <update-pic></update-pic>
           </FormItem>
           <!-- 营业资质 -->
           <FormItem prop="password" class="shopMessagemModal-qualification">
             <h3>营业资质</h3>
+            <ul>
+              <li v-for="item in 4"><img src="" alt=""><p>{{item.name}}</p> 
+                <!-- <uploadpic></uploadpic> -->
+              </li>
+            </ul>
           </FormItem>
           <!-- 协议合同 -->
           <FormItem prop="password" class="shopMessagemModal-agreement">
             <h3>协议合同</h3>
+            <update-pic></update-pic>
           </FormItem>
           </Col>
         </Row>
@@ -148,8 +150,11 @@
 </template>
 <script>
 import * as api from 'api/common.js'
+import updatePic from './sellercomponents/updatePIc'
+import * as date from '@/until/time'
+import uploadpic from './sellercomponents/uploadpic'
 export default {
-  components: {},
+  components: { updatePic, uploadpic },
   props: {},
   data() {
     return {
@@ -157,12 +162,13 @@ export default {
       pageSize: 5,
       disabled: true,
       sellerId: 0,
+      shopId: 0,
       shopMessage: {},
       shopManageData: {},
       bussinessStatus: [],
       shopMessageModal: false,
       shopManageModal: false,
-      sellerAccountData: [],
+      sellerAccountData: [{ shopName: 'jjj' }],
       formItem: {},
       businessDictCode: [],
       columns: [
@@ -225,7 +231,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.sellerId = params.row.sellerId
+                      this.shopId = params.row.shopId
                       this.shopManageModal = true
                     }
                   }
@@ -240,6 +246,14 @@ export default {
           key: 'status'
         },
         {
+          title: '入驻日期',
+          key: 'settleDate',
+          width: 150,
+          render: (h, params) => {
+            return date.formatDateTime(params.row.settleDate)
+          }
+        },
+        {
           title: '备注说明',
           key: 'remark'
         }
@@ -247,7 +261,17 @@ export default {
     }
   },
   created() {
+    // api.getOssInfo().then(response => {
+    //   alert('asddasd')
+    //   console.log(response)
+    // })
     this.getSellerAccountList(1, 5)
+    let params = {
+      parentId: -1 // 一级分类传入-1
+    }
+    api.getProductCategory(params).then(response => {
+      this.businessDictCode = response
+    })
   },
   // mounted: {},
   activited: {},
@@ -280,9 +304,9 @@ export default {
       })
     },
     // 商家账号管理
-    updataShopStatus(sellerId, status, remark) {
+    updataShopStatus(shopId, status, remark) {
       let params = {
-        sellerId: sellerId,
+        shopId: shopId,
         status: status,
         remark: remark
       }
@@ -292,7 +316,7 @@ export default {
     modifySellerStatus(sellerAccountData) {
       let status = sellerAccountData.status
       let remark = sellerAccountData.remark
-      this.updataShopStatus(this.sellerId, status, remark)
+      this.updataShopStatus(this.shopId, status, remark)
     },
     // getsellerInfo 查看商家信息详情
     getsellerInfo(msSellerId, shopId) {
@@ -312,12 +336,13 @@ export default {
     },
     // 搜索
     searchAccountData(formItem) {
+      console.log(formItem)
       this.getSellerAccountList(
         1,
         5,
         formItem.shopName,
         formItem.mobileno,
-        formItem.sellerId,
+        formItem.msSellerId,
         formItem.status,
         formItem.startdate,
         formItem.lastdate
@@ -326,9 +351,14 @@ export default {
     changepage(index) {
       this.getSellerAccountList(index, 5)
     },
-    // 点击修改
-    modifyDisabled() {
-      this.disabled = false
+    // 重置密码
+    resetPassword(msSellerId) {
+      let params = {
+        sellerId: msSellerId
+      }
+      api.resetPassword(params).then(response => {
+
+      })
     }
   },
   filfter: {},
@@ -386,7 +416,51 @@ export default {
   height: 376px;
   margin-left: 5px;
 }
-
+.shopMessagemModal-shopimag li {
+  position: relative;
+  width: 30%;
+  height: 120px;
+  margin: 0 6px;
+  float: left;
+}
+.shopMessagemModal-qualification li {
+  position: relative;
+  width: 45%;
+  height: 150px;
+  /* border: 1px solid #ddd; */
+  margin: 5px;
+  float: left;
+}
+.shopMessagemModal-shopimag li img {
+  display: block;
+  width: 150px;
+  height: 120px;
+  border: 1px solid #ddd;
+}
+.shopMessagemModal-qualification li img {
+  display: block;
+  width: 200px;
+  height: 120px;
+  border: 1px solid #ddd;
+}
+.shopMessagemModal-qualification li p {
+  width: 200px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+.shopMessagemModal-shopimag .upload {
+  position: absolute;
+  bottom: 0px;
+  width: 150px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.shopMessagemModal-qualification .upload {
+  position: absolute;
+  bottom: 30px;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
 .shopMessagemModal-agreement {
   height: 200px;
   margin-left: 5px;

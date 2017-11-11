@@ -85,15 +85,11 @@
             <Option v-for="item in childdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
           </Select> <br>
           <span>图片</span>
-          <!-- templateItem.mainPic是数组 -->
-          <ul v-model="templateItem.mainPic" :value="templateItem.mainPic">
-            <li class="templateModal-from-img"><img src="" alt=""></li>
-          </ul> <br>
+          <update-pic v-model="templateItem.mainPic" :imgList="templateItem.mainPic" class="mainpic"></update-pic>
+           <br>
           <span>图片库</span>
-          <!-- templateItem.picLib是数组 -->
-          <ul v-model="templateItem.picLib" :value="templateItem.picLib">
-            <li class="templateModal-from-img"><img src="" alt=""></li>
-          </ul> <br>
+          <update-pic v-model="templateItem.picLib" :imgList="templateItem.picLib" class="mainpic"></update-pic>
+          <br>
           <span>产地默认值</span>
           <Input v-model="templateItem.originPlace" :value="templateItem.originPlace" size="small" style="width: 200px"></Input> <br>
           <span>产品规格</span>
@@ -138,11 +134,7 @@
             </tr>
           </table> <br>
           <span>商品详情</span>
-          <ul>
-            <li class="templateModal-from-info"><img src="" alt=""></li>
-            <li class="templateModal-from-info"><img src="" alt=""></li>
-            <li class="templateModal-from-info"><img src="" alt=""></li>
-          </ul> <br>
+          <update-pic v-model="templateItem.productDesc" :imgList="templateItem.productDesc" class="mainpic"></update-pic>          
         </FormItem>
       </Form>
     </Modal>
@@ -155,7 +147,7 @@
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId" placeholder="一级分类">{{ item.name }}</Option>
           </Select>
           <i>二级分类</i>
-          <Select v-model="formItem.catId" style="width:150px">
+          <Select v-model="formItem.catId" style="width:150px" @on-change="searchChild(formItem.catId)">
             <Option v-for="item in childdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
           </Select>
         </FormItem>
@@ -167,13 +159,16 @@
   </div>
 </template>
 <script>
-// import vDraggable from '../compontents/draggable'
 import draggable from 'vuedraggable'
 import * as api from 'api/common.js'
+import updatePic from './updatePIc'
+// import uploadpic from './uploadpic'
 export default {
   props: ['parentdata'],
   components: {
-    draggable
+    draggable,
+    updatePic
+    // uploadpic
   },
   data() {
     return {
@@ -245,6 +240,9 @@ export default {
   },
   methods: {
     datadragEnd(el) {
+      this.templatedata.forEach((item, index) => {
+        item.idx = index + 1
+      })
       this.$Message.success('拖拽完成')
     },
     // 增加模板按钮
@@ -292,12 +290,17 @@ export default {
     },
     // 选中父级  触发事件获取到子级分类
     searchParent(spCategoryId) {
+      this.spCategoryParentId = spCategoryId
       let params = {
         parentId: spCategoryId
       }
       api.getProductCategory(params).then(response => {
         this.childdata = response
       })
+    },
+    // 选中子分类
+    searchChild(catId) {
+      this.spCategoryId = catId
     },
     // 搜索
     searchtemplate(formItem) {
@@ -360,8 +363,8 @@ export default {
     // 批量移动分类
     movetemplate(formItem) {
       let params = {
-        spCategoryId: formItem.spCategoryId,
-        spCategoryParentId: formItem.spCategoryParentId,
+        spCategoryId: formItem.catId,
+        spCategoryParentId: formItem.parentCatId,
         templateList: this.checkedData
       }
       api.sortPlatformDict(params).then(response => {
@@ -455,5 +458,8 @@ export default {
 .templateModal-from-info {
   width: 400px;
   height: 200px;
+}
+.mainpic {
+  display: inline-block;
 }
 </style>

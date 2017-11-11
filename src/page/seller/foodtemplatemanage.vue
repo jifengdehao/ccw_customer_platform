@@ -38,13 +38,15 @@
         </TabPane>
       </Tabs>
     </section>
-    <!-- 查看图片 -->
+    <!-- 查看 -->
     <Modal v-model="classifymodal" :title="classifytitle" width="300" @on-ok="postdata">
       <draggable v-model="dragdata" @update="datadragEnd">
         <transition-group>
-          <div v-for="(item,index) in dragdata" :key="index" style="lineHeight:30px">
-            <Input v-model="item.name" size="small" style="width: 200px" v-if="item.operation !== 0"></Input>
-            <Button type="error" size="small" @click="delClassify(index)" v-if="item.operation !== 0">删除</Button>
+          <div v-for="(item,index) in dragdata" :key="index" v-if="item.operation !== 0">
+            <div style="lineHeight:30px">
+            <Input v-model="item.name" size="small" style="width: 200px"></Input>
+            <Button type="error" size="small" v-if="item.canDelete === 0" @click="delClassify(index)" >删除</Button>
+           </div>
           </div>
         </transition-group>
       </draggable>
@@ -81,6 +83,7 @@ export default {
     }
     api.getProductCategory(params).then(response => {
       this.parentdata = response
+      this.addID = this.parentdata[0].spCategoryId
       this.getProductCategory(this.parentdata[0].spCategoryId)
     })
   },
@@ -104,6 +107,14 @@ export default {
     // 切换tab
     changedata(index) {
       if (index === 0) {
+        let params = {
+          parentId: -1 // 一级分类传入-1
+        }
+        api.getProductCategory(params).then(response => {
+          this.parentdata = response
+          this.addID = this.parentdata[0].spCategoryId
+          this.getProductCategory(this.parentdata[0].spCategoryId)
+        })
         this.search = false
       } else if (index === 1) {
         this.search = true
@@ -150,7 +161,18 @@ export default {
       }
     },
     postdata() {
-      api.updateProductCategory(this.dragdata).then(response => {})
+      api.updateProductCategory(this.dragdata).then(response => {
+        if (this.classifytitle === '一级分类管理') {
+          let params = {
+            parentId: -1 // 一级分类传入-1
+          }
+          api.getProductCategory(params).then(response => {
+            this.parentdata = response
+            this.addID = this.parentdata[0].spCategoryId
+            this.getProductCategory(this.parentdata[0].spCategoryId)
+          })
+        }
+      })
     }
   },
   filfter: {},

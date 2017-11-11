@@ -22,6 +22,7 @@
 </template>
 <script>
 import * as api from 'api/common.js'
+import * as date from '@/until/time'
 export default {
   components: {},
   props: {},
@@ -36,16 +37,17 @@ export default {
       remindColumns: [
         {
           title: '序号',
-          key: 'id',
-          width: 60
+          type: 'index',
+          width: 60,
+          align: 'center'
         },
         {
           title: '类型',
-          key: 'type'
+          key: 'assistantType'
         },
         {
           title: '商户账号',
-          key: 'sellerId'
+          key: 'msSellerId'
         },
         {
           title: '商户手机号',
@@ -53,11 +55,14 @@ export default {
         },
         {
           title: '商户账号状态',
-          key: 'sellertatus'
+          key: 'sellerStatus'
         },
         {
           title: '提交日期',
-          key: 'submitTime'
+          key: 'createdAt',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.createdAt)
+          }
         },
         {
           title: '操作',
@@ -80,7 +85,7 @@ export default {
                     click: index => {
                       params.row.status = 1
                       this.updateAlertsMessage(
-                        params.row.msSellerId,
+                        params.row.msAssistantId,
                         params.row.status
                       )
                     }
@@ -109,6 +114,7 @@ export default {
         status: status
       }
       api.getAlertsMessageList(params, pageNo).then(response => {
+        console.log(response)
         this.remindData = response.records
         this.total = response.total
         this.pageSize = response.size
@@ -117,7 +123,7 @@ export default {
     // 更新消息提醒状态
     updateAlertsMessage(id, status) {
       let params = {
-        stasus: status
+        status: status
       }
       api.updateAlertsMessage(params, id).then(response => {})
     },

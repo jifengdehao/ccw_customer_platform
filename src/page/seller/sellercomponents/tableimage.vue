@@ -6,12 +6,14 @@
  */
 <template>
   <div class="tableImg vm-clearfix">
-    <img class="preview-img imgs" v-for="(item, index) in picUrls" :src="item"  @click="bigpic(item)">
+
+    <img class="preview-img imgs" v-for="(item, index) in imgurl" :src="item"  :key="index" @click="bigpic(item)">
+    <!-- <img class="preview-img imgs"  :src="picUrls"  @click="bigpic(item)"> -->
     <Modal
         v-model="modal"
         title="查看大图"
         width="900"
-        class="bigimgs">
+        class="bigimgs vm-clearfix">
         <img class="bigimg" :src="url" alt="">
     </Modal>
   </div>
@@ -25,6 +27,7 @@ export default {
     return {
       modal: false,
       url: ''
+      // imgurl: []
     }
   },
   mounted() {},
@@ -37,7 +40,11 @@ export default {
     }
   },
   filfter: {},
-  computed: {},
+  computed: {
+    imgurl() {
+      return [this.picUrls]
+    }
+  },
   watch: {}
 }
 </script>
@@ -55,7 +62,7 @@ export default {
   width: 800px;
   height: 800px;
 }
-.bigimgs{
-  z-index: 1008;
+.bigimgs {
+  z-index: 1001;
 }
 </style>
