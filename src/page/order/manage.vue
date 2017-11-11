@@ -170,35 +170,36 @@
           },
           {
             title: '订单状态',
-            key: 'status',
-            align: 'center',
-            render: (h, params) => {
-              let status = params.row.status
-              let statusName
-              switch (status) {
-                case 1:
-                  statusName = '待付款'
-                  break
-                case 2:
-                  statusName = '待接单'
-                  break
-                case 3:
-                  statusName = '待发货'
-                  break
-                case 4:
-                  statusName = '配送中'
-                  break
-                case 5:
-                  statusName = '待评价'
-                  break
-                case 6:
-                  statusName = '已完成'
-                  break
-                default:
-                  statusName = '无'
-              }
-              return h('span', statusName)
-            }
+            key: 'statusChinese',
+            align: 'center'
+//            ,
+//            render: (h, params) => {
+//              let status = params.row.status
+//              let statusName
+//              switch (status) {
+//                case 1:
+//                  statusName = '待付款'
+//                  break
+//                case 2:
+//                  statusName = '待接单'
+//                  break
+//                case 3:
+//                  statusName = '待发货'
+//                  break
+//                case 4:
+//                  statusName = '配送中'
+//                  break
+//                case 5:
+//                  statusName = '待评价'
+//                  break
+//                case 6:
+//                  statusName = '已完成'
+//                  break
+//                default:
+//                  statusName = '无'
+//              }
+//              return h('span', statusName)
+//            }
           },
           {
             title: '操作',

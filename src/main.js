@@ -21,8 +21,8 @@ Vue.use(VCharts)
 
 router.beforeEach((to, from, next) => {
   let path = to.path.substr(1)
-  // let user = JSON.parse(window.sessionStorage.getItem('user'))
-  let user = store.getters.getUser
+  let user = JSON.parse(sessionStorage.getItem('user'))
+  // let user = store.getters.getUser
   console.log(user)
   if (path !== 'login') {
     if (!user) {

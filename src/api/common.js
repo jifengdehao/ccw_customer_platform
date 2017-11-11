@@ -127,7 +127,7 @@ export const putOrderInfo = params => {
 
 /**
  * 查看屏蔽词
- * @param params =>null
+ * @param params
  */
 export const getOrderSw = params => {
   return ax.g('/order/remark/hidden', params)
@@ -135,10 +135,10 @@ export const getOrderSw = params => {
 
 /**
  * 更新屏蔽词
- * @param params =>null
+ * @param params
  */
 export const postOrderSw = params => {
-  return ax.p('/order/remark/hidden', params)
+  return ax.u('/order/remark/hidden', params)
 }
 /**
  * 导出评价列表

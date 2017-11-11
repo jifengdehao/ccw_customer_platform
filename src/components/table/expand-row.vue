@@ -73,36 +73,37 @@
           },
           {
             title: '订单状态',
-            key: 'status',
-            align: 'center',
-            render: (h, params) => {
-              // console.log(params.row.status) // 1默认值正常，2、商家标记缺货、3商户取消订单、4差评平台退款、5、货损用户拒收退款(货损)、6、超时退款
-              let status = params.row.status
-              let statusName
-              switch (status) {
-                case 1:
-                  statusName = '正常'
-                  break
-                case 2:
-                  statusName = '商家标记缺货'
-                  break
-                case 3:
-                  statusName = '商户取消订单'
-                  break
-                case 4:
-                  statusName = '差评平台退款'
-                  break
-                case 5:
-                  statusName = '货损用户拒收退款(货损)'
-                  break
-                case 6:
-                  statusName = '超时退款'
-                  break
-                default:
-                  statusName = '正常'
-              }
-              return h('span', statusName)
-            }
+            key: 'statusChinese',
+            align: 'center'
+//            ,
+//            render: (h, params) => {
+//              // console.log(params.row.status) // 1默认值正常，2、商家标记缺货、3商户取消订单、4差评平台退款、5、货损用户拒收退款(货损)、6、超时退款
+//              let status = params.row.status
+//              let statusName
+//              switch (status) {
+//                case 1:
+//                  statusName = '正常'
+//                  break
+//                case 2:
+//                  statusName = '商家标记缺货'
+//                  break
+//                case 3:
+//                  statusName = '商户取消订单'
+//                  break
+//                case 4:
+//                  statusName = '差评平台退款'
+//                  break
+//                case 5:
+//                  statusName = '货损用户拒收退款(货损)'
+//                  break
+//                case 6:
+//                  statusName = '超时退款'
+//                  break
+//                default:
+//                  statusName = '正常'
+//              }
+//              return h('span', statusName)
+//            }
           },
           {
             title: '商户ID',
@@ -114,7 +115,7 @@
             key: 'realPayAmount',
             align: 'center',
             render: (h, params) => {
-              let realPayAmount = params.row.realPayAmount
+              let realPayAmount = params.row.realPayAmount / 100
               return h('span', '¥' + realPayAmount)
             }
           }

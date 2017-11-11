@@ -111,16 +111,26 @@
               verificationCode: this.formLogin.verificationCode
             }
             console.log(params)
-            api.login(params).then((res) => {
-              if (res) {
-                this.$store.dispatch('USER_SIGNIN', res)
-                this.$router.push('/')
-                // sessionStorage.setItem('user', JSON.stringify(this.formLogin))
-              }
-              console.log(res)
-            })
+//            api.login(params).then((res) => {
+//              console.log(res)
+//              if (res) {
+//                this.$store.dispatch('USER_SIGNIN', res)
+//                let that = this
+//                that.$Notice.success({
+//                  title: '登录成功！',
+//                  duration: 2,
+//                  onClose () {
+//                    that.$router.push('/')
+//                  }
+//                })
+//              }
+//            })
+            sessionStorage.setItem('user', JSON.stringify(this.formLogin))
+            this.$router.push('/')
           } else {
-            this.$Message.error('表单验证失败!')
+            this.$Notice.error({
+              title: '登录验证失败！'
+            })
           }
           if (this.remember) {
             sessionStorage.setItem('username', this.formLogin.userName)
