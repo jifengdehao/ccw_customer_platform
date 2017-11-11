@@ -1,0 +1,246 @@
+{
+  "code": 0,
+  "msg": "成功",
+  "data": [
+    {
+      "menu": "home",
+      "menuName": "首页",
+      "menuIcon": "ios-paper"
+    },
+    {
+      "menu": "custom",
+      "menuName": "用户端管理",
+      "menuIcon": "ios-people",
+      "submenu": [
+        {
+          "menu": "account_manage",
+          "menuName": "用户账号管理",
+          "menuIcon": "person-add",
+          "noDropdown": true
+        },
+        {
+          "menu": "",
+          "menuName": "消息推送功能",
+          "menuIcon": "ios-chatbubble",
+          "noDropdown": false,
+          "downMenu": [
+            {
+              "name": "system_message_push",
+              "text": "系统消息推送"
+            },
+            {
+              "name": "activity_message_push",
+              "text": "活动消息推送"
+            },
+            {
+              "name": "daily_menu_push",
+              "text": "每日菜谱推送"
+            },
+            {
+              "name": "app_notice_push",
+              "text": "应用通知推送"
+            }
+          ]
+        },
+        {
+          "menu": "",
+          "menuName": "用户端设置",
+          "menuIcon": "gear-a",
+          "noDropdown": false,
+          "downMenu": [
+            {
+              "name": "banner_manage",
+              "text": "banner图管理"
+            },
+            {
+              "name": "market_push",
+              "text": "市场推送管理"
+            },
+            {
+              "name": "start_price_see",
+              "text": "起送价查看"
+            },
+            {
+              "name": "evaluation_tag_manage",
+              "text": "评价标签管理"
+            }
+          ]
+        },
+        {
+          "menu": "account_balance",
+          "menuName": "用户余额积分",
+          "menuIcon": "ios-people",
+          "noDropdown": true
+        }
+      ]
+    },
+    {
+      "menu": "seller",
+      "menuName": "商家端管理",
+      "menuIcon": "chatbox-working",
+      "submenu": [
+        {
+          "menu": "seller_settled_manage",
+          "menuName": "商户入驻材料审核",
+          "menuIcon": "person-add",
+          "noDropdown": true
+        },
+        {
+          "menu": "seller_video_manage",
+          "menuName": "商户视频图片审核",
+          "menuIcon": "ios-videocam",
+          "noDropdown": true
+        },
+        {
+          "menu": "seller_account_manage",
+          "menuName": "商户账号管理",
+          "menuIcon": "ios-people",
+          "noDropdown": true
+        },
+        {
+          "menu": "seller_observant_manage",
+          "menuName": "商户守约管理",
+          "menuIcon": "flag",
+          "noDropdown": true
+        },
+        {
+          "menu": "bd_manage",
+          "menuName": "BD及邀请码管理",
+          "menuIcon": "android-share-alt",
+          "noDropdown": true
+        },
+        {
+          "menu": "food_template_manage",
+          "menuName": "商品模版库管理",
+          "menuIcon": "ios-cloud",
+          "noDropdown": true
+        },
+        {
+          "menu": "seller_message_push",
+          "menuName": "消息推送",
+          "menuIcon": "clock",
+          "noDropdown": true
+        },
+        {
+          "menu": "seller_message_remind",
+          "menuName": "商户消息提醒",
+          "menuIcon": "chatbubble-working",
+          "noDropdown": true
+        }
+      ]
+    },
+    {
+      "menu": "order",
+      "menuName": "订单管理",
+      "menuIcon": "chatbox",
+      "submenu": [
+        {
+          "menu": "manage",
+          "menuName": "订单管理",
+          "menuIcon": "ios-navigate",
+          "noDropdown": true
+        },
+        {
+          "menu": "abnormal",
+          "menuName": "异常订单管理",
+          "menuIcon": "ios-keypad",
+          "noDropdown": true
+        },
+        {
+          "menu": "evaluate",
+          "menuName": "评价管理",
+          "menuIcon": "ios-analytics",
+          "noDropdown": true
+        },
+        {
+          "menu": "feedback",
+          "menuName": "反馈管理",
+          "menuIcon": "ios-telephone",
+          "noDropdown": true
+        },
+        {
+          "menu": "sw",
+          "menuName": "屏蔽词管理",
+          "menuIcon": "ios-paperplane",
+          "noDropdown": true
+        }
+      ]
+    },
+    {
+      "menu": "activity",
+      "menuName": "活动管理",
+      "menuIcon": "help-buoy",
+      "submenu": [
+        {
+          "menu": "index_banner_manage",
+          "menuName": "首页banner图管理",
+          "menuIcon": "images",
+          "noDropdown": true
+        },
+        {
+          "menu": "coupon_management",
+          "menuName": "优惠卷管理",
+          "menuIcon": "briefcase",
+          "noDropdown": true
+        }
+      ]
+    },
+    {
+      "menu": "data",
+      "menuName": "数据中心",
+      "menuIcon": "ios-analytics",
+      "submenu": [
+        {
+          "menu": "index",
+          "menuName": "数据中心",
+          "menuIcon": "ios-analytics",
+          "noDropdown": true
+        }
+      ]
+    },
+    {
+      "menu": "distribution",
+      "menuName": "分销管理",
+      "menuIcon": "settings",
+      "submenu": [
+        {
+          "menu": "distribution_people_data",
+          "menuName": "分销用户数据",
+          "menuIcon": "ios-analytics",
+          "noDropdown": true
+        },
+        {
+          "menu": "distribution_people_manage",
+          "menuName": "分销用户管理",
+          "menuIcon": "ios-people",
+          "noDropdown": true
+        }
+      ]
+    },
+    {
+      "menu": "users",
+      "menuName": "平台用户管理",
+      "menuIcon": "ios-people",
+      "submenu": [
+        {
+          "menu": "users_manage",
+          "menuName": "平台用户管理",
+          "menuIcon": "ios-people",
+          "noDropdown": true
+        },
+        {
+          "menu": "users_jurisdiction",
+          "menuName": "权限管理",
+          "menuIcon": "settings",
+          "noDropdown": true
+        },
+        {
+          "menu": "users_log",
+          "menuName": "操作日志",
+          "menuIcon": "aperture",
+          "noDropdown": true
+        }
+      ]
+    }
+  ]
+}

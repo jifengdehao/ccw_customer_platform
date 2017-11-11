@@ -23,7 +23,7 @@ export const login = params => {
  * @param params
  */
 export const getCode = params => {
-  return ax.g('/platform/user/login/changeCode', params)
+  return ax.g('/platform/user/login/getCode', params)
 }
 /**
  * 获取登录用户的详细信息
@@ -43,6 +43,14 @@ export const logout = params => {
 /** 用户登录登出，个人信息，修改密码 end**/
 
 /** 订单管理 start **/
+
+/**
+ * 导出反馈列表
+ * @param params =>{startTime,endTime,types,mobileno}
+ */
+export const exportFeedback = params => {
+  return ax.g('/order/feedback/poi', params)
+}
 
 /**
  * 获取反馈列表
@@ -119,7 +127,7 @@ export const putOrderInfo = params => {
 
 /**
  * 查看屏蔽词
- * @param params =>null
+ * @param params
  */
 export const getOrderSw = params => {
   return ax.g('/order/remark/hidden', params)
@@ -127,10 +135,17 @@ export const getOrderSw = params => {
 
 /**
  * 更新屏蔽词
- * @param params =>null
+ * @param params
  */
 export const postOrderSw = params => {
-  return ax.p('/order/remark/hidden', params)
+  return ax.u('/order/remark/hidden', params)
+}
+/**
+ * 导出评价列表
+ * @param params =>{startTime,endTime,mobileno,types}
+ */
+export const exportEval = params => {
+  return ax.g('/order/remark/shop/poi', params)
 }
 
 /**

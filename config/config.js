@@ -7,7 +7,7 @@
 let config = {
   // env: Env,
   // apiDomain:'/api',
-  apiDomain: 'http://192.168.0.200:8093',
-  imgUpload: 'http://192.168.0.112:8080'
-};
+  apiDomain: 'http://192.168.0.158:8093',
+  imgUpload: ''
+}
 export default config
