@@ -24,18 +24,18 @@ var ax = axios.create({
 export const itr = (type, url, params) => {
   if (typeof params !== 'object') {
     params = {}
-  }
+  }t
   let arg = qs.stringify(params)
   if (Object.keys(params).length > 0) {
     url = type === 'get' || type === 'delete' ? url + '?' + arg : url
   }
-  var userInfo = ac.userInfo()
+  var userInfo = ac.getData('userInfo')
   var token = ''
   if (userInfo) {
     userInfo = typeof userInfo === 'string' ? JSON.parse(userInfo) : userInfo
     token = userInfo.token ? userInfo.token : ''
   }
-  ax.defaults.headers.CCWTOKEN = token
+  ax.defaults.headers.TOKEN = token
   return ax[type](url, params)
 }
 

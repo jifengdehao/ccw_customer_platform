@@ -77,7 +77,12 @@ let producttitle = [
     title: '商品添加或修改时间',
     key: 'lastUpdateTime',
     width: 200,
-    align: 'center'
+    align: 'center',
+    render: (h, params) => {
+      return h('div', [
+        h('span', {}, this.formatDateTime(params.row.lastUpdateTime))
+      ])
+    }
   },
   {
     title: '操作',
@@ -97,7 +102,7 @@ let producttitle = [
             },
             on: {
               click: () => {
-                this.auditProductPicStatus(params.row.spProductId, 0)
+                this.productPicPass(params.row.spProductId)
               }
             }
           },
@@ -112,7 +117,7 @@ let producttitle = [
             },
             on: {
               click: () => {
-                this.auditProductPicStatus(params.row.spProductId, 1)
+                this.productPicNotPass(params.row.spProductId)
               }
             }
           },
@@ -140,7 +145,7 @@ let shoptitle = [
       return h('div', [
         h(tableImg, {
           props: {
-            picUrls: params.row.shoppic
+            picUrls: params.row.shopPicUrl
           }
         })
       ])
@@ -148,7 +153,12 @@ let shoptitle = [
   },
   {
     title: '商品添加或修改时间',
-    key: 'modifyTime'
+    key: 'lastUpdateTime',
+    render: (h, params) => {
+      return h('div', [
+        h('span', {}, this.formatDateTime(params.row.lastUpdateTime))
+      ])
+    }
   },
   {
     title: '操作',
@@ -168,7 +178,7 @@ let shoptitle = [
             },
             on: {
               click: () => {
-                this.auditShopPicStatus(params.row.shopId, 1, 0)
+                this.shopPicPass(params.row.spProductId)
               }
             }
           },
@@ -183,7 +193,7 @@ let shoptitle = [
             },
             on: {
               click: () => {
-                this.auditShopPicStatus(params.row.shopId, 1, 1)
+                this.shopPicNotPass(params.row.spProductId)
               }
             }
           },
@@ -219,7 +229,12 @@ let avatar = [
   },
   {
     title: '商品添加或修改时间',
-    key: 'modifyTime'
+    key: 'lastUpdateTime',
+    render: (h, params) => {
+      return h('div', [
+        h('span', {}, this.formatDateTime(params.row.lastUpdateTime))
+      ])
+    }
   },
   {
     title: '操作',
@@ -239,7 +254,7 @@ let avatar = [
             },
             on: {
               click: () => {
-                this.auditShopPicStatus(params.row.shopId, 2, 0)
+                this.shopHeaderPicPass(params.row.spProductId)
               }
             }
           },
@@ -254,7 +269,7 @@ let avatar = [
             },
             on: {
               click: () => {
-                this.auditShopPicStatus(params.row.shopId, 2, 1)
+                this.shopHeaderPicNotPass(params.row.spProductId)
               }
             }
           },
@@ -281,6 +296,7 @@ export default {
       current: 1,
       selectiondata: [],
       sellervideodata: [],
+      id: '',
       formItem: {
         startdate: '',
         lastdate: ''
@@ -341,20 +357,26 @@ export default {
     auditProductPicStatus(productId, auditStatus) {
       let params = {
         productId: productId,
-        auditStatus: auditStatus // 通过是3 不通过是2
+        auditStatus: auditStatus // 通过是1 不通过是0
       }
-      api.auditProductPicStatus(params).then(response => {})
+      api.auditProductPicStatus(params).then(response => {
+        this.getProductPic(1, 5)
+      })
     },
     // 审核店铺图片
     auditShopPicStatus(shopId, picType, auditStatus) {
       let params = {
-        shopId: shopId,
+        shopIds: shopId,
         picType: picType, // 1：档口图片，2：档口头像
         auditStatus: auditStatus // 通过是3 不通过是2
       }
       api.auditShopPicStatus(params).then(response => {
-        if (response.msg === '更新成功') {
-          // remove(1)
+        this.$Message.info('更新成功')
+        this.id = ''
+        if (this.current === 1) {
+          this.getShopPic(1, 5, 1)
+        } else if (this.current === 2) {
+          this.getShopPic(1, 5, 2)
         }
       })
     },
@@ -382,29 +404,76 @@ export default {
     showselect(selection) {
       this.selectiondata = selection
     },
-    // 批量通过
-    batchpass() {
+    getID() {
       this.selectiondata.forEach(item => {
         if (this.current === 0) {
-          this.auditProductPicStatus(item.spProductId, 1)
+          this.id += item.spProductId + ','
         } else if (this.current === 1) {
-          this.auditShopPicStatus(item.msShopId, 1, 1)
+          this.id += item.msShopId + ','
         } else if (this.current === 2) {
-          this.auditShopPicStatus(item.msShopId, 1, 1)
+          this.id += item.msShopId + ','
         }
       })
+      if (this.id.indexOf(',') !== -1) {
+        this.id = this.id.substring(0, this.id.length - 1)
+      }
+    },
+    // 商品图片通过
+    productPicPass(id) {
+      this.auditProductPicStatus(id, 1)
+    },
+    // 商品图片不通过
+    productPicNotPass(id) {
+      this.auditProductPicStatus(id, 0)
+    },
+    // 档口图片通过
+    shopPicPass(id) {
+      this.auditShopPicStatus(id, 1, 1)
+    },
+    // 商品图片不通过
+    shopPicNotPass(id) {
+      this.auditShopPicStatus(id, 1, 0)
+    },
+    // 档口头像图片通过
+    shopHeaderPicPass(id) {
+      this.auditShopPicStatus(id, 2, 1)
+    },
+    // 商品头像图片不通过
+    shopHeaderPicNotPass(id) {
+      this.auditShopPicStatus(id, 2, 0)
+    },
+    // 批量通过
+    batchpass() {
+      this.getID()
+      if (this.current === 0) {
+        this.auditProductPicStatus(this.id, 1)
+      } else if (this.current === 1) {
+        this.auditShopPicStatus(this.id, 1, 1)
+      } else if (this.current === 2) {
+        this.auditShopPicStatus(this.id, 2, 1)
+      }
     },
     // 批量不通过
     batchnotpass() {
-      this.selectiondata.forEach(item => {
-        if (this.current === 0) {
-          this.auditProductPicStatus(item.spProductId, 0)
-        } else if (this.current === 1) {
-          this.auditShopPicStatus(item.msShopId, 1, 0)
-        } else if (this.current === 2) {
-          this.auditShopPicStatus(item.msShopId, 1, 0)
-        }
-      })
+      this.getID()
+      if (this.current === 0) {
+        this.auditProductPicStatus(this.id, 0)
+      } else if (this.current === 1) {
+        this.auditShopPicStatus(this.id, 1, 0)
+      } else if (this.current === 2) {
+        this.auditShopPicStatus(this.id, 2, 0)
+      }
+    },
+    formatDateTime(inputTime) {
+      if (inputTime) {
+        var date = new Date(inputTime)
+        var y = date.getFullYear()
+        var m = date.getMonth() + 1
+        m = m < 10 ? '0' + m : m
+        var d = date.getDate()
+        d = d < 10 ? '0' + d : d
+        return y + '-' + m + '-' + d
+      }
     }
   },
   filfter: {},

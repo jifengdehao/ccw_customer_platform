@@ -17,7 +17,7 @@
         </FormItem>
         <FormItem>
           <span class="label">负责人筛选：</span>
-          <Select v-model="formItem.charge" placeholder="请选择" style="width: 200px">
+          <Select v-model="formItem.charge" placeholder="请选择" style="width: 200px" clearable>
             <Option v-for="item in allCharge" :value="item.ptBdId" :key="item.ptBdId">{{ item.name }}</Option>
           </Select>
         </FormItem>
@@ -30,7 +30,7 @@
     <section>
       <Tabs type="card" :animated="false" @on-click="changedata">
         <TabPane v-for="tab in tabs" key :label="tab.title">
-          <Table :columns="columns" :data="auditdata"></Table>
+          <Table :columns="auditcolumns" :data="auditdata"></Table>
         </TabPane>
       </Tabs>
     </section>
@@ -39,14 +39,14 @@
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 查看图片 -->
-    <Modal v-model="modal" title="商家证件图片" width="600" height="400" style="z-index:999">
+    <Modal v-model="modal" title="商家证件图片" width="800">
       <table-img :pic-urls="sellerpicUrls"></table-img>
     </Modal>
   </div>
 </template>
 <script>
 import * as api from 'api/common.js'
-import tableImg from './sellercomponents/tableimage'
+import tableImg from './sellercomponents/seepic'
 export default {
   components: {
     tableImg
@@ -64,7 +64,8 @@ export default {
         lastdate: '',
         select: ''
       },
-      auditdata: [],
+      auditdata: [{ marketName: '日本菜市场', applyDate: 154332444 }],
+      auditcolumns: [],
       tabs: [{ title: '商家待审核' }, { title: '商家待审批' }, { title: '已通过' }],
       columns: [
         {
@@ -109,6 +110,11 @@ export default {
                   },
                   on: {
                     click: () => {
+                      api
+                        .getQulification(params.row.msSellerApplyId)
+                        .then(response => {
+                          this.sellerpicUrls = response
+                        })
                       this.modal = true
                     }
                   }
@@ -124,7 +130,12 @@ export default {
         },
         {
           title: '提交时间',
-          key: 'applyDate'
+          key: 'applyDate',
+          render: (h, params) => {
+            return h('div', [
+              h('span', {}, this.formatDateTime(params.row.applyDate))
+            ])
+          }
         },
         {
           title: '负责人',
@@ -134,6 +145,7 @@ export default {
           title: '操作',
           key: 'operation',
           width: 140,
+          display: 'none',
           render: (h, params) => {
             return h('div', [
               h(
@@ -144,8 +156,7 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px',
-                    display: params.row.applyStatus === 0 ? 'none' : 'inline-block'
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
@@ -165,15 +176,13 @@ export default {
                     type: 'success',
                     size: 'small'
                   },
-                  style: {
-                    display: params.row.applyStatus === 0 ? 'none' : 'inline-block'
-                  },
                   on: {
                     click: () => {
                       this.updateApplyStatus(
                         params.row.msSellerApplyId,
                         params.row.applyStatus + 1
                       )
+                      this.auditdata.splice(params.row.index, 1)
                     }
                   }
                 },
@@ -181,6 +190,81 @@ export default {
               )
             ])
           }
+        }
+      ],
+      lastcolumns: [
+        {
+          title: '商家手机',
+          key: 'mobileno'
+        },
+        {
+          title: '入驻市场',
+          key: 'marketName'
+        },
+        {
+          title: '经营范围',
+          key: 'businessType'
+        },
+        {
+          title: '档口名称',
+          key: 'businessType'
+        },
+        {
+          title: '挡主姓名',
+          key: 'shopOwerName'
+        },
+        {
+          title: '档口号',
+          key: 'shopNo'
+        },
+        {
+          title: '证件上传状态',
+          key: 'upstatus',
+          render: (h, params) => {
+            return h('div', [
+              h('span', {}, params.row.upstatus),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginLeft: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      api
+                        .getQulification(params.row.msSellerApplyId)
+                        .then(response => {
+                          this.sellerpicUrls = response
+                        })
+                      this.modal = true
+                    }
+                  }
+                },
+                '查看'
+              )
+            ])
+          }
+        },
+        {
+          title: '档口介绍',
+          key: 'shopDesc'
+        },
+        {
+          title: '提交时间',
+          key: 'applyDate',
+          render: (h, params) => {
+            return h('div', [
+              h('span', {}, this.formatDateTime(params.row.applyDate))
+            ])
+          }
+        },
+        {
+          title: '负责人',
+          key: 'chargeman'
         }
       ]
     }
@@ -195,13 +279,18 @@ export default {
   methods: {
     changedata(index) {
       if (index === 0) {
+        this.auditcolumns = this.columns
         this.current = index + 1
+        this.getSellerApplyList(1, this.pageSize, this.current)
       } else if (index === 1) {
+        this.auditcolumns = this.columns
         this.current = index + 1
+        this.getSellerApplyList(1, this.pageSize, this.current + 2)
       } else if (index === 2) {
+        this.auditcolumns = this.lastcolumns
         this.current = index + 1
+        this.getSellerApplyList(1, this.pageSize, this.current + 2)
       }
-      this.getSellerApplyList(1, this.pageSize, this.current)
     },
     // 分页
     changepage(index) {
@@ -246,11 +335,22 @@ export default {
       this.getSellerApplyList(
         1,
         this.pageSize,
-        this.current,
+        this.current + 2,
         formItem.charge,
         formItem.startdate,
         formItem.lastdate
       )
+    },
+    formatDateTime(inputTime) {
+      if (inputTime) {
+        var date = new Date(inputTime)
+        var y = date.getFullYear()
+        var m = date.getMonth() + 1
+        m = m < 10 ? '0' + m : m
+        var d = date.getDate()
+        d = d < 10 ? '0' + d : d
+        return y + '-' + m + '-' + d
+      }
     }
   },
   computed: {},

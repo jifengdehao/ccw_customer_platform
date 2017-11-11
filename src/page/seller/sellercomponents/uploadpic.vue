@@ -5,7 +5,7 @@
  * FunctionPoint: 图片上传
  */
 <template>
-  <div>
+  <div class="imgbox">
     <!-- 图片显示 -->
     <div v-for="(url , index) in upList" :key="index" class="pic vm-fl">
       <img :src="url" alt="">
@@ -16,8 +16,7 @@
     </div>
     <!-- 上传按钮 -->
      <div class="upload">
-       <!-- <Icon type="android-add"></Icon> -->
-      <input type="file" @change="doUpload">+
+      <input type="file" @change="doUpload">上传图片
     </div>
      <Modal
         v-model="modal"
@@ -35,7 +34,7 @@ export default {
   data() {
     return {
       modal: false,
-      upList: this.imgList,
+      upList: [],
       ossInfo: {},
       name: '',
       url: '',
@@ -126,28 +125,34 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.upload {
-  width: 100px;
-  height: 100px;
-  line-height: 80px;
+.imgbox{
+  width: 100%;
+  height: 100%;
   position: relative;
+}
+.upload {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 15%;
+  /* line-height: 20%; */
   cursor: pointer;
   text-align: center;
-  font-size: 80px;
-  margin-left: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  /* border: 1px solid #ddd; */
+  /* border-radius: 4px; */
   display: inline-block;
   *display: inline;
   *zoom: 1;
+  background-color: #ccc;
 }
 
 .upload input {
   position: absolute;
   right: 0;
   top: 0;
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   filter: alpha(opacity=0);
   cursor: pointer;
@@ -162,15 +167,15 @@ export default {
 }
 .pic,
 .pic img {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-origin: border-box;
 }
 .pic {
   position: relative;
-  margin: 0 3px;
+  height: 85%;
 }
 .cover {
   display: none;
@@ -179,13 +184,15 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100%;
+  height: 100%;
+  line-height: 100%;
+  text-align: center;
   background: rgba(0, 0, 0, 0.6);
 }
 .pic:hover .cover {
   display: block;
-  width: 100px;
-  height: 100px;
-  text-align: center;
+ 
 }
 .cover i {
   color: #fff;

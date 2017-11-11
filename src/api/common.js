@@ -226,6 +226,11 @@ export const exportOrderEval = params => {
  * 胡上军
  * start**/
 
+// 获取Oss密码
+// export const getOssInfo = () => {
+//   return ax.g(`http://192.168.0.112:8080/stsToken/ccWeb`)
+// }
+
 //  ******************** 商户入驻审核接口 *****************************
 // 获取商品图片审核列表
 export const getSellerApplyList = (params, pageNo) => {
@@ -235,6 +240,10 @@ export const getSellerApplyList = (params, pageNo) => {
 // 更新商户入驻信息审核状态
 export const updateApplyStatus = (params, id) => {
   return ax.pa(`/seller/apply/${id}`, params)
+}
+// 获取图片资质证件
+export const getQulification = (shopId) => {
+  return ax.g(`/seller/qulification/${shopId}`)
 }
 //  ******************** 商户视屏图片审核 *****************************
 // 获取商品图片审核列表、
@@ -269,6 +278,10 @@ export const getsellerInfo = (params, sellerId) => {
 // 更新商家信息
 export const modifysellerInfo = (params, sellerId) => {
   return ax.u(`seller/${sellerId}`, params)
+}
+// 重置密码
+export const resetPassword = (params) => {
+  return ax.g(`seller/resetPassword`, params)
 }
 //  ********************* BD及邀请码管理 ******************************
 // 获取BD用户列表
@@ -353,7 +366,7 @@ export const getAlertsMessageList = (params, pageNo) => {
 }
 // 更新消息提醒状态
 export const updateAlertsMessage = (params, assistantId) => {
-  return ax.p(`seller/alertMessage/${assistantId}`, params)
+  return ax.g(`seller/alertMessage/${assistantId}`, params)
 }
 
 /**
