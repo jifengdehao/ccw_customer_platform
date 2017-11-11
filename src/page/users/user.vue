@@ -53,6 +53,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import * as cookie from '@/data/index'
+
   export default {
     data () {
       const validePhone = (rule, value, callback) => {
@@ -94,8 +96,8 @@
             {validator: validePhone}
           ],
           email: [
-            { required: true, message: '邮箱不能为空', trigger: 'blur' },
-            { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+            {required: true, message: '邮箱不能为空', trigger: 'blur'},
+            {type: 'email', message: '邮箱格式不正确', trigger: 'blur'}
           ]
         },
         passwordValidate: {
@@ -114,7 +116,7 @@
         }
       }
     },
-    mounted () {
+    created () {
       this.init()
     },
     methods: {
@@ -148,10 +150,12 @@
         })
       },
       init () {
-        this.userForm.name = 'zhangwenlong'
-        this.userForm.cellphone = '18620212776'
-        this.userForm.email = '2975830779@qq.com'
-        this.userForm.department = '研发部'
+        let user = cookie.userInfo()
+        console.log(cookie.userInfo())
+        this.userForm.name = user.nickname
+        this.userForm.cellphone = user.mobileno
+        this.userForm.email = user.email
+        this.userForm.department = ''
       },
       hasChangePhone (event) {
         console.log(event)

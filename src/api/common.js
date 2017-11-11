@@ -9,7 +9,12 @@ import * as ax from './instrance'
 // 上传地址
 export const uploadUrl = ax.uploadUrl
 
-/** 用户登录登出，个人信息，修改密码 start**/
+// 获取首页数据
+export const getIndexData = params => {
+  return ax.g('/platform/index', params)
+}
+
+/** 用户登录登出，个人信息，修改密码 首页 start**/
 
 /**
  * 登录
@@ -114,15 +119,6 @@ export const putRefundOrderAll = (params) => {
 
 export const getSeedOrderData = params => {
   return ax.g(`/order/seed/${params}`)
-}
-
-/**
- * 编辑订单
- * @param params ={orderId}
- */
-
-export const putOrderInfo = params => {
-  return ax.u('/order', params)
 }
 
 /**

@@ -17,25 +17,25 @@ var ax = axios.create({
   withCredentials: true, // 跨域携带证书
   headers: {
     // 'Content-Type': 'application/x-www-form-urlencoded',
-    TOKEN: ''
+    CCWTOKEN: ''
   }
 })
 
 export const itr = (type, url, params) => {
   if (typeof params !== 'object') {
     params = {}
-  }t
+  }
   let arg = qs.stringify(params)
   if (Object.keys(params).length > 0) {
     url = type === 'get' || type === 'delete' ? url + '?' + arg : url
   }
-  var userInfo = ac.getData('userInfo')
+  var userInfo = ac.userInfo()
   var token = ''
   if (userInfo) {
     userInfo = typeof userInfo === 'string' ? JSON.parse(userInfo) : userInfo
     token = userInfo.token ? userInfo.token : ''
   }
-  ax.defaults.headers.TOKEN = token
+  ax.defaults.headers.CCWTOKEN = token
   return ax[type](url, params)
 }
 
