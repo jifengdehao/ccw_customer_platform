@@ -14,6 +14,7 @@ var URI = config.apiDomain
 var ax = axios.create({
   baseURL: URI,
   timeout: 30000,
+  withCredentials: true, // 跨域携带证书
   headers: {
     // 'Content-Type': 'application/x-www-form-urlencoded',
     TOKEN: ''
@@ -23,7 +24,7 @@ var ax = axios.create({
 export const itr = (type, url, params) => {
   if (typeof params !== 'object') {
     params = {}
-  }
+  }t
   let arg = qs.stringify(params)
   if (Object.keys(params).length > 0) {
     url = type === 'get' || type === 'delete' ? url + '?' + arg : url
