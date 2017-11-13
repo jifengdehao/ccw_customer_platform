@@ -81,7 +81,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common'
-  import * as cookie from '@/data/index'
+ // import * as cookie from '@/data/index'
 
   export default {
     computed: {
@@ -89,7 +89,8 @@
         return this.$route.path.split('/')[1]
       },
       userinfo () {
-        return cookie.userInfo()
+        // return cookie.userInfo()
+        return JSON.parse(sessionStorage.getItem('user'))
       }
     },
     mounted () {},
@@ -102,7 +103,7 @@
           case 'logout':
             api.logout().then((res) => {
               if (res) {
-                cookie.delData('userInfo')
+                // cookie.delData('userInfo')
                 this.$router.go(0);
               }
             })

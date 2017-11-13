@@ -124,6 +124,7 @@
 <script type="text/ecmascript-6">
   import expandRow from 'components/table/expand-row'
   import * as api from 'api/common.js'
+  import * as time from '@/until/time'
 
   export default {
     data () {
@@ -166,7 +167,10 @@
           {
             title: '下单时间',
             key: 'submitTime',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.submitTime)
+            }
           },
           {
             title: '订单状态',

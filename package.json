@@ -11,6 +11,7 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "ali-oss": "^4.11.2",
     "axios": "^0.16.2",
     "install": "^0.10.1",
     "iview": "^2.4.0",
