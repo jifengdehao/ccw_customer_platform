@@ -10,31 +10,33 @@
     <section class="seller-account-manager-select">
       <Form :model="formItem" inline>
         <FormItem>
-          <span class="label">日期筛选：</span>
+          <span class="label">入驻日期：</span>
           <DatePicker type="date" v-model="formItem.startdate" placement="bottom-start" placeholder="选择开始日期" style="width: 200px"></DatePicker>
           <i> - </i>
           <DatePicker type="date" v-model="formItem.lastdate" placement="bottom-start" placeholder="选择结束日期" style="width: 200px"></DatePicker>
         </FormItem>
         <FormItem>
           <span class="label">账号状态：</span>
-          <Select v-model="formItem.select" placeholder="请选择" style="width: 200px">
-            <Option v-for="item in charge" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Select v-model="formItem.status" placeholder="请选择" style="width: 200px" clearable>
+                <Option value="1">正常</Option>
+                <Option value="2">关档</Option>
+                <Option value="3">冻结</Option>
           </Select>
         </FormItem>
         <FormItem>
           <span class="label">商家账号：</span>
-          <Input v-model="formItem.input" placeholder="请输入" style="width: 200px"></Input>
+          <Input v-model="formItem.msSellerId" placeholder="请输入" style="width: 200px"></Input>
         </FormItem>
         <FormItem>
           <span class="label">商家手机：</span>
-          <Input v-model="formItem.input" placeholder="请输入" style="width: 200px"></Input>
+          <Input v-model="formItem.mobileno" placeholder="请输入" style="width: 200px"></Input>
         </FormItem>
         <FormItem>
           <span class="label">档口名称：</span>
-          <Input v-model="formItem.input" placeholder="请输入" style="width: 200px"></Input>
+          <Input v-model="formItem.shopName" placeholder="请输入" style="width: 200px"></Input>
         </FormItem>
         <FormItem>
-          <Button type="primary">搜索</Button>
+          <Button type="primary" @click="searchAccountData(formItem)">搜索</Button>
         </FormItem>
       </Form>
     </section>
@@ -47,54 +49,61 @@
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 商家信息模态框 -->
-    <Modal v-model="shopMessagemModal" title="商家信息" width="900" okText="保存">
-      <Form ref="formInline" :model="formItem" inline>
+    <Modal v-model="shopMessageModal" title="商家信息" width="900" @on-ok="modifySellerInfo(shopMessage)">
+      <Form ref="formInline" :model="shopMessage" inline>
         <Row>
           <Col span="9">
           <!-- 账号信息 -->
           <FormItem prop="user" class="shopMessagemModal-user">
             <h3>账号信息</h3>
             <span>账号名：</span>
-            <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
+            <span>{{shopMessage.msSellerId}}</span>
             </br>
             <span>支付宝账号：</span>
-            <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" v-model="shopMessage.alipayAccount" :value="shopMessage.alipayAccount" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>手机号：</span>
-            <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" v-model="shopMessage.mobileno" :value="shopMessage.mobileno" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>密码：</span>
-            <Input type="password" size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
-            <Button size="small">修改</Button>
+            <Button size="small" @click="resetPassword(shopMessage.msSellerId)">重置密码</Button>
           </FormItem>
           <!-- 店铺信息 -->
           <FormItem prop="user" class="shopMessagemModal-shopinfo">
             <h3>店铺信息</h3>
             <span>档口图片：</span>
-            <div class="shopPic"></div>
+              <img :src="shopMessage.headUrl" v-model="shopMessage.headUrl" alt="">
+              </br>
             <span>档口名称：</span>
-            <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small"  v-model="shopMessage.shopName" :value="shopMessage.shopName" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>档主姓名：</span>
-            <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small"  v-model="shopMessage.shopOwerName" :value="shopMessage.shopOwerName" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>档口号：</span>
-            <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small"  v-model="shopMessage.shopNo" :value="shopMessage.shopNo" placeholder="请输入" style="width: 150px"></Input>
             </br>
+             <span>主营类型：</span>
+            <Select size="small"  v-model="shopMessage.businessDictCode" :value="shopMessage.businessDictCode" placeholder="请选择" style="width: 150px">
+            <Option v-for="item in businessDictCode" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
+            </Select> </br>
             <span>营业状态：</span>
-            <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
+             <Select size="small" v-model="shopMessage.bussinessStatus" :value="shopMessage.bussinessStatus" placeholder="请选择" style="width: 150px">
+                <Option value="1">营业</Option>
+                <Option value="2">休息</Option>
+            </Select>
             </br>
             <span>营业时间：</span>
-            <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small"  v-model="shopMessage.businessHour" :value="shopMessage.businessHour" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>店铺电话：</span>
-            <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small"  v-model="shopMessage.mobileno" :value="shopMessage.mobileno" placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>店铺公告：</span>
-            <textarea name="" id="" cols="30" rows="5"></textarea>
+            <textarea v-model="shopMessage.notice" :value="shopMessage.notice" cols="30" rows="3"></textarea>
             </br>
             <span>店铺地址：</span>
-            <Input size="small" :disabled="true" v-model="formItem.input" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" v-model="shopMessage.stallAddress" :value="shopMessage.stallAddress" placeholder="请输入" style="width: 150px"></Input>
             </br>
           </FormItem>
           </Col>
@@ -102,58 +111,66 @@
           <!-- 店铺图片 -->
           <FormItem prop="password" class="shopMessagemModal-shopimag">
             <h3>店铺图片</h3>
+               <update-pic></update-pic>
           </FormItem>
           <!-- 营业资质 -->
           <FormItem prop="password" class="shopMessagemModal-qualification">
             <h3>营业资质</h3>
+            <ul>
+              <li v-for="item in 4"><img src="" alt=""><p>{{item.name}}</p> 
+                <!-- <uploadpic></uploadpic> -->
+              </li>
+            </ul>
           </FormItem>
           <!-- 协议合同 -->
           <FormItem prop="password" class="shopMessagemModal-agreement">
             <h3>协议合同</h3>
+            <update-pic></update-pic>
           </FormItem>
           </Col>
         </Row>
       </Form>
     </Modal>
     <!-- 商家账号管理模态框 -->
-    <Modal v-model="shopManageModal" title="账号管理" width="500">
-      <Form>
+    <Modal v-model="shopManageModal" title="账号管理" width="500" @on-ok="modifySellerStatus(shopManageData)">
+      <Form v-model="shopManageData">
         <FormItem label="设置账号限制：">
-          <Select v-model="formItem.select" placeholder="请选择">
-            <Option value="beijing">关档</Option>
-            <Option value="shanghai">账号恢复</Option>
-            <Option value="shenzhen">账号冻结</Option>
+          <Select v-model="shopManageData.status" :value="shopManageData.status" placeholder="请选择">
+            <Option value="0">关档</Option>
+            <Option value="1">账号恢复</Option>
+            <Option value="2">账号冻结</Option>
           </Select>
         </FormItem>
         <FormItem label="添加备注：">
-          <Input v-model="formItem.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
+          <Input v-model="shopManageData.remark" :value="shopManageData.remark" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
         </FormItem>
       </Form>
     </Modal>
-
   </div>
 </template>
 <script>
 import * as api from 'api/common.js'
+import updatePic from './sellercomponents/updatePIc'
+import * as date from '@/until/time'
+import uploadpic from './sellercomponents/uploadpic'
 export default {
-  components: {},
+  components: { updatePic, uploadpic },
   props: {},
   data() {
     return {
       total: 1,
-      pageSize: 1,
-      formItem: {},
-      shopMessagemModal: false,
+      pageSize: 5,
+      disabled: true,
+      sellerId: 0,
+      shopId: 0,
+      shopMessage: {},
+      shopManageData: {},
+      bussinessStatus: [],
+      shopMessageModal: false,
       shopManageModal: false,
-      sellerAccountData: [
-        { sellerId: 1 }
-      ],
-      charge: [
-        { value: '全部' },
-        { value: '关档' },
-        { value: '账号封停' },
-        { value: '正常' }
-      ],
+      sellerAccountData: [{ shopName: 'jjj' }],
+      formItem: {},
+      businessDictCode: [],
       columns: [
         {
           title: '档口名称',
@@ -161,7 +178,7 @@ export default {
         },
         {
           title: '商家账号',
-          key: 'sellerId'
+          key: 'msSellerId'
         },
         {
           title: '商家手机',
@@ -172,20 +189,28 @@ export default {
           key: 'shopMessage',
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.shopMessagemModal = true
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.getsellerInfo(
+                        params.row.msSellerId,
+                        params.row.shopId
+                      )
+                      this.shopMessageModal = true
+                    }
                   }
-                }
-              }, '查看')
+                },
+                '查看'
+              )
             ])
           }
         },
@@ -194,20 +219,25 @@ export default {
           key: 'shopManage',
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.shopManageModal = true
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.shopId = params.row.shopId
+                      this.shopManageModal = true
+                    }
                   }
-                }
-              }, '管理')
+                },
+                '管理'
+              )
             ])
           }
         },
@@ -216,19 +246,48 @@ export default {
           key: 'status'
         },
         {
+          title: '入驻日期',
+          key: 'settleDate',
+          width: 150,
+          render: (h, params) => {
+            return date.formatDateTime(params.row.settleDate)
+          }
+        },
+        {
           title: '备注说明',
           key: 'remark'
         }
       ]
     }
   },
-  // created: {},
+  created() {
+    // api.getOssInfo().then(response => {
+    //   alert('asddasd')
+    //   console.log(response)
+    // })
+    this.getSellerAccountList(1, 5)
+    let params = {
+      parentId: -1 // 一级分类传入-1
+    }
+    api.getProductCategory(params).then(response => {
+      this.businessDictCode = response
+    })
+  },
   // mounted: {},
   activited: {},
   update: {},
   methods: {
     // 获取商户账号列表
-    getSellerAccountList(pageNo, pageSize, shopName, mobileno, sellerId, status, settleStartdate, settleEnddate) {
+    getSellerAccountList(
+      pageNo,
+      pageSize,
+      shopName,
+      mobileno,
+      sellerId,
+      status,
+      settleStartdate,
+      settleEnddate
+    ) {
       let params = {
         pageSize: pageSize,
         shopName: shopName,
@@ -244,17 +303,63 @@ export default {
         this.pageSize = response.size
       })
     },
-    // 更新商户状态
-    updataShopStatus(sellerId, status, remark) {
+    // 商家账号管理
+    updataShopStatus(shopId, status, remark) {
       let params = {
-        sellerId: sellerId,
+        shopId: shopId,
         status: status,
         remark: remark
       }
-      api.updataShopStatus(params).then(response => {
+      api.updataShopStatus(params).then(response => {})
+    },
+    // 商家账号管理
+    modifySellerStatus(sellerAccountData) {
+      let status = sellerAccountData.status
+      let remark = sellerAccountData.remark
+      this.updataShopStatus(this.shopId, status, remark)
+    },
+    // getsellerInfo 查看商家信息详情
+    getsellerInfo(msSellerId, shopId) {
+      let params = {
+        shopId: shopId
+      }
+      api.getsellerInfo(params, msSellerId).then(response => {
+        this.shopMessage = response
       })
     },
-    changepage(index) { }
+    // 更新商家信息
+    modifySellerInfo(shopMessage) {
+      let sellerId = shopMessage.msSellerId
+      api.modifysellerInfo(shopMessage, sellerId).then(response => {
+        alert('更新成功')
+      })
+    },
+    // 搜索
+    searchAccountData(formItem) {
+      console.log(formItem)
+      this.getSellerAccountList(
+        1,
+        5,
+        formItem.shopName,
+        formItem.mobileno,
+        formItem.msSellerId,
+        formItem.status,
+        formItem.startdate,
+        formItem.lastdate
+      )
+    },
+    changepage(index) {
+      this.getSellerAccountList(index, 5)
+    },
+    // 重置密码
+    resetPassword(msSellerId) {
+      let params = {
+        sellerId: msSellerId
+      }
+      api.resetPassword(params).then(response => {
+        this.$Message.info('重置成功')
+      })
+    }
   },
   filfter: {},
   computed: {},
@@ -291,8 +396,8 @@ export default {
 .shopMessagemModal-shopinfo span {
   display: inline-block;
   width: 80px;
+  vertical-align: top;
 }
-
 
 .shopMessagemModal-user {
   height: 170px;
@@ -311,9 +416,61 @@ export default {
   height: 376px;
   margin-left: 5px;
 }
-
+.shopMessagemModal-shopimag li {
+  position: relative;
+  width: 30%;
+  height: 120px;
+  margin: 0 6px;
+  float: left;
+}
+.shopMessagemModal-qualification li {
+  position: relative;
+  width: 45%;
+  height: 150px;
+  /* border: 1px solid #ddd; */
+  margin: 5px;
+  float: left;
+}
+.shopMessagemModal-shopimag li img {
+  display: block;
+  width: 150px;
+  height: 120px;
+  border: 1px solid #ddd;
+}
+.shopMessagemModal-qualification li img {
+  display: block;
+  width: 200px;
+  height: 120px;
+  border: 1px solid #ddd;
+}
+.shopMessagemModal-qualification li p {
+  width: 200px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+.shopMessagemModal-shopimag .upload {
+  position: absolute;
+  bottom: 0px;
+  width: 150px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.shopMessagemModal-qualification .upload {
+  position: absolute;
+  bottom: 30px;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
 .shopMessagemModal-agreement {
   height: 200px;
   margin-left: 5px;
+}
+
+.shopMessagemModal-shopinfo img {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
 }
 </style>

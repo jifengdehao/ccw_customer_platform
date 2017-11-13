@@ -11,13 +11,13 @@ import iview from 'iview'
 import * as ac from '../data/index.js'
 
 var URI = config.apiDomain
-
 var ax = axios.create({
   baseURL: URI,
   timeout: 30000,
+  withCredentials: true, // 跨域携带证书
   headers: {
-    'Content-Type': 'application/json;charset=utf-8',
-    TOKEN: ''
+    // 'Content-Type': 'application/x-www-form-urlencoded',
+    CCWTOKEN: ''
   }
 })
 
@@ -27,10 +27,7 @@ export const itr = (type, url, params) => {
   }
   let arg = qs.stringify(params)
   if (Object.keys(params).length > 0) {
-    url =
-      type === 'get' || type === 'delete' || type === 'patch'
-        ? url + '?' + arg
-        : url
+    url = type === 'get' || type === 'delete' ? url + '?' + arg : url
   }
   var userInfo = ac.getData('userInfo')
   var token = ''
@@ -67,7 +64,7 @@ export const op = (url, params) => {
 // 上传地址
 export const uploadUrl = config.imgUpload
 
-export function base(type, url, params) {
+export function base (type, url, params) {
   return new Promise((resolve, reject) => {
     itr(type, url, params)
       .then(response => {

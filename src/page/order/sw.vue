@@ -30,7 +30,8 @@
       return {
         formValidate: {
           desc: '',
-          dateTime: new Date()
+          dateTime: new Date(),
+          rkShieldWordId: ''
         },
         ruleValidate: {
           desc: [
@@ -41,7 +42,7 @@
     },
     created () {
       // 获取默认数据库里的屏蔽词
-      this._getSwData()
+      this.getSwData()
     },
     methods: {
       handleSubmit (name) {
@@ -49,34 +50,42 @@
           if (valid) {
             // 发送数据
             console.log(this.formValidate)
-            // this.$Message.success('提交成功!')
             let params = {
-              startTime: this.formValidate.dateTime,
-              words: this.formValidate.desc
+              content: this.formValidate.desc,
+              startAt: this.formValidate.dateTime,
+              rkShieldWordId: this.formValidate.rkShieldWordId
             }
-            this._posSwData(params).then((data) => {
-              console.log(data)
+            api.postOrderSw(params).then((res) => {
+              if (res) {
+                console.log(res)
+                let that = this
+                that.$Notice.success({
+                  title: '更新成功！',
+                  onClose () {
+                    that.getSwData()
+                  }
+                })
+              } else {
+                this.$Notice.error({
+                  title: '更新失败！'
+                })
+              }
             })
           } else {
-            this.$Message.error('提交失败 !')
+            this.$Notice.error({
+              title: '更新失败！'
+            })
           }
         })
       },
-      _getSwData () {
-        api.getOrderSw().then((data) => {
-          console.log(data)
-          this.formValidate.desc = data
-        })
-      },
-      _posSwData (params) {
-        return new Promise((resolve, reject) => {
-          api.postOrderSw(params).then((data) => {
-            if (data) {
-              resolve(data)
-            } else {
-              reject(data)
-            }
-          })
+      getSwData () {
+        api.getOrderSw().then((res) => {
+          if (res) {
+            console.log(res)
+            this.formValidate.desc = res.content
+            this.formValidate.dateTime = res.startAt
+            this.formValidate.rkShieldWordId = res.rkShieldWordId
+          }
         })
       }
     }

@@ -124,7 +124,7 @@
             key: 'amount',
             align: 'center',
             render: (h, params) => {
-              let text = params.row.amount
+              let text = params.row.amount / 100
               return ('span', '¥' + text)
             }
           },
@@ -133,7 +133,7 @@
             key: 'transCost',
             align: 'center',
             render: (h, params) => {
-              let text = params.row.transCost
+              let text = params.row.transCost / 100
               return ('span', '¥' + text)
             }
           },
@@ -142,21 +142,21 @@
             key: 'discount',
             align: 'center',
             render: (h, params) => {
-              let text = params.row.discount
+              let text = params.row.discount / 100
               return ('span', '¥' + text)
             }
           },
-          {
-            title: '优惠券',
-            key: 'coupon',
-            align: 'center'
-          },
+//          {
+//            title: '优惠券',
+//            key: 'coupon',
+//            align: 'center'
+//          },
           {
             title: '实际金额',
             key: 'realPayAmount',
             align: 'center',
             render: (h, params) => {
-              let text = params.row.realPayAmount
+              let text = params.row.realPayAmount / 100
               return ('span', '¥' + text)
             }
           }
@@ -195,12 +195,20 @@
           {
             title: '单价',
             key: 'price',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              let text = params.row.price / 100
+              return ('span', '¥' + text)
+            }
           },
           {
             title: '小计',
             key: 'amount',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              let text = params.row.amount / 100
+              return ('span', '¥' + text)
+            }
           },
           {
             title: '操作',
@@ -246,7 +254,11 @@
           {
             title: '退款金额',
             key: 'refundAmount',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              let text = params.row.refundAmount / 100
+              return ('span', '¥' + text)
+            }
           },
           {
             title: '退款时间',

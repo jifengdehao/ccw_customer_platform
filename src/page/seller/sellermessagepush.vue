@@ -11,8 +11,8 @@
     <div style="line-height:1.5;float:right">
       <label>推送时间设置</label>
       <Select v-model="single.pushType" style="width:150px;margin-left:10px; margin-right: 10px;">
-        <Option value="1">定时推送</Option>
-        <Option value="2">立即推送</Option>
+        <Option value="1">立即推送</Option>
+        <Option value="2">定时推送</Option>
       </Select>
       <label>推送时间设置:</label>
       <DatePicker v-model="single.pushTime" value="single.pushTime" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="选择日期和时间（不含秒）" style="width: 300px"></DatePicker>
@@ -127,6 +127,13 @@ export default {
                     type: 'primary',
                     size: 'small'
                   },
+                  style: {
+                    display:
+                      params.row.status === '推送成功' ||
+                      params.row.status === '推送失败'
+                        ? 'none'
+                        : 'inline-block'
+                  },
                   on: {
                     click: () => {
                       this.single = params.row
@@ -154,7 +161,7 @@ export default {
   methods: {
     //  tab切换 获取ID
     onTabsIndex(index) {
-      this.messgeIndex = index
+      this.messgeIndex = index - 1
       this.pageNo = 1
       this.getSysMessage() // 初始化历史数据
     },
@@ -162,7 +169,6 @@ export default {
     pushMessage() {
       if (this.pushButton === '确定') {
         // 新增消息推送
-        this.single.msgType = 6
         switch (this.single.pushType) {
           case '1':
             this.single.pushType = 1
@@ -197,7 +203,9 @@ export default {
         }
         api
           .modifySysMessage(this.single, this.single.smMssageId)
-          .then(data => {})
+          .then(data => {
+            this.getSysMessage()
+          })
         this.single = {}
         this.single.pushType = '1'
         this.pushButton = '确定'
@@ -208,7 +216,7 @@ export default {
     },
     // 获取商户端系统消息列表
     getSysMessage() {
-      if (this.messgeIndex === 0) {
+      if (this.messgeIndex === -1) {
         this.messgeIndex = '' // 消息推送状态 全部不需要状态
       }
       let params = {

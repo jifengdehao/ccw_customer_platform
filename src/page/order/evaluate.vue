@@ -48,8 +48,19 @@
           class="vm-fr mt20"
         ></Page>
       </Tab-pane>
-      <Button type="primary" class="vm-fr" @click="exportData()" slot="extra">导出</Button>
+      <Button type="primary" class="vm-fr" @click="exportModal=true" slot="extra">导出</Button>
     </Tabs>
+    <Modal v-model="exportModal" width="300">
+      <div slot="header">导出表格</div>
+      <div class="vm-textCenter">
+        <DatePicker type="date" placeholder="选择日期" style="width: 100%" :value="startTime"></DatePicker>
+        <div class="mtb10">到</div>
+        <DatePicker type="date" placeholder="选择日期" style="width: 100%" :value="endTime"></DatePicker>
+      </div>
+      <div slot="footer">
+        <Button type="primary" long :loading="modal_loading" @click="exportData()">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -66,6 +77,10 @@
         loading1: true,
         loading2: true,
         loading3: true,
+        exportModal: false, // 弹出导出表格
+        startTime: '', // 导出表格开始时间
+        endTime: '', // 导出表格结束时间
+        modal_loading: false, // 导出表格加载
         phone: '', // 搜索手机号
         columns1: [
           {
@@ -382,9 +397,20 @@
       },
       // 导出表格
       exportData () {
-        this.$Modal.confirm({
-          content: '尚未开发',
-          onOk () {}
+        this.modal_loading = true
+        let params = {
+          startTime: this.startTime,
+          endTime: this.endTime,
+          mobileno: this.phone,
+          types: this.status
+        }
+        console.log(this.params)
+        api.exportEval(params).then((res) => {
+          console.log(res)
+          if (res) {
+            this.modal_loading = false
+            window.open(res)
+          }
         })
       },
       // 切换

@@ -6,11 +6,11 @@
 */
 <template>
   <div class="layout-header">
-    <i-row type="flex">
+    <i-row type="flex" style="min-width:1200px;">
       <i-col :span="3">
         <div class="layout-logo">菜城科技有限公司</div>
       </i-col>
-      <i-col :span="18">
+      <i-col :span="18" style="min-width:930px;">
         <Menu mode="horizontal" theme="dark" :active-name="activeName">
           <MenuItem name="home">
             <router-link to="/home">
@@ -26,25 +26,25 @@
           </MenuItem>
           <MenuItem name="seller">
             <router-link to="/seller">
-              <Icon type="settings"></Icon>
+              <Icon type="chatbox-working"></Icon>
               商家端管理
             </router-link>
           </MenuItem>
           <MenuItem name="order">
             <router-link to="/order">
-              <Icon type="settings"></Icon>
+              <Icon type="chatbox"></Icon>
               订单管理
             </router-link>
           </MenuItem>
           <MenuItem name="activity">
             <router-link to="/activity">
-              <Icon type="settings"></Icon>
+              <Icon type="help-buoy"></Icon>
               活动管理
             </router-link>
           </MenuItem>
           <MenuItem name="data">
             <router-link to="/data">
-              <Icon type="settings"></Icon>
+              <Icon type="ios-analytics"></Icon>
               数据中心
             </router-link>
           </MenuItem>
@@ -66,7 +66,7 @@
         <div class="user-info">
           <Dropdown trigger="click" @on-click="selectDown">
             <a href="javascript:void(0);">
-              {{userinfo.name}}&nbsp;
+              {{userinfo.nickname}}&nbsp;
               <Icon type="arrow-down-b"></Icon>
             </a>
             <DropdownMenu slot="list">
@@ -80,17 +80,16 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import * as api from 'api/common'
+  import * as cookie from '@/data/index'
+
   export default {
-    data () {
-      return {
-        userinfo: {
-          name: 'admin'
-        }
-      }
-    },
     computed: {
       activeName () {
         return this.$route.path.split('/')[1]
+      },
+      userinfo () {
+        return cookie.userInfo()
       }
     },
     mounted () {},
@@ -101,17 +100,10 @@
             this.$router.push('/users/' + item)
             break
           case 'logout':
-            window.sessionStorage.removeItem('user')
-            // this.$store.dispatch('loginOut')
-            let timeOut = setTimeout(() => {
-              window.location.reload()
-            }, 1500)
-            this.$Modal.success({
-              title: '退出登录提示',
-              content: '退出成功，感谢您的使用～～',
-              'on-ok': () => {
-                clearTimeout(timeOut)
-                window.location.reload()
+            api.logout().then((res) => {
+              if (res) {
+                cookie.delData('userInfo')
+                this.$router.go(0);
               }
             })
             break

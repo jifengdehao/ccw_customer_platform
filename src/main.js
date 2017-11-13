@@ -13,6 +13,8 @@ import 'common/stylus/index.styl'
 import VCharts from 'v-charts'
 import store from './store'
 import axios from 'axios'
+import * as cookie from '@/data/index'
+
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 Vue.use(iView)
@@ -20,7 +22,7 @@ Vue.use(VCharts)
 
 router.beforeEach((to, from, next) => {
   let path = to.path.substr(1)
-  let user = window.sessionStorage.getItem('user')
+  let user = cookie.userInfo()
   if (path !== 'login') {
     if (!user) {
       next('/login')
@@ -35,29 +37,7 @@ router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   next()
 })
-/*
-Vue.prototype.format = function (oDate, format) {
-  var date = {
-    'M+': oDate.getMonth() + 1,
-    'd+': oDate.getDate(),
-    'h+': oDate.getHours(),
-    'm+': oDate.getMinutes(),
-    's+': oDate.getSeconds(),
-    'q+': Math.floor((oDate.getMonth() + 3) / 3),
-    'S+': oDate.getMilliseconds()
-  }
-  if (/(y+)/i.test(format)) {
-    format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length))
-  }
-  for (var k in date) {
-    if (new RegExp('(' + k + ')').test(format)) {
-      format = format.replace(RegExp.$1, RegExp.$1.length === 1
-        ? date[k] : ('00' + date[k]).substr(('' + date[k]).length))
-    }
-  }
-  return format
-}
-*/
+
 router.afterEach((to, from, next) => {
   window.scrollTo(0, 0)
   iView.LoadingBar.finish()

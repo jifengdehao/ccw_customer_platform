@@ -6,200 +6,435 @@
  */
 <template>
   <div class="foodtemplate">
-    <!-- 表格内容 -->
-    <section class="foodtemplate-button">
-      <Button type="primary" @click="showModal">添加模板</Button>
-      <Button @click="showmoveModal">批量转移</Button>
-    </section>
-    <Table border :columns="templatecolumns" :data="templatedata"></Table>
-    <section class="foodtemplate-page">
-      <Page :total="100" show-total></Page>
-    </section>
-    <!-- 增加和编辑的模板 -->
-    <Modal v-model="templateModal" :title="templateTitle" width="600">
-      <Form :model="templateItem" ref="formItem" class="templateModal-from">
+     <!-- 搜索 -->
+    <section class="seller-template-manager-search vm-clearfix">
+      <Form :model="formItem" ref="formItem" inline class="vm-fl from">
         <FormItem>
-          <span>商品名称</span>
-          <Input size="small" style="width: 200px"></Input> <br>
-          <span>商品标签</span>
-          <Input size="small" style="width: 200px"></Input> <br>
-          <span class="label">所属分类</span>
+          <span class="label">筛选条件：</span>
           <i>一级分类</i>
-          <Select v-model="model1" size="small" style="width:100px">
-            <Option v-for="item in firstclassify" :value="item.value" :key="item.value" placeholder="一级分类">{{ item.label }}</Option>
+          <Select v-model="formItem.parentCatId" style="width:150px" @on-change="searchParent(formItem.parentCatId)">
+            <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId" placeholder="一级分类">{{ item.name }}</Option>
           </Select>
           <i>二级分类</i>
-          <Select v-model="model1" size="small" style="width:100px">
-            <Option v-for="item in secondclassify" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Select v-model="formItem.catId" style="width:150px">
+            <Option v-for="item in childdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" @click="searchtemplate(formItem)">搜索</Button>
+        </FormItem>
+      </Form>
+    <!-- 表格内容 -->
+    <div class="vm-fr">
+      <Button type="primary" @click="showModal">添加模板</Button>
+      <Button @click="showmoveModal">批量转移</Button>
+      <Button @click="saveSort">保存顺序调整</Button>
+    </div>
+     </section>
+     <!-- 表格 -->
+    <section>
+      <table class="table">
+        <tbody>
+          <tr>
+            <th v-for="(tab,index) in templatecolumns" :key="index" :width="tab.style">{{ tab.title }}</th>
+            <th>全选
+              <Checkbox v-model="Allsingle" @on-change="clickAll"></Checkbox>
+            </th>
+          </tr>
+        </tbody>
+      </table>
+          <draggable @update="datadragEnd"  v-model="templatedata">
+            <div v-for="(data,index) in templatedata" :key="index" class="draggable vm-clearfix">
+                <div style="width:25%">
+                  <span>{{data.name}}</span>
+                </div>
+                <div style="width:30%"> 
+                  <p v-for="(item,index) in 1" :key="index" class="tabImg">
+                    <img src="http://h.hiphotos.baidu.com/image/h%3D300/sign=955e34f3eafe9925d40c6f5004a85ee4/d53f8794a4c27d1e7d6c17f211d5ad6eddc438b9.jpg" alt="" class="tabImg">
+                  </p>
+                </div>    
+                <div style="width:30%">
+                  <Button type="warning" @click="modfiyTemplate(index)">修改模板</Button>
+                </div>
+                <div style="width:15%">
+                  <!-- <input type="checkbox" v-modal="data.check"  @click="clickCheck(index)"> -->
+                  <Checkbox v-model="data.single" ></Checkbox>
+                </div>
+              </div>
+          </draggable>
+    </section>
+     <!-- 分页 -->
+    <!-- <section class="foodtemplate-page">
+      <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
+    </section> -->
+    <!-- 增加和编辑的模板 -->
+    <Modal v-model="templateModal" :title="templateTitle" width="900" @on-ok="addtemplate(templateItem)">
+      <Form :model="templateItem" ref="templateItem" class="templateModal-from">
+        <FormItem>
+          <span>商品名称</span>
+          <Input v-model="templateItem.name" :value="templateItem.name" size="small" style="width: 200px"></Input> <br>
+          <span>商品标签</span>
+          <Input v-model="templateItem.labels" :value="templateItem.labels" size="small" style="width: 200px"></Input> <br>
+          <span class="label">所属分类</span>
+          <i>一级分类</i>
+          <Select v-model="templateItem.spCategoryParentId" :value="templateItem.spCategoryParentId" size="small" style="width:100px" @on-change="searchParent(templateItem.spCategoryParentId)">
+            <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId" placeholder="一级分类">{{ item.name }}</Option>
+          </Select>
+          <i>二级分类</i>
+          <Select v-model="templateItem.spCategoryId" :value="templateItem.spCategoryId" size="small" style="width:100px">
+            <Option v-for="item in childdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
           </Select> <br>
           <span>图片</span>
-          <ul>
-            <li class="templateModal-from-img"><img src="" alt=""></li>
-            <li class="templateModal-from-img"><img src="" alt=""></li>
-            <li class="templateModal-from-img"><img src="" alt=""></li>
-          </ul> <br>
+          <update-pic v-model="templateItem.mainPic" :imgList="templateItem.mainPic" class="mainpic"></update-pic>
+           <br>
           <span>图片库</span>
-          <ul>
-            <li class="templateModal-from-img"><img src="" alt=""></li>
-            <li class="templateModal-from-img"><img src="" alt=""></li>
-            <li class="templateModal-from-img"><img src="" alt=""></li>
-            <li class="templateModal-from-img"><img src="" alt=""></li>
-          </ul> <br>
+          <update-pic v-model="templateItem.picLib" :imgList="templateItem.picLib" class="mainpic"></update-pic>
+          <br>
           <span>产地默认值</span>
-          <Input size="small" style="width: 200px"></Input> <br>
+          <Input v-model="templateItem.originPlace" :value="templateItem.originPlace" size="small" style="width: 200px"></Input> <br>
           <span>产品规格</span>
-          <table border="1" class="templateModal-table">
+          <table class="templateModal-table">
             <tr>
               <td>
                 <h4>重量单位</h4>
               </td>
-              <td>
-                <Input type="text" style="width:100px" size="small"></Input>
-                <Button size="small">删除</Button>
+              <td v-model="templateItem.weightUnit" v-for="(weightitem,index) in templateItem.weightUnit" :key="index">
+                <Select size="small" style="width:80px" v-model="weightitem.attributeCode" :value="weightitem.attributeCode">
+                  <Option v-for="item in weightdata" :value="item.code" :key="item.code">{{ item.name }}</Option>
+                </Select>
+                <Button size="small" type="error" @click="delWeight(index)">删除</Button>
               </td>
               <td>
-                <Button size="small">增加</Button>
+                <Button size="small" @click="addWeight">增加</Button>
               </td>
             </tr>
             <tr>
               <td>
                 <h4>重量属性</h4>
               </td>
-              <td>
-                <Input type="text" style="width:100px" size="small"></Input>
-                <Button size="small">删除</Button>
+              <td  v-model="templateItem.packAttr" v-for="(item,index) in  templateItem.packAttr" :key="index">
+                <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" :value="item.attributeValue"></Input>
+                <Button size="small" type="error" @click="delweightAttribute(index)">删除</Button>
               </td>
               <td>
-                <Button size="small">增加</Button>
+                <Button size="small" @click="addWeightAttribute">增加</Button>
               </td>
             </tr>
-          </table> <br>
-          <span>商品属性</span>
-          <table border="1" class="templateModal-table">
             <tr>
-              <td>
-                <h4>重量单位</h4>
+               <td>
+                <h4>商品属性</h4>
+              </td>
+              <td v-model="templateItem.productAttr" v-for="(item,index) in templateItem.productAttr" :key="index">
+                <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" :value="item.attributeValue"></Input>
+                <Button size="small" type="error" @click="delcommodityAttribute(index)">删除</Button>
               </td>
               <td>
-                <Input type="text" style="width:100px" size="small"></Input>
-                <Button size="small">删除</Button>
-              </td>
-              <td>
-                <Button size="small">增加</Button>
+                <Button size="small" @click="addCommodityAttribute">增加</Button>
               </td>
             </tr>
           </table> <br>
-          <span>商详情介绍</span>
-          <ul>
-            <li class="templateModal-from-info"><img src="" alt=""></li>
-            <li class="templateModal-from-info"><img src="" alt=""></li>
-            <li class="templateModal-from-info"><img src="" alt=""></li>
-          </ul> <br>
+          <span>商品详情</span>
+          <update-pic v-model="templateItem.productDesc" :imgList="templateItem.productDesc" class="mainpic"></update-pic>          
         </FormItem>
       </Form>
     </Modal>
-    <Modal v-model="moveModal" title="移动至分类">
-      <i>一级分类</i>
-      <Select v-model="model1" size="small" style="width:100px">
-        <Option v-for="item in firstclassify" :value="item.value" :key="item.value" placeholder="一级分类">{{ item.label }}</Option>
-      </Select>
-      <i>二级分类</i>
-      <Select v-model="model1" size="small" style="width:100px">
-        <Option v-for="item in secondclassify" :value="item.value" :key="item.value">{{ item.label }}</Option>
-      </Select> <br>
+    <Modal v-model="moveModal" title="移动至分类" @on-ok="movetemplate(formItem)" class="vm-clearfix">
+     <Form :model="formItem" ref="formItem" inline class="vm-fl from">
+        <FormItem>
+          <span class="label">筛选条件：</span>
+          <i>一级分类</i>
+          <Select v-model="formItem.parentCatId" style="width:150px" @on-change="searchParent(formItem.parentCatId)">
+            <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId" placeholder="一级分类">{{ item.name }}</Option>
+          </Select>
+          <i>二级分类</i>
+          <Select v-model="formItem.catId" style="width:150px" @on-change="searchChild(formItem.catId)">
+            <Option v-for="item in childdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
+          </Select>
+        </FormItem>
+      </Form>
+    </Modal>
+    <Modal v-model="sortModal" title="保存排序" @on-ok="saveSorts">
+      <h2>确定保存位置调整？</h2>
     </Modal>
   </div>
 </template>
 <script>
+import draggable from 'vuedraggable'
+import * as api from 'api/common.js'
+import updatePic from './updatePIc'
+// import uploadpic from './uploadpic'
 export default {
-  props: {},
+  props: ['parentdata'],
+  components: {
+    draggable,
+    updatePic
+    // uploadpic
+  },
   data() {
     return {
-      model1: '',
-      firstclassify: [],
-      secondclassify: [],
-      templateItem: {},
+      total: 1,
+      section: [],
+      formItem: {},
+      childdata: [],
+      weightdata: [],
+      specification: [
+        {
+          attributeType: 1
+        },
+        {
+          attributeType: 2
+        },
+        {
+          attributeType: 3
+        }
+      ], // 商品属性
+      templateItem: {
+        name: '',
+        labels: '',
+        spCategoryParentId: 0,
+        spCategoryId: 0,
+        mainPic: [],
+        picLib: [],
+        originPlace: '',
+        weightUnit: [{ attributeType: 1 }],
+        packAttr: [{ attributeType: 2 }],
+        productAttr: [{ attributeType: 3 }],
+        productDesc: []
+      },
       templateModal: false,
       moveModal: false,
+      sortModal: false,
+      Allsingle: false,
       templateTitle: '',
       templatecolumns: [
         {
-          type: 'index',
-          width: 60,
-          align: 'center'
-        },
-        {
-          title: '三级列表',
-          key: 'name'
+          title: '商品名称',
+          key: 'name',
+          style: '25%'
         },
         {
           title: '图片',
-          key: 'age'
+          key: 'mainPic',
+          style: '30%'
         },
         {
           title: '模板',
           key: 'operation',
-          width: 140,
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'warning',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.templateTitle = '修改模板'
-                    this.templateModal = true
-                  }
-                }
-              }, '修改模板')
-            ])
-          }
-        },
-        {
-          type: 'selection',
-          width: 60,
-          align: 'center'
+          style: '30%'
         }
       ],
-      templatedata: []
+      templatedata: [],
+      table: {
+        hasDragged: false,
+        isDragging: false
+      }
     }
   },
-  // created: {},
-  // mounted: {},
-  activited: {},
-  update: {},
+  created() {
+    let params = {
+      types: 'weight_unit'
+    }
+    api.getPlatformDict(params).then(response => {
+      this.weightdata = response
+    })
+  },
   methods: {
+    datadragEnd(el) {
+      this.templatedata.forEach((item, index) => {
+        item.idx = index + 1
+      })
+      this.$Message.success('拖拽完成')
+    },
+    // 增加模板按钮
     showModal() {
+      this.templateItem = {
+        name: '',
+        labels: '',
+        spCategoryParentId: 0,
+        spCategoryId: 0,
+        mainPic: [],
+        picLib: [],
+        originPlace: '',
+        weightUnit: [{ attributeType: 1 }],
+        packAttr: [{ attributeType: 2 }],
+        productAttr: [{ attributeType: 3 }],
+        productDesc: []
+      }
       this.templateTitle = '增加商品模板'
+      this.templateModal = true
+    },
+    // 修改模板按钮
+    modfiyTemplate(index) {
+      let spTemplateId = this.templatedata[index].spTemplateId
+      this.templateTitle = '修改商品模板'
+      api.getProductTemplate(spTemplateId).then(response => {
+        this.templateItem = response
+        this.specification = response.specification
+      })
       this.templateModal = true
     },
     showmoveModal() {
       this.moveModal = true
+    },
+    // 保存排序按钮
+    saveSort() {
+      this.sortModal = true
+    },
+    saveSorts() {
+      let params = {
+        templateList: this.templatedata
+      }
+      api.sortPlatformDict(params).then(response => {
+        this.$Message.success('批量修改成功')
+      })
+    },
+    // 选中父级  触发事件获取到子级分类
+    searchParent(spCategoryId) {
+      this.spCategoryParentId = spCategoryId
+      let params = {
+        parentId: spCategoryId
+      }
+      api.getProductCategory(params).then(response => {
+        this.childdata = response
+      })
+    },
+    // 选中子分类
+    searchChild(catId) {
+      this.spCategoryId = catId
+    },
+    // 搜索
+    searchtemplate(formItem) {
+      api.getProductTemplateList(formItem).then(response => {
+        this.templatedata = response
+      })
+    },
+    // 添加，修改模板
+    addtemplate(templateItem) {
+      templateItem.specification = this.specification
+      if (this.templateTitle === '增加商品模板') {
+        api.addProductTemplate(templateItem).then(response => {
+          this.$Message.success('添加成功')
+        })
+      } else if (this.templateTitle === '修改商品模板') {
+        api
+          .modifyProductTemplate(templateItem, templateItem.spTemplateId)
+          .then(response => {
+            this.$Message.success('修改成功')
+          })
+      }
+    },
+    // 增加重量单位
+    addWeight() {
+      let weight = {
+        attributeType: 1
+      }
+      this.templateItem.weightUnit.push(weight)
+    },
+    // 增加重量属性{}
+    addWeightAttribute() {
+      let weightAttr = {
+        attributeType: 2
+      }
+      this.templateItem.packAttr.push(weightAttr)
+    },
+    // 增加商品属性
+    addCommodityAttribute() {
+      let commodityAttribute = {
+        attributeType: 3
+      }
+      this.templateItem.productAttr.push(commodityAttribute)
+    },
+    // 批量选择
+    SelectedData(section) {
+      this.section = section
+    },
+    // 删除重量单位
+    delWeight(index) {
+      this.templateItem.weightUnit.splice(index, 1)
+    },
+    // 删除重量属性
+    delweightAttribute(index) {
+      this.templateItem.packAttr.splice(index, 1)
+    },
+    // 删除商品属性
+    delcommodityAttribute(index) {
+      this.templateItem.productAttr.splice(index, 1)
+    },
+    // 批量移动分类
+    movetemplate(formItem) {
+      let params = {
+        spCategoryId: formItem.catId,
+        spCategoryParentId: formItem.parentCatId,
+        templateList: this.checkedData
+      }
+      api.sortPlatformDict(params).then(response => {
+        this.$Message.success('批量修改成功')
+      })
+    },
+    // 全选
+    clickAll() {
+      if (this.Allsingle) {
+        this.templatedata.forEach(item => {
+          item.single = true
+        })
+      } else {
+        this.templatedata.forEach(item => {
+          item.single = false
+        })
+      }
     }
   },
   filfter: {},
-  computed: {},
+  computed: {
+    checkedData() {
+      return this.templatedata.filter(item => {
+        return item.single === true
+      })
+    }
+  },
   watch: {}
 }
 </script>
 <style lang="css" scoped>
-.foodtemplate-button {
-  text-align: right
+.seller-template-manager-search span {
+  font-size: 16px;
+  vertical-align: middle;
 }
-
-.foodtemplate Button {
-  margin-bottom: 10px
+.foodtemplate button {
+  margin-bottom: 10px;
 }
-
+.table {
+  width: 100%;
+  line-height: 40px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f9;
+}
+.draggable {
+  font-family: verdana, arial, sans-serif;
+  font-size: 16px;
+  width: 100%;
+  color: #495060;
+  font-size: 12px;
+  margin-top: -1px;
+  padding: 5px;
+  line-height: 80px;
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  text-align: center;
+}
+.draggable div {
+  float: left;
+}
+.tabImg {
+  width: 100px;
+  height: 80px;
+  margin: 0 auto;
+  /* border: 1px solid #eeeeee; */
+}
 .templateModal-from span {
   display: inline-block;
   width: 80px;
-  vertical-align: top
+  vertical-align: top;
 }
 
 .templateModal-from ul {
@@ -220,13 +455,11 @@ export default {
   float: left;
 }
 
-.foodtemplate .foodtemplate-page {
-  margin-top: 10px;
-  float: right;
-}
-
 .templateModal-from-info {
   width: 400px;
   height: 200px;
+}
+.mainpic {
+  display: inline-block;
 }
 </style>

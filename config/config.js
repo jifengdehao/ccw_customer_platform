@@ -5,10 +5,7 @@
  * 功能模块:服务器api地址
  */
 let config = {
-  // env: Env,
-  //apiDomain:'/api',
-  // apiDomain: 'http://192.168.0.203:8091',
   apiDomain: 'http://192.168.0.158:8093',
   imgUpload: ''
-};
+}
 export default config

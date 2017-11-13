@@ -17,7 +17,7 @@
     <Row>
       <Col span="24">
       <Tabs :value="this.types" :animated="false" @on-click="selectTab">
-        <Tab-pane label="用户端" name="0">
+        <Tab-pane label="商户端" name="0">
           <Table :columns="columns" :data="data" :loading="loading"></Table>
           <Page :total="tableTotal"
                 :current="curr"
@@ -27,7 +27,7 @@
                 class="vm-fr mt20">
           </Page>
         </Tab-pane>
-        <Tab-pane label="商户端" name="1">
+        <Tab-pane label="用户端" name="1">
           <Table :columns="columns" :data="data" :loading="loading"></Table>
           <Page :total="tableTotal"
                 :current="curr"
@@ -47,8 +47,19 @@
                 class="vm-fr mt20">
           </Page>
         </Tab-pane>
-        <Button type="primary" class="vm-fr" @click="exportData()" slot="extra">导出</Button>
+        <Button type="primary" class="vm-fr" @click="exportModal=true" slot="extra">导出</Button>
       </Tabs>
+      <Modal v-model="exportModal" width="300">
+        <div slot="header">导出表格</div>
+        <div class="vm-textCenter">
+          <DatePicker type="date" placeholder="选择日期" style="width: 100%" v-model="startTime"></DatePicker>
+          <div class="mtb10">到</div>
+          <DatePicker type="date" placeholder="选择日期" style="width: 100%" v-model="endTime"></DatePicker>
+        </div>
+        <div slot="footer">
+          <Button type="primary" long :loading="modal_loading" @click="exportData()">确定</Button>
+        </div>
+      </Modal>
       </Col>
     </Row>
   </div>
@@ -65,7 +76,11 @@
         tableTotal: 0, // 数据总数
         types: 0, // 评价类型
         phone: '', // 手机号
-        loading: true,
+        loading: true, // 表格加载
+        exportModal: false, // 弹出导出表格
+        startTime: '', // 导出表格开始时间
+        endTime: '', // 导出表格结束时间
+        modal_loading: false, // 导出表格加载
         columns: [
           {
             title: '用户ID',
@@ -148,13 +163,30 @@
         this.types = name
         this.getFeedbackListData()
       },
-      exportData () {},
+      exportData () {
+        this.modal_loading = true
+        let params = {
+          startTime: this.startTime,
+          endTime: this.endTime,
+          types: this.types,
+          mobileno: this.mobileno
+        }
+        console.log(params)
+        api.exportFeedback(params).then((res) => {
+          if (res) {
+            this.modal_loading = false
+            console.log(res)
+            window.location.href = res
+          }
+        })
+      },
       getFeedbackListData () {
         let params = {
           pageSize: this.pageNum,
           types: this.types,
           mobileno: this.phone
         }
+        console.log(params)
         api.getFeedBackList(params, this.curr).then((res) => {
           console.log(res)
           if (res) {

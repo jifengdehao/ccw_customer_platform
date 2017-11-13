@@ -8,7 +8,7 @@
   <div class="seller-message-remind">
     <!-- 表格内容 -->
     <section class="seller-message-remind-tab">
-      <Tabs type="card" :animated="false" @on-click="">
+      <Tabs type="card" :animated="false"  @on-click="changeTable">
         <TabPane v-for="tab in tabs" key :label="tab.title">
           <Table :columns="remindColumns" :data="remindData"></Table>
         </TabPane>
@@ -22,6 +22,7 @@
 </template>
 <script>
 import * as api from 'api/common.js'
+import * as date from '@/until/time'
 export default {
   components: {},
   props: {},
@@ -29,22 +30,24 @@ export default {
     return {
       datavalue: true,
       total: 1,
+      current: 0,
       pageSize: 1,
       status: '待处理',
       tabs: [{ title: '待处理' }, { title: '已处理' }, { title: '全部' }],
       remindColumns: [
         {
           title: '序号',
-          key: 'id',
-          width: 60
+          type: 'index',
+          width: 60,
+          align: 'center'
         },
         {
           title: '类型',
-          key: 'type'
+          key: 'assistantType'
         },
         {
           title: '商户账号',
-          key: 'sellerId'
+          key: 'msSellerId'
         },
         {
           title: '商户手机号',
@@ -52,11 +55,14 @@ export default {
         },
         {
           title: '商户账号状态',
-          key: 'sellertatus'
+          key: 'sellerStatus'
         },
         {
           title: '提交日期',
-          key: 'submitTime'
+          key: 'createdAt',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.createdAt)
+          }
         },
         {
           title: '操作',
@@ -68,7 +74,7 @@ export default {
                 'Button',
                 {
                   props: {
-                    type: params.row.status === 0 ? 'info' : 'disabled',
+                    type: 'info',
                     size: 'small',
                     disabled: params.row.status === 0 ? null : true
                   },
@@ -78,6 +84,10 @@ export default {
                   on: {
                     click: index => {
                       params.row.status = 1
+                      this.updateAlertsMessage(
+                        params.row.msAssistantId,
+                        params.row.status
+                      )
                     }
                   }
                 },
@@ -87,14 +97,12 @@ export default {
           }
         }
       ],
-      remindData: [
-        { id: 1, type: '找回密码', sellerId: 'ABC123', status: 0 },
-        { type: '找回密码', status: 0 },
-        { sellerId: 'ABC123', sellertatus: '营业中', status: 0 }
-      ]
+      remindData: []
     }
   },
-  // created: {},
+  created() {
+    this.getAlertsMessageList(1, 5, 0)
+  },
   // mounted: {},
   activited: {},
   update: {},
@@ -102,11 +110,11 @@ export default {
     // 获取消息提醒列表
     getAlertsMessageList(pageNo, pageSize, status) {
       let params = {
-        pageNo: pageNo,
         pageSize: pageSize,
         status: status
       }
-      api.getAlertsMessageList(params).then(response => {
+      api.getAlertsMessageList(params, pageNo).then(response => {
+        console.log(response)
         this.remindData = response.records
         this.total = response.total
         this.pageSize = response.size
@@ -115,12 +123,30 @@ export default {
     // 更新消息提醒状态
     updateAlertsMessage(id, status) {
       let params = {
-        stasus: status
+        status: status
       }
       api.updateAlertsMessage(params, id).then(response => {})
     },
+    // 切换tab
+    changeTable(index) {
+      this.current = index
+      if (index === 0) {
+        this.getAlertsMessageList(1, 5, 0)
+      } else if (index === 1) {
+        this.getAlertsMessageList(1, 5, 1)
+      } else if (index === 2) {
+        this.getAlertsMessageList(1, 5)
+      }
+    },
+    // 分页切换
     changepage(index) {
-      console.log(index)
+      if (this.current === 0) {
+        this.getAlertsMessageList(index, 5, 0)
+      } else if (this.current === 1) {
+        this.getAlertsMessageList(index, 5, 1)
+      } else if (this.current === 2) {
+        this.getAlertsMessageList(index, 5)
+      }
     }
   },
   filfter: {},
