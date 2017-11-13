@@ -56,7 +56,7 @@
               <tr v-for="data in bannerData" :key="data.id">
                 <td>{{ data.position }}</td>
                 <td>{{ data.remark }}</td>
-                <td>{{ formatDateTime(data.updateAt) }}</td>
+                <td>{{ formatDateTime(data.startTime) }}</td>
                 <td>{{ formatDateTime(data.endTime) }}</td>
                 <td><Button type="primary" @click="seeModal(data)">查看</Button></td>
               </tr>
@@ -154,7 +154,7 @@ export default {
           style: '20%'
         },
         {
-          key: '更新时间',
+          key: '开始时间',
           style: '20%'
         },
         {
