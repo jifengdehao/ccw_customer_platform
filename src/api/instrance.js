@@ -16,7 +16,8 @@ var ax = axios.create({
   timeout: 30000,
   withCredentials: true, // 跨域携带证书
   headers: {
-    'Content-Type': 'application/json;charset=utf-8'
+    // 'Content-Type': 'application/x-www-form-urlencoded',
+    CCWTOKEN: ''
   }
 })
 

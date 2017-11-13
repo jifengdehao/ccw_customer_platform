@@ -66,7 +66,7 @@
         <div class="user-info">
           <Dropdown trigger="click" @on-click="selectDown">
             <a href="javascript:void(0);">
-              {{userinfo.name}}&nbsp;
+              {{userinfo.nickname}}&nbsp;
               <Icon type="arrow-down-b"></Icon>
             </a>
             <DropdownMenu slot="list">
@@ -80,17 +80,16 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import * as api from 'api/common'
+  import * as cookie from '@/data/index'
+
   export default {
-    data () {
-      return {
-        userinfo: {
-          name: 'admin'
-        }
-      }
-    },
     computed: {
       activeName () {
         return this.$route.path.split('/')[1]
+      },
+      userinfo () {
+        return cookie.userInfo()
       }
     },
     mounted () {},
@@ -101,17 +100,10 @@
             this.$router.push('/users/' + item)
             break
           case 'logout':
-            // window.sessionStorage.removeItem('user')
-            this.$store.dispatch('loginOut')
-            let timeOut = setTimeout(() => {
-              window.location.reload()
-            }, 1500)
-            this.$Modal.success({
-              title: '退出登录提示',
-              content: '退出成功，感谢您的使用～～',
-              'on-ok': () => {
-                clearTimeout(timeOut)
-                window.location.reload()
+            api.logout().then((res) => {
+              if (res) {
+                cookie.delData('userInfo')
+                this.$router.go(0);
               }
             })
             break

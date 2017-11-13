@@ -13,6 +13,7 @@ import 'common/stylus/index.styl'
 import VCharts from 'v-charts'
 import store from './store'
 import axios from 'axios'
+import * as cookie from '@/data/index'
 
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
@@ -21,9 +22,7 @@ Vue.use(VCharts)
 
 router.beforeEach((to, from, next) => {
   let path = to.path.substr(1)
-  let user = JSON.parse(sessionStorage.getItem('user'))
-  // let user = store.getters.getUser
-  console.log(user)
+  let user = cookie.userInfo()
   if (path !== 'login') {
     if (!user) {
       next('/login')
