@@ -5,7 +5,7 @@
  * 功能模块:服务器api地址
  */
 let config = {
-  apiDomain: 'http://192.168.0.158:8093',
+  apiDomain: 'http://192.94.0.158:8093',
   imgUpload: ''
 }
 export default config
