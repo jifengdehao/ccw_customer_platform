@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       modal: false,
-      upList: this.imgList,
+      upList: [],
       ossInfo: {},
       name: '',
       url: '',
@@ -54,7 +54,7 @@ export default {
       var xmlhttp = new XMLHttpRequest()
       xmlhttp.open(
         'GET',
-        'http://192.168.0.112:8080/stsToken/roleSessionName',
+        'http://192.168.0.158:8097/stsToken/roleSessionName',
         false
       )
       xmlhttp.setRequestHeader('Content-type', 'application/json;charset=UTF-8')
