@@ -13,6 +13,10 @@ export const uploadUrl = ax.uploadUrl
 export const getIndexData = params => {
   return ax.g('/platform/index', params)
 }
+// 获取菜单
+export const getMemuData = params => {
+  return ax.g('/platform/menu/list', params)
+}
 
 /** 用户登录登出，个人信息，修改密码 首页 start**/
 

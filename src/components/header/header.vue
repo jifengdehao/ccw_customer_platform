@@ -81,9 +81,14 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common'
- // import * as cookie from '@/data/index'
+  // import * as cookie from '@/data/index'
 
   export default {
+    data () {
+      return {
+        menu: []
+      }
+    },
     computed: {
       activeName () {
         return this.$route.path.split('/')[1]
@@ -93,7 +98,9 @@
         return JSON.parse(sessionStorage.getItem('user'))
       }
     },
-    mounted () {},
+    created () {
+      this.getMenuData()
+    },
     methods: {
       selectDown (item) {
         switch (item) {
@@ -104,11 +111,24 @@
             api.logout().then((res) => {
               if (res) {
                 // cookie.delData('userInfo')
-                this.$router.go(0);
+                this.$router.go(0)
               }
             })
             break
         }
+      },
+      getMenuData () {
+        api.getMemuData().then((res) => {
+          if (res) {
+            console.log(res)
+           // let menuIcon = ['ios-paper', 'ios-people', 'chatbox-working', 'chatbox', 'help-buoy', 'ios-analytics', 'settings', 'ios-people']
+            this.menu = res.map((item) => {
+              return {name: item.menuName}
+            })
+
+            console.log(this.menu)
+          }
+        })
       }
     }
   }
