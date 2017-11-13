@@ -306,6 +306,13 @@ const User = resolve => {
   })
 }
 
+// 查看个人权限列表
+const userList = resolve => {
+  import('page/users/seeUserlist').then(module => {
+    resolve(module)
+  })
+}
+
 export default [
   {
     path: '/',
@@ -368,7 +375,8 @@ export default [
           { path: 'users_manage', component: UsersManage },
           { path: 'users_jurisdiction', component: UsersJurisdiction },
           { path: 'users_log', component: UsersLog },
-          { path: 'user', component: User }
+          { path: 'user', component: User },
+          { path: 'seeUserlist', component: userList }
         ]
       },
       {

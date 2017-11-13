@@ -13,6 +13,7 @@
   "dependencies": {
     "ali-oss": "^4.11.2",
     "axios": "^0.16.2",
+    "co": "^4.6.0",
     "install": "^0.10.1",
     "iview": "^2.4.0",
     "jsonp": "^0.2.1",

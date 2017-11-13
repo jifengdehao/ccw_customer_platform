@@ -612,3 +612,18 @@ export const getAddUser = params => {
 export const getpaltformUserChange = params => {
   return ax.pa('/platform/user/changeState', params)
 }
+
+// 平台用户导出用户数据/platform/user/export
+export const getUserExport = (params) => {
+  return ax.g('/platform/user/export', params)
+}
+
+// 平台用户权限管理列表/platform/permission/list/
+export const getPlatformPermissionList = (id, params) => {
+  return ax.g(`/platform/permission/list/${id}`, params)
+}
+
+// 平台用户权限管理查看列表/platform/permission/
+export const getTreeList = (id) => {
+  return ax.g(`/platform/permission/${id}`)
+}

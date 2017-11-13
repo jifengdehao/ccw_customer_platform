@@ -11,7 +11,7 @@
           <Table border stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
         </TabPane>
          <Page v-if="userDate && userDate.length > 0" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
-        <Button type="primary" style="margin-right: 7px;" slot="extra" size="large" @click="exportModal=true">
+        <Button type="primary" style="margin-right: 7px;" slot="extra" size="large" @click="onExportModal">
           <Icon type="ios-download-outline"></Icon> 导出</Button>
         <Button type="ghost" size="large" slot="extra" @click="onShowUser" v-if="addHidden">增加</Button>
       </Tabs>
@@ -19,12 +19,12 @@
     <!-- 导出数据弹框start -->
     <Modal v-model="exportModal" width="300">
       <div class="vm-textCenter">
-        <DatePicker type="date" placeholder="选择日期" style="width: 100%"></DatePicker>
+        <DatePicker type="date" placeholder="选择日期" v-model="startTime" style="width: 100%"></DatePicker>
         <div class="mtb10">到</div>
-        <DatePicker type="date" placeholder="选择日期" style="width: 100%"></DatePicker>
+        <DatePicker type="date" placeholder="选择日期" v-model="endTime" style="width: 100%"></DatePicker>
       </div>
       <div slot="footer">
-        <Button type="primary" long :loading="modal_loading" @click="getExportData()">确定</Button>
+        <Button type="primary" long @click="getExportData()">确定</Button>
       </div>
     </Modal>
     <!-- 导出数据弹框end -->
@@ -88,7 +88,8 @@ export default {
       pageNo: 1, // 分页参数，表示当前页
       total: '', // 总页数
       exportModal: false, // 显示弹出弹框
-      modal_loading: false, // 确定显示loading导出 图
+      startTime: '', // 获取导出开始时间
+      endTime: '', // 获取导出结束时间
       showUser: false, // 显示查看用户弹框
       checkUser: false, // 查看用户弹框
       userFrozen: false, // 冻结用户弹框
@@ -105,8 +106,7 @@ export default {
         // title 信息数据
         {
           title: '用户Id',
-          key: 'ptUserId',
-          width: '110'
+          key: 'ptUserId'
         },
         {
           title: '昵称',
@@ -120,14 +120,14 @@ export default {
           title: '邮箱',
           key: 'email'
         },
-        {
-          title: '最后一次登录时间',
-          key: 'lastLoginTime'
-        },
-        {
-          title: '最后一次登录IP',
-          key: 'lastLoginIp'
-        },
+        // {
+        //   title: '最后一次登录时间',
+        //   key: 'lastLoginTime'
+        // },
+        // {
+        //   title: '最后一次登录IP',
+        //   key: 'lastLoginIp'
+        // },
         {
           title: '操作',
           key: 'operation',
@@ -223,24 +223,37 @@ export default {
         userId: this.saveStatus, // 获取当前点击ID
         status: this.status // 当前所在页
       }
-      api.getpaltformUserChange(params).then(data => {})
-      this.getUserData() // 数据调用
+      api.getpaltformUserChange(params).then(data => {
+        if (data === 'true') {
+          this.getUserData() // 数据调用
+        }
+      })
     },
     // 获取当前分页
     onChange(name) {
       this.pageNo = name
       this.getUserData() // 数据调用
     },
+    // 打开导出弹框 默认清空时间
+    onExportModal() {
+      this.startTime = ''
+      this.endTime = ''
+      this.exportModal = true
+    },
+    // 导出数据
     getExportData() {
-      // 导出数据
-      this.modal_loading = true
-      setTimeout(() => {
-        this.$refs.all_order.exportCsv({
-          filename: '全部订单'
-        })
-        this.modal_loading = false
-        this.exportModal = false
-      }, 2000)
+      let params = {
+        status: this.status,
+        mobileno: this.searchMobileno,
+        startTime: this.startTime,
+        endTime: this.endTime
+      }
+      api.getUserExport(params).then(res => {
+        if (res && res != null) {
+          window.open(res)
+          this.exportModal = false
+        }
+      })
     },
     // 新增用户 打开弹框 清空默认值
     onShowUser() {

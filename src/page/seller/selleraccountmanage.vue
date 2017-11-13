@@ -357,7 +357,7 @@ export default {
         sellerId: msSellerId
       }
       api.resetPassword(params).then(response => {
-
+        this.$Message.info('重置成功')
       })
     }
   },
