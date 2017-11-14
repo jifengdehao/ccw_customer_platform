@@ -13,7 +13,7 @@ import 'common/stylus/index.styl'
 import VCharts from 'v-charts'
 import store from './store'
 import axios from 'axios'
-import * as cookie from '@/data/index'
+// import * as cookie from '@/data/index'
 
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
@@ -22,7 +22,8 @@ Vue.use(VCharts)
 
 router.beforeEach((to, from, next) => {
   let path = to.path.substr(1)
-  let user = cookie.userInfo()
+  let user = sessionStorage.getItem('user')
+  // let user = cookie.userInfo()
   if (path !== 'login') {
     if (!user) {
       next('/login')
@@ -49,5 +50,5 @@ new Vue({
   router,
   store,
   template: '<App/>',
-  components: {App}
+  components: { App }
 })

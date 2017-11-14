@@ -60,94 +60,92 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import * as api from 'api/common.js'
-  // import hash from 'js-md5'
-  import * as cookie from '@/data/index'
+import * as api from 'api/common.js'
+// import hash from 'js-md5'
+// import * as cookie from '@/data/index'
 
-  export default {
-    name: 'login',
-    data () {
-      return {
-        Code: '',
-        remember: false,
-        formLogin: {
-          userName: '',
-          password: '',
-          verificationCode: ''
-        },
-        formLoginRules: {
-          userName: [
-            {required: true, message: '请填写用户名', trigger: 'blur'}
-          ],
-          password: [
-            {required: true, message: '请填写密码', trigger: 'blur'},
-            {type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}
-          ],
-          verificationCode: [
-            {required: true, message: '请填写验证码', trigger: 'blur'}
-          ]
-        }
-      }
-    },
-    created () {
-      this.initCode()
-    },
-    mounted () {
-      if (sessionStorage.getItem('username')) {
-        this.formLogin.userName = sessionStorage.getItem('username')
-      }
-      if (sessionStorage.getItem('password')) {
-        this.formLogin.password = sessionStorage.getItem('password')
-      }
-    },
-    methods: {
-      // 登录
-      handleSubmit (name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            let params = {
-              userName: this.formLogin.userName,
-              // password: hash(this.formLogin.password),
-              password: this.formLogin.password,
-              verificationCode: this.formLogin.verificationCode
-            }
-            console.log(params)
-            api.login(params).then((res) => {
-              console.log(res)
-              if (res) {
-                cookie.setData('userInfo', JSON.stringify(res))
-                this.$router.push('/')
-              }
-            })
-//            sessionStorage.setItem('user', JSON.stringify(this.formLogin))
-//            this.$router.push('/')
-          } else {
-            this.$Notice.error({
-              title: '登录验证失败！'
-            })
-          }
-          if (this.remember) {
-            sessionStorage.setItem('username', this.formLogin.userName)
-            sessionStorage.setItem('password', this.formLogin.password)
-          }
-        })
+export default {
+  name: 'login',
+  data() {
+    return {
+      Code: '',
+      remember: false,
+      formLogin: {
+        userName: '',
+        password: '',
+        verificationCode: ''
       },
-      // 重置
-      formLoginReset (name) {
-        this.$refs[name].resetFields()
-      },
-      // 请求code 验证码
-      initCode () {
-        api.getCode().then((res) => {
-          console.log(res)
-          if (res) {
-            this.Code = res
-          }
-        })
-      },
-      refCode () {
-        this.initCode()
+      formLoginRules: {
+        userName: [{ required: true, message: '请填写用户名', trigger: 'blur' }],
+        password: [
+          { required: true, message: '请填写密码', trigger: 'blur' },
+          { type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur' }
+        ],
+        verificationCode: [
+          { required: true, message: '请填写验证码', trigger: 'blur' }
+        ]
       }
     }
+  },
+  created() {
+    this.initCode()
+  },
+  mounted() {
+    if (sessionStorage.getItem('username')) {
+      this.formLogin.userName = sessionStorage.getItem('username')
+    }
+    if (sessionStorage.getItem('password')) {
+      this.formLogin.password = sessionStorage.getItem('password')
+    }
+  },
+  methods: {
+    // 登录
+    handleSubmit(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          let params = {
+            userName: this.formLogin.userName,
+            // password: hash(this.formLogin.password),
+            password: this.formLogin.password,
+            verificationCode: this.formLogin.verificationCode
+          }
+          console.log(params)
+          // api.login(params).then((res) => {
+          //   console.log(res)
+          //   if (res) {
+          //     cookie.setData('userInfo', JSON.stringify(res))
+          //     this.$router.push('/')
+          //   }
+          // })
+          sessionStorage.setItem('user', JSON.stringify(this.formLogin))
+          this.$router.push('/')
+        } else {
+          this.$Notice.error({
+            title: '登录验证失败！'
+          })
+        }
+        if (this.remember) {
+          sessionStorage.setItem('username', this.formLogin.userName)
+          sessionStorage.setItem('password', this.formLogin.password)
+        }
+      })
+    },
+    // 重置
+    formLoginReset(name) {
+      this.$refs[name].resetFields()
+    },
+    // 请求code 验证码
+    initCode() {
+      api.getCode().then(res => {
+        console.log(res)
+        if (res) {
+          this.Code = res
+        }
+      })
+    },
+    refCode() {
+      this.initCode()
+    }
   }
+}
 </script>

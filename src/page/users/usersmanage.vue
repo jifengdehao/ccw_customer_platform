@@ -271,8 +271,12 @@ export default {
         email: this.userMailBox,
         ptUserId: this.userId
       }
-      api.getAddUser(params).then(res => {})
-      this.getUserData() // 数据调用
+      api.getAddUser(params).then(res => {
+        console.log(res, 'ssss')
+        if (res === true) {
+          this.getUserData() // 数据调用
+        }
+      })
     },
     addCancel() {}
   }

@@ -89,7 +89,8 @@
         return this.$route.path.split('/')[1]
       },
       userinfo () {
-        return cookie.userInfo()
+        // return cookie.userInfo()
+        return sessionStorage.getItem('user')
       }
     },
     mounted () {},
