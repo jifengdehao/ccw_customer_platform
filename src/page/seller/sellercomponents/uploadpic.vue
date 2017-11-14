@@ -16,6 +16,7 @@
     </div>
     <!-- 上传按钮 -->
      <div class="upload">
+       <Icon type="ios-cloud-upload-outline"></Icon>
       <input type="file" @change="doUpload">上传图片
     </div>
      <Modal
@@ -41,19 +42,18 @@ export default {
       client: {}
     }
   },
-  created() {
-    this.getOssInfo()
-  },
+  created() {},
   // mounted: {},
   activited: {},
   update: {},
   methods: {
-    // 原生ajax 获取token
-    getOssInfo() {
+    // 上传
+    doUpload(e) {
+      // 原生ajax 获取token
       var xmlhttp = new XMLHttpRequest()
       xmlhttp.open(
         'GET',
-        'http://192.168.0.112:8080/stsToken/roleSessionName',
+        'http://192.168.0.158:8097/stsToken/roleSessionName',
         false
       )
       xmlhttp.setRequestHeader('Content-type', 'application/json;charset=UTF-8')
@@ -71,9 +71,6 @@ export default {
         stsToken: this.ossInfo.securityToken,
         bucket: 'cc-tech'
       })
-    },
-    // 上传
-    doUpload(e) {
       // 获取guid
       function guid() {
         function S4() {
@@ -99,15 +96,10 @@ export default {
       var file = e.target.files[0]
       var storeAs = '/images/' + imgName + '.png'
       // 上传图片
-      this.client
-        .multipartUpload(storeAs, file)
-        .then(result => {
-          this.upList = this.upList.concat(result.res.requestUrls)
-          console.log(this.upList)
-        })
-        .catch(function(err) {
-          console.log(err)
-        })
+      this.client.multipartUpload(storeAs, file).then(result => {
+        this.upList = this.upList.concat(result.res.requestUrls)
+        this.$emit('imgurl', this.upList)
+      })
     },
     // 删除图片
     handleRemove(index) {
@@ -125,7 +117,7 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.imgbox{
+.imgbox {
   width: 100%;
   height: 100%;
   position: relative;
@@ -135,12 +127,10 @@ export default {
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 15%;
+  height: 20%;
   /* line-height: 20%; */
   cursor: pointer;
   text-align: center;
-  /* border: 1px solid #ddd; */
-  /* border-radius: 4px; */
   display: inline-block;
   *display: inline;
   *zoom: 1;
@@ -168,8 +158,8 @@ export default {
 .pic,
 .pic img {
   width: 100%;
-  height: 100%;
-  border: 1px solid #ddd;
+  height: 100px;
+  /* border: 1px solid #ddd; */
   border-radius: 4px;
   background-origin: border-box;
 }
@@ -192,7 +182,6 @@ export default {
 }
 .pic:hover .cover {
   display: block;
- 
 }
 .cover i {
   color: #fff;

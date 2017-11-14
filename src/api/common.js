@@ -239,7 +239,7 @@ export const getSellerApplyList = (params, pageNo) => {
 
 // 更新商户入驻信息审核状态
 export const updateApplyStatus = (params, id) => {
-  return ax.pa(`/seller/apply/${id}`, params)
+  return ax.g(`/seller/apply/${id}`, params)
 }
 // 获取图片资质证件
 export const getQulification = (shopId) => {
