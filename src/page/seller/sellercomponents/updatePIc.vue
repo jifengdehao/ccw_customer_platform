@@ -57,7 +57,7 @@ export default {
     },
     // 删除图片
     handleRemove(index) {
-      // [this.imgList].concat(this.upList).splice(index, 1) 
+      // [this.imgList].concat(this.upList).splice(index, 1)
     },
     // 查看大图
     handleView(url) {
