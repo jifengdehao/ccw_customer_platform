@@ -26,7 +26,7 @@
           </table>
           <draggable @update="datadragEnd" v-if="status === 0 || status === 1" v-model="bannerData">
             <tr v-for="data in bannerData" :key="data.id" class="draggable">
-                <td class="br">
+                <td class="br" style="width: 22%">
                   <img style="height: 100%" :src="data.picUrl">
                 </td>
                 <td class="br" style="width: 10%">
@@ -56,7 +56,7 @@
               <tr v-for="data in bannerData" :key="data.id">
                 <td>{{ data.position }}</td>
                 <td>{{ data.remark }}</td>
-                <td>{{ formatDateTime(data.updateAt) }}</td>
+                <td>{{ formatDateTime(data.startTime) }}</td>
                 <td>{{ formatDateTime(data.endTime) }}</td>
                 <td><Button type="primary" @click="seeModal(data)">查看</Button></td>
               </tr>
@@ -99,6 +99,7 @@
       </div>
       </TabPane>
     </Tabs>
+    <Page v-if="bannerData && bannerData.length > 0" style="margin-top: 20px; float: right;" :total="total" :current="pageNo" @on-change="onChange"></Page>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -153,7 +154,7 @@ export default {
           style: '20%'
         },
         {
-          key: '更新时间',
+          key: '开始时间',
           style: '20%'
         },
         {
@@ -170,7 +171,8 @@ export default {
       status: 0, // banner图状态（目前0、待更新1、历史更新2）
       seeBannerClose: false, // 查看banner弹框 默认关闭
       seeBannerData: [], // 保存查看banner数据
-      formData: {}
+      formData: {},
+      total: null // 总页数
     }
   },
   created: function() {
@@ -185,6 +187,7 @@ export default {
       this.bannerState = '结束' // 操作按钮变更
       this.changeTitle = this.columns1 // title数据变更
       this.saveShow = true // 保存按钮 默认显示
+      this.pageNo = 1 // 每次切换导航默认值
       this.getCurrentListData()
       switch (value) {
         case 0:
@@ -205,7 +208,6 @@ export default {
         endTime: '',
         linkUrl: '',
         startTime: '',
-        position: '',
         remark: '',
         addStatus: '1'
       })
@@ -214,11 +216,13 @@ export default {
     getCurrentListData() {
       let params = {
         status: this.status, // banner图状态（目前0、待更新1、历史更新2）
-        pageSize: this.pageSize // 分页参数，表示每页显示多少条
+        pageSize: this.pageSize, // 分页参数，表示每页显示多少条
+        pageNo: this.pageNo
       }
       api.seeBannerList(params, this.pageNo).then(data => {
         // 请求数据
         this.bannerData = data.records
+        this.total = data.total
       })
     },
     // 点击操作button 结束 删除
@@ -250,12 +254,15 @@ export default {
     // 保存修改
     getSaveChanges() {
       if (this.status === 1) {
-        console.log(this.bannerData, 'bannerData')
         this.bannerData.forEach((item, index) => {
-          console.log(item, 'item')
+          for (let i in item) {
+            if (item[i] === '') {
+              return false
+            }
+          }
+          // 调用自增 保存api
+          api.addUpdataBanner(this.bannerData).then(data => {})
         })
-        // 调用自增 保存api
-        api.addUpdataBanner(this.bannerData).then(data => {})
       } else if (this.status === 0) {
         api.addUpdataBanner(this.bannerData).then(data => {})
       }
@@ -265,6 +272,9 @@ export default {
       this.formData = new FormData()
       this.formData.append('file', e.target.files[0])
       console.log(this.formData, e)
+      api.addUpdataBanner(this.formData).then(data => {
+        console.log(data, 'data323')
+      })
     },
     // 拖拽
     datadragEnd(evt) {
@@ -289,6 +299,20 @@ export default {
         second = second < 10 ? '0' + second : second
         return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second
       }
+    },
+    // 点击分页
+    onChange(page) {
+      switch (this.status) {
+        case 0:
+          this.pageNo = page
+          break
+        case 1:
+          this.pageNo = page
+          break
+        case 2:
+          this.pageNo = page
+      }
+      this.getCurrentListData()
     }
   }
 }
@@ -389,7 +413,7 @@ table.table-banner td > input[type='file'],
   padding: 20px;
   width: calc(100% - 400px);
   position: fixed;
-  top: 50%;
+  top: 30%;
   left: 50%;
   margin-top: -140px;
   margin-left: calc(-50% + 240px);

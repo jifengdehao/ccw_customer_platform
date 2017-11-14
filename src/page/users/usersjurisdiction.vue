@@ -2,25 +2,26 @@
   <div>
     <div class="searchInput">
       <p>手机号码：</p>
-      <input type="text">
-      <Button type="primary" icon="ios-search">搜索</Button>
+      <input type="text" v-model="params.mobileno">
+      <Button type="primary" icon="ios-search" @click="onSearch">搜索</Button>
     </div>
     <div class="exportButton">
-      <button @click="exportModal=true">导出</button>
+      <button @click="onExportModal">导出</button>
     </div>
 
     <div>
-      <Table stripe :columns="columns1" :data="data1" ref="all_order"></Table>
+      <Table stripe :columns="columns1" :data="userList" ref="all_order"></Table>
     </div>
+    <Page v-if="userList && userList.length > 0" style="margin-top: 20px; float: right;" :current="pageNo" :total="total" @on-change="onChange"></Page>
     <!-- 导出数据弹框start -->
     <Modal v-model="exportModal" width="300">
       <div class="vm-textCenter">
-        <DatePicker type="date" placeholder="选择日期" style="width: 100%"></DatePicker>
+        <DatePicker type="date" placeholder="选择日期" v-model="startTime" style="width: 100%"></DatePicker>
         <div class="mtb10">到</div>
-        <DatePicker type="date" placeholder="选择日期" style="width: 100%"></DatePicker>
+        <DatePicker type="date" placeholder="选择日期" v-model="endTime" style="width: 100%"></DatePicker>
       </div>
       <div slot="footer">
-        <Button type="primary" long :loading="modal_loading" @click="getExportData()">确定</Button>
+        <Button type="primary" long @click="getExportData()">确定</Button>
       </div>
     </Modal>
     <!-- 导出数据弹框end -->
@@ -28,93 +29,125 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import * as api from 'api/common'
+
 export default {
   data() {
     return {
       userMenu: ['正常用户', '冻结用户'], // 导航 table切换数据
-      userDate: [],
       exportModal: false, // 显示弹出弹框
-      modal_loading: false, // 确定显示loading导出 图
+      startTime: '', // 导出开始时间
+      endTime: '', // 导出结束时间
+      pageNo: 1, // 当前页
+      params: {
+        pageSize: 10,
+        mobileno: '' // 手机号码
+      }, // 请求参数
       columns1: [
         {
           title: '用户Id',
-          key: 'userId',
-          width: '110'
+          key: 'ptUserId',
+          align: 'center'
         },
         {
           title: '昵称',
-          key: 'name'
+          key: 'nickname',
+          align: 'center'
         },
         {
           title: '手机号码',
-          key: 'phoneNum'
+          key: 'mobileno',
+          align: 'center'
         },
         {
           title: '邮箱',
-          key: 'mailbox'
+          key: 'email',
+          align: 'center'
         },
         {
           title: '最后一次登录时间',
-          key: 'lastSignIn'
+          key: 'lastLoginTime',
+          align: 'center'
         },
         {
           title: '最后一次登录IP',
-          key: 'IP'
+          key: 'lastLoginIp',
+          align: 'center'
         },
         {
           title: '操作',
           key: 'operation',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push(
+                        'seeUserlist/?info=' + params.row.ptUserId
+                      )
+                    }
                   }
-                }
-              }, '查看'),
-              h('Button', {
-                props: {
-                  type: 'error',
-                  size: 'small'
                 },
-                on: {
-                  click: () => {
+                '查看'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {}
                   }
-                }
-              }, '修改')
+                },
+                '修改'
+              )
             ])
           }
         }
       ],
-      data1: [
-        {
-          userId: '10086',
-          name: 'xiaocai',
-          phoneNum: '1111111111',
-          mailbox: '18883jjfnf@qq`11',
-          lastSignIn: '2017/8/16  9:35',
-          IP: '192.168.1.1'
-        }
-      ]
+      userList: [], // 列表数据
+      total: '' // 总页数
     }
   },
+  created: function() {
+    this.getPlatformPermissionList() // 初始化列表数据
+  },
   methods: {
-    getExportData() { // 导出数据
-      this.modal_loading = true
-      setTimeout(() => {
-        this.$refs.all_order.exportCsv({
-          filename: '全部订单'
-        })
-        this.modal_loading = false
-        this.exportModal = false
-      }, 2000)
+    // 查看列表数据
+    getPlatformPermissionList() {
+      api.getPlatformPermissionList(this.pageNo, this.params).then(data => {
+        this.userList = data.records
+        this.total = data.total
+      })
+    },
+    // 搜索电话号码
+    onSearch() {
+      this.getPlatformPermissionList()
+    },
+    // 打开导出弹框 默认值为空
+    onExportModal() {
+      this.startTime = ''
+      this.endTime = ''
+      this.exportModal = true
+    },
+    // 导出数据
+    getExportData() {},
+    // 分页数据
+    onChange(page) {
+      this.pageNo = page
+      this.getPlatformPermissionList()
     }
   }
 }
