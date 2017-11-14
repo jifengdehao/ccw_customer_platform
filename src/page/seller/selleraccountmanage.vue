@@ -109,23 +109,27 @@
           </Col>
           <Col span="15">
           <!-- 店铺图片 -->
-          <FormItem prop="password" class="shopMessagemModal-shopimag">
+          <FormItem prop="password" class="shopMessagemModal-shopimag"  v-model="shopMessage.shopPicUrl">
             <h3>店铺图片</h3>
-               <update-pic></update-pic>
+               <update-pic @imgurls="getshopimag" :img-list="shopMessage.shopPicUrl"></update-pic>
+               <!-- <uploadpic @imgurls="getshopimag" :img-list="shopMessage.shopPicUrl"></uploadpic>  -->
           </FormItem>
           <!-- 营业资质 -->
           <FormItem prop="password" class="shopMessagemModal-qualification">
             <h3>营业资质</h3>
             <ul>
-              <li v-for="item in 4"><img src="" alt=""><p>{{item.name}}</p> 
-                <!-- <uploadpic></uploadpic> -->
+              <li v-for="item in 4">
+                <div class="img" >
+                  <uploadpic @imgurl="getqualificationimg" :imgList="item.url"></uploadpic>
+                </div>
+                <p>{{item.name}}</p>
               </li>
             </ul>
           </FormItem>
           <!-- 协议合同 -->
-          <FormItem prop="password" class="shopMessagemModal-agreement">
+          <FormItem prop="password" class="shopMessagemModal-agreement" v-model="shopMessage.msShopQualification">
             <h3>协议合同</h3>
-            <update-pic></update-pic>
+            <update-pic @imgurls="getagreementimg" :img-list="shopMessage.msShopQualification"></update-pic>
           </FormItem>
           </Col>
         </Row>
@@ -312,7 +316,7 @@ export default {
       }
       api.updataShopStatus(params).then(response => {})
     },
-    // 商家账号管理
+    // 商家账号管理状态
     modifySellerStatus(sellerAccountData) {
       let status = sellerAccountData.status
       let remark = sellerAccountData.remark
@@ -325,13 +329,15 @@ export default {
       }
       api.getsellerInfo(params, msSellerId).then(response => {
         this.shopMessage = response
+        console.log(response)
       })
     },
     // 更新商家信息
     modifySellerInfo(shopMessage) {
+      console.log(shopMessage)
       let sellerId = shopMessage.msSellerId
       api.modifysellerInfo(shopMessage, sellerId).then(response => {
-        alert('更新成功')
+        this.$Message.info('更新成功')
       })
     },
     // 搜索
@@ -359,6 +365,22 @@ export default {
       api.resetPassword(params).then(response => {
         this.$Message.info('重置成功')
       })
+    },
+    // 获取子组件传过来的营业资质图片地址
+    // 店铺图片
+    getshopimag(msg) {
+      console.log(msg)
+      this.shopMessage.shopPicUrl = msg
+    },
+    // 营业资质
+    getqualificationimg(msg) {
+      // this.shopMessage.MsShopQualification = msg
+      this.shopMessage.msShopQualification.qualificationList.url = msg[0]
+    },
+    // 协议合同
+    getagreementimg(msg) {
+      // this.shopMessage.MsQualificationItem = msg
+      // this.shopMessage.msShopQualification.protocol = msg
     }
   },
   filfter: {},
@@ -416,31 +438,31 @@ export default {
   height: 376px;
   margin-left: 5px;
 }
-.shopMessagemModal-shopimag li {
+/* .shopMessagemModal-shopimag li {
   position: relative;
   width: 30%;
   height: 120px;
   margin: 0 6px;
   float: left;
-}
+} */
 .shopMessagemModal-qualification li {
   position: relative;
   width: 45%;
-  height: 150px;
+  height: 160px;
   /* border: 1px solid #ddd; */
   margin: 5px;
   float: left;
 }
-.shopMessagemModal-shopimag li img {
+/* .shopMessagemModal-shopimag li img {
   display: block;
   width: 150px;
   height: 120px;
   border: 1px solid #ddd;
-}
-.shopMessagemModal-qualification li img {
+} */
+.shopMessagemModal-qualification li .img {
   display: block;
   width: 200px;
-  height: 120px;
+  height: 130px;
   border: 1px solid #ddd;
 }
 .shopMessagemModal-qualification li p {
