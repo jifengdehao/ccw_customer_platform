@@ -25,17 +25,17 @@
             </tbody>
           </table>
           <draggable @update="datadragEnd" v-if="status === 0 || status === 1" v-model="bannerData">
-            <tr v-for="data in bannerData" :key="data.id" class="draggable">
+            <tr v-for="(data, index) in bannerData" :key="data.id" class="draggable">
                 <td class="br" style="width: 22%">
-                  <img style="height: 100%" :src="data.picUrl">
+                  <img style="height: 200px; width: 100%;" v-if="data.picUrl" :src="data.picUrl">
                 </td>
                 <td class="br" style="width: 10%">
-                  <input type="button" @change="onUpload" value="重新上传">
-                  <input type="file" @change="onUpload" title="上传图片" filetype="image/*">
+                  <input type="button" @change="onUpload($event, data)" value="重新上传">
+                  <input type="file"   @change="onUpload($event, data)" accept="image/*" title="上传图片" filetype="image/*">
                 </td>
-                <td class="br" style="width: 20%">
+                <td class="br link" style="width: 20%">
                   <input v-model="data.linkUrl" type="text" :value="data.linkUrl">
-                  <a :href="data.linkUrl"></a>
+                  <!-- <a target="_brank" :href="data.linkUrl"></a> -->
                 </td>
                 <td class="br" style="width: 20%">
                   <input v-model="data.remark" type="text" :value="data.remark">
@@ -44,7 +44,7 @@
                   <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px; margin-bottom: 5px;" v-model="data.startTime" :value="data.startTime"></DatePicker>
                   <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px" v-model="data.endTime" :value="data.endTime"></DatePicker>
                 </td>
-                <td style="width: 10%; border-top: 0 !important;"><Button type="error" @click="onChangButton(data)">{{ bannerState }}</Button></td>
+                <td style="width: 10%; border-top: 0 !important;"><Button type="error" @click="onChangButton(data, index)">{{ bannerState }}</Button></td>
               </tr>
           </draggable>
           <!-- 已结束start -->
@@ -85,7 +85,7 @@
                 <tr>
                   <td>{{ seeBannerData.ptBannerId }}</td>
                   <td>
-                    <img :src="seeBannerData.picUrl" alt="">
+                    <img style="width: 400px; height: 200px" :src="seeBannerData.picUrl" alt="">
                   </td>
                   <td>{{ seeBannerData.linkUrl }}</td>
                   <td>{{ seeBannerData.remark }}</td>
@@ -105,6 +105,7 @@
 <script type="text/ecmascript-6">
 import * as api from 'api/common.js'
 import draggable from 'vuedraggable'
+import { uploadpic } from 'components/upload-pic'
 
 export default {
   components: { draggable },
@@ -172,7 +173,8 @@ export default {
       seeBannerClose: false, // 查看banner弹框 默认关闭
       seeBannerData: [], // 保存查看banner数据
       formData: {},
-      total: null // 总页数
+      total: null, // 总页数
+      uploadImg: '' // 上传图片
     }
   },
   created: function() {
@@ -209,7 +211,7 @@ export default {
         linkUrl: '',
         startTime: '',
         remark: '',
-        addStatus: '1'
+        addStatus: false
       })
     },
     // 请求banner列表数据
@@ -223,21 +225,29 @@ export default {
         // 请求数据
         this.bannerData = data.records
         this.total = data.total
+        for (let i = 0; i < this.bannerData.length; i++) {
+          this.bannerImg = this.bannerData[i].picUrl
+        }
       })
     },
     // 点击操作button 结束 删除
-    onChangButton(data) {
-      this.getCurrentListData() // 调用列表数据
+    onChangButton(data, index) {
       if (this.status === 0) {
         // 点击结束
         api.endBanner(data.ptBannerId).then(data => {})
+        this.getCurrentListData() // 调用列表数据
       } else if (this.status === 1) {
         // 点击删除
         if (!data.ptBannerId) {
           // 如果为空id 不发送请求
-          return false
+          if ((this.bannerData.length - 1) < 1) {
+            return false
+          }
+          this.bannerData.splice(this.bannerData.length - 1, 1)
+        } else {
+          api.deleteBanner(data.ptBannerId).then(data => {})
+          this.getCurrentListData() // 调用列表数据
         }
-        api.deleteBanner(data.ptBannerId).then(data => {})
       }
     },
     // 查看banner弹框数据
@@ -254,33 +264,34 @@ export default {
     // 保存修改
     getSaveChanges() {
       if (this.status === 1) {
-        this.bannerData.forEach((item, index) => {
-          for (let i in item) {
-            if (item[i] === '') {
-              return false
-            }
-          }
-          // 调用自增 保存api
-          api.addUpdataBanner(this.bannerData).then(data => {})
-        })
+        // 调用自增 保存api
+        api.addUpdataBanner(this.bannerData).then(data => {})
       } else if (this.status === 0) {
         api.addUpdataBanner(this.bannerData).then(data => {})
       }
     },
     // 上传图片
-    onUpload(e) {
-      this.formData = new FormData()
-      this.formData.append('file', e.target.files[0])
-      console.log(this.formData, e)
-      api.addUpdataBanner(this.formData).then(data => {
-        console.log(data, 'data323')
+    onUpload(e, data) {
+      let url = ''
+      switch (this.status) {
+        case 0:
+          url = e.target.files[0]
+          break
+        case 1:
+          url = e.target.files[0]
+          break
+      }
+      uploadpic(url).then(res => {
+        if (res) {
+          data.picUrl = res[0]
+        }
       })
     },
     // 拖拽
     datadragEnd(evt) {
-      console.log('拖动前的索引 :' + evt.oldIndex)
-      console.log('拖动后的索引 :' + evt.newIndex)
-      console.log(this.bannerData, '22')
+      // console.log('拖动前的索引 :' + evt.oldIndex)
+      // console.log('拖动后的索引 :' + evt.newIndex)
+      // console.log(this.bannerData, '22')
     },
     // 时间格式化
     formatDateTime(inputTime) {
@@ -390,6 +401,22 @@ table.table-banner td > input[type='file'],
   position: absolute;
   left: 26px;
   opacity: 0;
+}
+
+.link {
+  position: relative;
+  margin: 10px 20px;
+}
+
+.link > a {
+  display: inline-block;
+  position: absolute;
+  left: 26px;
+  top: 103px;
+  height: 22px;
+  width: 200px;
+  text-align: center;
+  line-height: 14px;
 }
 
 .br {

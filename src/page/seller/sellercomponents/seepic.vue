@@ -43,7 +43,7 @@ export default {
   activited: {},
   update: {},
   methods: {
-    seeimg1(url) {
+    seeimg(url) {
       this.url = url
       this.modal = true
     }

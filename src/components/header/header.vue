@@ -120,7 +120,7 @@
             api.logout().then((res) => {
               if (res) {
                 cookie.delData('userInfo')
-                this.$router.go(0)
+                this.$router.go(0);
               }
             })
 //            sessionStorage.removeItem('user')

@@ -7,7 +7,7 @@
 <template>
   <div>
     <!-- 图片显示 -->
-    <div v-for="(url , index) in upList" :key="index" class="pic vm-fl">
+    <div ref="list" v-for="(url , index) in urlList" :key="index" class="pic vm-fl">
       <img :src="url" alt="">
       <div class="cover">
         <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
@@ -29,99 +29,49 @@
   </div>
 </template>
 <script>
+import { uploadpic } from '../../../until/upload'
 export default {
   components: {},
-  props: ['imgList'],
   data() {
     return {
       modal: false,
       upList: [],
       ossInfo: {},
-      name: '',
       url: '',
       client: {}
     }
   },
-  created() {
-    this.getOssInfo()
+  created() {},
+  mounted() {},
+  updated() {
+    //
   },
-  // mounted: {},
   activited: {},
-  update: {},
   methods: {
-    // 原生ajax 获取token
-    getOssInfo() {
-      var xmlhttp = new XMLHttpRequest()
-      xmlhttp.open(
-        'GET',
-        'http://192.168.0.158:8097/stsToken/roleSessionName',
-        false
-      )
-      xmlhttp.setRequestHeader('Content-type', 'application/json;charset=UTF-8')
-      xmlhttp.send()
-      if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-        this.ossInfo = JSON.parse(xmlhttp.response).data
-      }
-      // 初始化数据
-      var OSS = require('ali-oss')
-      // 上传图片初始化
-      this.client = new OSS.Wrapper({
-        region: 'oss-cn-shenzhen',
-        accessKeyId: this.ossInfo.accessKeyId,
-        accessKeySecret: this.ossInfo.accessKeySecret,
-        stsToken: this.ossInfo.securityToken,
-        bucket: 'cc-tech'
-      })
-    },
-    // 上传
     doUpload(e) {
-      // 获取guid
-      function guid() {
-        function S4() {
-          return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
-        }
-        return (
-          S4() +
-          S4() +
-          '-' +
-          S4() +
-          '-' +
-          S4() +
-          '-' +
-          S4() +
-          '-' +
-          S4() +
-          S4() +
-          S4()
-        )
-      }
-      // 根据guid命名图片的名字
-      var imgName = guid()
       var file = e.target.files[0]
-      var storeAs = '/images/' + imgName + '.png'
-      // 上传图片
-      this.client
-        .multipartUpload(storeAs, file)
-        .then(result => {
-          this.upList = this.upList.concat(result.res.requestUrls)
-          console.log(this.upList)
-        })
-        .catch(function(err) {
-          console.log(err)
-        })
+      uploadpic(file).then(res => {
+        this.upList = this.upList.concat(res)
+        this.$emit('imgurls', [this.imgList].concat(this.upList))
+      })
     },
     // 删除图片
     handleRemove(index) {
-      this.upList.splice(index, 1)
+      // [this.imgList].concat(this.upList).splice(index, 1)
     },
     // 查看大图
     handleView(url) {
+      // console.log(this.urlList)
       this.url = url
       this.modal = true
     }
   },
   filfter: {},
-  computed: {},
+  computed: {
+    urlList() {
+      return [this.imgList].concat(this.upList)
+    }
+  },
   watch: {}
 }
 </script>
