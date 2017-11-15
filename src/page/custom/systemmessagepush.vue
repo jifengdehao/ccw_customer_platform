@@ -18,19 +18,19 @@
     </div>
     <textarea v-if="routerName !== 'daily_menu_push'" :disabled="isAbled"  :placeholder="'请输入'+tipsMsg + '推送内容'" v-model="params.content"></textarea>
     <!-- 每日菜谱 -->
-    <div class="cookbook" v-else>
+    <div class="cookbook" v-if="routerName === 'daily_menu_push'">
       <h3>食材：</h3>
       <textarea placeholder="请输入你要推送菜谱的食材" v-model="params.ingredient"></textarea>
       <h3>烹饪方法：</h3>
       <textarea placeholder="请输入你要推送菜谱的烹饪方法" v-model="params.cookStep"></textarea>
-      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" ><input type="button" value="上传图片"><input type="file" filetype="image/*"></p>
+      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" :disabled="isAbled" :readonly="isReadOnly" v-model="params.picUrl"><input type="button" value="上传图片" :disabled="isAbled"><input type="file" filetype="image/*" @change="toUpfile"></p>
     </div>
     <!-- 每日菜谱 -->
 
     <!-- 活动消息 -->
     <div class="cookbook" v-if="routerName === 'activity_message_push'">
       <p><input type="text" class="activity-link" placeholder="设置活动链接" :disabled="isAbled" v-model="params.actUrl"></p>
-      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" :disabled="isAbled" ><input type="button" value="上传图片" :disabled="isAbled"><input type="file" filetype="image/*"></p>
+      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" :disabled="isAbled" :readonly="isReadOnly" v-model="params.picUrl"><input type="button" value="上传图片" :disabled="isAbled"><input type="file" filetype="image/*" @change="toUpfile"></p>
     </div>
     <!-- 活动消息 -->
     <div class="btn-ok" v-if="tabIndex != 3">
@@ -48,7 +48,7 @@
 </template>
 <script>
 import * as http from 'api/common'
-
+import * as upload from 'components/upload-pic'
 export default {
   name: 'systemMessagePush',
   components: {},
@@ -68,12 +68,13 @@ export default {
         content: '', // 消息内容,
         cookStep: '', // 烹饪方法,
         ingredient: '', // 食材,
-        msgType: '', // 消息类型,
+        msgType: 2, // 消息类型,
         picUrl: '', // 图片url,
         pushTime: '', // 推送时间,
         pushType: '', // 推送类型,
         title: '' // 标题
       },
+      isReadOnly: false,
       tipsMsg: '系统', //  设置标题和placeholder值
       routerName: '', //  路由名
       pushMessageTitle: [
@@ -91,22 +92,28 @@ export default {
         },
         {
           title: '内容',
-          key: 'msgContent',
+          key: 'content',
           align: 'center'
         },
         {
           title: '推送时间',
           key: 'pushTime',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h('span', this.filterTime(params.row.pushTime))
+          }
         },
         {
           title: '推送状态',
           key: 'status',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h('span', this.filterStatus(params.row.status))
+          }
         },
         {
           title: '操作人员',
-          key: 'lastUpdatorName',
+          key: 'creator',
           align: 'center'
         },
         {
@@ -126,7 +133,14 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.data = params.row
+                      http
+                        .lookMessage({
+                          id: params.row.smMssageId
+                        })
+                        .then(data => {
+                          this.datda = data
+                        })
+                      // this.data = params.row
                       this.params.title = params.row.title
                       this.params.content = params.row.content
                       this.params.pushType = String(params.row.pushType)
@@ -155,7 +169,7 @@ export default {
                       this.params.content = params.row.content
                       this.params.pushType = params.row.pushType
                       this.params.pushTime = params.row.pushTime
-                      this.params.pushType = params.row.pushType
+                      // this.params.pushType = params.row.pushType
                       this.editStatus = 2
                       this.isAbled = false
                     }
@@ -192,34 +206,34 @@ export default {
         case 'app_notice_push':
           this.tipsMsg = '应用通知'
           break
-        case 'text-message-push':
-          this.tipsMsg = '短信消息'
-          break
+        // case 'text-message-push':
+        //   this.tipsMsg = '短信消息'
+        //   break
       }
       this.getMessageList()
     },
     //  获取短信消息数据
     getMessageList() {
       switch (this.routerName) {
-        case 'system_message_push':
-          this.params.msgType = 1
+        case 'system_message_push': //  系统消息
+          this.params.msgType = 2
           break
         case 'activity_message_push':
           this.tipsMsg = '活动消息'
-          this.params.msgType = 2
+          this.params.msgType = 3
           break
         case 'daily_menu_push':
           this.tipsMsg = '每日菜谱'
-          this.params.msgType = 3
+          this.params.msgType = 4
           break
         case 'app_notice_push':
           this.tipsMsg = '应用通知'
-          this.params.msgType = 4
-          break
-        case 'message_push_manage':
-          this.tipsMsg = '短信消息'
           this.params.msgType = 5
           break
+        // case 'message_push_manage':
+        //   this.tipsMsg = '短信消息'
+        //   this.params.msgType = 5
+        //   break
       }
       http.getMessageList(this.params).then(data => {
         this.pushMessageData = data
@@ -266,13 +280,63 @@ export default {
           })
           break
       }
+    },
+    //  上传方法
+    toUpfile(e) {
+      upload.uploadpic(e.target.files[0]).then(data => {
+        data = data[0].indexOf('?') ? data[0].split('?')[0] : data[0]
+        console.log(data)
+        this.params.picUrl = data
+        this.isReadOnly = true
+        e.target.value = ''
+      })
+    },
+    //  时间过滤
+    filterTime(value) {
+      let date = new Date(value)
+      let params = {
+        year: date.getFullYear(),
+        month:
+          date.getMonth() + 1 < 10
+            ? '0' + (date.getMonth() + 1)
+            : date.getMonth() + 1,
+        day: date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+        hour: date.getHours() < 10 ? '0' + date.getHours() : date.getHours(),
+        minutes:
+          date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
+        seconds:
+          date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
+      }
+      return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
+    },
+    //  状态过滤
+    filterStatus(status) {
+      let statusName = ''
+      switch (status) {
+        case 0:
+          statusName = '推送成功'
+          break
+        case 1:
+          statusName = '待推送'
+          break
+        case 2:
+          statusName = '推送失败'
+          break
+      }
+      return statusName
+    },
+    showAlert() {
+      alert()
     }
   },
   watch: {
     $route(to, from) {
       this.params.status = ''
       this.tabIndex = '0'
-      this.params.pushType = '0'
+      this.params.pushType = ''
+      this.params.picUrl = ''
+      this.isReadOnly = false
+      // this.params.pushType = '0'
       this.params.title = this.params.content = this.params.pushTime = ''
       this.editStatus = 0
       this.isAbled = false

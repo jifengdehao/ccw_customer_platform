@@ -108,7 +108,7 @@ export const putRefundOrder = params => {
  * 订单全部退款
  * @param params =>{orderId}
  */
-export const putRefundOrderAll = (params) => {
+export const putRefundOrderAll = params => {
   return ax.u(`/order/order/refund/all/${params}`)
 }
 
@@ -163,7 +163,7 @@ export const getOrderSellerListEval = (params, pageNo) => {
  * 获取商家评价详情
  * @param params=>{rkShopId}
  */
-export const getOrderSellerDetails = (params) => {
+export const getOrderSellerDetails = params => {
   return ax.g(`/order/remark/shop/${params}`)
 }
 
@@ -171,7 +171,7 @@ export const getOrderSellerDetails = (params) => {
  * 隐藏商家评价
  * @param params =>{rkShopId}
  */
-export const putOrderSellerEval = (params) => {
+export const putOrderSellerEval = params => {
   return ax.u(`/order/remarkShop/${params}`)
 }
 /**
@@ -185,14 +185,14 @@ export const getOrderDeliverListeEval = (params, pageNo) => {
  * 隐藏配送员评价
  * @param params=>{rkDeliverId}
  */
-export const putOrderDeliverEval = (params) => {
+export const putOrderDeliverEval = params => {
   return ax.u(`/order/remarkDeliver/${params}`)
 }
 /**
  * 获取配送员评价详情
  * @param params =>{rkDeliverId}
  */
-export const getOrderDeliverEvalDetails = (params) => {
+export const getOrderDeliverEvalDetails = params => {
   return ax.g(`/order/remark/deliver/${params}`)
 }
 
@@ -242,7 +242,7 @@ export const updateApplyStatus = (params, id) => {
   return ax.g(`/seller/apply/${id}`, params)
 }
 // 获取图片资质证件
-export const getQulification = (shopId) => {
+export const getQulification = shopId => {
   return ax.g(`/seller/qulification/${shopId}`)
 }
 //  ******************** 商户视屏图片审核 *****************************
@@ -255,11 +255,11 @@ export const getShopPic = (params, pageNo) => {
   return ax.g(`seller/pic/shop/list/${pageNo}`, params)
 }
 // 商品图片审核
-export const auditProductPicStatus = (params) => {
+export const auditProductPicStatus = params => {
   return ax.g(`seller/pic/product/audit`, params)
 }
 // 审核店铺图片
-export const auditShopPicStatus = (params) => {
+export const auditShopPicStatus = params => {
   return ax.g(`seller/pic/shop/audit`, params)
 }
 //  ********************** 商户账号管理 *******************************
@@ -280,7 +280,7 @@ export const modifysellerInfo = (params, sellerId) => {
   return ax.u(`seller/${sellerId}`, params)
 }
 // 重置密码
-export const resetPassword = (params) => {
+export const resetPassword = params => {
   return ax.g(`seller/resetPassword`, params)
 }
 //  ********************* BD及邀请码管理 ******************************
@@ -289,11 +289,11 @@ export const getBDlist = (params, pageNo) => {
   return ax.g(`/platform/bd/list/${pageNo}`, params)
 }
 // 添加BD
-export const addPlatformBD = (params) => {
+export const addPlatformBD = params => {
   return ax.p(`platform/bd`, params)
 }
 // 删除BD
-export const delPlatformBD = (id) => {
+export const delPlatformBD = id => {
   return ax.d(`platform/bd/${id}`)
 }
 
@@ -415,7 +415,9 @@ export const seeBanner = id => {
  * @param params =>{status,mobileno,pageSize,pageNo}
  */
 export const getUsersList = params => {
-  return ax.g(`customer/`, params)
+  return ax.g(
+    `customer/${params.pageNo}?status=${params.status}&mobileno=${params.mobileno}&pageSize=${params.pageSize}`
+  )
 }
 
 /**
@@ -446,6 +448,13 @@ export const getMessageList = params => {
   return ax.g(
     `customer/message/list/${params.pageNo}?status=${params.status}&msgType=${params.msgType}&pageSize=${params.pageSize}`
   )
+}
+
+/**
+ * 查看消息
+ */
+export const lookMessage = params => {
+  return ax.g(`/customer/message/${params.id}`)
 }
 
 /**
@@ -614,7 +623,7 @@ export const getpaltformUserChange = params => {
 }
 
 // 平台用户导出用户数据/platform/user/export
-export const getUserExport = (params) => {
+export const getUserExport = params => {
   return ax.g('/platform/user/export', params)
 }
 
@@ -624,6 +633,6 @@ export const getPlatformPermissionList = (id, params) => {
 }
 
 // 平台用户权限管理查看列表/platform/permission/
-export const getTreeList = (id) => {
+export const getTreeList = id => {
   return ax.g(`/platform/permission/${id}`)
 }
