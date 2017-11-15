@@ -240,7 +240,7 @@ export default {
         // 点击删除
         if (!data.ptBannerId) {
           // 如果为空id 不发送请求
-          if ((this.bannerData.length - 1) < 1) {
+          if (this.bannerData.length - 1 < 1) {
             return false
           }
           this.bannerData.splice(this.bannerData.length - 1, 1)
@@ -284,6 +284,9 @@ export default {
       uploadpic(url).then(res => {
         if (res) {
           data.picUrl = res[0]
+          data.picUrl = data.picUrl.indexOf('?')
+            ? data.picUrl.split('?')[0]
+            : data.picUrl
         }
       })
     },
