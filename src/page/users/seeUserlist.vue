@@ -5,25 +5,35 @@
  * FunctionPoint: 查看个人权限列表 
  */
  
- <template>
-   <div>
-     <span>查看个人列表</span>
-     <ul v-if="userDate">
-        <tree-row :userTree="userDate"></tree-row> 
-     </ul>
-   </div>
- </template>
+<template>
+  <div id="roleinfo" class="main"  v-if="menuData">
+    <div class="tree-box">
+      <ul>
+        <auth-tree :menuData="menuData.menu" :parentData="menuData"></auth-tree>
+      </ul>
+    </div>
+    <p class="btn-p">
+      <Button @click="getTreeList">取消</Button>
+      <Button @click="submitInfoData">确认</Button>
+    </p>
+  </div>
+</template>
  <script>
 import * as api from 'api/common'
-import treeRow from './tree_row'
+import authTree from './tree_row'
 export default {
-  components: { treeRow },
+  components: { authTree },
   data() {
     return {
       id: (() => {
         return this.$route.query.info
       })(),
-      userDate: []
+      menuData: null, //  传递给子组件的值
+      putParams: {
+        roleId: '', //  角色ID
+        roleName: '', //  角色名称
+        permissionList: [] //  用户权限
+      }
     }
   },
   created: function() {
@@ -32,10 +42,10 @@ export default {
   methods: {
     getTreeList() {
       api.getTreeList(this.id).then(list => {
-        this.userDate = list.menu // 获取数据
-        console.log('list', list.menu)
+        this.menuData = list
       })
-    }
+    },
+    submitInfoData() {}
   }
 }
 </script>
