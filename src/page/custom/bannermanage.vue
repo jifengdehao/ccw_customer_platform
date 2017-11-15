@@ -26,11 +26,11 @@
           <draggable @update="datadragEnd" v-if="status === 0 || status === 1" v-model="bannerData">
             <tr v-for="data in bannerData" :key="data.id" class="draggable">
                 <td class="br">
-                  <img style="height: 100%" :src="data.picUrl">
+                  <img style="width:calc(100% - 25px);" :src="data.picUrl">
                 </td>
                 <td class="br" style="width: 10%">
-                  <input type="button" @change="onUpload" value="重新上传">
-                  <input type="file" @change="onUpload" title="上传图片" filetype="image/*">
+                  <input type="button" @change="onUpload($event,data)" value="重新上传">
+                  <input type="file" @change="onUpload($event,data)" title="上传图片" filetype="image/*">
                 </td>
                 <td class="br" style="width: 20%">
                   <input v-model="data.linkUrl" type="text" :value="data.linkUrl">
@@ -40,7 +40,7 @@
                   <input v-model="data.remark" type="text" :value="data.remark">
                 </td>
                 <td style="width: 18%" class="br">
-                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px; margin-bottom: 5px;" v-model="data.startTime" :value="data.startTime"></DatePicker><DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px" v-model="data.endTime" :value="data.endTime"></DatePicker>
+                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 180px; margin-bottom: 5px;" v-model="data.startTime" :value="data.startTime"></DatePicker><DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 180px" v-model="data.endTime" :value="data.endTime"></DatePicker>
                 </td>
                 <td style="width: 10%; border-top: 0 !important;"><Button type="error" @click="onChangButton(data)">{{ bannerState }}</Button></td>
               </tr>
@@ -55,7 +55,7 @@
                 <td>{{ data.position }}</td>
                 <td>{{ data.remark }}</td>
                 <td>{{ data.updateAt }}</td>
-                <td>{{ data.endTime }}</td>
+                <td>{{ filterTime(data.endTime) }}</td>
                 <td><Button type="primary" @click="seeModal(data)">查看</Button></td>
               </tr>
               <tr v-if="bannerData && bannerData.length <= 0" style="height: 40px;">
@@ -88,8 +88,8 @@
                   <td>{{ seeBannerData.linkUrl }}</td>
                   <td>{{ seeBannerData.remark }}</td>
                   <td>
-                    <p>开始时间：{{ seeBannerData.startTime }}</p>
-                    <p>结束时间：{{ seeBannerData.endTime }}</p>
+                    <p>开始时间：{{ filterTime(seeBannerData.startTime) }}</p>
+                    <p>结束时间：{{ filterTime(seeBannerData.endTime) }}</p>
                   </td>
                 </tr>
               </table>
@@ -100,7 +100,8 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import * as api from 'api/common.js'
+import * as api from 'api/common'
+import * as upload from 'components/upload-pic'
 import draggable from 'vuedraggable'
 export default {
   name: 'bannerManage',
@@ -286,15 +287,43 @@ export default {
       }
     },
     // 上传图片
-    onUpload(e) {
-      this.formData = new FormData()
-      this.formData.append('file', e.target.files[0])
-      console.log(this.formData, e)
+    onUpload(e, item) {
+      upload.uploadpic(e.target.files[0]).then(data => {
+        let res = data[0]
+        res = res.indexOf('?') ? res.split('?')[0] : res
+        item.picUrl = res
+      })
     },
     datadragEnd(evt) {
       console.log('拖动前的索引 :' + evt.oldIndex)
       console.log('拖动后的索引 :' + evt.newIndex)
       console.log(this.bannerData, '22')
+    },
+    //  时间过滤
+    filterTime(value) {
+      let date = new Date(value)
+      let params = {
+        year: date.getFullYear(),
+        month:
+          date.getMonth() + 1 < 10
+            ? '0' + date.getMonth() + 1
+            : date.getMonth() + 1,
+        day:
+          date.getDate() + 1 < 10
+            ? '0' + date.getDate() + 1
+            : date.getDate() + 1,
+        hour:
+          date.getHours() + 1 < 10 ? '0' + date.getHours() : date.getHours(),
+        minutes:
+          date.getMinutes() + 1 < 10
+            ? '0' + date.getMinutes()
+            : date.getMinutes(),
+        seconds:
+          date.getSeconds() + 1 < 10
+            ? '0' + date.getSeconds()
+            : date.getSeconds()
+      }
+      return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
     }
   },
   watch: {

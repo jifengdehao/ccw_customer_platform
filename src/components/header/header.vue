@@ -11,55 +11,67 @@
         <div class="layout-logo">菜城科技有限公司</div>
       </i-col>
       <i-col :span="18" style="min-width:930px;">
-        <Menu mode="horizontal" theme="dark" :active-name="activeName">
-          <MenuItem name="home">
-            <router-link to="/home">
-              <Icon type="ios-paper"></Icon>
-              首页
+        <Menu mode="horizontal" theme="dark" @on-select="selectMenu">
+          <MenuItem :name="item.url" v-if="menu.length>0" v-for="item in menu" :key="item.id">
+            <router-link :to="'/'+item.url">
+              <Icon :type="item.icon"></Icon>
+              {{item.name}}
             </router-link>
           </MenuItem>
-          <MenuItem name="custom">
-            <router-link to="/custom">
-              <Icon type="ios-people"></Icon>
-              用户端管理
-            </router-link>
-          </MenuItem>
-          <MenuItem name="seller">
-            <router-link to="/seller">
-              <Icon type="chatbox-working"></Icon>
-              商家端管理
-            </router-link>
-          </MenuItem>
-          <MenuItem name="order">
-            <router-link to="/order">
-              <Icon type="chatbox"></Icon>
-              订单管理
-            </router-link>
-          </MenuItem>
-          <MenuItem name="activity">
-            <router-link to="/activity">
-              <Icon type="help-buoy"></Icon>
-              活动管理
-            </router-link>
-          </MenuItem>
-          <MenuItem name="data">
-            <router-link to="/data">
-              <Icon type="ios-analytics"></Icon>
-              数据中心
-            </router-link>
-          </MenuItem>
-          <MenuItem name="distribution">
-            <router-link to="/distribution">
-              <Icon type="settings"></Icon>
-              分销管理
-            </router-link>
-          </MenuItem>
-          <MenuItem name="users">
-            <router-link to="/users">
-              <Icon type="ios-people"></Icon>
-              平台用户管理
-            </router-link>
-          </MenuItem>
+          <!--<MenuItem name="home">-->
+          <!--<router-link to="/home">-->
+          <!--<Icon type="ios-paper"></Icon>-->
+          <!--首页-->
+          <!--</router-link>-->
+          <!--</MenuItem>-->
+          <!--<MenuItem name="custom">-->
+          <!--<router-link to="/custom">-->
+          <!--<Icon type="ios-people"></Icon>-->
+          <!--用户端管理-->
+          <!--</router-link>-->
+          <!--</MenuItem>-->
+          <!--<MenuItem name="seller">-->
+          <!--<router-link to="/seller">-->
+          <!--<Icon type="chatbox-working"></Icon>-->
+          <!--商家端管理-->
+          <!--</router-link>-->
+          <!--</MenuItem>-->
+          <!--<MenuItem name="order">-->
+          <!--<router-link to="/order">-->
+          <!--<Icon type="chatbox"></Icon>-->
+          <!--订单管理-->
+          <!--</router-link>-->
+          <!--</MenuItem>-->
+          <!--<MenuItem name="activity">-->
+          <!--<router-link to="/activity">-->
+          <!--<Icon type="help-buoy"></Icon>-->
+          <!--活动管理-->
+          <!--</router-link>-->
+          <!--</MenuItem>-->
+          <!--<MenuItem name="data">-->
+          <!--<router-link to="/data">-->
+          <!--<Icon type="ios-analytics"></Icon>-->
+          <!--数据中心-->
+          <!--</router-link>-->
+          <!--</MenuItem>-->
+          <!--<MenuItem name="distribution">-->
+          <!--<router-link to="/distribution">-->
+          <!--<Icon type="settings"></Icon>-->
+          <!--分销管理-->
+          <!--</router-link>-->
+          <!--</MenuItem>-->
+          <!--<MenuItem name="users">-->
+          <!--<router-link to="/users">-->
+          <!--<Icon type="ios-people"></Icon>-->
+          <!--平台用户管理-->
+          <!--</router-link>-->
+          <!--</MenuItem>-->
+          <!--<MenuItem name="app">-->
+          <!--<router-link to="/app">-->
+          <!--<Icon type="android-apps"></Icon>-->
+          <!--APP更新管理-->
+          <!--</router-link>-->
+          <!--</MenuItem>-->
         </Menu>
       </i-col>
       <i-col :span="3">
@@ -84,16 +96,20 @@
   import * as cookie from '@/data/index'
 
   export default {
-    computed: {
-      activeName () {
-        return this.$route.path.split('/')[1]
-      },
-      userinfo () {
-        // return cookie.userInfo()
-        return sessionStorage.getItem('user')
+    data () {
+      return {
+        menu: []
       }
     },
-    mounted () {},
+    computed: {
+      userinfo () {
+        return cookie.userInfo()
+        // return JSON.parse(sessionStorage.getItem('user'))
+      }
+    },
+    created () {
+      this.getMenuData()
+    },
     methods: {
       selectDown (item) {
         switch (item) {
@@ -107,8 +123,25 @@
                 this.$router.go(0);
               }
             })
+//            sessionStorage.removeItem('user')
+//            this.$router.go(0)
             break
         }
+      },
+      selectMenu (name) {
+        console.log(name)
+      },
+      getMenuData () {
+        api.getMemuData().then((res) => {
+          if (res) {
+            console.log(res)
+            let menuIcon = ['ios-paper', 'ios-people', 'chatbox-working', 'chatbox', 'help-buoy', 'ios-analytics', 'settings', 'ios-people']
+            this.menu = res.map((item, index) => {
+              return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url}
+            })
+            sessionStorage.setItem('menu', JSON.stringify(res))
+          }
+        })
       }
     }
   }

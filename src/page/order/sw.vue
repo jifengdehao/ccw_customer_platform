@@ -49,7 +49,6 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
             // 发送数据
-            console.log(this.formValidate)
             let params = {
               content: this.formValidate.desc,
               startAt: this.formValidate.dateTime,

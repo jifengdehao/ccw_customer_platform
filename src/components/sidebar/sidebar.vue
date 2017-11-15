@@ -12,17 +12,17 @@
       </div>
       <Menu theme="dark" @on-select="route" width="auto" :active-name="activeName">
         <template v-for="item in menu">
-          <MenuItem v-if="item.noDropdown && item.name" :name="item.name">
+          <MenuItem v-if="item.noDropdown && item.name" :name="item.url">
             <Icon :type="item.icon" :size="iconSize"></Icon>
-            <span class="layout-text">{{item.text}}</span>
+            <span class="layout-text">{{item.name}}</span>
           </MenuItem>
           <Submenu v-else :name="item.name">
             <template slot="title">
               <Icon :type="item.icon" :size="iconSize"></Icon>
-              <span class="layout-text">{{item.text}}</span>
+              <span class="layout-text">{{item.name}}</span>
             </template>
             <template v-for="m in item.submenu">
-              <Menu-item :name="m.name">{{m.text}}</Menu-item>
+              <Menu-item :name="m.url">{{m.name}}</Menu-item>
             </template>
           </Submenu>
         </template>
@@ -47,7 +47,6 @@
         spanRight: 21
       }
     },
-    mounted () {},
     computed: {
       iconSize () {
         return this.spanLeft === 3 ? 14 : 24

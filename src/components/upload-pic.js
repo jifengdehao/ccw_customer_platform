@@ -44,7 +44,10 @@ export function uploadpic(file) {
         'http://192.168.0.158:8097/stsToken/roleSessionName',
         false
       ) // 调用open()方法并采用异步方式
-      xmlHttpReq.setRequestHeader('Content-type', 'application/json;charset=UTF-8')
+      xmlHttpReq.setRequestHeader(
+        'Content-type',
+        'application/json;charset=UTF-8'
+      )
       xmlHttpReq.onreadystatechange = RequestCallBack // 设置回调函数
       xmlHttpReq.send(null) // 因为使用get方式提交，所以可以使用null参调用
     }
@@ -82,7 +85,7 @@ export function uploadpic(file) {
       .then(result => {
         return result.res.requestUrls
       })
-      .catch(function (err) {
+      .catch(function(err) {
         return err
       })
   } else {
