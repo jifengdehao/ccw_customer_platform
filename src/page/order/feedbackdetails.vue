@@ -11,21 +11,21 @@
     </div>
     <Row>
       <Col span="3">
-        <ul>
-          <li>用户ID</li>
-          <li>用户名</li>
-          <li>反馈内容</li>
-          <li>反馈时间</li>
-          <li v-if="feedbackDetails.url">反馈图片</li>
-        </ul>
+      <ul>
+        <li>用户ID</li>
+        <li>用户名</li>
+        <li>反馈内容</li>
+        <li>反馈时间</li>
+        <li v-if="feedbackDetails.url">反馈图片</li>
+      </ul>
       </Col>
       <Col span="21">
-        <ul>
-          <li>{{feedbackDetails.creatorId}}</li>
-          <li>{{feedbackDetails.creatorName}}</li>
-          <li>{{feedbackDetails.content}}</li>
-          <li>{{feedbackDetails.createdDt}}</li>
-        </ul>
+      <ul>
+        <li>{{feedbackDetails.creatorId}}</li>
+        <li>{{feedbackDetails.creatorName}}</li>
+        <li>{{feedbackDetails.content}}</li>
+        <li>{{feedbackTime}}</li>
+      </ul>
       </Col>
     </Row>
     <Row class="mt20" :gutter="32" v-if="feedbackDetails.url">
@@ -36,6 +36,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common.js'
+  import * as time from '@/until/time'
 
   export default {
     data () {
@@ -43,7 +44,8 @@
         ptFeedbackId: (() => {
           return this.$route.params.id
         })(),
-        feedbackDetails: {}
+        feedbackDetails: {},
+        feedbackTime: ''
       }
     },
     created () {
@@ -58,6 +60,7 @@
         api.getFeedBackInfo(this.ptFeedbackId).then((data) => {
           console.log(data)
           this.feedbackDetails = data
+          this.feedbackTime = time.formatDateTime(data.createdDt)
         })
       }
     }
