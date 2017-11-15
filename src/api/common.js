@@ -641,12 +641,7 @@ export const getTreeList = id => {
   return ax.g(`/platform/permission/${id}`)
 }
 
-// 平台用户权限管理导出列表数据/platform/permission/list/export
-export const getExportList = (params) => {
-  return ax.g('/platform/permission/list/export', params)
-}
-
 // 平台用户权限管理修改查看列表/platform/permission
-export const getUserPermission = (params) => {
+export const getUserPermission = params => {
   return ax.u('/platform/permission', params)
 }
