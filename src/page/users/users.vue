@@ -14,33 +14,49 @@
 
   export default {
     name: 'users',
-    data() {
+    data () {
       return {
         menu: [
-          {
-            name: 'users_manage',
-            text: '平台用户管理',
-            icon: 'ios-people',
-            noDropdown: true
-          },
-          {
-            name: 'users_jurisdiction',
-            text: '权限管理',
-            icon: 'settings',
-            noDropdown: true
-          },
-          {
-            name: 'users_log',
-            text: '操作日志',
-            icon: 'aperture',
-            noDropdown: true
-          }
+//          {
+//            name: 'users_manage',
+//            text: '平台用户管理',
+//            icon: 'ios-people',
+//            noDropdown: true
+//          },
+//          {
+//            name: 'users_jurisdiction',
+//            text: '权限管理',
+//            icon: 'settings',
+//            noDropdown: true
+//          },
+//          {
+//            name: 'users_log',
+//            text: '操作日志',
+//            icon: 'aperture',
+//            noDropdown: true
+//          }
         ]
       }
     },
+    created () {
+      this.getUserMenu()
+    },
     methods: {
-      route(name) {
+      route (name) {
         this.$router.push('/users/' + name)
+      },
+      getUserMenu () {
+        let menuIcon = ['ios-analytics']
+        let resMenu = JSON.parse(sessionStorage.getItem('menu'))
+        resMenu.forEach((item) => {
+          if (item.url === 'users') {
+            if (item.childMenusList.length > 0) {
+              this.menu = item.childMenusList.map((item, index) => {
+                return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url, noDropdown: true}
+              })
+            }
+          }
+        })
       }
     },
     components: {
