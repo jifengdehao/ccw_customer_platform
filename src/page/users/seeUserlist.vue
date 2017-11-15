@@ -45,7 +45,38 @@ export default {
         this.menuData = list
       })
     },
-    submitInfoData() {}
+
+    //  传递至过滤
+    filterValue(array) {
+      array.forEach(item => {
+        if (item.isHave) {
+          if (item.permissonList && item.permissonList.length > 0) {
+            item.permissonList.forEach(permissin => {
+              let single = {
+                menuId: item.menuId
+              }
+              if (permissin.isHave) {
+                single.permissionId = permissin.permissionId
+                this.putParams.permissionList.push(single)
+              }
+            })
+            this.filterValue(item.childMenuList)
+          }
+        }
+        console.log(this.putParams.permissionList)
+      })
+    },
+    //  确认
+    submitInfoData() {
+      this.putParams.permissionList = []
+      this.filterValue(this.menuData.menu)
+      if (this.putParams.permissionList.length === 0) {
+        return
+      }
+      api.getUserPermission(this.putParams).then(data => {
+        this.getRoleInfo()
+      })
+    }
   }
 }
 </script>

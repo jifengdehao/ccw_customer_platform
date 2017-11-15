@@ -640,3 +640,8 @@ export const getPlatformPermissionList = (id, params) => {
 export const getTreeList = id => {
   return ax.g(`/platform/permission/${id}`)
 }
+
+// 平台用户权限管理修改查看列表/platform/permission
+export const getUserPermission = params => {
+  return ax.u('/platform/permission', params)
+}
