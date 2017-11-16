@@ -168,6 +168,7 @@ export default {
         if (res && res != null) {
           window.open(res)
         }
+        this.exportModal = false
       })
     },
     // 分页数据

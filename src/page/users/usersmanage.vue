@@ -3,18 +3,20 @@
     <div class="searchInput">
       <p>手机号码：</p>
       <input type="text" v-model="searchMobileno">
+      <Select v-model="status" style="width:150px;margin-left:10px; margin-right: 10px;">
+        <Option value="0">正常用户</Option>
+        <Option value="1">冻结用户</Option>
+      </Select>
       <Button type="primary"@click="onSearchMobile" icon="ios-search">搜索</Button>
     </div>
     <div>
-      <Tabs @on-click="onSwitch" :animated="false">
-        <TabPane v-for="menu in userMenu" :key="menu.id" :label="menu">
-          <Table border stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
-        </TabPane>
-         <Page v-if="userDate && userDate.length > 0" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
+      <Tabs>
+        <Table border stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
         <Button type="primary" style="margin-right: 7px;" slot="extra" size="large" @click="onExportModal">
           <Icon type="ios-download-outline"></Icon> 导出</Button>
         <Button type="ghost" size="large" slot="extra" @click="onShowUser" v-if="addHidden">增加</Button>
       </Tabs>
+        <Page v-if="userDate && userDate.length > 0" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
     </div>
     <!-- 导出数据弹框start -->
     <Modal v-model="exportModal" width="300">
@@ -32,19 +34,19 @@
     <Modal v-model="showUser" title="新增用户" @on-ok="addUser" @on-cancel="addCancel" class="userShowModal">
       <p>
         <span>用户ID</span>
-        <Input v-model="userId" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.userId" placeholder="请输入..." style="width: 300px"></Input>
       </p>
       <p>
         <span>用户昵称</span>
-        <Input v-model="userName" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.userName" placeholder="请输入..." style="width: 300px"></Input>
       </p>
       <p>
         <span>用户手机</span>
-        <Input v-model="userPhone" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.userPhone" placeholder="请输入..." style="width: 300px"></Input>
       </p>
       <p>
         <span>用户邮箱</span>
-        <Input v-model="userMailBox" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.userMailBox" placeholder="请输入..." style="width: 300px"></Input>
       </p>
     </Modal>
     <!-- 新增数据弹框end -->
@@ -83,7 +85,7 @@ export default {
       searchMobileno: '', // 搜索电话
       userMenu: ['正常用户', '冻结用户'], // 导航 table切换数据
       userDate: [], // 列表数据
-      status: 0, // 默认切换teble 状态
+      status: '0', // 默认切换teble 状态
       pageSize: 10, // 分页参数，表示每页显示多少条记录
       pageNo: 1, // 分页参数，表示当前页
       total: '', // 总页数
@@ -98,10 +100,12 @@ export default {
       userStatus: '冻结', // 用户操作状态
       saveStatus: '', // 保存冻结 解冻 ID 发送请求
       seeInformation: [], // 查看个人信息
-      userId: '', // 用户ID
-      userName: '', // 用户昵称
-      userPhone: '', // 用户手机
-      userMailBox: '', // 用户邮箱
+      addUsers: {
+        userId: '', // 用户ID
+        userName: '', // 用户昵称
+        userPhone: '', // 用户手机
+        userMailBox: '' // 用户邮箱
+      },
       columns1: [
         // title 信息数据
         {
@@ -200,18 +204,13 @@ export default {
     },
     // 搜索电话
     onSearchMobile() {
-      this.getUserData() // 初始化列表数据
-    },
-    onSwitch(value) {
-      this.status = value // 获取当前点击状态
       this.pageNo = 1 // 每次切换 初始化页面 1
-      this.getUserData() // 数据调用
-      // 切换导航
-      if (value === 0) {
+      this.getUserData() // 初始化列表数据
+      if (this.status === '0') {
         this.userProcessu = '确定将用户冻结？' // 冻结用户弹框内容
         this.userStatus = '冻结' // 用户状态
         this.addHidden = true // 新增弹框显示
-      } else if (value === 1) {
+      } else if (this.status === '1') {
         this.userStatus = '解冻' // 用户状态更换
         this.userProcessu = '确定将用户解冻？' // 解冻用户弹框内容
         this.addHidden = false
@@ -251,27 +250,18 @@ export default {
       api.getUserExport(params).then(res => {
         if (res && res != null) {
           window.open(res)
-          this.exportModal = false
         }
       })
+      this.exportModal = false
     },
     // 新增用户 打开弹框 清空默认值
     onShowUser() {
-      this.userName = ''
-      this.userPhone = ''
-      this.userMailBox = ''
-      this.userId = ''
+      this.addUsers = {}
       this.showUser = true
     },
+    // 确定新增用户
     addUser() {
-      // 确定新增用户
-      let params = {
-        nickname: this.userName,
-        mobileno: this.userPhone,
-        email: this.userMailBox,
-        ptUserId: this.userId
-      }
-      api.getAddUser(params).then(res => {
+      api.getAddUser(this.addUsers).then(res => {
         console.log(res, 'ssss')
         if (res === true) {
           this.getUserData() // 数据调用
