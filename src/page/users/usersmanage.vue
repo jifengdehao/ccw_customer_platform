@@ -10,12 +10,14 @@
       <Button type="primary"@click="onSearchMobile" icon="ios-search">搜索</Button>
     </div>
     <div>
-      <Tabs>
+      <div class="exportButton">
+         <button style="margin-right: 7px;" @click="onExportModal">
+          <Icon type="ios-download-outline"></Icon> 导出</button>
+         <button @click="onShowUser" v-if="addHidden">增加</button>
+      </div>
+      <div>
         <Table border stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
-        <Button type="primary" style="margin-right: 7px;" slot="extra" size="large" @click="onExportModal">
-          <Icon type="ios-download-outline"></Icon> 导出</Button>
-        <Button type="ghost" size="large" slot="extra" @click="onShowUser" v-if="addHidden">增加</Button>
-      </Tabs>
+      </div>
         <Page v-if="userDate && userDate.length > 0" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
     </div>
     <!-- 导出数据弹框start -->
@@ -150,11 +152,9 @@ export default {
                   on: {
                     click: () => {
                       this.checkUser = true
-                      if (this.status === 0) {
-                        api.getplatformUserId(params.row.ptUserId).then(res => {
-                          this.seeInformation = res
-                        })
-                      }
+                      api.getplatformUserId(params.row.ptUserId).then(res => {
+                        this.seeInformation = res
+                      })
                     }
                   }
                 },
@@ -300,5 +300,28 @@ export default {
 
 .userShowModal p span {
   margin-right: 15px;
+}
+
+.exportButton {
+  margin-left: calc(100% - 142px);
+  margin-bottom: 10px;
+}
+
+.exportButton button {
+  color: #fff;
+  background-color: #2d8cf0;
+  border-color: #2d8cf0;
+  padding: 6px 15px 7px 15px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+}
+
+.exportButton button:nth-child(2) {
+  color: #495060;
+  background-color: transparent;
+  border: 1px solid #dddee1;
 }
 </style>
