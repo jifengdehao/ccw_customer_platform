@@ -117,25 +117,24 @@
                       <Icon type="ios-eye-outline" @click.native="handleView(shopMessage.shopPicUrl)"></Icon>
                 </div>
               </div>
-              <div class="uploadButton ">
-                <input type="file" @change="shopimgupload">+
+              <div class="qualification" style="width:120px;top:130px">
+                <input type="file" @change="shopimgupload">上传图片
               </div>
           </FormItem>
           <!-- 营业资质 -->
           <FormItem prop="password" class="shopMessagemModal-qualification">
             <h3>营业资质</h3>
             <ul>
-              <li v-for="(item,index) in shopMessage.msShopQualification.qualificationList" :key="index">
+              <li v-for="(item,index) in qulification.qualificationList" :key="index">
                 <div class="" >
                   <div class="img vm-fl">
                     <img :src="item.url" alt="">
                     <div class="cover">
                       <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
-                      <Icon type="ios-trash-outline" @click.native="removeQualificationList(index)"></Icon>
                     </div>
                   </div>
                   <div class="qualification">
-                    <input type="file" @change="qualificationUpload(index)">上传图片
+                    <input type="file" @change="qualificationUpload($event,index)">上传图片
                   </div>
                 </div>
                 <p>{{item.name}}</p>
@@ -145,7 +144,7 @@
           <!-- 协议合同 -->
           <FormItem prop="password" class="shopMessagemModal-agreement">
             <h3>协议合同</h3>
-             <div class="img vm-fl" v-model="shopMessage.msShopQualification.protocol" v-for="url in shopMessage.msShopQualification.protocol">
+             <div class="img vm-fl" v-model="qulification.protocol" v-for="url in qulification.protocol" >
                 <img :src="url" alt="">
                 <div class="cover">
                     <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
@@ -213,10 +212,11 @@ export default {
         stallAddress: '',
         shopPicUrl: [],
         msShopQualification: {
-          qualificationList: [],
-          protocol: []
+          protocol: [],
+          qualificationList: []
         }
       },
+      qulification: [], // 资质证件图片
       shopManageData: {},
       bussinessStatus: [],
       shopMessageModal: false,
@@ -260,6 +260,7 @@ export default {
                         params.row.msSellerId,
                         params.row.shopId
                       )
+                      this.getQulification(params.row.msSellerId)
                       this.shopMessageModal = true
                     }
                   }
@@ -380,13 +381,22 @@ export default {
       }
       api.getsellerInfo(params, msSellerId).then(response => {
         this.shopMessage = response
-        console.log(response)
+        console.log(this.shopMessage, '商家信息')
+      })
+    },
+    // 获取商家资质证件图片
+    getQulification(id) {
+      api.getQulification(id).then(res => {
+        this.qulification = res
+        console.log(res, '资质图片')
       })
     },
     // 更新商家信息
     modifySellerInfo(shopMessage) {
-      console.log(shopMessage)
+      this.shopMessage.msShopQualification.protocol = this.qulification.protocol
+      this.shopMessage.msShopQualification.qualificationList = this.qulification.qualificationList
       let sellerId = shopMessage.msSellerId
+      console.log(this.shopMessage)
       api.modifysellerInfo(shopMessage, sellerId).then(response => {
         this.$Message.info('更新成功')
       })
@@ -428,16 +438,14 @@ export default {
     qualificationUpload(e, index) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
-        this.shopMessage.msShopQualification.qualificationList[index].url = res
+        this.qulification.qualificationList[index].url = res
       })
     },
     // 协议合同
     protocolUpload(e) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
-        this.shopMessage.msShopQualification.protocol = this.shopMessage.msShopQualification.protocol.concat(
-          res
-        )
+        this.qulification.protocol = this.qulification.protocol.concat(res)
       })
     },
     // 查看大图
@@ -447,7 +455,7 @@ export default {
     },
     // 删除协议合同图片
     removeProtocol(index) {
-      this.shopMessage.msShopQualification.protocol.splice(index, 1)
+      this.qulification.protocol.splice(index, 1)
     }
   },
   filfter: {},
@@ -478,7 +486,7 @@ export default {
   width: 100%;
   border: 1px solid #555;
   padding-left: 10px;
-  background-color: #eee;
+  background-color: #fff;
 }
 
 .shopMessagemModal-user span,
@@ -564,10 +572,10 @@ input[type='file'] {
 .qualification {
   position: absolute;
   left: 0;
-  top: 100px;
+  bottom: 100px;
   width: 200px;
   height: 30px;
-  background-color: #ddd;
+  background-color: #E6DFBE;
   text-align: center;
 }
 
@@ -607,7 +615,7 @@ input[type='file'] {
 }
 .img:hover .cover {
   display: block;
-  width: 120px;
+  width: 100%;
   height: 120px;
   text-align: center;
 }

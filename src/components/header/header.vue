@@ -132,9 +132,10 @@ export default {
       console.log(name)
     },
     getMenuData() {
+      console.log(api)
       api.getMemuData().then(res => {
+        console.log(111)
         if (res) {
-          console.log(res)
           let menuIcon = [
             'ios-paper',
             'ios-people',

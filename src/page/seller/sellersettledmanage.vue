@@ -94,10 +94,10 @@ export default {
         },
         {
           title: '证件上传状态',
-          key: 'upstatus',
+          key: 'uploadStatus',
           render: (h, params) => {
             return h('div', [
-              h('span', {}, params.row.upstatus),
+              h('span', {}, params.row.uploadStatus),
               h(
                 'Button',
                 {
@@ -114,6 +114,7 @@ export default {
                         .getQulification(params.row.msSellerApplyId)
                         .then(response => {
                           this.sellerpicUrls = response
+                          console.log(response)
                         })
                       this.modal = true
                     }

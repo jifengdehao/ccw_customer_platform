@@ -203,16 +203,13 @@
 <script>
 import draggable from 'vuedraggable'
 import * as api from 'api/common.js'
-// import updatePic from './updatePIc'
 import { uploadpic } from '../../../until/upload'
 import tableimage from './tableimage'
-// import uploadpic from './uploadpic'
 export default {
   props: ['parentdata'],
   components: {
     draggable,
     tableimage
-    // uploadpic
   },
   data() {
     return {

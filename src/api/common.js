@@ -287,6 +287,10 @@ export const modifysellerInfo = (params, sellerId) => {
 export const resetPassword = params => {
   return ax.g(`seller/resetPassword`, params)
 }
+// // 获取店铺纸质证件图片
+// export const getQulification = () => {
+//   return ax.g(`seller/qulification/${sellerApplyId}`)
+// }
 //  ********************* BD及邀请码管理 ******************************
 // 获取BD用户列表
 export const getBDlist = (params, pageNo) => {

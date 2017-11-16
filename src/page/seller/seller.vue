@@ -78,7 +78,7 @@
       getSellerMenu () {
         let menuIcon = ['person-add', 'ios-videocam', 'ios-people', 'flag', 'android-share-alt', 'ios-cloud', 'clock', 'chatbubble-working']
         let resMenu = JSON.parse(sessionStorage.getItem('menu'))
-        resMenu.forEach((item) => {
+        resMenu.menusVO.forEach((item) => {
           if (item.url === 'seller') {
             if (item.childMenusList.length > 0) {
               this.menu = item.childMenusList.map((item, index) => {
