@@ -12,7 +12,7 @@
         <auth-tree :menuData="menuData.menu" :parentData="menuData"></auth-tree>
       </ul>
     </div>
-    <p class="btn-p">
+    <p class="btn-p" v-if="detatilPath && detatilPath === '1'">
       <Button @click="getTreeList">取消</Button>
       <Button @click="submitInfoData">确认</Button>
     </p>
@@ -25,13 +25,10 @@ export default {
   components: { authTree },
   data() {
     return {
-      id: (() => {
-        return this.$route.query.info
-      })(),
       menuData: null, //  传递给子组件的值
+      detatilPath: '', // 判断是否有修改
       putParams: {
-        roleId: '', //  角色ID
-        roleName: '', //  角色名称
+        accountId: '', //  角色ID
         permissionList: [] //  用户权限
       }
     }
@@ -41,7 +38,9 @@ export default {
   },
   methods: {
     getTreeList() {
-      api.getTreeList(this.id).then(list => {
+      this.putParams.accountId = this.$route.query.info
+      this.detatilPath = this.$route.query.details
+      api.getTreeList(this.putParams.accountId).then(list => {
         this.menuData = list
       })
     },
@@ -74,12 +73,17 @@ export default {
         return
       }
       api.getUserPermission(this.putParams).then(data => {
-        this.getRoleInfo()
+        if (data === true) {
+          this.getTreeList()
+        }
       })
     }
   }
 }
 </script>
  <style lang="css" scoped>
-
+.btn-p {
+  margin-top: 40px;
+  text-align: center;
+}
 </style>

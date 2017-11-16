@@ -10,13 +10,13 @@
       <Button type="primary"@click="onSearchMobile" icon="ios-search">搜索</Button>
     </div>
     <div>
-      <div class="exportButton">
+      <div class="exportButton" :class="{'alost': addHidden === false}">
          <button style="margin-right: 7px;" @click="onExportModal">
           <Icon type="ios-download-outline"></Icon> 导出</button>
          <button @click="onShowUser" v-if="addHidden">增加</button>
       </div>
       <div>
-        <Table border stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
+        <Table stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
       </div>
         <Page v-if="userDate && userDate.length > 0" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
     </div>
@@ -36,19 +36,19 @@
     <Modal v-model="showUser" title="新增用户" @on-ok="addUser" @on-cancel="addCancel" class="userShowModal">
       <p>
         <span>用户ID</span>
-        <Input v-model="addUsers.userId" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.ptUserId" placeholder="请输入..." style="width: 300px"></Input>
       </p>
       <p>
         <span>用户昵称</span>
-        <Input v-model="addUsers.userName" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.nickname" placeholder="请输入..." style="width: 300px"></Input>
       </p>
       <p>
         <span>用户手机</span>
-        <Input v-model="addUsers.userPhone" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.mobileno" placeholder="请输入..." style="width: 300px"></Input>
       </p>
       <p>
         <span>用户邮箱</span>
-        <Input v-model="addUsers.userMailBox" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.email" placeholder="请输入..." style="width: 300px"></Input>
       </p>
     </Modal>
     <!-- 新增数据弹框end -->
@@ -103,40 +103,37 @@ export default {
       saveStatus: '', // 保存冻结 解冻 ID 发送请求
       seeInformation: [], // 查看个人信息
       addUsers: {
-        userId: '', // 用户ID
-        userName: '', // 用户昵称
-        userPhone: '', // 用户手机
-        userMailBox: '' // 用户邮箱
+        ptUserId: '', // 用户ID
+        nickname: '', // 用户昵称
+        mobileno: '', // 用户手机
+        email: '' // 用户邮箱
       },
       columns1: [
         // title 信息数据
         {
           title: '用户Id',
-          key: 'ptUserId'
+          key: 'ptUserId',
+          align: 'center'
         },
         {
           title: '昵称',
-          key: 'nickname'
+          key: 'nickname',
+          align: 'center'
         },
         {
           title: '手机号码',
-          key: 'mobileno'
+          key: 'mobileno',
+          align: 'center'
         },
         {
           title: '邮箱',
-          key: 'email'
+          key: 'email',
+          align: 'center'
         },
-        // {
-        //   title: '最后一次登录时间',
-        //   key: 'lastLoginTime'
-        // },
-        // {
-        //   title: '最后一次登录IP',
-        //   key: 'lastLoginIp'
-        // },
         {
           title: '操作',
           key: 'operation',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -219,11 +216,11 @@ export default {
     // 更新状态 冻结 解冻
     onUserStatus() {
       let params = {
-        userId: this.saveStatus, // 获取当前点击ID
+        ptUserId: this.saveStatus, // 获取当前点击ID
         status: this.status // 当前所在页
       }
       api.getpaltformUserChange(params).then(data => {
-        if (data === 'true') {
+        if (data === true) {
           this.getUserData() // 数据调用
         }
       })
@@ -262,7 +259,6 @@ export default {
     // 确定新增用户
     addUser() {
       api.getAddUser(this.addUsers).then(res => {
-        console.log(res, 'ssss')
         if (res === true) {
           this.getUserData() // 数据调用
         }
@@ -305,6 +301,9 @@ export default {
 .exportButton {
   margin-left: calc(100% - 142px);
   margin-bottom: 10px;
+}
+.alost {
+  margin-left: calc(100% - 78px);
 }
 
 .exportButton button {
