@@ -60,7 +60,7 @@
       getOrderMenu () {
         let menuIcon = ['ios-navigate', 'ios-keypad', 'ios-analytics', 'ios-telephone', 'ios-paperplane']
         let resMenu = JSON.parse(sessionStorage.getItem('menu'))
-        resMenu.forEach((item) => {
+        resMenu.menusVO.forEach((item) => {
           if (item.url === 'order') {
             if (item.childMenusList.length > 0) {
               this.menu = item.childMenusList.map((item, index) => {

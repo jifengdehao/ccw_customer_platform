@@ -93,7 +93,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common'
-  import * as cookie from '@/data/index'
+ // import * as cookie from '@/data/index'
 
   export default {
     data () {
@@ -103,8 +103,8 @@
     },
     computed: {
       userinfo () {
-        return cookie.userInfo()
-        // return JSON.parse(sessionStorage.getItem('user'))
+        // return cookie.userInfo()
+        return JSON.parse(sessionStorage.getItem('user'))
       }
     },
     created () {
@@ -119,12 +119,12 @@
           case 'logout':
             api.logout().then((res) => {
               if (res) {
-                cookie.delData('userInfo')
-                this.$router.go(0);
+                // cookie.delData('userInfo')
+                sessionStorage.removeItem('user')
+                this.$router.go(0)
               }
             })
-//            sessionStorage.removeItem('user')
-//            this.$router.go(0)
+
             break
         }
       },
@@ -136,7 +136,7 @@
           if (res) {
             console.log(res)
             let menuIcon = ['ios-paper', 'ios-people', 'chatbox-working', 'chatbox', 'help-buoy', 'ios-analytics', 'settings', 'ios-people']
-            this.menu = res.map((item, index) => {
+            this.menu = res.menusVO.map((item, index) => {
               return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url}
             })
             sessionStorage.setItem('menu', JSON.stringify(res))

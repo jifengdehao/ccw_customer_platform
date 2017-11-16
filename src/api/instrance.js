@@ -8,7 +8,7 @@ import axios from 'axios'
 import config from '../../config/config.js'
 import qs from 'qs'
 import iview from 'iview'
-import * as ac from '../data/index.js'
+// import * as ac from '../data/index.js'
 import hash from 'js-md5'
 
 var URI = config.apiDomain
@@ -31,14 +31,14 @@ export const itr = (type, url, params) => {
   if (Object.keys(params).length > 0) {
     url = type === 'get' || type === 'delete' ? url + '?' + arg : url
   }
-  var userInfo = ac.getData('userInfo')
+  var userInfo = JSON.parse(sessionStorage.getItem('user'))
   var token = ''
   if (userInfo) {
     userInfo = typeof userInfo === 'string' ? JSON.parse(userInfo) : userInfo
     token = userInfo.token ? userInfo.token : ''
   }
   var sign = ''
-  if (Object.keys(arg).length === 0) {
+  if (Object.keys(params).length === 0) {
     sign = hash(token)
   } else {
     sign = hash(JSON.stringify(params) + token)

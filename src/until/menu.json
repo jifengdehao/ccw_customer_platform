@@ -241,6 +241,19 @@
           "noDropdown": true
         }
       ]
+    },
+    {
+      "menu": "app",
+      "menuName": "app更新管理",
+      "menuIcon": "android-apps",
+      "submenu": [
+        {
+          "menu": "index",
+          "menuName": "app更新管理",
+          "menuIcon": "images",
+          "noDropdown": true
+        }
+      ]
     }
   ]
 }
