@@ -109,27 +109,52 @@
           </Col>
           <Col span="15">
           <!-- 店铺图片 -->
-          <FormItem prop="password" class="shopMessagemModal-shopimag"  v-model="shopMessage.shopPicUrl">
+          <FormItem prop="password" class="shopMessagemModal-shopimag"  >
             <h3>店铺图片</h3>
-               <update-pic @imgurls="getshopimag" :img-list="shopMessage.shopPicUrl"></update-pic>
-               <!-- <uploadpic @imgurls="getshopimag" :img-list="shopMessage.shopPicUrl"></uploadpic>  -->
+              <div class="img vm-fl" >
+                <img :src="shopMessage.shopPicUrl" alt="" v-model="shopMessage.shopPicUrl">
+                <div class="cover">
+                      <Icon type="ios-eye-outline" @click.native="handleView(shopMessage.shopPicUrl)"></Icon>
+                </div>
+              </div>
+              <div class="uploadButton ">
+                <input type="file" @change="shopimgupload">+
+              </div>
           </FormItem>
           <!-- 营业资质 -->
           <FormItem prop="password" class="shopMessagemModal-qualification">
             <h3>营业资质</h3>
             <ul>
-              <li v-for="item in 4">
-                <div class="img" >
-                  <uploadpic @imgurl="getqualificationimg" :imgList="item.url"></uploadpic>
+              <li v-for="(item,index) in shopMessage.msShopQualification.qualificationList" :key="index">
+                <div class="" >
+                  <div class="img vm-fl">
+                    <img :src="item.url" alt="">
+                    <div class="cover">
+                      <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
+                      <Icon type="ios-trash-outline" @click.native="removeQualificationList(index)"></Icon>
+                    </div>
+                  </div>
+                  <div class="qualification">
+                    <input type="file" @change="qualificationUpload(index)">上传图片
+                  </div>
                 </div>
                 <p>{{item.name}}</p>
               </li>
             </ul>
           </FormItem>
           <!-- 协议合同 -->
-          <FormItem prop="password" class="shopMessagemModal-agreement" v-model="shopMessage.msShopQualification">
+          <FormItem prop="password" class="shopMessagemModal-agreement">
             <h3>协议合同</h3>
-            <update-pic @imgurls="getagreementimg" :img-list="shopMessage.msShopQualification"></update-pic>
+             <div class="img vm-fl" v-model="shopMessage.msShopQualification.protocol" v-for="url in shopMessage.msShopQualification.protocol">
+                <img :src="url" alt="">
+                <div class="cover">
+                    <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
+                    <Icon type="ios-trash-outline" @click.native="removeProtocol(index)"></Icon>
+                </div>
+              </div>
+              <div class="uploadButton ">
+                <input type="file" @change="protocolUpload">+
+              </div>
           </FormItem>
           </Col>
         </Row>
@@ -150,15 +175,22 @@
         </FormItem>
       </Form>
     </Modal>
+     <!-- 查看大图 -->
+     <Modal
+        v-model="picModal"
+        title="查看大图"
+        width="900"
+        class="bigimgs vm-clearfix">
+        <img class="bigimg" :src="bigImgUrl" alt="">
+    </Modal>
   </div>
 </template>
 <script>
 import * as api from 'api/common.js'
-import updatePic from './sellercomponents/updatePIc'
 import * as date from '@/until/time'
-import uploadpic from './sellercomponents/uploadpic'
+import { uploadpic } from '../../until/upload'
 export default {
-  components: { updatePic, uploadpic },
+  components: {},
   props: {},
   data() {
     return {
@@ -167,11 +199,30 @@ export default {
       disabled: true,
       sellerId: 0,
       shopId: 0,
-      shopMessage: {},
+      shopMessage: {
+        msSellerId: '',
+        alipayAccount: '',
+        headUrl: '',
+        shopName: '',
+        shopOwerName: '',
+        shopNo: '',
+        businessDictCode: [],
+        businessHour: '',
+        mobileno: '',
+        notice: '',
+        stallAddress: '',
+        shopPicUrl: [],
+        msShopQualification: {
+          qualificationList: [],
+          protocol: []
+        }
+      },
       shopManageData: {},
       bussinessStatus: [],
       shopMessageModal: false,
-      shopManageModal: false,
+      shopManageModal: false, // 商家账号管理模态框
+      picModal: false, // 查看大图模态框
+      bigImgUrl: '', // 查看大图的图片地址
       sellerAccountData: [{ shopName: 'jjj' }],
       formItem: {},
       businessDictCode: [],
@@ -366,21 +417,37 @@ export default {
         this.$Message.info('重置成功')
       })
     },
-    // 获取子组件传过来的营业资质图片地址
     // 店铺图片
-    getshopimag(msg) {
-      console.log(msg)
-      this.shopMessage.shopPicUrl = msg
+    shopimgupload(e) {
+      var file = e.target.files[0]
+      uploadpic(file).then(res => {
+        this.shopMessage.shopPicUrl = res[0]
+      })
     },
     // 营业资质
-    getqualificationimg(msg) {
-      // this.shopMessage.MsShopQualification = msg
-      this.shopMessage.msShopQualification.qualificationList.url = msg[0]
+    qualificationUpload(e, index) {
+      var file = e.target.files[0]
+      uploadpic(file).then(res => {
+        this.shopMessage.msShopQualification.qualificationList[index].url = res
+      })
     },
     // 协议合同
-    getagreementimg(msg) {
-      // this.shopMessage.MsQualificationItem = msg
-      // this.shopMessage.msShopQualification.protocol = msg
+    protocolUpload(e) {
+      var file = e.target.files[0]
+      uploadpic(file).then(res => {
+        this.shopMessage.msShopQualification.protocol = this.shopMessage.msShopQualification.protocol.concat(
+          res
+        )
+      })
+    },
+    // 查看大图
+    handleView(url) {
+      this.bigImgUrl = url
+      this.picModal = true
+    },
+    // 删除协议合同图片
+    removeProtocol(index) {
+      this.shopMessage.msShopQualification.protocol.splice(index, 1)
     }
   },
   filfter: {},
@@ -438,13 +505,6 @@ export default {
   height: 376px;
   margin-left: 5px;
 }
-/* .shopMessagemModal-shopimag li {
-  position: relative;
-  width: 30%;
-  height: 120px;
-  margin: 0 6px;
-  float: left;
-} */
 .shopMessagemModal-qualification li {
   position: relative;
   width: 45%;
@@ -453,12 +513,6 @@ export default {
   margin: 5px;
   float: left;
 }
-/* .shopMessagemModal-shopimag li img {
-  display: block;
-  width: 150px;
-  height: 120px;
-  border: 1px solid #ddd;
-} */
 .shopMessagemModal-qualification li .img {
   display: block;
   width: 200px;
@@ -494,5 +548,74 @@ export default {
   height: 100px;
   border: 1px solid #ddd;
   border-radius: 50%;
+}
+/* 上传图片按钮和图片位置样式 */
+input[type='file'] {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  cursor: pointer;
+  overflow: hidden;
+}
+.qualification {
+  position: absolute;
+  left: 0;
+  top: 100px;
+  width: 200px;
+  height: 30px;
+  background-color: #ddd;
+  text-align: center;
+}
+
+.uploadButton {
+  width: 120px;
+  height: 120px;
+  line-height: 100px;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  font-size: 80px;
+  margin-left: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+.img {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+.img img {
+  width: 100%;
+  height: 100%;
+}
+/* 图片遮罩层 显示查看大图和删除操作 */
+.cover {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+.img:hover .cover {
+  display: block;
+  width: 120px;
+  height: 120px;
+  text-align: center;
+}
+.cover i {
+  color: #fff;
+  font-size: 30px;
+  cursor: pointer;
+  margin: 0 2px;
+  line-height: 100px;
 }
 </style>

@@ -49,8 +49,9 @@
                   <span>{{data.name}}</span>
                 </div>
                 <div style="width:30%"> 
-                  <p v-for="(item,index) in 1" :key="index" class="tabImg">
-                    <img src="http://h.hiphotos.baidu.com/image/h%3D300/sign=955e34f3eafe9925d40c6f5004a85ee4/d53f8794a4c27d1e7d6c17f211d5ad6eddc438b9.jpg" alt="" class="tabImg">
+                  <p v-for="(item,index) in data.mainPic" :key="index" class="tabImg">
+                    <img :src="item" alt="" class="tabImg">
+                    <!-- <tableimage :pic-urls="item.mainPic"></tableimage>   -->
                   </p>
                 </div>    
                 <div style="width:30%">
@@ -60,7 +61,7 @@
                   <!-- <input type="checkbox" v-modal="data.check"  @click="clickCheck(index)"> -->
                   <Checkbox v-model="data.single" ></Checkbox>
                 </div>
-              </div>
+            </div>
           </draggable>
     </section>
      <!-- 分页 -->
@@ -71,11 +72,7 @@
     <Modal v-model="templateModal" :title="templateTitle" width="900" @on-ok="addtemplate(templateItem)">
       <Form :model="templateItem" ref="templateItem" class="templateModal-from">
         <FormItem>
-          <span>商品名称</span>
-          <Input v-model="templateItem.name" :value="templateItem.name" size="small" style="width: 200px"></Input> <br>
-          <span>商品标签</span>
-          <Input v-model="templateItem.labels" :value="templateItem.labels" size="small" style="width: 200px"></Input> <br>
-          <span class="label">所属分类</span>
+           <span class="label">所属分类</span>
           <i>一级分类</i>
           <Select v-model="templateItem.spCategoryParentId" :value="templateItem.spCategoryParentId" size="small" style="width:100px" @on-change="searchParent(templateItem.spCategoryParentId)">
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId" placeholder="一级分类">{{ item.name }}</Option>
@@ -84,11 +81,38 @@
           <Select v-model="templateItem.spCategoryId" :value="templateItem.spCategoryId" size="small" style="width:100px">
             <Option v-for="item in childdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
           </Select> <br>
+          <span>商品名称</span>
+          <Input v-model="templateItem.name" :value="templateItem.name" size="small" style="width: 200px"></Input> <br>
+          <span>商品标签</span>
+          <Input v-model="templateItem.labels" :value="templateItem.labels" size="small" style="width: 200px"></Input> <br>
+         
           <span>图片</span>
-          <update-pic v-model="templateItem.mainPic" :imgList="templateItem.mainPic" class="mainpic"></update-pic>
+              <div class="img vm-fl" v-model="templateItem.mainPic" v-for="url in templateItem.mainPic">
+                <img :src="url" alt="">
+                <div class="cover">
+                  <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="handleRemove(index)"></Icon>
+                </div>
+              </div>
+              <div class="uploadButton ">
+                <input type="file" @change="mainPicUpload">+
+              </div>
+          <!-- <update-pic v-model="templateItem.mainPic" :imgList="templateItem.mainPic" class="mainpic"></update-pic> -->
            <br>
+           <!-- div隔开图片与图片库 -->
+           <div style="height:5px;"></div> 
           <span>图片库</span>
-          <update-pic v-model="templateItem.picLib" :imgList="templateItem.picLib" class="mainpic"></update-pic>
+              <div class="img vm-fl" v-model="templateItem.picLib" v-for="url in templateItem.picLib">
+                <img :src="url" alt="">
+                <div class="cover">
+                  <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="handleRemove(index)"></Icon>
+                </div>
+              </div>
+              <div class="uploadButton ">
+                <input type="file" @change="picLibUpload">+
+              </div>
+          <!-- <update-pic v-model="templateItem.picLib" :imgList="templateItem.picLib" class="mainpic"></update-pic> -->
           <br>
           <span>产地默认值</span>
           <Input v-model="templateItem.originPlace" :value="templateItem.originPlace" size="small" style="width: 200px"></Input> <br>
@@ -134,7 +158,17 @@
             </tr>
           </table> <br>
           <span>商品详情</span>
-          <update-pic v-model="templateItem.productDesc" :imgList="templateItem.productDesc" class="mainpic"></update-pic>          
+              <div class="img vm-fl" v-model="templateItem.productDesc" v-for="url in templateItem.productDesc">
+                <img :src="url" alt="">
+                <div class="cover">
+                  <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="handleRemove(index)"></Icon>
+                </div>
+              </div>
+              <div class="uploadButton ">
+                <input type="file" @change="productDescUpload">+
+              </div>
+          <!-- <update-pic v-model="templateItem.productDesc" :imgList="templateItem.productDesc" class="mainpic"></update-pic>   -->
         </FormItem>
       </Form>
     </Modal>
@@ -156,18 +190,28 @@
     <Modal v-model="sortModal" title="保存排序" @on-ok="saveSorts">
       <h2>确定保存位置调整？</h2>
     </Modal>
+    <!-- 查看大图 -->
+     <Modal
+        v-model="picModal"
+        title="查看大图"
+        width="900"
+        class="bigimgs vm-clearfix">
+        <img class="bigimg" :src="bigImgUrl" alt="">
+    </Modal>
   </div>
 </template>
 <script>
 import draggable from 'vuedraggable'
 import * as api from 'api/common.js'
-import updatePic from './updatePIc'
+// import updatePic from './updatePIc'
+import { uploadpic } from '../../../until/upload'
+import tableimage from './tableimage'
 // import uploadpic from './uploadpic'
 export default {
   props: ['parentdata'],
   components: {
     draggable,
-    updatePic
+    tableimage
     // uploadpic
   },
   data() {
@@ -177,17 +221,17 @@ export default {
       formItem: {},
       childdata: [],
       weightdata: [],
-      specification: [
-        {
-          attributeType: 1
-        },
-        {
-          attributeType: 2
-        },
-        {
-          attributeType: 3
-        }
-      ], // 商品属性
+      // specification: [
+        // {
+        //   attributeType: 1
+        // },
+        // {
+        //   attributeType: 2
+        // },
+        // {
+        //   attributeType: 3
+        // }
+      // ], // 商品属性
       templateItem: {
         name: '',
         labels: '',
@@ -204,6 +248,8 @@ export default {
       templateModal: false,
       moveModal: false,
       sortModal: false,
+      picModal: false,  // 大图模态框
+      bigImgUrl: '', // 大图地址
       Allsingle: false,
       templateTitle: '',
       templatecolumns: [
@@ -382,6 +428,34 @@ export default {
           item.single = false
         })
       }
+    },
+    // 图片上传
+    mainPicUpload(e) {
+      var file = e.target.files[0]
+      uploadpic(file).then(res => {
+        this.templateItem.mainPic = this.templateItem.mainPic.concat(res)
+      })
+    },
+    // 图片库
+    picLibUpload(e) {
+      var file = e.target.files[0]
+      uploadpic(file).then(res => {
+        this.templateItem.picLib = this.templateItem.picLib.concat(res)
+      })
+    },
+    // 商品详情
+    productDescUpload(e) {
+      var file = e.target.files[0]
+      uploadpic(file).then(res => {
+        this.templateItem.productDesc = this.templateItem.productDesc.concat(
+          res
+        )
+      })
+    },
+    // 查看大图
+    handleView(url) {
+      this.bigImgUrl = url
+      this.picModal = true
     }
   },
   filfter: {},
@@ -396,6 +470,9 @@ export default {
 }
 </script>
 <style lang="css" scoped>
+.foodtemplate{
+  height: 900px;
+}
 .seller-template-manager-search span {
   font-size: 16px;
   vertical-align: middle;
@@ -414,27 +491,29 @@ export default {
   font-size: 16px;
   width: 100%;
   color: #495060;
-  font-size: 12px;
   margin-top: -1px;
   padding: 5px;
+  height: 90px;
   line-height: 80px;
   border: 1px solid #ccc;
   border-collapse: collapse;
   text-align: center;
+  overflow: hidden;
 }
 .draggable div {
   float: left;
 }
 .tabImg {
+  display: inline;
   width: 100px;
   height: 80px;
   margin: 0 auto;
-  /* border: 1px solid #eeeeee; */
 }
 .templateModal-from span {
   display: inline-block;
   width: 80px;
   vertical-align: top;
+  float: left;
 }
 
 .templateModal-from ul {
@@ -461,5 +540,64 @@ export default {
 }
 .mainpic {
   display: inline-block;
+}
+input[type='file'] {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  cursor: pointer;
+  overflow: hidden;
+}
+.uploadButton {
+  width: 100px;
+  height: 100px;
+  line-height: 80px;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  font-size: 80px;
+  margin-left: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+.img {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 3px;
+}
+.img img {
+  width: 100%;
+  height: 100%;
+}
+/* 图片的遮罩层 */
+.cover {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+.img:hover .cover {
+  display: block;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+}
+.cover i {
+  color: #fff;
+  font-size: 30px;
+  cursor: pointer;
+  margin: 0 2px;
+  line-height: 100px;
 }
 </style>

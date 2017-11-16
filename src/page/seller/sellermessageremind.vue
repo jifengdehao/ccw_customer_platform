@@ -114,7 +114,6 @@ export default {
         status: status
       }
       api.getAlertsMessageList(params, pageNo).then(response => {
-        console.log(response)
         this.remindData = response.records
         this.total = response.total
         this.pageSize = response.size
