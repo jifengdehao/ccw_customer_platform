@@ -16,21 +16,21 @@
       </Select>
       <DatePicker :disabled="isAbled"  type="datetime" format="yyyy-MM-dd HH:mm" v-model="params.pushTime" :value="params.pushTime" placeholder="选择日期和时间（不含秒）" style="width: 200px;margin-left:10px"></DatePicker>
     </div>
-    <textarea v-if="routerName !== 'daily_menu_push'" :disabled="isAbled"  :placeholder="'请输入'+tipsMsg + '推送内容'" v-model="params.content"></textarea>
+    <textarea v-if="routerName !== 'daily_menu_push'" :disabled="isAbled" :placeholder="'请输入'+tipsMsg + '推送内容'" v-model="params.content"></textarea>
     <!-- 每日菜谱 -->
     <div class="cookbook" v-if="routerName === 'daily_menu_push'">
       <h3>食材：</h3>
-      <textarea placeholder="请输入你要推送菜谱的食材" v-model="params.ingredient"></textarea>
+      <textarea placeholder="请输入你要推送菜谱的食材" :disabled="isAbled" v-model="params.ingredient"></textarea>
       <h3>烹饪方法：</h3>
-      <textarea placeholder="请输入你要推送菜谱的烹饪方法" v-model="params.cookStep"></textarea>
-      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" :disabled="isAbled" :readonly="isReadOnly" v-model="params.picUrl"><input type="button" value="上传图片" :disabled="isAbled"><input type="file" filetype="image/*" @change="toUpfile"></p>
+      <textarea placeholder="请输入你要推送菜谱的烹饪方法" v-model="params.cookStep" :disabled="isAbled"></textarea>
+      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" :disabled="isAbled" :readonly="isReadOnly" v-model="params.picUrl"><input type="button" value="上传图片" :disabled="isAbled"><input type="file" filetype="image/*" @change="toUpfile($event,'picUrl')"></p>
     </div>
     <!-- 每日菜谱 -->
 
     <!-- 活动消息 -->
     <div class="cookbook" v-if="routerName === 'activity_message_push'">
       <p><input type="text" class="activity-link" placeholder="设置活动链接" :disabled="isAbled" v-model="params.actUrl"></p>
-      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" :disabled="isAbled" :readonly="isReadOnly" v-model="params.picUrl"><input type="button" value="上传图片" :disabled="isAbled"><input type="file" filetype="image/*" @change="toUpfile"></p>
+      <p><input type="text" :placeholder="'上传' + tipsMsg + '图片'" :disabled="isAbled" :readonly="isReadOnly" v-model="params.actPicUrl"><input type="button" value="上传图片" :disabled="isAbled"><input type="file" filetype="image/*" @change="toUpfile($event,'actPicUrl')"></p>
     </div>
     <!-- 活动消息 -->
     <div class="btn-ok" v-if="tabIndex != 3">
@@ -138,15 +138,29 @@ export default {
                           id: params.row.smMssageId
                         })
                         .then(data => {
-                          this.datda = data
+                          this.data = data
+                          this.params.title = this.data.title
+                          this.params.content = this.data.content
+                          this.params.pushType = String(this.data.pushType)
+                          this.params.pushTime = this.data.pushTime
+                          this.params.cookStep = this.data.cookStep
+                          this.params.ingredient = this.data.ingredient
+                          this.params.picUrl = this.data.picUrl
+                          this.params.actUrl = this.data.actUrl
+                          this.params.actPicUrl = this.data.actPicUrl
+                          this.editStatus = 1
+                          this.isAbled = true
                         })
                       // this.data = params.row
-                      this.params.title = params.row.title
-                      this.params.content = params.row.content
-                      this.params.pushType = String(params.row.pushType)
-                      this.params.pushTime = params.row.pushTime
-                      this.editStatus = 1
-                      this.isAbled = true
+                      // this.params.title = params.row.title
+                      // this.params.content = params.row.content
+                      // this.params.pushType = String(params.row.pushType)
+                      // this.params.pushTime = params.row.pushTime
+                      // this.params.cookStep = params.row.cookStep
+                      // this.params.ingredient = params.row.ingredient
+                      // this.params.picUrl = params.row.picUrl
+                      // this.editStatus = 1
+                      // this.isAbled = true
                     }
                   }
                 },
@@ -164,14 +178,37 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.data = params.row
-                      this.params.title = params.row.title
-                      this.params.content = params.row.content
-                      this.params.pushType = params.row.pushType
-                      this.params.pushTime = params.row.pushTime
+                      http
+                        .lookMessage({
+                          id: params.row.smMssageId
+                        })
+                        .then(data => {
+                          this.data = data
+                          this.params.title = this.data.title
+                          this.params.content = this.data.content
+                          this.params.pushType = String(this.data.pushType)
+                          this.params.pushTime = this.data.pushTime
+                          this.params.cookStep = this.data.cookStep
+                          this.params.ingredient = this.data.ingredient
+                          this.params.picUrl = this.data.picUrl
+                          this.params.actUrl = this.data.actUrl
+                          this.params.actPicUrl = this.data.actPicUrl
+                          this.editStatus = 2
+                          this.isAbled = false
+                        })
+
+                      // this.data = params.row
+                      // console.log(this.data)
+                      // this.params.title = params.row.title
+                      // this.params.content = params.row.content
                       // this.params.pushType = params.row.pushType
-                      this.editStatus = 2
-                      this.isAbled = false
+                      // this.params.pushTime = params.row.pushTime
+                      // // this.params.pushType = params.row.pushType
+                      // this.params.cookStep = params.row.cookStep
+                      // this.params.ingredient = params.row.ingredient
+                      // this.params.picUrl = params.row.picUrl
+                      // this.editStatus = 2
+                      // this.isAbled = false
                     }
                   }
                 },
@@ -271,22 +308,44 @@ export default {
           break
         case 2:
           //  编辑
-          this.data.title = this.params.title
-          this.data.content = this.params.content
-          this.data.pushTime = this.params.pushTime
-          this.data.pushType = this.params.pushType
+          // this.data.title = this.params.title
+          // this.data.content = this.params.content
+          // this.data.pushTime = this.params.pushTime
+          // this.data.pushType = this.params.pushType
+          // this.data.actPicUrl = this.params.actPicUrl
+          // this.data.picUrl = this.params.picUrl
+          console.log(this.data)
+          for (let i in this.params) {
+            if (i !== 'pageNo' && i !== 'pageSize') {
+              this.data[i] = this.params[i]
+            }
+          }
           http.putMessage(this.data).then(data => {
             console.log(data)
+            for (let i in this.params) {
+              if (i !== 'pageNo' && i !== 'pageSize') {
+                this.params[i] = ''
+              }
+            }
+            this.checkRouteName()
           })
           break
       }
     },
     //  上传方法
-    toUpfile(e) {
+    toUpfile(e, name) {
+      console.log(name)
       upload.uploadpic(e.target.files[0]).then(data => {
         data = data[0].indexOf('?') ? data[0].split('?')[0] : data[0]
         console.log(data)
-        this.params.picUrl = data
+        this.params[name] = data
+        if (name === 'actPicUrl') {
+          this.params.actPicUrl = data
+          this.params.picUrl = ''
+        } else if (name === 'picUrl') {
+          this.params.picUrl = data
+          this.params.actPicUrl = ''
+        }
         this.isReadOnly = true
         e.target.value = ''
       })
@@ -314,10 +373,10 @@ export default {
       let statusName = ''
       switch (status) {
         case 0:
-          statusName = '推送成功'
+          statusName = '待推送'
           break
         case 1:
-          statusName = '待推送'
+          statusName = '推送成功'
           break
         case 2:
           statusName = '推送失败'
