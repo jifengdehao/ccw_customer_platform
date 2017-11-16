@@ -76,9 +76,7 @@
           verificationCode: ''
         },
         formLoginRules: {
-          userName: [
-            {required: true, message: '请填写用户名', trigger: 'blur'}
-          ],
+          userName: [{required: true, message: '请填写用户名', trigger: 'blur'}],
           password: [
             {required: true, message: '请填写密码', trigger: 'blur'},
             {type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}
@@ -103,7 +101,7 @@
     methods: {
       // 登录
       handleSubmit (name) {
-        this.$refs[name].validate((valid) => {
+        this.$refs[name].validate(valid => {
           if (valid) {
             let params = {
               userName: this.formLogin.userName,
@@ -119,8 +117,8 @@
                 this.$router.push('/')
               }
             })
-//            sessionStorage.setItem('user', JSON.stringify(this.formLogin))
-//            this.$router.push('/')
+//          sessionStorage.setItem('user', JSON.stringify(this.formLogin))
+//          this.$router.push('/')
           } else {
             this.$Notice.error({
               title: '登录验证失败！'
@@ -138,7 +136,7 @@
       },
       // 请求code 验证码
       initCode () {
-        api.getCode().then((res) => {
+        api.getCode().then(res => {
           console.log(res)
           if (res) {
             this.Code = res

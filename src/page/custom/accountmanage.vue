@@ -9,6 +9,12 @@
     <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
       <FormItem prop="phone" label="手机号码" :label-width="80">
         <Input type="text" v-model="formInline.phone" placeholder="请输入手机号"></Input>
+        
+      </FormItem>
+      <FormItem>
+        <Select v-model="params.status" style="width:140px" @on-change="selectLoad">
+            <Option v-for="(item,index) in UserList" :value="item.value" :key="index">{{ item.label }}</Option>
+        </Select>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="search">搜索</Button>
@@ -20,14 +26,7 @@
         <span>{{count.totalCustomer}}</span>
       </label>
     </i-form>
-    <Tabs type="card" @on-click='chooseTabs'>
-      <TabPane label="所用用户">
-        <Table border :columns="allUsersTitle" :data="usersDatas.records"></Table>
-      </TabPane>
-      <TabPane label="冻结用户">
-        <Table border :columns="freezeUsersTitle" :data="usersDatas.records"></Table>
-      </TabPane>
-    </Tabs>
+    <Table border :columns="allUsersTitle" :data="usersDatas.records"></Table>
     <Page :total="usersDatas.total" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
     <Modal v-if="tabIndex == 0" v-model="modalBoolean" :styles="{top: '40px'}" @on-ok="isOkDelete" @on-cancel="modalBoolean=false;">
       <p>设置冻结时间
@@ -45,25 +44,37 @@
   </div>
 </template>
 <script>
-
 import * as http from 'api/common'
 
 export default {
   name: 'accountManage',
-  components: {
-  },
-  props: {
-  },
+  components: {},
+  props: {},
   data() {
     return {
       count: null, //  用户量
       params: {
-        status: null,
+        status: '0',
         mobileno: '',
         pageSize: 10,
         pageNo: 1
       },
-      changeStatus: {  //  冻结与恢复账户
+      UserList: [
+        {
+          label: '所有用户',
+          value: '0'
+        },
+        {
+          label: '正常用户',
+          value: 1
+        },
+        {
+          label: '冻结用户',
+          value: 2
+        }
+      ],
+      changeStatus: {
+        //  冻结与恢复账户
         custId: '',
         frezonTime: 3
       },
@@ -72,10 +83,17 @@ export default {
       },
       ruleInline: {
         phone: [
-          { required: true, message: '请填写正确的手机号', trigger: 'blur', pattern: '^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$' }
+          {
+            required: true,
+            message: '请填写正确的手机号',
+            trigger: 'blur',
+            pattern:
+              '^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$'
+          }
         ]
       },
-      allUsersTitle: [  //  所用用户表头
+      allUsersTitle: [
+        //  所用用户表头
         {
           title: 'ID',
           key: 'mcCustomerId',
@@ -94,7 +112,10 @@ export default {
         {
           title: '最近登录时间',
           key: 'lastUpdateTime',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h('span', this.filterTime(params.row.lastUpdateTime))
+          }
         },
         {
           title: '登录IP',
@@ -112,127 +133,57 @@ export default {
           align: 'center',
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.$router.push(`account_detail/${params.row.mcCustomerId}`)
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push(
+                        `account_detail/${params.row.mcCustomerId}`
+                      )
+                    }
                   }
-                }
-              }, '查看'),
-              h('Button', {
-                props: {
-                  type: 'error',
-                  size: 'small'
                 },
-                on: {
-                  click: () => {
-                    this.modalBoolean = true
-                    this.singleData = params.row
+                '查看'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.modalBoolean = true
+                      this.singleData = params.row
+                    }
                   }
-                }
-              }, '冻结')
+                },
+                '冻结'
+              )
             ])
           }
         }
       ],
-      tabIndex: 0,  // tab索引
+      tabIndex: 0, // tab索引
       usersDatas: {
         //  所用用户数据
       },
-      freezeUsersTitle: [  // 冻结用户表头
-        {
-          title: 'ID',
-          key: 'mcCustomerId',
-          align: 'center'
-        },
-        {
-          title: '手机号码',
-          key: 'mobileno',
-          align: 'center'
-        },
-        {
-          title: '昵称',
-          key: 'custName',
-          align: 'center'
-        },
-        {
-          title: '最近登录时间',
-          key: 'lastUpdateTime',
-          align: 'center'
-        },
-        {
-          title: '登录IP',
-          key: 'lastLoginIp',
-          align: 'center'
-        },
-        {
-          title: '冻结时间',
-          key: 'frezonTime',
-          align: 'center'
-        },
-        {
-          title: '操作人员',
-          key: 'creator',
-          align: 'center'
-        },
-        {
-          title: '账号状态',
-          key: 'statusName',
-          align: 'center'
-        },
-        {
-          title: '操作',
-          key: 'action',
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.$router.push(`account_detail/${params.row.mcCustomerId}`)
-                  }
-                }
-              }, '查看'),
-              h('Button', {
-                props: {
-                  type: 'error',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.modalBoolean = true
-                    this.singleData = params.row
-                  }
-                }
-              }, '恢复')
-            ])
-          }
-        }
-      ],
-      modalBoolean: false,  //  对话框是否显示
+      modalBoolean: false, //  对话框是否显示
       singleData: null //  单个数据
     }
   },
-  activited: {
-  },
-  update: {
-  },
-  beforeRouteUpdate: {
-  },
+  activited: {},
+  update: {},
+  beforeRouteUpdate: {},
   created() {
     this.getUsersList()
     this.getCustomerCount()
@@ -240,26 +191,22 @@ export default {
   methods: {
     //  加载数据
     getUsersList() {
-      http.getUsersList(this.params).then(
-        (data) => {
-          data.records.forEach((item, index) => {
-            if (item.status === 1) {
-              item.statusName = '正常'
-            } else if (item.status === 2) {
-              item.statusName = '冻结'
-            }
-          })
-          this.usersDatas = data
-        }
-      )
+      http.getUsersList(this.params).then(data => {
+        data.records.forEach((item, index) => {
+          if (item.status === 1) {
+            item.statusName = '正常'
+          } else if (item.status === 2) {
+            item.statusName = '冻结'
+          }
+        })
+        this.usersDatas = data
+      })
     },
     //  获取用户端昨日新增用户量和当前用户量
     getCustomerCount() {
-      http.getCustomerCount().then(
-        (data) => {
-          this.count = data
-        }
-      )
+      http.getCustomerCount().then(data => {
+        this.count = data
+      })
     },
     //  tab选择
     chooseTabs(index) {
@@ -284,7 +231,7 @@ export default {
       this.changeStatus.custId = this.singleData.mcCustomerId
       if (this.tabIndex === 0) {
         //  冻结账户
-        http.changeStatus(this.changeStatus).then((data) => {
+        http.changeStatus(this.changeStatus).then(data => {
           this.usersDatas.records.forEach((item, index) => {
             if (item.mcCustomerId === this.singleData.mcCustomerId) {
               this.usersDatas.records.splice(index, 1)
@@ -295,7 +242,7 @@ export default {
       } else {
         //  恢复账户
         this.changeStatus.frezonTime = null
-        http.changeStatus(this.changeStatus).then((data) => {
+        http.changeStatus(this.changeStatus).then(data => {
           this.getUsersList()
         })
       }
@@ -307,7 +254,9 @@ export default {
     },
     //  手机号搜索
     search() {
-      let reg = new RegExp('^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$')
+      let reg = new RegExp(
+        '^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$'
+      )
       if (!reg.test(this.formInline.phone)) {
         return
       }
@@ -317,18 +266,45 @@ export default {
           break
         }
       }
-      this.params.status = null
       this.params.pageSize = 10
       this.params.pageNo = 1
       this.getUsersList()
+    },
+    selectLoad() {
+      this.params.mobileno = ''
+      this.formInline.phone = ''
+      this.getUsersList()
+    },
+    //  时间过滤
+    filterTime(value) {
+      let date = new Date(value)
+      let params = {
+        year: date.getFullYear(),
+        month:
+          date.getMonth() + 1 < 10
+            ? '0' + date.getMonth() + 1
+            : date.getMonth() + 1,
+        day:
+          date.getDate() + 1 < 10
+            ? '0' + date.getDate() + 1
+            : date.getDate() + 1,
+        hour:
+          date.getHours() + 1 < 10 ? '0' + date.getHours() : date.getHours(),
+        minutes:
+          date.getMinutes() + 1 < 10
+            ? '0' + date.getMinutes()
+            : date.getMinutes(),
+        seconds:
+          date.getSeconds() + 1 < 10
+            ? '0' + date.getSeconds()
+            : date.getSeconds()
+      }
+      return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
     }
   },
-  filter: {
-  },
-  computed: {
-  },
-  watch: {
-  }
+  filter: {},
+  computed: {},
+  watch: {}
 }
 </script>
 <style lang="css" scoped>

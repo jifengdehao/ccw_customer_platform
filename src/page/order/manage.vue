@@ -16,8 +16,8 @@
     </i-form>
     <Tabs value="0" @on-click="selectTab" :animated="false">
       <Tab-pane label="全部订单" name="0">
-        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
-        <i-col span="24" class="mt20">
+        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Col span="24" class="mt20">
           <Page
             :total="tableTotal"
             :current="curr"
@@ -26,11 +26,11 @@
             show-total
             class="vm-fr"
           ></Page>
-        </i-col>
+        </Col>
       </Tab-pane>
       <Tab-pane label="待付款" name="1">
-        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
-        <i-col span="24" class="mt20">
+        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Col span="24" class="mt20">
           <Page
             :total="tableTotal"
             :current="curr"
@@ -39,11 +39,11 @@
             show-total
             class="vm-fr"
           ></Page>
-        </i-col>
+        </Col>
       </Tab-pane>
       <Tab-pane label="待接单" name="2">
-        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
-        <i-col span="24" class="mt20">
+        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Col span="24" class="mt20">
           <Page
             :total="tableTotal"
             :current="curr"
@@ -52,11 +52,11 @@
             show-total
             class="vm-fr"
           ></Page>
-        </i-col>
+        </Col>
       </Tab-pane>
       <Tab-pane label="待发货" name="3">
-        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
-        <i-col span="24" class="mt20">
+        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Col span="24" class="mt20">
           <Page
             :total="tableTotal"
             :current="curr"
@@ -65,11 +65,11 @@
             show-total
             class="vm-fr"
           ></Page>
-        </i-col>
+        </Col>
       </Tab-pane>
       <Tab-pane label="配送中" name="4">
-        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
-        <i-col span="24" class="mt20">
+        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Col span="24" class="mt20">
           <Page
             :total="tableTotal"
             :current="curr"
@@ -78,11 +78,11 @@
             show-total
             class="vm-fr"
           ></Page>
-        </i-col>
+        </Col>
       </Tab-pane>
       <Tab-pane label="待评价" name="5">
-        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
-        <i-col span="24" class="mt20">
+        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Col span="24" class="mt20">
           <Page
             :total="tableTotal"
             :current="curr"
@@ -91,11 +91,11 @@
             show-total
             class="vm-fr"
           ></Page>
-        </i-col>
+        </Col>
       </Tab-pane>
       <Tab-pane label="已完成" name="6">
-        <i-table :columns="columns" :data="data" stripe :loading="loading"></i-table>
-        <i-col span="24" class="mt20">
+        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Col span="24" class="mt20">
           <Page
             :total="tableTotal"
             :current="curr"
@@ -104,7 +104,20 @@
             show-total
             class="vm-fr"
           ></Page>
-        </i-col>
+        </Col>
+      </Tab-pane>
+      <Tab-pane label="取消订单" name="7">
+        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Col span="24" class="mt20">
+        <Page
+          :total="tableTotal"
+          :current="curr"
+          :page-size="pageNum"
+          @on-change="changePage"
+          show-total
+          class="vm-fr"
+        ></Page>
+        </Col>
       </Tab-pane>
       <Button type="primary" class="vm-fr" @click="exportModal=true" slot="extra">导出</Button>
     </Tabs>
@@ -124,6 +137,7 @@
 <script type="text/ecmascript-6">
   import expandRow from 'components/table/expand-row'
   import * as api from 'api/common.js'
+  import * as time from '@/until/time'
 
   export default {
     data () {
@@ -166,7 +180,10 @@
           {
             title: '下单时间',
             key: 'submitTime',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.submitTime)
+            }
           },
           {
             title: '订单状态',

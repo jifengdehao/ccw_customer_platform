@@ -22,6 +22,7 @@ Vue.use(VCharts)
 
 router.beforeEach((to, from, next) => {
   let path = to.path.substr(1)
+  // let user = JSON.parse(sessionStorage.getItem('user'))
   let user = cookie.userInfo()
   if (path !== 'login') {
     if (!user) {

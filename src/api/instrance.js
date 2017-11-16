@@ -9,6 +9,7 @@ import config from '../../config/config.js'
 import qs from 'qs'
 import iview from 'iview'
 import * as ac from '../data/index.js'
+import hash from 'js-md5'
 
 var URI = config.apiDomain
 var ax = axios.create({
@@ -17,7 +18,8 @@ var ax = axios.create({
   withCredentials: true, // 跨域携带证书
   headers: {
     // 'Content-Type': 'application/x-www-form-urlencoded',
-    CCWTOKEN: ''
+    CCWTOKEN: '',
+    sign: ''
   }
 })
 
@@ -35,7 +37,14 @@ export const itr = (type, url, params) => {
     userInfo = typeof userInfo === 'string' ? JSON.parse(userInfo) : userInfo
     token = userInfo.token ? userInfo.token : ''
   }
-  ax.defaults.headers.TOKEN = token
+  var sign = ''
+  if (Object.keys(arg).length === 0) {
+    sign = hash(token)
+  } else {
+    sign = hash(JSON.stringify(params) + token)
+  }
+  ax.defaults.headers.CCWTOKEN = token
+  ax.defaults.headers.sign = sign
   return ax[type](url, params)
 }
 

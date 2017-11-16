@@ -14,27 +14,43 @@
 
   export default {
     name: 'activity',
-    data() {
+    data () {
       return {
         menu: [
-          {
-            name: 'index_banner_manage',
-            text: '首页banner图管理',
-            icon: 'images',
-            noDropdown: true
-          },
-          {
-            name: 'coupon_management',
-            text: '优惠卷管理',
-            icon: 'briefcase',
-            noDropdown: true
-          }
+//          {
+//            name: 'index_banner_manage',
+//            text: '首页banner图管理',
+//            icon: 'images',
+//            noDropdown: true
+//          },
+//          {
+//            name: 'coupon_management',
+//            text: '优惠卷管理',
+//            icon: 'briefcase',
+//            noDropdown: true
+//          }
         ]
       }
     },
+    created () {
+      this.getActiveMenu()
+    },
     methods: {
-      route(name) {
+      route (name) {
         this.$router.push('/activity/' + name)
+      },
+      getActiveMenu () {
+        let menuIcon = ['images', 'briefcase']
+        let resMenu = JSON.parse(sessionStorage.getItem('menu'))
+        resMenu.forEach((item) => {
+          if (item.url === 'activity') {
+            if (item.childMenusList.length > 0) {
+              this.menu = item.childMenusList.map((item, index) => {
+                return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url, noDropdown: true}
+              })
+            }
+          }
+        })
       }
     },
     components: {
