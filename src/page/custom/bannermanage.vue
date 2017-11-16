@@ -51,10 +51,10 @@
               <tr>
                 <th v-for="tab in bannerThENDdata" :key="tab.id" :width="tab.style">{{ tab.key }}</th>
               </tr>
-              <tr v-for="data in bannerData" :key="data.id">
-                <td>{{ data.position }}</td>
+              <tr v-for="(data,index) in bannerData" :key="data.id">
+                <td>{{ index+1 }}</td>
                 <td>{{ data.remark }}</td>
-                <td>{{ data.updateAt }}</td>
+                <td>{{ filterTime(data.startTime) }}</td>
                 <td>{{ filterTime(data.endTime) }}</td>
                 <td><Button type="primary" @click="seeModal(data)">查看</Button></td>
               </tr>
@@ -83,7 +83,7 @@
                 <tr>
                   <td>{{ seeBannerData.ptBannerId }}</td>
                   <td>
-                    <img :src="seeBannerData.picUrl" alt="">
+                    <img :src="seeBannerData.picUrl" width="300" alt="">
                   </td>
                   <td>{{ seeBannerData.linkUrl }}</td>
                   <td>{{ seeBannerData.remark }}</td>
@@ -152,7 +152,7 @@ export default {
           style: '20%'
         },
         {
-          key: '更新时间',
+          key: '开始时间',
           style: '20%'
         },
         {
@@ -206,7 +206,7 @@ export default {
         startTime: '',
         position: '',
         remark: '',
-        addStatus: '1'
+        status: 0
       })
     },
     // 请求banner列表数据
@@ -263,9 +263,13 @@ export default {
     },
     // 查看banner弹框数据
     seeModal(data) {
-      api.seeBanner(data.ptBannerId).then(data => {
+      if (this.$route.fullPath.indexOf('market_push') > -1) {
         this.seeBannerData = data
-      })
+      } else {
+        api.seeBanner(data.ptBannerId).then(data => {
+          this.seeBannerData = data
+        })
+      }
       this.seeBannerClose = true // 打开查看bnner模态框
     },
     //  关闭查看banner弹框
@@ -292,6 +296,7 @@ export default {
         let res = data[0]
         res = res.indexOf('?') ? res.split('?')[0] : res
         item.picUrl = res
+        e.target.value = ''
       })
     },
     datadragEnd(evt) {

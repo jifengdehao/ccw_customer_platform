@@ -93,7 +93,6 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common'
- // import * as cookie from '@/data/index'
 
   export default {
     data () {
@@ -103,7 +102,6 @@
     },
     computed: {
       userinfo () {
-        // return cookie.userInfo()
         return JSON.parse(sessionStorage.getItem('user'))
       }
     },
@@ -119,7 +117,6 @@
           case 'logout':
             api.logout().then((res) => {
               if (res) {
-                // cookie.delData('userInfo')
                 sessionStorage.removeItem('user')
                 this.$router.go(0)
               }

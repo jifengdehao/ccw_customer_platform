@@ -118,11 +118,6 @@ export default {
           }
         },
         {
-          title: '登录IP',
-          key: 'lastLoginIp',
-          align: 'center'
-        },
-        {
           title: '账号状态',
           key: 'statusName',
           align: 'center'

@@ -225,17 +225,17 @@ export default {
         // 请求数据
         this.bannerData = data.records
         this.total = data.total
-        for (let i = 0; i < this.bannerData.length; i++) {
-          this.bannerImg = this.bannerData[i].picUrl
-        }
       })
     },
     // 点击操作button 结束 删除
     onChangButton(data, index) {
       if (this.status === 0) {
         // 点击结束
-        api.endBanner(data.ptBannerId).then(data => {})
-        this.getCurrentListData() // 调用列表数据
+        api.endBanner(data.ptBannerId).then(data => {
+          if (data === true) {
+            this.getCurrentListData() // 调用列表数据
+          }
+        })
       } else if (this.status === 1) {
         // 点击删除
         if (!data.ptBannerId) {
@@ -245,15 +245,20 @@ export default {
           }
           this.bannerData.splice(this.bannerData.length - 1, 1)
         } else {
-          api.deleteBanner(data.ptBannerId).then(data => {})
-          this.getCurrentListData() // 调用列表数据
+          api.deleteBanner(data.ptBannerId).then(data => {
+            if (data === true) {
+              this.getCurrentListData() // 调用列表数据
+            }
+          })
         }
       }
     },
     // 查看banner弹框数据
     seeModal(data) {
       api.seeBanner(data.ptBannerId).then(res => {
-        this.seeBannerData = res
+        if (res && res != null) {
+          this.seeBannerData = res
+        }
       })
       this.seeBannerClose = true // 打开查看bnner模态框
     },
@@ -265,9 +270,17 @@ export default {
     getSaveChanges() {
       if (this.status === 1) {
         // 调用自增 保存api
-        api.addUpdataBanner(this.bannerData).then(data => {})
+        api.addUpdataBanner(this.bannerData).then(data => {
+          if (data === true) {
+            this.getCurrentListData()
+          }
+        })
       } else if (this.status === 0) {
-        api.addUpdataBanner(this.bannerData).then(data => {})
+        api.addUpdataBanner(this.bannerData).then(data => {
+          if (data === true) {
+            this.getCurrentListData()
+          }
+        })
       }
     },
     // 上传图片

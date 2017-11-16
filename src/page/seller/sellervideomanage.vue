@@ -40,6 +40,7 @@
 <script>
 import * as api from 'api/common.js'
 import tableImg from './sellercomponents/tableimage'
+import * as date from '@/until/time'
 // 商品图片
 let producttitle = [
   {
@@ -79,9 +80,7 @@ let producttitle = [
     width: 200,
     align: 'center',
     render: (h, params) => {
-      return h('div', [
-        h('span', {}, this.formatDateTime(params.row.lastUpdateTime))
-      ])
+      return date.formatDateTime(params.row.lastUpdateTime)
     }
   },
   {
@@ -155,9 +154,7 @@ let shoptitle = [
     title: '商品添加或修改时间',
     key: 'lastUpdateTime',
     render: (h, params) => {
-      return h('div', [
-        h('span', {}, this.formatDateTime(params.row.lastUpdateTime))
-      ])
+      return date.formatDateTime(params.row.lastUpdateTime)
     }
   },
   {
@@ -231,9 +228,7 @@ let avatar = [
     title: '商品添加或修改时间',
     key: 'lastUpdateTime',
     render: (h, params) => {
-      return h('div', [
-        h('span', {}, this.formatDateTime(params.row.lastUpdateTime))
-      ])
+      return date.formatDateTime(params.row.pushTime)
     }
   },
   {
@@ -462,17 +457,6 @@ export default {
         this.auditShopPicStatus(this.id, 1, 0)
       } else if (this.current === 2) {
         this.auditShopPicStatus(this.id, 2, 0)
-      }
-    },
-    formatDateTime(inputTime) {
-      if (inputTime) {
-        var date = new Date(inputTime)
-        var y = date.getFullYear()
-        var m = date.getMonth() + 1
-        m = m < 10 ? '0' + m : m
-        var d = date.getDate()
-        d = d < 10 ? '0' + d : d
-        return y + '-' + m + '-' + d
       }
     }
   },

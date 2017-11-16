@@ -3,18 +3,22 @@
     <div class="searchInput">
       <p>手机号码：</p>
       <input type="text" v-model="searchMobileno">
+      <Select v-model="status" style="width:150px;margin-left:10px; margin-right: 10px;">
+        <Option value="0">正常用户</Option>
+        <Option value="1">冻结用户</Option>
+      </Select>
       <Button type="primary"@click="onSearchMobile" icon="ios-search">搜索</Button>
     </div>
     <div>
-      <Tabs @on-click="onSwitch" :animated="false">
-        <TabPane v-for="menu in userMenu" :key="menu.id" :label="menu">
-          <Table border stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
-        </TabPane>
-         <Page v-if="userDate && userDate.length > 0" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
-        <Button type="primary" style="margin-right: 7px;" slot="extra" size="large" @click="onExportModal">
-          <Icon type="ios-download-outline"></Icon> 导出</Button>
-        <Button type="ghost" size="large" slot="extra" @click="onShowUser" v-if="addHidden">增加</Button>
-      </Tabs>
+      <div class="exportButton" :class="{'alost': addHidden === false}">
+         <button style="margin-right: 7px;" @click="onExportModal">
+          <Icon type="ios-download-outline"></Icon> 导出</button>
+         <button @click="onShowUser" v-if="addHidden">增加</button>
+      </div>
+      <div>
+        <Table stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
+      </div>
+        <Page v-if="userDate && userDate.length > 0" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
     </div>
     <!-- 导出数据弹框start -->
     <Modal v-model="exportModal" width="300">
@@ -32,19 +36,19 @@
     <Modal v-model="showUser" title="新增用户" @on-ok="addUser" @on-cancel="addCancel" class="userShowModal">
       <p>
         <span>用户ID</span>
-        <Input v-model="userId" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.ptUserId" placeholder="请输入..." style="width: 300px"></Input>
       </p>
       <p>
         <span>用户昵称</span>
-        <Input v-model="userName" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.nickname" placeholder="请输入..." style="width: 300px"></Input>
       </p>
       <p>
         <span>用户手机</span>
-        <Input v-model="userPhone" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.mobileno" placeholder="请输入..." style="width: 300px"></Input>
       </p>
       <p>
         <span>用户邮箱</span>
-        <Input v-model="userMailBox" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.email" placeholder="请输入..." style="width: 300px"></Input>
       </p>
     </Modal>
     <!-- 新增数据弹框end -->
@@ -83,7 +87,7 @@ export default {
       searchMobileno: '', // 搜索电话
       userMenu: ['正常用户', '冻结用户'], // 导航 table切换数据
       userDate: [], // 列表数据
-      status: 0, // 默认切换teble 状态
+      status: '0', // 默认切换teble 状态
       pageSize: 10, // 分页参数，表示每页显示多少条记录
       pageNo: 1, // 分页参数，表示当前页
       total: '', // 总页数
@@ -98,27 +102,33 @@ export default {
       userStatus: '冻结', // 用户操作状态
       saveStatus: '', // 保存冻结 解冻 ID 发送请求
       seeInformation: [], // 查看个人信息
-      userId: '', // 用户ID
-      userName: '', // 用户昵称
-      userPhone: '', // 用户手机
-      userMailBox: '', // 用户邮箱
+      addUsers: {
+        ptUserId: '', // 用户ID
+        nickname: '', // 用户昵称
+        mobileno: '', // 用户手机
+        email: '' // 用户邮箱
+      },
       columns1: [
         // title 信息数据
         {
           title: '用户Id',
-          key: 'ptUserId'
+          key: 'ptUserId',
+          align: 'center'
         },
         {
           title: '昵称',
-          key: 'nickname'
+          key: 'nickname',
+          align: 'center'
         },
         {
           title: '手机号码',
-          key: 'mobileno'
+          key: 'mobileno',
+          align: 'center'
         },
         {
           title: '邮箱',
-          key: 'email'
+          key: 'email',
+          align: 'center'
         },
         // {
         //   title: '最后一次登录时间',
@@ -131,6 +141,7 @@ export default {
         {
           title: '操作',
           key: 'operation',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -146,11 +157,9 @@ export default {
                   on: {
                     click: () => {
                       this.checkUser = true
-                      if (this.status === 0) {
-                        api.getplatformUserId(params.row.ptUserId).then(res => {
-                          this.seeInformation = res
-                        })
-                      }
+                      api.getplatformUserId(params.row.ptUserId).then(res => {
+                        this.seeInformation = res
+                      })
                     }
                   }
                 },
@@ -200,18 +209,13 @@ export default {
     },
     // 搜索电话
     onSearchMobile() {
-      this.getUserData() // 初始化列表数据
-    },
-    onSwitch(value) {
-      this.status = value // 获取当前点击状态
       this.pageNo = 1 // 每次切换 初始化页面 1
-      this.getUserData() // 数据调用
-      // 切换导航
-      if (value === 0) {
+      this.getUserData() // 初始化列表数据
+      if (this.status === '0') {
         this.userProcessu = '确定将用户冻结？' // 冻结用户弹框内容
         this.userStatus = '冻结' // 用户状态
         this.addHidden = true // 新增弹框显示
-      } else if (value === 1) {
+      } else if (this.status === '1') {
         this.userStatus = '解冻' // 用户状态更换
         this.userProcessu = '确定将用户解冻？' // 解冻用户弹框内容
         this.addHidden = false
@@ -220,11 +224,11 @@ export default {
     // 更新状态 冻结 解冻
     onUserStatus() {
       let params = {
-        userId: this.saveStatus, // 获取当前点击ID
+        ptUserId: this.saveStatus, // 获取当前点击ID
         status: this.status // 当前所在页
       }
       api.getpaltformUserChange(params).then(data => {
-        if (data === 'true') {
+        if (data === true) {
           this.getUserData() // 数据调用
         }
       })
@@ -251,28 +255,18 @@ export default {
       api.getUserExport(params).then(res => {
         if (res && res != null) {
           window.open(res)
-          this.exportModal = false
         }
       })
+      this.exportModal = false
     },
     // 新增用户 打开弹框 清空默认值
     onShowUser() {
-      this.userName = ''
-      this.userPhone = ''
-      this.userMailBox = ''
-      this.userId = ''
+      this.addUsers = {}
       this.showUser = true
     },
+    // 确定新增用户
     addUser() {
-      // 确定新增用户
-      let params = {
-        nickname: this.userName,
-        mobileno: this.userPhone,
-        email: this.userMailBox,
-        ptUserId: this.userId
-      }
-      api.getAddUser(params).then(res => {
-        console.log(res, 'ssss')
+      api.getAddUser(this.addUsers).then(res => {
         if (res === true) {
           this.getUserData() // 数据调用
         }
@@ -310,5 +304,31 @@ export default {
 
 .userShowModal p span {
   margin-right: 15px;
+}
+
+.exportButton {
+  margin-left: calc(100% - 142px);
+  margin-bottom: 10px;
+}
+.alost {
+  margin-left: calc(100% - 78px);
+}
+
+.exportButton button {
+  color: #fff;
+  background-color: #2d8cf0;
+  border-color: #2d8cf0;
+  padding: 6px 15px 7px 15px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+}
+
+.exportButton button:nth-child(2) {
+  color: #495060;
+  background-color: transparent;
+  border: 1px solid #dddee1;
 }
 </style>
