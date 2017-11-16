@@ -623,7 +623,7 @@ export const getAddUser = params => {
 
 // 冻结。解冻用户
 export const getpaltformUserChange = params => {
-  return ax.pa('/platform/user/changeState', params)
+  return ax.u('/platform/user/changeState', params)
 }
 
 // 平台用户导出用户数据/platform/user/export
