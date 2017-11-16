@@ -284,6 +284,9 @@ export default {
       uploadpic(url).then(res => {
         if (res) {
           data.picUrl = res[0]
+          data.picUrl = data.picUrl.indexOf('?')
+            ? data.picUrl.split('?')[0]
+            : data.picUrl
         }
       })
     },
