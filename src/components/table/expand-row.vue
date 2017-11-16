@@ -43,6 +43,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common.js'
+  import * as time from '@/until/time'
 
   export default {
     props: {
@@ -69,7 +70,10 @@
           {
             title: '下单时间',
             key: 'submitTime',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.submitTime)
+            }
           },
           {
             title: '订单状态',

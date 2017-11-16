@@ -8,17 +8,63 @@ import * as ax from './instrance'
 
 // 上传地址
 export const uploadUrl = ax.uploadUrl
+/** app 更新模块 author: zhangwenlong start **/
 
-// 获取首页数据
+/**
+ * 获取app 更新列表
+ * @param pageNo
+ * @param params
+ */
+export const getAppListData = (pageNo, params) => {
+  return ax.g(`/apps/list/${pageNo}`, params)
+}
+/**
+ * 根据app版本id获取详情
+ * @param params
+ */
+export const getAppDetails = params => {
+  return ax.g(`/apps/${params}`)
+}
+/**
+ * 根据app版本id删除
+ * @param params
+ */
+export const deleteApp = params => {
+  return ax.d(`/apps/${params}`)
+}
+/**
+ * 根据app版本id 修改
+ * @param params
+ */
+export const putAppDetails = params => {
+  return ax.u(`/apps/${params}`)
+}
+/**
+ * 新增app更新
+ * @param params
+ */
+export const addApp = params => {
+  return ax.p('/apps', params)
+}
+
+/** app 更新模块 end **/
+
+/** 用户登录登出，个人信息，修改密码 首页 author:zhangwenlong start**/
+
+/**
+ * 获取首页数据
+ * @param params=>null
+ */
 export const getIndexData = params => {
   return ax.g('/platform/index', params)
 }
-// 获取菜单
+/**
+ * 获取菜单
+ * @param params=>null
+ */
 export const getMemuData = params => {
   return ax.g('/platform/menu/list', params)
 }
-
-/** 用户登录登出，个人信息，修改密码 首页 start**/
 
 /**
  * 登录

@@ -46,7 +46,7 @@
         this.$router.push('/users/' + name)
       },
       getUserMenu () {
-        let menuIcon = ['ios-analytics']
+        let menuIcon = ['ios-analytics', 'settings', 'aperture']
         let resMenu = JSON.parse(sessionStorage.getItem('menu'))
         resMenu.menusVO.forEach((item) => {
           if (item.url === 'users') {

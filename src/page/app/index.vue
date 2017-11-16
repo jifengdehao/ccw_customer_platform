@@ -10,9 +10,21 @@
       <Button type="primary" @click="add">新增</Button>
     </div>
     <Table :data="data" :columns="columns"></Table>
+    <div class="mt20">
+      <Page
+        :total="tableTotal"
+        :current="curr"
+        :page-size="pageNum"
+        @on-change="changePage"
+        show-total
+        class="vm-fr"
+      ></Page>
+    </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import * as api from 'api/common'
+
   export default {
     data () {
       return {
@@ -65,7 +77,13 @@
                   },
                   on: {
                     click: () => {
-                      this.data.splice(index, 1)
+                      let that = this
+                      this.$Modal.warning({
+                        content: '确定删除这更新？',
+                        onOk () {
+                          that.data.splice(index, 1)
+                        }
+                      })
                     }
                   }
                 }, '删除')
@@ -116,6 +134,13 @@
     methods: {
       add () {
         this.$router.push('/app/addAppUpdate')
+      },
+      getAppListData () {
+        api.getAppListData().then((res) => {
+          if (res) {
+            console.log(res)
+          }
+        })
       }
     }
   }

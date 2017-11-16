@@ -29,7 +29,7 @@ export const itr = (type, url, params) => {
   }
   let arg = qs.stringify(params)
   if (Object.keys(params).length > 0) {
-    url = type === 'get' || type === 'delete' ? url + '?' + arg : url
+    url = type === 'get' ? url + '?' + arg : url
   }
   var userInfo = JSON.parse(sessionStorage.getItem('user'))
   var token = ''
@@ -41,7 +41,11 @@ export const itr = (type, url, params) => {
   if (Object.keys(params).length === 0) {
     sign = hash(token)
   } else {
-    sign = hash(JSON.stringify(params) + token)
+    if (type === 'get') {
+      sign = hash(arg + token)
+    } else {
+      sign = hash(JSON.stringify(params) + token)
+    }
   }
   ax.defaults.headers.CCWTOKEN = token
   ax.defaults.headers.sign = sign

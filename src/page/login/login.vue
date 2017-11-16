@@ -62,7 +62,6 @@
 <script type="text/ecmascript-6">
   import * as api from 'api/common.js'
   // import hash from 'js-md5'
-  // import * as cookie from '@/data/index'
 
   export default {
     name: 'login',
@@ -113,13 +112,10 @@
             api.login(params).then((res) => {
               console.log(res)
               if (res) {
-                // cookie.setData('userInfo', JSON.stringify(res))
                 sessionStorage.setItem('user', JSON.stringify(res))
-                this.$router.go(0)
+                this.$router.go('/')
               }
             })
-//          sessionStorage.setItem('user', JSON.stringify(this.formLogin))
-//          this.$router.push('/')
           } else {
             this.$Notice.error({
               title: '登录验证失败！'

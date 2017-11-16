@@ -17,18 +17,34 @@
     data () {
       return {
         menu: [
-          {
-            name: 'index',
-            text: 'app更新管理',
-            icon: 'images',
-            noDropdown: true
-          }
+//          {
+//            name: 'index',
+//            text: 'app更新管理',
+//            icon: 'images',
+//            noDropdown: true
+//          }
         ]
       }
+    },
+    created () {
+      this.getAppMenu()
     },
     methods: {
       route (name) {
         this.$router.push('/app/' + name)
+      },
+      getAppMenu () {
+        let menuIcon = ['images']
+        let resMenu = JSON.parse(sessionStorage.getItem('menu'))
+        resMenu.menusVO.forEach((item) => {
+          if (item.url === 'app') {
+            if (item.childMenusList.length > 0) {
+              this.menu = item.childMenusList.map((item, index) => {
+                return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url, noDropdown: true}
+              })
+            }
+          }
+        })
       }
     },
     components: {

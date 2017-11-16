@@ -34,6 +34,15 @@
           <Option value="ios">ios</Option>
         </Select>
       </FormItem>
+      <FormItem label="包路径">
+        <Input v-model="path" placeholder="请输入包路径"></Input>
+      </FormItem>
+      <FormItem label="强制升级">
+        <RadioGroup v-model="upgrade">
+          <Radio label="yes">是</Radio>
+          <Radio label="no">否</Radio>
+        </RadioGroup>
+      </FormItem>
       <FormItem label="">
         <Button type="primary">提交</Button>
       </FormItem>
@@ -49,7 +58,10 @@
         version: '',
         datetime: new Date(),
         versionReq: '',
-        platform: ''
+        platform: '',
+        path: '',
+        upgrade: '',
+        dsc: ''
       }
     },
     methods: {
