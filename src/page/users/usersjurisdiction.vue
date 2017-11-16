@@ -72,16 +72,6 @@ export default {
           align: 'center'
         },
         {
-          title: '最后一次登录时间',
-          key: 'lastLoginTime',
-          align: 'center'
-        },
-        {
-          title: '最后一次登录IP',
-          key: 'lastLoginIp',
-          align: 'center'
-        },
-        {
           title: '操作',
           key: 'operation',
           align: 'center',
@@ -168,6 +158,7 @@ export default {
         if (res && res != null) {
           window.open(res)
         }
+        this.exportModal = false
       })
     },
     // 分页数据

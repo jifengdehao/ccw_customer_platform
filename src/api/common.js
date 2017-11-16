@@ -627,7 +627,7 @@ export const getAddUser = params => {
 
 // 冻结。解冻用户
 export const getpaltformUserChange = params => {
-  return ax.pa('/platform/user/changeState', params)
+  return ax.u('/platform/user/changeState', params)
 }
 
 // 平台用户导出用户数据/platform/user/export
@@ -643,6 +643,11 @@ export const getPlatformPermissionList = (id, params) => {
 // 平台用户权限管理查看列表/platform/permission/
 export const getTreeList = id => {
   return ax.g(`/platform/permission/${id}`)
+}
+
+// 平台用户权限管理查看列表导出数据/platform/permission/list/export
+export const getExportList = (params) => {
+  return ax.g('/platform/permission/list/export', params)
 }
 
 // 平台用户权限管理修改查看列表/platform/permission

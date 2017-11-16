@@ -42,7 +42,7 @@
       getActiveMenu () {
         let menuIcon = ['images', 'briefcase']
         let resMenu = JSON.parse(sessionStorage.getItem('menu'))
-        resMenu.forEach((item) => {
+        resMenu.menusVO.forEach((item) => {
           if (item.url === 'activity') {
             if (item.childMenusList.length > 0) {
               this.menu = item.childMenusList.map((item, index) => {

@@ -1,11 +1,4 @@
 /*
- * @Author: ZengFanlu 
- * @Date: 2017-11-09 14:37:42 
- * DeveloperMailbox:   zengfanlu@ccw163.com 
- * FunctionPoint: 查看权限管理数据 递归 
- */
-
-/*
  * @Author: WuFengliang 
  * @Date: 2017-11-09 10:39:03 
  * DeveloperMailbox:   wufengliang@ccw163.com 
@@ -42,6 +35,7 @@ export default {
     //  查看选中
     changeCheck(child, bool) {
       child.isHave = bool || !child.isHave
+      console.log('查看选中', child.isHave)
       if (!bool) {
         this.selectChildAll(child)
       }
@@ -70,7 +64,7 @@ export default {
     //  自定义权限点击
     checkPermission(permission, item, bool) {
       if (!this.parentData.childMenuList || !this.parentData.permissonList) {
-        item.isHave = !permission.isHave || true
+        item.isHave = true
         return
       }
       this.$emit('permissionCheck', {
@@ -82,13 +76,16 @@ export default {
     },
     //  权限点击
     permissionCheck(data) {
+      console.log(data, '权限点击')
       data.permission.isHave = !data.bool ? !data.permission.isHave : data.bool
-      data.item.isHave = data.permission.isHave
+      // data.item.isHave = data.permission.isHave
+      data.item.isHave = true
       this.checkPermission(data.item, data.parent, true)
     },
     //  向上传递值
     forwardChecked(data) {
       if (data.parent && data.isHave) {
+        console.log(data.isHave, 'forward')
         data.parent.isHave = true
         if (data.parent.permissonList) {
           data.parent.permissonList.forEach(item => {
