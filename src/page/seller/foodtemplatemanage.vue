@@ -45,7 +45,7 @@
           <div v-for="(item,index) in dragdata" :key="index" v-if="item.operation !== 0">
             <div style="lineHeight:30px">
             <Input v-model="item.name" size="small" style="width: 200px"></Input>
-            <Button type="error" size="small" v-if="item.canDelete === 0" @click="delClassify(index)" >删除</Button>
+            <Button type="error" size="small" v-if="item.canDelete !== 0" @click="delClassify(index)" >删除</Button>
            </div>
           </div>
         </transition-group>

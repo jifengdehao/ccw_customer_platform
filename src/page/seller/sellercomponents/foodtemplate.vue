@@ -468,7 +468,7 @@ export default {
 </script>
 <style lang="css" scoped>
 .foodtemplate{
-  height: 900px;
+  min-height: 500px;
 }
 .seller-template-manager-search span {
   font-size: 16px;
