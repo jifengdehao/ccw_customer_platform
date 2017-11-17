@@ -306,8 +306,8 @@
       },
       getOrderDetails () {
         api.getOrderInfo(this.orderId).then((res) => {
-          console.log(res)
           if (res) {
+            console.log(res)
             this.data4 = res.dealInfoList
             this.data1 = Array.of(res.orderInfo)
             this.data2 = Array.of(res.deliverInfo)

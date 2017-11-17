@@ -123,8 +123,8 @@
     methods: {
       getIndexData () {
         api.getIndexData().then((res) => {
-          console.log(res)
           if (res) {
+            console.log(res)
             this.chartData1 = {
               columns: ['时间', '订单量'],
               rows: res.ptOrderAmounts.map((item) => {

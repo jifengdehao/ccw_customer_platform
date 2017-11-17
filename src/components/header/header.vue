@@ -118,7 +118,7 @@
             api.logout().then((res) => {
               if (res) {
                 sessionStorage.removeItem('user')
-                this.$router.go(0)
+                this.$router.push('/login')
               }
             })
 
