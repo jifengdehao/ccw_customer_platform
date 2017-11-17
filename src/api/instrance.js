@@ -31,13 +31,13 @@ export const itr = (type, url, params) => {
   if (Object.keys(params).length > 0) {
     url = type === 'get' ? url + '?' + arg : url
   }
-  var userInfo = JSON.parse(sessionStorage.getItem('user'))
-  var token = ''
+  let userInfo = JSON.parse(sessionStorage.getItem('user'))
+  let token = ''
   if (userInfo) {
     userInfo = typeof userInfo === 'string' ? JSON.parse(userInfo) : userInfo
     token = userInfo.token ? userInfo.token : ''
   }
-  var sign = ''
+  let sign = ''
   if (Object.keys(params).length === 0) {
     sign = hash(token)
   } else {
