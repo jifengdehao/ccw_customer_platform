@@ -81,7 +81,7 @@
                   <th>时间</th>
                 </tr>
                 <tr>
-                  <td>{{ seeBannerData.ptBannerId }}</td>
+                  <td>{{ seeBannerData.ptBannerId || seeBannerData.position}}</td>
                   <td>
                     <img :src="seeBannerData.picUrl" width="300" alt="">
                   </td>
@@ -108,7 +108,7 @@ export default {
   components: { draggable },
   data() {
     return {
-      bannerMenu: ['未开始', '已开始', '已结束'], // 切换导航数据
+      bannerMenu: ['已开始', '未开始', '已结束'], // 切换导航数据
       bannerIndex: 0, // 切换id
       bannerData: [], // 列表数据
       addBannerData: [], // 自增列表数据
@@ -166,7 +166,7 @@ export default {
       ], // th title 已结束内容
       pageNo: 1, // 当前页面
       pageSize: 10, // 分页参数，表示每页显示多少条
-      status: 0, // banner图状态（目前0、待更新1、历史更新2）
+      status: 0, // banner图状态（未开始1、已开始0、已结束2）
       seeBannerClose: false, // 查看banner弹框 默认关闭
       seeBannerData: [], // 保存查看banner数据
       formData: {}
@@ -215,7 +215,8 @@ export default {
         //  banner管理
         api
           .getBannerList({
-            types: this.status
+            status: this.status,
+            types: 1
           })
           .then(data => {
             this.bannerData = data
@@ -313,20 +314,12 @@ export default {
           date.getMonth() + 1 < 10
             ? '0' + date.getMonth() + 1
             : date.getMonth() + 1,
-        day:
-          date.getDate() + 1 < 10
-            ? '0' + date.getDate() + 1
-            : date.getDate() + 1,
-        hour:
-          date.getHours() + 1 < 10 ? '0' + date.getHours() : date.getHours(),
+        day: date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+        hour: date.getHours() < 10 ? '0' + date.getHours() : date.getHours(),
         minutes:
-          date.getMinutes() + 1 < 10
-            ? '0' + date.getMinutes()
-            : date.getMinutes(),
+          date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
         seconds:
-          date.getSeconds() + 1 < 10
-            ? '0' + date.getSeconds()
-            : date.getSeconds()
+          date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       }
       return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
     }
