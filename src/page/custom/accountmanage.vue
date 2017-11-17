@@ -27,7 +27,7 @@
       </label>
     </i-form>
     <Table border :columns="allUsersTitle" :data="usersDatas.records"></Table>
-    <Page :total="usersDatas.total" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
+    <Page :total="usersDatas.total" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
     <Modal v-if="tabIndex == 0" v-model="modalBoolean" :styles="{top: '40px'}" @on-ok="isOkDelete" @on-cancel="modalBoolean=false;">
       <p>设置冻结时间
         <select name="" v-model="changeStatus.frezonTime">
@@ -56,9 +56,9 @@ export default {
       params: {
         status: '0',
         mobileno: '',
-        pageSize: 10,
-        pageNo: 1
+        pageSize: 10
       },
+      pageNo: 1,
       UserList: [
         {
           label: '所有用户',
@@ -186,7 +186,7 @@ export default {
   methods: {
     //  加载数据
     getUsersList() {
-      http.getUsersList(this.params).then(data => {
+      http.getUsersList(this.params, this.pageNo).then(data => {
         data.records.forEach((item, index) => {
           if (item.status === 1) {
             item.statusName = '正常'
@@ -218,7 +218,7 @@ export default {
           this.params.status = 1
           break
       }
-      this.params.pageNo = 1
+      this.pageNo = 1
       this.getUsersList()
     },
     //  冻结/恢复 账户
@@ -244,7 +244,7 @@ export default {
     },
     //  分页加载下一页
     loadNext(current) {
-      this.params.pageNo = current
+      this.pageNo = current
       this.getUsersList()
     },
     //  手机号搜索
@@ -262,7 +262,7 @@ export default {
         }
       }
       this.params.pageSize = 10
-      this.params.pageNo = 1
+      this.pageNo = 1
       this.getUsersList()
     },
     selectLoad() {
