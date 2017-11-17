@@ -468,10 +468,8 @@ export const seeBanner = id => {
  * 获取用户端所有用户列表
  * @param params =>{status,mobileno,pageSize,pageNo}
  */
-export const getUsersList = params => {
-  return ax.g(
-    `customer/${params.pageNo}?status=${params.status}&mobileno=${params.mobileno}&pageSize=${params.pageSize}`
-  )
+export const getUsersList = (params, pageNo) => {
+  return ax.g(`customer/${pageNo}`, params)
 }
 
 /**
@@ -498,10 +496,8 @@ export const getUserInfoData = params => {
 /**
  * 获取消息列表
  */
-export const getMessageList = params => {
-  return ax.g(
-    `customer/message/list/${params.pageNo}?status=${params.status}&msgType=${params.msgType}&pageSize=${params.pageSize}`
-  )
+export const getMessageList = (params, pageNo) => {
+  return ax.g(`customer/message/list/${pageNo}`, params)
 }
 
 /**
@@ -530,7 +526,7 @@ export const putMessage = params => {
  * 获取用户端配送未覆盖banner图
  */
 export const getBannerList = params => {
-  return ax.g(`/customer/banner?status=0&types=${params.types}`)
+  return ax.g(`/customer/banner`, params)
 }
 
 /**
@@ -686,7 +682,7 @@ export const getPlatformPermissionList = (id, params) => {
   return ax.g(`/platform/permission/list/${id}`, params)
 }
 // 平台用户权限管理查看列表导出数据/platform/permission/list/export
-export const getExportList = (params) => {
+export const getExportList = params => {
   return ax.g('/platform/permission/list/export', params)
 }
 
@@ -698,4 +694,3 @@ export const getTreeList = id => {
 export const getUserPermission = params => {
   return ax.u('/platform/permission', params)
 }
-

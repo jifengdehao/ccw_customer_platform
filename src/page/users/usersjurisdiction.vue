@@ -108,7 +108,15 @@ export default {
                     size: 'small'
                   },
                   on: {
-                    click: () => {}
+                    click: () => {
+                      this.$router.push({
+                        path: 'seeUserlist/',
+                        query: {
+                          info: params.row.ptUserId,
+                          details: '1'
+                        }
+                      })
+                    }
                   }
                 },
                 '修改'
@@ -143,7 +151,19 @@ export default {
       this.exportModal = true
     },
     // 导出数据
-    getExportData() {},
+    getExportData() {
+      let params = {
+        mobileno: this.params.mobileno,
+        startTime: this.startTime,
+        endTime: this.endTime
+      }
+      api.getExportList(params).then(res => {
+        if (res && res != null) {
+          window.open(res)
+        }
+      })
+      this.exportModal = false
+    },
     // 分页数据
     onChange(page) {
       this.pageNo = page
