@@ -35,7 +35,6 @@
       //  查看选中
       changeCheck(child, bool) {
         child.isHave = bool || !child.isHave
-        console.log('查看选中', child.isHave)
         if (!bool) {
           this.selectChildAll(child)
         }
@@ -76,7 +75,6 @@
       },
       //  权限点击
       permissionCheck(data) {
-        console.log(data, '权限点击')
         data.permission.isHave = !data.bool ? !data.permission.isHave : data.bool
         // data.item.isHave = data.permission.isHave
         data.item.isHave = true
