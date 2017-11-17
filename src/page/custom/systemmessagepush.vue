@@ -43,7 +43,7 @@
       <TabPane label="推送失败" name="3"></TabPane>
     </Tabs>
     <Table v-if="pushMessageData" border :columns="pushMessageTitle" :data="pushMessageData.records"></Table>
-    <Page v-if="pushMessageData" className='page-style' :total="pushMessageData.total" show-total></Page>
+    <Page v-if="pushMessageData" className='page-style' :current="pageNo" :total="pushMessageData.total" show-total @on-change="loadData"></Page>
   </div>
 </template>
 <script>
@@ -62,7 +62,6 @@ export default {
       params: {
         status: '', //  tab上消息推送状态
         pageSize: 10,
-        pageNo: 1,
         actPicUrl: '', // 活动图片url,
         actUrl: '', // 活动url,
         content: '', // 消息内容,
@@ -74,6 +73,7 @@ export default {
         pushType: '', // 推送类型,
         title: '' // 标题
       },
+      pageNo: 1,
       isReadOnly: false,
       tipsMsg: '系统', //  设置标题和placeholder值
       routerName: '', //  路由名
@@ -272,7 +272,7 @@ export default {
         //   this.params.msgType = 5
         //   break
       }
-      http.getMessageList(this.params).then(data => {
+      http.getMessageList(this.params, this.pageNo).then(data => {
         this.pushMessageData = data
       })
     },
@@ -294,10 +294,11 @@ export default {
       switch (this.editStatus) {
         case 0:
           //  新增
+          console.log(this.params)
           http.addMessage(this.params).then(data => {
             this.getMessageList()
             for (let i in this.params) {
-              if (i !== 'pageNo' && i !== 'pageSize') {
+              if (i !== 'pageSize' && i !== 'msgType') {
                 this.params[i] = ''
               }
             }
@@ -314,16 +315,16 @@ export default {
           // this.data.pushType = this.params.pushType
           // this.data.actPicUrl = this.params.actPicUrl
           // this.data.picUrl = this.params.picUrl
-          console.log(this.data)
+
           for (let i in this.params) {
-            if (i !== 'pageNo' && i !== 'pageSize') {
+            if (i !== 'pageSize' && i !== 'msgType') {
               this.data[i] = this.params[i]
             }
           }
           http.putMessage(this.data).then(data => {
             console.log(data)
             for (let i in this.params) {
-              if (i !== 'pageNo' && i !== 'pageSize') {
+              if (i !== 'pageSize' && i !== 'msgType') {
                 this.params[i] = ''
               }
             }
@@ -331,6 +332,11 @@ export default {
           })
           break
       }
+    },
+    //  分页加载数据
+    loadData(name) {
+      this.pageNo = name
+      this.getMessageList()
     },
     //  上传方法
     toUpfile(e, name) {
@@ -383,9 +389,6 @@ export default {
           break
       }
       return statusName
-    },
-    showAlert() {
-      alert()
     }
   },
   watch: {

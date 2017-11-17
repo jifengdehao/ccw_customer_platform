@@ -87,7 +87,7 @@
           <Input v-model="templateItem.labels" :value="templateItem.labels" size="small" style="width: 200px"></Input> <br>
          
           <span>图片</span>
-              <div class="img vm-fl" v-model="templateItem.mainPic" v-for="url in templateItem.mainPic">
+              <div class="img vm-fl" v-model="templateItem.mainPic" v-for="(url,index) in templateItem.mainPic" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
@@ -102,7 +102,7 @@
            <!-- div隔开图片与图片库 -->
            <div style="height:5px;"></div> 
           <span>图片库</span>
-              <div class="img vm-fl" v-model="templateItem.picLib" v-for="url in templateItem.picLib">
+              <div class="img vm-fl" v-model="templateItem.picLib" v-for="(url,index) in templateItem.picLib" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>

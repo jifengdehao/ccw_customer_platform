@@ -42,7 +42,11 @@ export default {
   filfter: {},
   computed: {
     imgurl() {
-      return [this.picUrls]
+      if (Array.isArray(this.picUrls)) {
+        return this.picUrls
+      } else {
+        return [this.picUrls]
+      }
     }
   },
   watch: {}

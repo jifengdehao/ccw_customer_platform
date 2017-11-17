@@ -12,16 +12,16 @@
         <th>用户手机号码</th>
         <th>用户昵称</th>
         <th v-if="params.accountType == 1">用户余额</th>
-        <th v-if="params.accountType == 2">账户积分</th>
-        <th v-if="params.accountType == 2">账户状态</th>
+        <th v-if="params.accountType != 1">账户积分</th>
+        <th v-if="params.accountType != 1">账户状态</th>
       </tr>
       <tr>
         <td>{{singleData.custId}}</td>
         <td>{{singleData.mobileno}}</td>
         <td>{{singleData.custName}}</td>
         <td v-if="params.accountType == 1">{{singleData.balance}}</td>
-        <td v-if="params.accountType == 2">{{singleData.coins}}</td>
-        <td v-if="params.accountType == 2">{{singleData.status === 1 ? '正常':'冻结'}}</td>
+        <td v-if="params.accountType != 1">{{singleData.coins}}</td>
+        <td v-if="params.accountType != 1">{{singleData.status === 1 ? '正常':'冻结'}}</td>
       </tr>
     </table>
     <div class="account-money-detail">
@@ -47,11 +47,20 @@ export default {
       changeTitle: [
         {
           title: '时间',
-          key: 'changeAtString'
+          key: 'changeAt',
+          render: (h, params) => {
+            return h('span', this.filterTime(params.row.changeAt))
+          }
         },
         {
           title: '方式',
-          key: 'changeType'
+          key: 'changeType',
+          render: (h, params) => {
+            return h(
+              'span',
+              this.filterType(params.row.changeType, params.row.changeVal)
+            )
+          }
         },
         {
           title: '账户余额(元)',
@@ -68,6 +77,60 @@ export default {
     this.getAccountMoneyChange()
   },
   methods: {
+    //  时间过滤
+    filterTime(value) {
+      let date = new Date(value)
+      let params = {
+        year: date.getFullYear(),
+        month:
+          date.getMonth() + 1 < 10
+            ? '0' + date.getMonth() + 1
+            : date.getMonth() + 1,
+        day:
+          date.getDate() + 1 < 10
+            ? '0' + date.getDate() + 1
+            : date.getDate() + 1,
+        hour:
+          date.getHours() + 1 < 10 ? '0' + date.getHours() : date.getHours(),
+        minutes:
+          date.getMinutes() + 1 < 10
+            ? '0' + date.getMinutes()
+            : date.getMinutes(),
+        seconds:
+          date.getSeconds() + 1 < 10
+            ? '0' + date.getSeconds()
+            : date.getSeconds()
+      }
+      return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
+    },
+    //  过滤方式
+    filterType(type, value) {
+      let str = ''
+      switch (type) {
+        case 0:
+          str = '退款'
+          break
+        case 1:
+          str = '充值'
+          break
+        case 2:
+          str = '消费'
+          break
+        case 3:
+          str = '分享'
+          break
+        case 4:
+          str = '奖励'
+          break
+        case 5:
+          str = '购物获得积分'
+          break
+        case 6:
+          str = '分销获得积分'
+          break
+      }
+      return str + '  ' + value
+    },
     //  查看用户账户
     loopAccount() {
       http.loopAccount(this.params).then(data => {
