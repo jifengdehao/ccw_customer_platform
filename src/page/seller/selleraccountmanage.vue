@@ -299,7 +299,7 @@ export default {
         },
         {
           title: '账号状态',
-          key: 'status'
+          key: 'statusName'
         },
         {
           title: '入驻日期',

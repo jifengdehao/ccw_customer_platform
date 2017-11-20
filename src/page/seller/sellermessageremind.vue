@@ -43,7 +43,7 @@ export default {
         },
         {
           title: '类型',
-          key: 'assistantType'
+          key: 'assistantTypeName'
         },
         {
           title: '商户账号',
@@ -55,7 +55,7 @@ export default {
         },
         {
           title: '商户账号状态',
-          key: 'sellerStatus'
+          key: 'sellerStatusName'
         },
         {
           title: '提交日期',

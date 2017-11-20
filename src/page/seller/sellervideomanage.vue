@@ -228,7 +228,7 @@ let avatar = [
     title: '商品添加或修改时间',
     key: 'lastUpdateTime',
     render: (h, params) => {
-      return date.formatDateTime(params.row.pushTime)
+      return date.formatDateTime(params.row.lastUpdateTime)
     }
   },
   {
