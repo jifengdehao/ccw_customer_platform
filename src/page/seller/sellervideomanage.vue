@@ -41,244 +41,6 @@
 import * as api from 'api/common.js'
 import tableImg from './sellercomponents/tableimage'
 import * as date from '@/until/time'
-// 商品图片
-let producttitle = [
-  {
-    title: '商品标题',
-    key: 'productName',
-    width: 100
-  },
-  {
-    title: '商品主图',
-    key: 'picUrls',
-    render: (h, params) => {
-      return h('div', [
-        h(tableImg, {
-          props: {
-            picUrls: params.row.picUrls
-          }
-        })
-      ])
-    }
-  },
-  {
-    title: '商品介绍图片',
-    key: 'picDesc',
-    render: (h, params) => {
-      return h('div', [
-        h(tableImg, {
-          props: {
-            picUrls: params.row.picDesc
-          }
-        })
-      ])
-    }
-  },
-  {
-    title: '商品添加或修改时间',
-    key: 'lastUpdateTime',
-    width: 200,
-    align: 'center',
-    render: (h, params) => {
-      return date.formatDateTime(params.row.lastUpdateTime)
-    }
-  },
-  {
-    title: '操作',
-    key: 'operation',
-    width: 140,
-    render: (h, params) => {
-      return h('div', [
-        h(
-          'Button',
-          {
-            props: {
-              type: 'warning',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.productPicPass(params.row.spProductId)
-              }
-            }
-          },
-          '不通过'
-        ),
-        h(
-          'Button',
-          {
-            props: {
-              type: 'success',
-              size: 'small'
-            },
-            on: {
-              click: () => {
-                this.productPicNotPass(params.row.spProductId)
-              }
-            }
-          },
-          '通过'
-        )
-      ])
-    }
-  },
-  {
-    type: 'selection',
-    width: 60,
-    align: 'center'
-  }
-]
-// 档口图片审核
-let shoptitle = [
-  {
-    title: '档口',
-    key: 'shopName'
-  },
-  {
-    title: '档口图片',
-    key: 'shoppic',
-    render: (h, params) => {
-      return h('div', [
-        h(tableImg, {
-          props: {
-            picUrls: params.row.shopPicUrl
-          }
-        })
-      ])
-    }
-  },
-  {
-    title: '商品添加或修改时间',
-    key: 'lastUpdateTime',
-    render: (h, params) => {
-      return date.formatDateTime(params.row.lastUpdateTime)
-    }
-  },
-  {
-    title: '操作',
-    key: 'operation',
-    width: 140,
-    render: (h, params) => {
-      return h('div', [
-        h(
-          'Button',
-          {
-            props: {
-              type: 'warning',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.shopPicPass(params.row.spProductId)
-              }
-            }
-          },
-          '不通过'
-        ),
-        h(
-          'Button',
-          {
-            props: {
-              type: 'success',
-              size: 'small'
-            },
-            on: {
-              click: () => {
-                this.shopPicNotPass(params.row.spProductId)
-              }
-            }
-          },
-          '通过'
-        )
-      ])
-    }
-  },
-  {
-    type: 'selection',
-    width: 60,
-    align: 'center'
-  }
-]
-// 档口头像审核
-let avatar = [
-  {
-    title: '档口',
-    key: 'shopName'
-  },
-  {
-    title: '档口头像图片',
-    key: 'headUrl',
-    render: (h, params) => {
-      return h('div', [
-        h(tableImg, {
-          props: {
-            picUrls: params.row.headUrl
-          }
-        })
-      ])
-    }
-  },
-  {
-    title: '商品添加或修改时间',
-    key: 'lastUpdateTime',
-    render: (h, params) => {
-      return date.formatDateTime(params.row.lastUpdateTime)
-    }
-  },
-  {
-    title: '操作',
-    key: 'operation',
-    width: 140,
-    render: (h, params) => {
-      return h('div', [
-        h(
-          'Button',
-          {
-            props: {
-              type: 'warning',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.shopHeaderPicPass(params.row.spProductId)
-              }
-            }
-          },
-          '不通过'
-        ),
-        h(
-          'Button',
-          {
-            props: {
-              type: 'success',
-              size: 'small'
-            },
-            on: {
-              click: () => {
-                this.shopHeaderPicNotPass(params.row.spProductId)
-              }
-            }
-          },
-          '通过'
-        )
-      ])
-    }
-  },
-  {
-    type: 'selection',
-    width: 60,
-    align: 'center'
-  }
-]
 export default {
   components: {
     tableImg
@@ -298,11 +60,246 @@ export default {
         lastdate: ''
       },
       tabs: [{ title: '商品图片审核' }, { title: '档口图片审核' }, { title: '档口头像审核' }],
-      columns: []
+      columns: [],
+      producttitle: [
+        {
+          title: '商品标题',
+          key: 'productName',
+          width: 100
+        },
+        {
+          title: '商品主图',
+          key: 'picUrls',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.picUrls
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '商品介绍图片',
+          key: 'picDesc',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.picDesc
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '商品添加或修改时间',
+          key: 'lastUpdateTime',
+          width: 200,
+          align: 'center',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.lastUpdateTime)
+          }
+        },
+        {
+          title: '操作',
+          key: 'operation',
+          width: 140,
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'warning',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.productPicPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '不通过'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.productPicNotPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '通过'
+              )
+            ])
+          }
+        },
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        }
+      ],
+      shoptitle: [
+        {
+          title: '档口',
+          key: 'shopName'
+        },
+        {
+          title: '档口图片',
+          key: 'shoppic',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.shopPicUrl
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '商品添加或修改时间',
+          key: 'lastUpdateTime',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.lastUpdateTime)
+          }
+        },
+        {
+          title: '操作',
+          key: 'operation',
+          width: 140,
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'warning',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.shopPicPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '不通过'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.shopPicNotPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '通过'
+              )
+            ])
+          }
+        },
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        }
+      ],
+      avatar: [
+        {
+          title: '档口',
+          key: 'shopName'
+        },
+        {
+          title: '档口头像图片',
+          key: 'headUrl',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.headUrl
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '商品添加或修改时间',
+          key: 'lastUpdateTime',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.lastUpdateTime)
+          }
+        },
+        {
+          title: '操作',
+          key: 'operation',
+          width: 140,
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'warning',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.shopHeaderPicPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '不通过'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.shopHeaderPicNotPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '通过'
+              )
+            ])
+          }
+        },
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        }
+      ]
     }
   },
   created() {
-    this.columns = producttitle
+    this.columns = this.producttitle
     this.getProductPic(1, 10)
   },
   // mounted: {},
@@ -312,14 +309,14 @@ export default {
     changedata(index) {
       this.current = index
       if (index === 0) {
+        this.columns = this.producttitle
         this.getProductPic(1, 10)
-        this.columns = producttitle
       } else if (index === 1) {
+        this.columns = this.shoptitle
         this.getShopPic(1, 10, 1)
-        this.columns = shoptitle
       } else if (index === 2) {
+        this.columns = this.avatar
         this.getShopPic(1, 10, 2)
-        this.columns = avatar
       }
     },
     // 获取商品图片审核列表
@@ -400,7 +397,6 @@ export default {
     },
     // 多选
     showselect(selection) {
-      console.log(selection)
       this.selectiondata = selection
     },
     getID() {
