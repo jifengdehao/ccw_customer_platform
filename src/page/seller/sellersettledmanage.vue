@@ -36,7 +36,7 @@
     </section>
     <!-- 分页 -->
     <section class="seller-settled-manage-page">
-      <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
+      <Page :total="total" show-total :page-size="pageSize" :current="currentPage" @on-change="changepage"></Page>
     </section>
     <!-- 查看图片 -->
     <Modal v-model="modal" title="商家证件图片" width="800">
@@ -54,9 +54,10 @@ export default {
   data() {
     return {
       total: 1,
-      pageSize: 5,
+      pageSize: 10,
       modal: false,
-      current: 1, // 申请的状态
+      currentPage: 1,
+      current: 0, // 申请的状态
       sellerpicUrls: [],
       allCharge: [],
       formItem: {
@@ -271,6 +272,7 @@ export default {
     }
   },
   created() {
+    this.auditcolumns = this.columns
     this.getSellerApplyList(1, this.pageSize, 1)
     api.getAllBD().then(response => {
       this.allCharge = response
@@ -278,24 +280,30 @@ export default {
   },
   mounted() {},
   methods: {
+    // 状态 1：待审核  4：待审批 5：已通过
+    // 切换tab栏
     changedata(index) {
+      this.current = index
       if (index === 0) {
         this.auditcolumns = this.columns
-        this.current = index + 1
-        this.getSellerApplyList(1, this.pageSize, this.current)
+        this.getSellerApplyList(1, this.pageSize, 1)
       } else if (index === 1) {
         this.auditcolumns = this.columns
-        this.current = index + 1
-        this.getSellerApplyList(1, this.pageSize, this.current + 2)
+        this.getSellerApplyList(1, this.pageSize, 4)
       } else if (index === 2) {
         this.auditcolumns = this.lastcolumns
-        this.current = index + 1
-        this.getSellerApplyList(1, this.pageSize, this.current + 2)
+        this.getSellerApplyList(1, this.pageSize, 5)
       }
     },
     // 分页
     changepage(index) {
-      this.getSellerApplyList(index, 5, this.current)
+      if (this.current === 0) {
+        this.getSellerApplyList(index, this.pageSize, 1)
+      } else if (this.current === 1) {
+        this.getSellerApplyList(index, this.pageSize, 4)
+      } else if (this.current === 2) {
+        this.getSellerApplyList(index, this.pageSize, 5)
+      }
     },
     remove(index) {
       this.auditdata.splice(index, 1)
@@ -320,6 +328,7 @@ export default {
         this.auditdata = response.records
         this.total = response.total
         this.pageSize = response.size
+        this.currentPage = response.current
       })
     },
     // 更新商户入驻信息审核状态
@@ -333,14 +342,34 @@ export default {
     },
     // 搜索
     searchdata(formItem) {
-      this.getSellerApplyList(
-        1,
-        this.pageSize,
-        this.current + 2,
-        formItem.charge,
-        formItem.startdate,
-        formItem.lastdate
-      )
+      if (this.current === 0) {
+        this.getSellerApplyList(
+          1,
+          this.pageSize,
+          1,
+          formItem.charge,
+          formItem.startdate,
+          formItem.lastdate
+        )
+      } else if (this.current === 1) {
+        this.getSellerApplyList(
+          1,
+          this.pageSize,
+          4,
+          formItem.charge,
+          formItem.startdate,
+          formItem.lastdate
+        )
+      } else if (this.current === 2) {
+        this.getSellerApplyList(
+          1,
+          this.pageSize,
+          5,
+          formItem.charge,
+          formItem.startdate,
+          formItem.lastdate
+        )
+      }
     },
     formatDateTime(inputTime) {
       if (inputTime) {

@@ -194,7 +194,7 @@ export default {
   data() {
     return {
       total: 1,
-      pageSize: 5,
+      pageSize: 10,
       disabled: true,
       sellerId: 0,
       shopId: 0,
@@ -321,7 +321,7 @@ export default {
     //   alert('asddasd')
     //   console.log(response)
     // })
-    this.getSellerAccountList(1, 5)
+    this.getSellerAccountList(1, 10)
     let params = {
       parentId: -1 // 一级分类传入-1
     }
@@ -406,7 +406,7 @@ export default {
       console.log(formItem)
       this.getSellerAccountList(
         1,
-        5,
+        10,
         formItem.shopName,
         formItem.mobileno,
         formItem.msSellerId,
@@ -416,7 +416,7 @@ export default {
       )
     },
     changepage(index) {
-      this.getSellerAccountList(index, 5)
+      this.getSellerAccountList(index, 10)
     },
     // 重置密码
     resetPassword(msSellerId) {

@@ -31,7 +31,7 @@ export default {
       datavalue: true,
       total: 1,
       current: 0,
-      pageSize: 1,
+      pageSize: 10,
       status: '待处理',
       tabs: [{ title: '待处理' }, { title: '已处理' }, { title: '全部' }],
       remindColumns: [
@@ -101,7 +101,7 @@ export default {
     }
   },
   created() {
-    this.getAlertsMessageList(1, 5, 0)
+    this.getAlertsMessageList(1, 10, 0)
   },
   // mounted: {},
   activited: {},
@@ -130,21 +130,21 @@ export default {
     changeTable(index) {
       this.current = index
       if (index === 0) {
-        this.getAlertsMessageList(1, 5, 0)
+        this.getAlertsMessageList(1, 10, 0)
       } else if (index === 1) {
-        this.getAlertsMessageList(1, 5, 1)
+        this.getAlertsMessageList(1, 10, 1)
       } else if (index === 2) {
-        this.getAlertsMessageList(1, 5)
+        this.getAlertsMessageList(1, 10)
       }
     },
     // 分页切换
     changepage(index) {
       if (this.current === 0) {
-        this.getAlertsMessageList(index, 5, 0)
+        this.getAlertsMessageList(index, 10, 0)
       } else if (this.current === 1) {
-        this.getAlertsMessageList(index, 5, 1)
+        this.getAlertsMessageList(index, 10, 1)
       } else if (this.current === 2) {
-        this.getAlertsMessageList(index, 5)
+        this.getAlertsMessageList(index, 10)
       }
     }
   },
