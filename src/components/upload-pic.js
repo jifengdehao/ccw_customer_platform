@@ -41,7 +41,7 @@ export function uploadpic(file) {
       // 如果对象实例化成功
       xmlHttpReq.open(
         'GET',
-        'http://192.168.0.158:8097/stsToken/roleSessionName',
+        'http://192.168.0.158:8097/oss/stsToken/roleSessionName',
         false
       ) // 调用open()方法并采用异步方式
       xmlHttpReq.setRequestHeader(
