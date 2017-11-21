@@ -11,8 +11,8 @@
     <div style="line-height:1.5;float:right">
       <label>推送时间设置</label>
       <Select v-model="params.pushType" style="width:150px;margin-left:10px;" :disabled="isAbled">
-        <Option value="1">定时推送</Option>
-        <Option value="2">立即推送</Option>
+        <Option value="2">定时推送</Option>
+        <Option value="1">立即推送</Option>
       </Select>
       <DatePicker :disabled="isAbled"  type="datetime" format="yyyy-MM-dd HH:mm" v-model="params.pushTime" :value="params.pushTime" placeholder="选择日期和时间（不含秒）" style="width: 200px;margin-left:10px"></DatePicker>
     </div>
