@@ -1,10 +1,3 @@
-/*
- * @Author: ZengFanlu 
- * @Date: 2017-11-15 14:26:49 
- * DeveloperMailbox:   zengfanlu@ccw163.com 
- * FunctionPoint: 权利权利列表功能
- */
-
 <template>
   <div>
     <div class="searchInput">
@@ -72,16 +65,6 @@ export default {
           align: 'center'
         },
         {
-          title: '最后一次登录时间',
-          key: 'lastLoginTime',
-          align: 'center'
-        },
-        {
-          title: '最后一次登录IP',
-          key: 'lastLoginIp',
-          align: 'center'
-        },
-        {
           title: '操作',
           key: 'operation',
           align: 'center',
@@ -117,7 +100,7 @@ export default {
                   on: {
                     click: () => {
                       this.$router.push({
-                        path: 'seeUserlist',
+                        path: 'seeUserlist/',
                         query: {
                           info: params.row.ptUserId,
                           details: '1'
@@ -169,6 +152,7 @@ export default {
           window.open(res)
         }
       })
+      this.exportModal = false
     },
     // 分页数据
     onChange(page) {

@@ -92,73 +92,54 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import * as api from 'api/common'
-import * as cookie from '@/data/index'
+  import * as api from 'api/common'
 
-export default {
-  data() {
-    return {
-      menu: []
-    }
-  },
-  computed: {
-    userinfo() {
-      return cookie.userInfo()
-      // return JSON.parse(sessionStorage.getItem('user'))
-    }
-  },
-  created() {
-    this.getMenuData()
-  },
-  methods: {
-    selectDown(item) {
-      switch (item) {
-        case 'user':
-          this.$router.push('/users/' + item)
-          break
-        case 'logout':
-          api.logout().then(res => {
-            if (res) {
-              cookie.delData('userInfo')
-              this.$router.go(0)
-            }
-          })
-          //            sessionStorage.removeItem('user')
-          //            this.$router.go(0)
-          break
+  export default {
+    data () {
+      return {
+        menu: []
       }
     },
-    selectMenu(name) {
-      console.log(name)
+    computed: {
+      userinfo () {
+        return JSON.parse(sessionStorage.getItem('user'))
+      }
     },
-    getMenuData() {
-      console.log(api)
-      api.getMemuData().then(res => {
-        console.log(111)
-        if (res) {
-          let menuIcon = [
-            'ios-paper',
-            'ios-people',
-            'chatbox-working',
-            'chatbox',
-            'help-buoy',
-            'ios-analytics',
-            'settings',
-            'ios-people'
-          ]
-          this.menu = res.menusVO.map((item, index) => {
-            return {
-              id: item.menusId,
-              name: item.menuName,
-              icon: menuIcon[index],
-              url: item.url
-            }
-          })
-          sessionStorage.setItem('menu', JSON.stringify(res))
+    created () {
+      this.getMenuData()
+    },
+    methods: {
+      selectDown (item) {
+        switch (item) {
+          case 'user':
+            this.$router.push('/users/' + item)
+            break
+          case 'logout':
+            api.logout().then((res) => {
+              if (res) {
+                sessionStorage.removeItem('user')
+                this.$router.push('/login')
+              }
+            })
+
+            break
         }
-      })
+      },
+      selectMenu (name) {
+        console.log(name)
+      },
+      getMenuData () {
+        api.getMemuData().then((res) => {
+          if (res) {
+            let menuIcon = ['ios-paper', 'ios-people', 'chatbox-working', 'chatbox', 'help-buoy', 'ios-analytics', 'settings', 'ios-people']
+            this.menu = res.menusVO.map((item, index) => {
+              return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url}
+            })
+            sessionStorage.setItem('menu', JSON.stringify(res))
+          }
+        })
+      }
     }
   }
-}
 </script>
 

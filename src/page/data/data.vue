@@ -36,7 +36,7 @@
       getDataMenu () {
         let menuIcon = ['ios-analytics']
         let resMenu = JSON.parse(sessionStorage.getItem('menu'))
-        resMenu.forEach((item) => {
+        resMenu.menusVO.forEach((item) => {
           if (item.url === 'data') {
             if (item.childMenusList.length > 0) {
               this.menu = item.childMenusList.map((item, index) => {

@@ -76,8 +76,8 @@ export default {
           align: 'center'
         },
         {
-          title: '最近登录时间',
-          key: 'lastUpdateTime',
+          title: '余额',
+          key: 'balance',
           align: 'center'
         },
         {
@@ -215,7 +215,10 @@ export default {
       this.loadData()
     },
     //  下一页
-    loadNext() {},
+    loadNext(pageNum) {
+      this.params.pageNo = pageNum
+      this.loadData()
+    },
     //  加载数据
     loadData() {
       http.getAccountMoney(this.params).then(data => {

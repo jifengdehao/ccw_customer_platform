@@ -1,10 +1,10 @@
 /*
- * @Author: ZengFanlu 
- * @Date: 2017-11-09 11:10:05 
- * DeveloperMailbox:   zengfanlu@ccw163.com 
- * FunctionPoint: 查看个人权限列表 
- */
- 
+* @Author: ZengFanlu
+* @Date: 2017-11-09 11:10:05
+* DeveloperMailbox:   zengfanlu@ccw163.com
+* FunctionPoint: 查看个人权限列表
+*/
+
 <template>
   <div id="roleinfo" class="main"  v-if="menuData">
     <div class="tree-box">
@@ -12,28 +12,25 @@
         <auth-tree :menuData="menuData.menu" :parentData="menuData"></auth-tree>
       </ul>
     </div>
-    <p class="btn-p">
+    <p class="btn-p" v-if="showButton && showButton != null">
       <Button @click="getTreeList">取消</Button>
       <Button @click="submitInfoData">确认</Button>
     </p>
   </div>
 </template>
- <script>
+<script>
 import * as api from 'api/common'
 import authTree from './tree_row'
 export default {
   components: { authTree },
   data() {
     return {
-      id: (() => {
-        return this.$route.query.info
-      })(),
       menuData: null, //  传递给子组件的值
       putParams: {
-        roleId: '', //  角色ID
-        roleName: '', //  角色名称
+        accountId: '', //  角色ID
         permissionList: [] //  用户权限
-      }
+      },
+      showButton: null
     }
   },
   created: function() {
@@ -41,7 +38,9 @@ export default {
   },
   methods: {
     getTreeList() {
-      api.getTreeList(this.id).then(list => {
+      this.putParams.accountId = this.$route.query.info
+      this.showButton = this.$route.query.details
+      api.getTreeList(this.putParams.accountId).then(list => {
         this.menuData = list
       })
     },
@@ -63,7 +62,6 @@ export default {
             this.filterValue(item.childMenuList)
           }
         }
-        console.log(this.putParams.permissionList)
       })
     },
     //  确认
@@ -74,12 +72,17 @@ export default {
         return
       }
       api.getUserPermission(this.putParams).then(data => {
-        this.getRoleInfo()
+        if (data && data === true) {
+          this.getTreeList()
+        }
       })
     }
   }
 }
 </script>
- <style lang="css" scoped>
-
+<style lang="css" scoped>
+.btn-p {
+  margin-top: 40px;
+  text-align: center;
+}
 </style>

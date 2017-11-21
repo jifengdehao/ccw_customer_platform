@@ -27,7 +27,7 @@
       </label>
     </i-form>
     <Table border :columns="allUsersTitle" :data="usersDatas.records"></Table>
-    <Page :total="usersDatas.total" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
+    <Page :total="usersDatas.total" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
     <Modal v-if="tabIndex == 0" v-model="modalBoolean" :styles="{top: '40px'}" @on-ok="isOkDelete" @on-cancel="modalBoolean=false;">
       <p>设置冻结时间
         <select name="" v-model="changeStatus.frezonTime">
@@ -56,9 +56,9 @@ export default {
       params: {
         status: '0',
         mobileno: '',
-        pageSize: 10,
-        pageNo: 1
+        pageSize: 10
       },
+      pageNo: 1,
       UserList: [
         {
           label: '所有用户',
@@ -118,11 +118,6 @@ export default {
           }
         },
         {
-          title: '登录IP',
-          key: 'lastLoginIp',
-          align: 'center'
-        },
-        {
           title: '账号状态',
           key: 'statusName',
           align: 'center'
@@ -162,12 +157,21 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.modalBoolean = true
-                      this.singleData = params.row
+                      if (params.row.status === 1) {
+                        this.modalBoolean = true
+                        this.singleData = params.row
+                      } else {
+                        //  恢复账户
+                        this.changeStatus.custId = this.singleData.mcCustomerId
+                        this.changeStatus.frezonTime = null
+                        http.changeStatus(this.changeStatus).then(data => {
+                          this.getUsersList()
+                        })
+                      }
                     }
                   }
                 },
-                '冻结'
+                params.row.status === 2 || params.row.status === 3 ? '恢复' : '冻结'
               )
             ])
           }
@@ -191,7 +195,7 @@ export default {
   methods: {
     //  加载数据
     getUsersList() {
-      http.getUsersList(this.params).then(data => {
+      http.getUsersList(this.params, this.pageNo).then(data => {
         data.records.forEach((item, index) => {
           if (item.status === 1) {
             item.statusName = '正常'
@@ -223,33 +227,25 @@ export default {
           this.params.status = 1
           break
       }
-      this.params.pageNo = 1
+      this.pageNo = 1
       this.getUsersList()
     },
     //  冻结/恢复 账户
     isOkDelete() {
       this.changeStatus.custId = this.singleData.mcCustomerId
-      if (this.tabIndex === 0) {
-        //  冻结账户
-        http.changeStatus(this.changeStatus).then(data => {
-          this.usersDatas.records.forEach((item, index) => {
-            if (item.mcCustomerId === this.singleData.mcCustomerId) {
-              this.usersDatas.records.splice(index, 1)
-              return
-            }
-          }, this)
-        })
-      } else {
-        //  恢复账户
-        this.changeStatus.frezonTime = null
-        http.changeStatus(this.changeStatus).then(data => {
-          this.getUsersList()
-        })
-      }
+      //  冻结账户
+      http.changeStatus(this.changeStatus).then(data => {
+        this.usersDatas.records.forEach((item, index) => {
+          if (item.mcCustomerId === this.singleData.mcCustomerId) {
+            this.usersDatas.records.splice(index, 1)
+            return
+          }
+        }, this)
+      })
     },
     //  分页加载下一页
     loadNext(current) {
-      this.params.pageNo = current
+      this.pageNo = current
       this.getUsersList()
     },
     //  手机号搜索
@@ -267,7 +263,7 @@ export default {
         }
       }
       this.params.pageSize = 10
-      this.params.pageNo = 1
+      this.pageNo = 1
       this.getUsersList()
     },
     selectLoad() {
@@ -284,20 +280,12 @@ export default {
           date.getMonth() + 1 < 10
             ? '0' + date.getMonth() + 1
             : date.getMonth() + 1,
-        day:
-          date.getDate() + 1 < 10
-            ? '0' + date.getDate() + 1
-            : date.getDate() + 1,
-        hour:
-          date.getHours() + 1 < 10 ? '0' + date.getHours() : date.getHours(),
+        day: date.getDate() < 10 ? '0' + date.getDate() + 1 : date.getDate(),
+        hour: date.getHours() < 10 ? '0' + date.getHours() : date.getHours(),
         minutes:
-          date.getMinutes() + 1 < 10
-            ? '0' + date.getMinutes()
-            : date.getMinutes(),
+          date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
         seconds:
-          date.getSeconds() + 1 < 10
-            ? '0' + date.getSeconds()
-            : date.getSeconds()
+          date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       }
       return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
     }

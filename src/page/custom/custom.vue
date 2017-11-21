@@ -90,7 +90,7 @@
       getCustomMenu () {
         let menuIcon = ['ios-people', 'ios-chatbubble', 'gear-a', 'ios-people']
         let resMenu = JSON.parse(sessionStorage.getItem('menu'))
-        resMenu.forEach((item) => {
+        resMenu.menusVO.forEach((item) => {
           if (item.url === 'custom') {
             this.menu = item.childMenusList.map((item, index) => {
               if (item.childMenusList.length > 0) {

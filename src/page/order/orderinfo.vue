@@ -184,12 +184,12 @@
           },
           {
             title: '规格',
-            key: 'productProperty',
+            key: 'names',
             align: 'center'
           },
           {
             title: '属性',
-            key: 'names',
+            key: 'productProperty',
             align: 'center'
           },
           {
@@ -238,9 +238,12 @@
                           // api 操作
                           api.putRefundOrder(foodId).then((res) => {
                             console.log(res)
-                            if (res === null) {
-                              // window.location.reload()
+                            if (res) {
                               _this.getOrderDetails()
+                            } else {
+                              _this.$Notice.error({
+                                title: '退款失败'
+                              })
                             }
                           })
                         }
@@ -294,8 +297,12 @@
             // api 操作
             api.putRefundOrderAll(that.orderId).then((res) => {
               console.log(res)
-              if (res === null) {
+              if (res) {
                 that.getOrderDetails()
+              } else {
+                that.$Notice.error({
+                  title: '退款失败'
+                })
               }
             })
           }
@@ -306,8 +313,8 @@
       },
       getOrderDetails () {
         api.getOrderInfo(this.orderId).then((res) => {
-          console.log(res)
           if (res) {
+            console.log(res)
             this.data4 = res.dealInfoList
             this.data1 = Array.of(res.orderInfo)
             this.data2 = Array.of(res.deliverInfo)

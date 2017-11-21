@@ -8,17 +8,67 @@ import * as ax from './instrance'
 
 // 上传地址
 export const uploadUrl = ax.uploadUrl
+/** app 更新模块 author: zhangwenlong start **/
 
-// 获取首页数据
+export const getPlatformData = params => {
+  return ax.g('/platform/dict', params)
+}
+
+/**
+ * 获取app 更新列表
+ * @param pageNo
+ * @param params
+ */
+export const getAppListData = (pageNo, params) => {
+  return ax.g(`/apps/list/${pageNo}`, params)
+}
+/**
+ * 根据app版本id获取详情
+ * @param params
+ */
+export const getAppDetails = params => {
+  return ax.g(`/apps/${params}`)
+}
+/**
+ * 根据app版本id删除
+ * @param params
+ */
+export const deleteApp = params => {
+  return ax.d(`/apps/${params}`)
+}
+/**
+ * 根据app版本id 修改
+ * @param params
+ */
+export const putAppDetails = params => {
+  return ax.u(`/apps/${params}`)
+}
+/**
+ * 新增app更新
+ * @param params
+ */
+export const addApp = params => {
+  return ax.p('/apps', params)
+}
+
+/** app 更新模块 end **/
+
+/** 用户登录登出，个人信息，修改密码 首页 author:zhangwenlong start**/
+
+/**
+ * 获取首页数据
+ * @param params=>null
+ */
 export const getIndexData = params => {
   return ax.g('/platform/index', params)
 }
-// 获取菜单
+/**
+ * 获取菜单
+ * @param params=>null
+ */
 export const getMemuData = params => {
   return ax.g('/platform/menu/list', params)
 }
-
-/** 用户登录登出，个人信息，修改密码 首页 start**/
 
 /**
  * 登录
@@ -90,7 +140,7 @@ export const getOrderList = (params, pageNo) => {
  * @param params
  */
 export const exportOrderList = params => {
-  return ax.g('/order/export', params)
+  return ax.g('/order/export/poi', params)
 }
 
 /**
@@ -214,14 +264,6 @@ export const getOrderBadListEval = (params, pageNo) => {
  */
 export const patchOrderEval = params => {
   return ax.pa('/order/remark', params)
-}
-
-/**
- * 导出评价列表
- * @param params ={startTime,endTime,status}
- */
-export const exportOrderEval = params => {
-  return ax.g('/order/remark/export', params)
 }
 
 /** 订单管理 end **/
@@ -422,10 +464,8 @@ export const seeBanner = id => {
  * 获取用户端所有用户列表
  * @param params =>{status,mobileno,pageSize,pageNo}
  */
-export const getUsersList = params => {
-  return ax.g(
-    `customer/${params.pageNo}?status=${params.status}&mobileno=${params.mobileno}&pageSize=${params.pageSize}`
-  )
+export const getUsersList = (params, pageNo) => {
+  return ax.g(`customer/${pageNo}`, params)
 }
 
 /**
@@ -446,16 +486,14 @@ export const changeStatus = params => {
  * 获取用户信息
  */
 export const getUserInfoData = params => {
-  return ax.g(`customer/${params.custId}`)
+  return ax.g(`customer/${params.custId}/${params.pageNo}`)
 }
 
 /**
  * 获取消息列表
  */
-export const getMessageList = params => {
-  return ax.g(
-    `customer/message/list/${params.pageNo}?status=${params.status}&msgType=${params.msgType}&pageSize=${params.pageSize}`
-  )
+export const getMessageList = (params, pageNo) => {
+  return ax.g(`customer/message/list/${pageNo}`, params)
 }
 
 /**
@@ -484,7 +522,7 @@ export const putMessage = params => {
  * 获取用户端配送未覆盖banner图
  */
 export const getBannerList = params => {
-  return ax.g(`/customer/banner?status=0&types=${params.types}`)
+  return ax.g(`/customer/banner`, params)
 }
 
 /**
@@ -627,7 +665,7 @@ export const getAddUser = params => {
 
 // 冻结。解冻用户
 export const getpaltformUserChange = params => {
-  return ax.pa('/platform/user/changeState', params)
+  return ax.u('/platform/user/changeState', params)
 }
 
 // 平台用户导出用户数据/platform/user/export
@@ -639,12 +677,15 @@ export const getUserExport = params => {
 export const getPlatformPermissionList = (id, params) => {
   return ax.g(`/platform/permission/list/${id}`, params)
 }
+// 平台用户权限管理查看列表导出数据/platform/permission/list/export
+export const getExportList = params => {
+  return ax.g('/platform/permission/list/export', params)
+}
 
 // 平台用户权限管理查看列表/platform/permission/
 export const getTreeList = id => {
   return ax.g(`/platform/permission/${id}`)
 }
-
 // 平台用户权限管理修改查看列表/platform/permission
 export const getUserPermission = params => {
   return ax.u('/platform/permission', params)

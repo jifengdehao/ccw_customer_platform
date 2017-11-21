@@ -53,8 +53,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import * as cookie from '@/data/index'
-
   export default {
     data () {
       const validePhone = (rule, value, callback) => {
@@ -150,8 +148,8 @@
         })
       },
       init () {
-        let user = cookie.userInfo()
-        console.log(cookie.userInfo())
+        let user = JSON.parse(sessionStorage.getItem('user'))
+        console.log(user)
         this.userForm.name = user.nickname
         this.userForm.cellphone = user.mobileno
         this.userForm.email = user.email

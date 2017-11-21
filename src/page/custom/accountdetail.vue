@@ -12,7 +12,8 @@
     <h3>用户收货地址</h3>
     <Table border :columns="userAcceptTitle" :data="userAcceptData"></Table>
     <h3>用户购买记录</h3>
-    <Table :columns="userBuyTitle" :data="userBuyData"></Table>
+    <Table :columns="userBuyTitle" :data="userBuyData.custOrderRecord"></Table>
+    <Page :total="userBuyData.total" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
   </div>
 </template>
 <script>
@@ -67,7 +68,7 @@ export default {
         },
         {
           title: '收货人',
-          key: 'recevier',
+          key: 'receiver',
           align: 'center'
         },
         {
@@ -110,15 +111,18 @@ export default {
         },
         {
           title: '收货人',
-          key: 'recevier'
+          key: 'receiver'
         },
         {
           title: '下单时间',
-          key: 'submitAt'
+          key: 'submitTime'
         },
         {
           title: '订单状态',
-          key: 'orderStatus'
+          key: 'status',
+          render: (h, params) => {
+            return h('span', this.filterStatus(params.row.status))
+          }
         }
       ],
       userBuyData: [
@@ -131,7 +135,10 @@ export default {
           orderStatus: '待付款'
         }
       ],
-      params: {} //  http传递的参数
+      params: {
+        pageNo: 1,
+        custId: ''
+      } //  http传递的参数
     }
   },
   activited: {},
@@ -147,13 +154,42 @@ export default {
       http.getUserInfoData(this.params).then(data => {
         this.userInfoData = data.custInfo
         this.userAcceptData = data.custAddress
-        this.userBuyData = data.custOrderRecord
+        this.userBuyData = data
       })
+    },
+    //  下一页
+    loadNext(num) {
+      this.params.pageNo = num
+      this.getUserInfoData()
+    },
+    filterStatus(value) {
+      let str = ''
+      switch (value) {
+        case 1:
+          str = '待付款'
+          break
+        case 2:
+          str = '待接单'
+          break
+        case 3:
+          str = '待发货'
+          break
+        case 4:
+          str = '配送中'
+          break
+        case 5:
+          str = '待评价'
+          break
+        case 6:
+          str = '完成'
+          break
+        case 7:
+          str = '用户取消订单'
+          break
+      }
+      return str
     }
-  },
-  filter: {},
-  computed: {},
-  watch: {}
+  }
 }
 </script>
 <style lang="css" scoped>
