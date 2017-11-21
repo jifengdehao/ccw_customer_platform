@@ -83,7 +83,7 @@ export default {
         },
         {
           title: '档口名称',
-          key: 'businessType'
+          key: 'shopName'
         },
         {
           title: '挡主姓名',
@@ -209,7 +209,7 @@ export default {
         },
         {
           title: '档口名称',
-          key: 'businessType'
+          key: 'shopName'
         },
         {
           title: '挡主姓名',

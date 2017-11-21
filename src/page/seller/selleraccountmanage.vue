@@ -90,7 +90,8 @@
             <span>营业状态：</span>
              <Select size="small" v-model="shopMessage.bussinessStatus" :value="shopMessage.bussinessStatus" placeholder="请选择" style="width: 150px">
                 <Option value="1">营业</Option>
-                <Option value="2">休息</Option>
+                <Option value="2">打烊</Option>
+                <Option value="3">关店</Option>
             </Select>
             </br>
             <span>营业时间：</span>
@@ -166,9 +167,9 @@
       <Form v-model="shopManageData">
         <FormItem label="设置账号限制：">
           <Select v-model="shopManageData.status" :value="shopManageData.status" placeholder="请选择">
-            <Option value="0">关档</Option>
             <Option value="1">账号恢复</Option>
-            <Option value="2">账号冻结</Option>
+            <Option value="2">关档</Option>
+            <Option value="3">账号冻结</Option>
           </Select>
         </FormItem>
         <FormItem label="添加备注：">

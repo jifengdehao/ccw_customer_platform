@@ -73,7 +73,7 @@ export function uploadpic(file) {
   // 根据guid命名图片的名字
   // var a
   var imgName = guid()
-  var storeAs = '/images/' + imgName + '.png'
+  var storeAs = '/images/' + imgName + '.' + file.name.split('.').splice(-1)
   // 上传图片
   return client
     .multipartUpload(storeAs, file)

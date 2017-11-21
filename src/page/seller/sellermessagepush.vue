@@ -14,7 +14,6 @@
         <Option value="1">立即推送</Option>
         <Option value="2">定时推送</Option>
       </Select>
-      <label>推送时间设置:</label>
       <DatePicker v-model="single.pushTime" value="single.pushTime" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="选择日期和时间（不含秒）" style="width: 300px"></DatePicker>
     </div>
     <textarea v-model="single.content" placeholder="输入您要推送的系统消息的内容" value="single.content"></textarea>
@@ -113,6 +112,7 @@ export default {
                         .then(response => {
                           this.single = response
                           this.single.pushType = String(this.single.pushType)
+                          console.log(response)
                         })
                       this.pushButton = '查看完毕'
                     }
