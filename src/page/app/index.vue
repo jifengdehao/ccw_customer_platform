@@ -24,6 +24,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common'
+  import * as time from '@/until/time'
 
   export default {
     data () {
@@ -36,25 +37,28 @@
           },
           {
             title: '应用名称',
-            key: 'name',
+            key: 'appName',
             align: 'center'
           },
           {
             title: 'App版本',
-            key: 'version',
+            key: 'appVersion',
             align: 'center'
           },
           {
             title: '更新时间',
-            key: 'updateTime',
-            align: 'center'
+            key: 'publishTime',
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.publishTime)
+            }
           },
           {
             title: '操作',
             key: 'options',
             align: 'center',
             render: (h, params) => {
-              let index = params.index
+              let id = params.row.id
               return h('div', [
                 h('Button', {
                   props: {
@@ -66,7 +70,7 @@
                   },
                   on: {
                     click: () => {
-                      this.$router.push('/app/index/' + index)
+                      this.$router.push('/app/index/' + id)
                     }
                   }
                 }, '查看'),
@@ -81,7 +85,11 @@
                       this.$Modal.warning({
                         content: '确定删除这更新？',
                         onOk () {
-                          that.data.splice(index, 1)
+                          api.deleteApp(id).then((res) => {
+                            if (res) {
+                              that.getAppListData()
+                            }
+                          })
                         }
                       })
                     }
@@ -129,9 +137,12 @@
 //            updateTime: '2017-11-24 00:00'
 //          }
         ],
-        pageNum: 10, // 当前页的显示的数据数量
-        curr: 1, // 当前页
-        tableTotal: 0 // 当前页的数据总数
+        pageNum:
+          10, // 当前页的显示的数据数量
+        curr:
+          1, // 当前页
+        tableTotal:
+          0 // 当前页的数据总数
       }
     },
     created () {
@@ -155,6 +166,7 @@
       },
       changePage (index) {
         this.curr = index
+        this.getAppListData()
       }
     }
   }
