@@ -130,7 +130,7 @@
                   <div class="img vm-fl">
                     <img :src="item.url" alt="">
                     <div class="cover">
-                      <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
+                      <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
                     </div>
                   </div>
                   <div class="qualification">
@@ -144,7 +144,8 @@
           <!-- 协议合同 -->
           <FormItem prop="password" class="shopMessagemModal-agreement">
             <h3>协议合同</h3>
-             <div class="img vm-fl" v-model="qulification.protocol" v-for="url in qulification.protocol" >
+            <div class="agreementImgBox" style="width:100%;height:120px;">
+               <div class="img vm-fl" v-model="qulification.protocol" v-for="url in qulification.protocol" >
                 <img :src="url" alt="">
                 <div class="cover">
                     <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
@@ -154,6 +155,7 @@
               <div class="uploadButton ">
                 <input type="file" @change="protocolUpload">+
               </div>
+            </div>
           </FormItem>
           </Col>
         </Row>
@@ -572,7 +574,7 @@ input[type='file'] {
 .qualification {
   position: absolute;
   left: 0;
-  bottom: 100px;
+  bottom: 30px;
   width: 200px;
   height: 30px;
   background-color: #E6DFBE;
@@ -598,6 +600,10 @@ input[type='file'] {
   position: relative;
   width: 120px;
   height: 120px;
+  margin: 0 auto;
+}
+.agreementImgBox .img{
+  margin: 3px;
 }
 .img img {
   width: 100%;
@@ -625,5 +631,9 @@ input[type='file'] {
   cursor: pointer;
   margin: 0 2px;
   line-height: 100px;
+}
+.bigimg {
+  width: 800px;
+  height: 800px;
 }
 </style>
