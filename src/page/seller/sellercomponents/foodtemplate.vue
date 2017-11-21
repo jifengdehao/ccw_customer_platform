@@ -203,7 +203,7 @@
 <script>
 import draggable from 'vuedraggable'
 import * as api from 'api/common.js'
-import { uploadpic } from '../../../until/upload'
+import { uploadpic } from '../../../components/upload-pic'
 import tableimage from './tableimage'
 export default {
   props: ['parentdata'],
@@ -219,15 +219,15 @@ export default {
       childdata: [],
       weightdata: [],
       // specification: [
-        // {
-        //   attributeType: 1
-        // },
-        // {
-        //   attributeType: 2
-        // },
-        // {
-        //   attributeType: 3
-        // }
+      // {
+      //   attributeType: 1
+      // },
+      // {
+      //   attributeType: 2
+      // },
+      // {
+      //   attributeType: 3
+      // }
       // ], // 商品属性
       templateItem: {
         name: '',
@@ -245,7 +245,7 @@ export default {
       templateModal: false,
       moveModal: false,
       sortModal: false,
-      picModal: false,  // 大图模态框
+      picModal: false, // 大图模态框
       bigImgUrl: '', // 大图地址
       Allsingle: false,
       templateTitle: '',
@@ -467,7 +467,7 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.foodtemplate{
+.foodtemplate {
   min-height: 500px;
 }
 .seller-template-manager-search span {

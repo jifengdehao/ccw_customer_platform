@@ -130,6 +130,7 @@
             title: '操作',
             key: 'options',
             align: 'center',
+            width: 150,
             render: (h, params) => {
               let rkShopId = params.row.rkShopId
               let isDelete = params.row.isDelete

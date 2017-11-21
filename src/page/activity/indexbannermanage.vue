@@ -53,8 +53,8 @@
               <tr>
                 <th v-for="tab in bannerThENDdata" :key="tab.id" :width="tab.style">{{ tab.key }}</th>
               </tr>
-              <tr v-for="data in bannerData" :key="data.id">
-                <td>{{ data.position }}</td>
+              <tr v-for="(data, index) in bannerData" :key="data.id">
+                <td>{{ index + 1 }}</td>
                 <td>{{ data.remark }}</td>
                 <td>{{ formatDateTime(data.startTime) }}</td>
                 <td>{{ formatDateTime(data.endTime) }}</td>

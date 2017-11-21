@@ -190,7 +190,7 @@
 <script>
 import * as api from 'api/common.js'
 import * as date from '@/until/time'
-import { uploadpic } from '../../until/upload'
+import { uploadpic } from '../../components/upload-pic'
 export default {
   components: {},
   props: {},
@@ -384,14 +384,12 @@ export default {
       }
       api.getsellerInfo(params, msSellerId).then(response => {
         this.shopMessage = response
-        console.log(this.shopMessage, '商家信息')
       })
     },
     // 获取商家资质证件图片
     getQulification(id) {
       api.getQulification(id).then(res => {
         this.qulification = res
-        console.log(res, '资质图片')
       })
     },
     // 更新商家信息
@@ -578,7 +576,7 @@ input[type='file'] {
   bottom: 30px;
   width: 200px;
   height: 30px;
-  background-color: #E6DFBE;
+  background-color: #e6dfbe;
   text-align: center;
 }
 

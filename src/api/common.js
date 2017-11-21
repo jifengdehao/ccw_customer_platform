@@ -10,6 +10,10 @@ import * as ax from './instrance'
 export const uploadUrl = ax.uploadUrl
 /** app 更新模块 author: zhangwenlong start **/
 
+export const getPlatformData = params => {
+  return ax.g('/platform/dict', params)
+}
+
 /**
  * 获取app 更新列表
  * @param pageNo
@@ -136,7 +140,7 @@ export const getOrderList = (params, pageNo) => {
  * @param params
  */
 export const exportOrderList = params => {
-  return ax.g('/order/export', params)
+  return ax.g('/order/export/poi', params)
 }
 
 /**
@@ -260,14 +264,6 @@ export const getOrderBadListEval = (params, pageNo) => {
  */
 export const patchOrderEval = params => {
   return ax.pa('/order/remark', params)
-}
-
-/**
- * 导出评价列表
- * @param params ={startTime,endTime,status}
- */
-export const exportOrderEval = params => {
-  return ax.g('/order/remark/export', params)
 }
 
 /** 订单管理 end **/
@@ -490,7 +486,7 @@ export const changeStatus = params => {
  * 获取用户信息
  */
 export const getUserInfoData = params => {
-  return ax.g(`customer/${params.custId}`)
+  return ax.g(`customer/${params.custId}/${params.pageNo}`)
 }
 
 /**
