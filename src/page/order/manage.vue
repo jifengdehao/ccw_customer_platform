@@ -18,92 +18,92 @@
       <Tab-pane label="全部订单" name="0">
         <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
         <Col span="24" class="mt20">
-          <Page
-            :total="tableTotal"
-            :current="curr"
-            :page-size="pageNum"
-            @on-change="changePage"
-            show-total
-            class="vm-fr"
-          ></Page>
+        <Page
+          :total="tableTotal"
+          :current="curr"
+          :page-size="pageNum"
+          @on-change="changePage"
+          show-total
+          class="vm-fr"
+        ></Page>
         </Col>
       </Tab-pane>
       <Tab-pane label="待付款" name="1">
         <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
         <Col span="24" class="mt20">
-          <Page
-            :total="tableTotal"
-            :current="curr"
-            :page-size="pageNum"
-            @on-change="changePage"
-            show-total
-            class="vm-fr"
-          ></Page>
+        <Page
+          :total="tableTotal"
+          :current="curr"
+          :page-size="pageNum"
+          @on-change="changePage"
+          show-total
+          class="vm-fr"
+        ></Page>
         </Col>
       </Tab-pane>
       <Tab-pane label="待接单" name="2">
         <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
         <Col span="24" class="mt20">
-          <Page
-            :total="tableTotal"
-            :current="curr"
-            :page-size="pageNum"
-            @on-change="changePage"
-            show-total
-            class="vm-fr"
-          ></Page>
+        <Page
+          :total="tableTotal"
+          :current="curr"
+          :page-size="pageNum"
+          @on-change="changePage"
+          show-total
+          class="vm-fr"
+        ></Page>
         </Col>
       </Tab-pane>
       <Tab-pane label="待发货" name="3">
         <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
         <Col span="24" class="mt20">
-          <Page
-            :total="tableTotal"
-            :current="curr"
-            :page-size="pageNum"
-            @on-change="changePage"
-            show-total
-            class="vm-fr"
-          ></Page>
+        <Page
+          :total="tableTotal"
+          :current="curr"
+          :page-size="pageNum"
+          @on-change="changePage"
+          show-total
+          class="vm-fr"
+        ></Page>
         </Col>
       </Tab-pane>
       <Tab-pane label="配送中" name="4">
         <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
         <Col span="24" class="mt20">
-          <Page
-            :total="tableTotal"
-            :current="curr"
-            :page-size="pageNum"
-            @on-change="changePage"
-            show-total
-            class="vm-fr"
-          ></Page>
+        <Page
+          :total="tableTotal"
+          :current="curr"
+          :page-size="pageNum"
+          @on-change="changePage"
+          show-total
+          class="vm-fr"
+        ></Page>
         </Col>
       </Tab-pane>
       <Tab-pane label="待评价" name="5">
         <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
         <Col span="24" class="mt20">
-          <Page
-            :total="tableTotal"
-            :current="curr"
-            :page-size="pageNum"
-            @on-change="changePage"
-            show-total
-            class="vm-fr"
-          ></Page>
+        <Page
+          :total="tableTotal"
+          :current="curr"
+          :page-size="pageNum"
+          @on-change="changePage"
+          show-total
+          class="vm-fr"
+        ></Page>
         </Col>
       </Tab-pane>
       <Tab-pane label="已完成" name="6">
         <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
         <Col span="24" class="mt20">
-          <Page
-            :total="tableTotal"
-            :current="curr"
-            :page-size="pageNum"
-            @on-change="changePage"
-            show-total
-            class="vm-fr"
-          ></Page>
+        <Page
+          :total="tableTotal"
+          :current="curr"
+          :page-size="pageNum"
+          @on-change="changePage"
+          show-total
+          class="vm-fr"
+        ></Page>
         </Col>
       </Tab-pane>
       <Tab-pane label="取消订单" name="7">
@@ -124,9 +124,9 @@
     <Modal v-model="exportModal" width="300">
       <div slot="header">导出表格</div>
       <div class="vm-textCenter">
-        <DatePicker type="date" placeholder="选择日期" style="width: 100%"></DatePicker>
+        <DatePicker type="date" placeholder="选择日期" style="width: 100%" v-model="startTime"></DatePicker>
         <div class="mtb10">到</div>
-        <DatePicker type="date" placeholder="选择日期" style="width: 100%"></DatePicker>
+        <DatePicker type="date" placeholder="选择日期" style="width: 100%" v-model="endTime"></DatePicker>
       </div>
       <div slot="footer">
         <Button type="primary" long :loading="modal_loading" @click="exportData()">确定</Button>
@@ -146,9 +146,12 @@
         pageNum: 10, // 当前页的显示的数据数量
         tableTotal: 0, // 当前页的数据总数
         status: 0, // 状态
-        modal_loading: false,
         phone: '',
         loading: true,
+        exportModal: false, // 弹出导出表格
+        startTime: '', // 导出表格开始时间
+        endTime: '', // 导出表格结束时间
+        modal_loading: false, // 导出表格加载
         columns: [
           {
             type: 'expand',
@@ -256,8 +259,7 @@
             }
           }
         ],
-        data: [],
-        exportModal: false
+        data: []
       }
     },
     computed: {},
@@ -276,11 +278,19 @@
       },
       // 导出数据
       exportData () {
-        let that = this
-        this.$Modal.confirm({
-          content: '尚未开发',
-          onOk () {
-            that.exportModal = false
+        this.modal_loading = true
+        let params = {
+          startTime: this.startTime,
+          endTime: this.endTime,
+          types: this.types,
+          mobileno: this.mobileno
+        }
+        console.log(params)
+        api.exportOrderList(params).then((res) => {
+          if (res) {
+            this.modal_loading = false
+            console.log(res)
+            window.location.href = res
           }
         })
       },

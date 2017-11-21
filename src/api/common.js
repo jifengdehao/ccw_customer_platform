@@ -140,7 +140,7 @@ export const getOrderList = (params, pageNo) => {
  * @param params
  */
 export const exportOrderList = params => {
-  return ax.g('/order/export', params)
+  return ax.g('/order/export/poi', params)
 }
 
 /**
@@ -264,14 +264,6 @@ export const getOrderBadListEval = (params, pageNo) => {
  */
 export const patchOrderEval = params => {
   return ax.pa('/order/remark', params)
-}
-
-/**
- * 导出评价列表
- * @param params ={startTime,endTime,status}
- */
-export const exportOrderEval = params => {
-  return ax.g('/order/remark/export', params)
 }
 
 /** 订单管理 end **/
