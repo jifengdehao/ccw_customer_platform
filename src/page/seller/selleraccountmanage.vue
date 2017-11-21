@@ -144,7 +144,7 @@
           <!-- 协议合同 -->
           <FormItem prop="password" class="shopMessagemModal-agreement">
             <h3>协议合同</h3>
-            <div class="agreementImgBox" style="width:100%;height:120px;">
+            <div class="agreementImgBox">
                <div class="img vm-fl" v-model="qulification.protocol" v-for="url in qulification.protocol" >
                 <img :src="url" alt="">
                 <div class="cover">
@@ -601,6 +601,11 @@ input[type='file'] {
   width: 120px;
   height: 120px;
   margin: 0 auto;
+}
+.agreementImgBox {
+  position: relative;
+  height: 120px;
+  overflow-x: auto;
 }
 .agreementImgBox .img{
   margin: 3px;
