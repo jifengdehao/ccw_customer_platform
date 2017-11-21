@@ -171,11 +171,9 @@ export default {
           //  有修改
           this.data[name][index].tagContent = value
           http.putTag(this.data[name][index]).then(data => {
-            if (data.code === 200) {
-              this.loadData()
-            }
+            this.loadData()
           })
-          this.$set(this.data[name][index], 'status', false)
+          // this.$set(this.data[name][index], 'status', false)
           this.$forceUpdate()
         }
       } else {

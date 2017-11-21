@@ -296,7 +296,7 @@ export default {
       }
       uploadpic(url).then(res => {
         if (res) {
-          data.picUrl = res[0]
+          data.picUrl = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
         }
       })
     },
