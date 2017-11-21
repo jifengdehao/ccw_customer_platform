@@ -10,6 +10,10 @@ import * as ax from './instrance'
 export const uploadUrl = ax.uploadUrl
 /** app 更新模块 author: zhangwenlong start **/
 
+export const getPlatformData = params => {
+  return ax.g('/platform/dict', params)
+}
+
 /**
  * 获取app 更新列表
  * @param pageNo

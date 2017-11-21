@@ -131,7 +131,6 @@
       getMenuData () {
         api.getMemuData().then((res) => {
           if (res) {
-            console.log(res)
             let menuIcon = ['ios-paper', 'ios-people', 'chatbox-working', 'chatbox', 'help-buoy', 'ios-analytics', 'settings', 'ios-people']
             this.menu = res.menusVO.map((item, index) => {
               return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url}
