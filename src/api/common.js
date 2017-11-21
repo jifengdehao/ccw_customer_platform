@@ -490,7 +490,7 @@ export const changeStatus = params => {
  * 获取用户信息
  */
 export const getUserInfoData = params => {
-  return ax.g(`customer/${params.custId}`)
+  return ax.g(`customer/${params.custId}/${params.pageNo}`)
 }
 
 /**
