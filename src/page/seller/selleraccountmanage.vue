@@ -29,7 +29,7 @@
         </FormItem>
         <FormItem>
           <span class="label">商家手机：</span>
-          <Input v-model="formItem.mobileno" placeholder="请输入" style="width: 200px"></Input>
+          <Input maxlength="11" v-model="formItem.mobileno" placeholder="请输入" style="width: 200px"></Input>
         </FormItem>
         <FormItem>
           <span class="label">档口名称：</span>
