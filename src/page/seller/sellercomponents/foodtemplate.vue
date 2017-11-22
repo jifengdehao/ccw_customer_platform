@@ -94,7 +94,7 @@
                   <Icon type="ios-trash-outline" @click.native="mainPicRemove(index)"></Icon>
                 </div>
               </div>
-              <div class="uploadButton ">
+              <div class="uploadButton">
                 <input type="file" @change="mainPicUpload">+
               </div>
           <!-- <update-pic v-model="templateItem.mainPic" :imgList="templateItem.mainPic" class="mainpic"></update-pic> -->
@@ -428,13 +428,17 @@ export default {
     },
     // 图片上传
     mainPicUpload(e) {
-      var file = e.target.files[0]
-      uploadpic(file).then(res => {
-        if (res) {
-          res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
-          this.templateItem.mainPic = this.templateItem.mainPic.concat(res)
-        }
-      })
+      if (this.templateItem.mainPic.length < 3) {
+        var file = e.target.files[0]
+        uploadpic(file).then(res => {
+          if (res) {
+            res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+            this.templateItem.mainPic = this.templateItem.mainPic.concat(res)
+          }
+        })
+      } else {
+        this.$Message.error('最多上传3张图片')
+      }
     },
     // 图片库
     picLibUpload(e) {
@@ -616,7 +620,7 @@ input[type='file'] {
   margin: 0 2px;
   line-height: 100px;
 }
-.bigimg{
+.bigimg {
   width: 800px;
   height: 800px;
 }
