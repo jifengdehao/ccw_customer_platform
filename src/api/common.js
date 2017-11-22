@@ -10,6 +10,10 @@ import * as ax from './instrance'
 export const uploadUrl = ax.uploadUrl
 /** app 更新模块 author: zhangwenlong start **/
 
+/**
+ * 获取平台列表 应用名称 包路径
+ * @param params
+ */
 export const getPlatformData = params => {
   return ax.g('/platform/dict', params)
 }
@@ -40,8 +44,8 @@ export const deleteApp = params => {
  * 根据app版本id 修改
  * @param params
  */
-export const putAppDetails = params => {
-  return ax.u(`/apps/${params}`)
+export const putAppDetails = (id, params) => {
+  return ax.u(`/apps/${id}`, params)
 }
 /**
  * 新增app更新

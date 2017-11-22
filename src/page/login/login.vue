@@ -8,7 +8,7 @@
   <div id="login">
     <Form ref="formLogin" :model="formLogin" :rules="formLoginRules" class="card-box">
       <Form-item class="formLogin-title">
-        <h3>用户端系统登录</h3>
+        <h3>平台后台用户登录</h3>
       </Form-item>
       <Form-item prop="userName">
         <Input size="large" type="text" v-model="formLogin.userName" placeholder="用户名">
