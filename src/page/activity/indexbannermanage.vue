@@ -30,8 +30,9 @@
                   <img style="height: 200px; width: 100%;" v-if="data.picUrl" :src="data.picUrl">
                 </td>
                 <td class="br" style="width: 10%">
-                  <input type="button" @change="onUpload($event, data)" value="重新上传">
-                  <input type="file"   @change="onUpload($event, data)" accept="image/*" title="上传图片" filetype="image/*">
+                  <div class="upload">
+                    <input type="file" @change="onUpload($event, data)" value="上传图片">上传图片
+                  </div>
                 </td>
                 <td class="br link" style="width: 20%">
                   <input v-model="data.linkUrl" type="text" :value="data.linkUrl">
@@ -398,10 +399,11 @@ table.table-banner td > input[type='text'],
   outline: none;
 }
 
-.draggable td > input[type='button'],
-.draggable td > input[type='file'] {
-  padding: 6px 15px 7px 15px;
-  margin-left: 20px;
+.draggable td > .upload {
+  width: 120px;
+  height: 33px;
+  line-height: 30px;
+  display: inline-block;
   border-radius: 4px;
   color: #fff;
   border: 1px solid #2d8cf0;
@@ -409,10 +411,12 @@ table.table-banner td > input[type='text'],
   outline: none;
 }
 
-table.table-banner td > input[type='file'],
-.draggable td > input[type='file'] {
+.draggable td .upload > input[type='file'] {
+  width: 100%;
+  height: 100%;
   position: absolute;
-  left: 26px;
+  left: 0;
+  top: 0;
   opacity: 0;
 }
 

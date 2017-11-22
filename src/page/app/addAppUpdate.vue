@@ -2,10 +2,10 @@
 * $
 * author zhangwenlong
 * email zhangwenlong@ccw163.com
-* 功能：查看app更新详情
+* 功能：增加app版本更新
 */
 <template>
-  <div class="indexDetails">
+  <div class="addAppUpdate">
     <div class="close" @click="close">
       <Button type="text" icon="close"></Button>
     </div>
@@ -14,14 +14,14 @@
         <DatePicker type="datetime" placeholder="选择日期" style="width: 100%"
                     v-model="appVersionInfo.publishTime"></DatePicker>
       </FormItem>
-      <FormItem label="更新标题" prop="title">
+      <FormItem label="更新标题" prop="publishTime">
         <Input v-model="appVersionInfo.title" placeholder="请输入更新标题"></Input>
       </FormItem>
       <FormItem label="更新内容" prop="content">
         <Input v-model="appVersionInfo.content" placeholder="更新内容" type="textarea"
                :autosize="{minRows: 2,maxRows: 5}"></Input>
       </FormItem>
-      <FormItem label="手机平台" prop="platform">
+      <FormItem label="手机平台">
         <Select v-model="appVersionInfo.platform" clearable @on-change="changPlatForm">
           <Option v-for="item in platFromArry" :value="item.code" :key="item.id">{{ item.name }}</Option>
         </Select>
@@ -53,6 +53,7 @@
       <FormItem label="构建版本" prop="buildVersion">
         <Input v-model="appVersionInfo.buildVersion" placeholder="请输入构建版本"></Input>
       </FormItem>
+
       <FormItem>
         <input id="upload" type="file" @change="onUpload($event)" title="上传图片" filetype="image/*">
       </FormItem>
@@ -63,7 +64,7 @@
         </RadioGroup>
       </FormItem>
       <FormItem>
-        <Button type="primary" @click="modifyAppUpdate">提交</Button>
+        <Button type="primary" @click="addAppUpdate">提交</Button>
       </FormItem>
     </Form>
   </div>
@@ -75,9 +76,9 @@
   export default {
     data () {
       return {
-        id: (() => {
-          return this.$route.params.id
-        })(),
+        platFromArry: [], // 平台列表
+        appNameArry: [], // 根据平台获取相对于的应用名称
+        versionArry: [], // 版本要求
         appVersionInfo: {
           title: '', // 更新标题
           bundle: '',  // 更新包路径
@@ -88,34 +89,21 @@
           forceUpdate: 0,  // 是否强制升级
           maxSystemVersion: 0, // 最大版本要求
           minSystemVersion: 0,  // 最小版本要求
-          downloadUrl: '',  // 安装包地址
-          appName: '', // app应用名称
+          downloadUrl: '',
+          appName: '', // 应用名称
           buildVersion: 0
-        },
-        platFromArry: [], // 平台列表
-        appNameArry: [],  // 平台名称列表
-        versionArry: []   // 版本要求列表
+        }
       }
     },
     created () {
-      this.getAppDetails()
       this.getPlatformData()
-      this.getVersionData()
       this.getPlatformName()
+      this.getVersionData()
     },
     methods: {
-      // 关闭app更新详情
+      // 回退
       close () {
         this.$router.back()
-      },
-      // 获取app更新
-      getAppDetails () {
-        api.getAppDetails(this.id).then((res) => {
-          if (res) {
-            console.log(res)
-            this.appVersionInfo = res
-          }
-        })
       },
       // 获取移动平台列表
       getPlatformData () {
@@ -128,11 +116,33 @@
           }
         })
       },
-      // 选择对应的平台
+      // 选择平台
       changPlatForm (value) {
         this.appVersionInfo.platform = value   // 选择对应的平台
-        this.getVersionData()
         this.getPlatformName()
+        this.getVersionData()
+      },
+      // 根据平台获取应用名称
+      getPlatformName () {
+        if (this.appVersionInfo.platform === 0) {
+          let params = {
+            types: 'app_name_ios'
+          }
+          api.getPlatformData(params).then((res) => {
+            if (res) {
+              this.appNameArry = res
+            }
+          })
+        } else {
+          let params = {
+            types: 'app_name_android'
+          }
+          api.getPlatformData(params).then((res) => {
+            if (res) {
+              this.appNameArry = res
+            }
+          })
+        }
       },
       // 上传安装包
       onUpload (e) {
@@ -164,29 +174,27 @@
           })
         }
       },
-      // 根据平台获取应用名称
-      getPlatformName () {
-        if (this.appVersionInfo.platform === 0) {
-          let params = {
-            types: 'app_name_ios'
+      // 增加app更新
+      addAppUpdate () {
+        api.addApp(this.appVersionInfo).then((res) => {
+          if (res) {
+            console.log(res)
+            let that = this
+            this.$Notice.success({
+              title: '增加app更新成功',
+              duration: 2,
+              onClose () {
+                that.$router.back()
+              }
+            })
+          } else {
+            this.$Notice.error({
+              title: '增加app更新失败'
+            })
           }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.appNameArry = res
-            }
-          })
-        } else {
-          let params = {
-            types: 'app_name_android'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.appNameArry = res
-            }
-          })
-        }
+        })
       },
-      // 选择应用名称获取包路径
+      // 选择app应用名称
       changAppName (value) {
         this.getBundleData(value)
       },
@@ -227,33 +235,13 @@
             }
           })
         }
-      },
-      // 修改更新
-      modifyAppUpdate () {
-        api.putAppDetails(this.id, this.appVersionInfo).then((res) => {
-          if (res) {
-            console.log(res)
-            let that = this
-            this.$Notice.success({
-              title: 'app更新修改成功',
-              duration: 2,
-              onClose () {
-                that.$router.back()
-              }
-            })
-          } else {
-            this.$Notice.error({
-              title: 'app更新修改失败'
-            })
-          }
-        })
       }
     }
   }
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus" type="text/stylus">
   #App
-    .indexDetails
+    .addAppUpdate
       position relative
       border 1px solid #e9eaec
       padding 20px

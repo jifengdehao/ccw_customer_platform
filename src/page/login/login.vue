@@ -8,7 +8,7 @@
   <div id="login">
     <Form ref="formLogin" :model="formLogin" :rules="formLoginRules" class="card-box">
       <Form-item class="formLogin-title">
-        <h3>用户端系统登录</h3>
+        <h3>平台后台用户登录</h3>
       </Form-item>
       <Form-item prop="userName">
         <Input size="large" type="text" v-model="formLogin.userName" placeholder="用户名">
@@ -61,7 +61,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common.js'
-  // import hash from 'js-md5'
+  import hash from 'js-md5'
 
   export default {
     name: 'login',
@@ -104,8 +104,8 @@
           if (valid) {
             let params = {
               userName: this.formLogin.userName,
-              // password: hash(this.formLogin.password),
-              password: this.formLogin.password,
+              password: hash(this.formLogin.password),
+              // password: this.formLogin.password,
               verificationCode: this.formLogin.verificationCode
             }
             console.log(params)
