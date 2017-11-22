@@ -65,7 +65,7 @@ export default {
   data() {
     return {
       total: 1,
-      pageSize: 1,
+      pageSize: 10,
       formItem: {},
       modelFormItem: {},
       allCharge: [],
@@ -135,7 +135,7 @@ export default {
     }
   },
   created() {
-    this.getBDlist(1, 5)
+    this.getBDlist(1, 10)
     this.getAllBD()
     this.getAllMarket()
   },
@@ -194,7 +194,7 @@ export default {
     },
     // 分页
     changepage(index) {
-      this.getBDlist(index, 5)
+      this.getBDlist(index, 10)
     },
     // 删除
     remove(params) {
@@ -223,11 +223,11 @@ export default {
           this.$Message.info('修改成功')
         })
       }
-      this.getBDlist(1, 5)
+      this.getBDlist(1, 10)
     },
     // 搜索
     search(formItem) {
-      this.getBDlist(1, 5, formItem.psMarketId, formItem.ptBdId)
+      this.getBDlist(1, 10, formItem.psMarketId, formItem.ptBdId)
     }
   },
   filfter: {},

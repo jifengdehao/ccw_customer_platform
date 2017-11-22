@@ -87,6 +87,7 @@
                         onOk () {
                           api.deleteApp(id).then((res) => {
                             if (res) {
+                              console.log(res)
                               that.getAppListData()
                             }
                           })
