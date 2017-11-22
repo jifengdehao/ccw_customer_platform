@@ -82,15 +82,10 @@
                   on: {
                     click: () => {
                       let that = this
-                      this.$Modal.warning({
+                      this.$Modal.confirm({
                         content: '确定删除这更新？',
                         onOk () {
-                          api.deleteApp(id).then((res) => {
-                            if (res) {
-                              console.log(res)
-                              that.getAppListData()
-                            }
-                          })
+                          that.deleteAppUpdate(id)
                         }
                       })
                     }
@@ -168,6 +163,14 @@
       changePage (index) {
         this.curr = index
         this.getAppListData()
+      },
+      deleteAppUpdate (id) {
+        api.deleteApp(id).then((res) => {
+          if (res) {
+            console.log(res)
+            this.getAppListData()
+          }
+        })
       }
     }
   }

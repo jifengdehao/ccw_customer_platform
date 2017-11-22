@@ -28,12 +28,12 @@
       </FormItem>
       <FormItem label="最低版本要求" prop="minSystemVersion">
         <Select v-model="appVersionInfo.minSystemVersion" clearable>
-          <Option v-for="item in versionArry" :value="item.name" :key="item.id">{{ item.name }}</Option>
+          <Option v-for="item in versionArry" :value="item.code" :key="item.id">{{ item.name }}</Option>
         </Select>
       </FormItem>
       <FormItem label="最高版本要求" prop="maxSystemVersion">
         <Select v-model="appVersionInfo.maxSystemVersion" clearable>
-          <Option v-for="item in versionArry" :value="item.name" :key="item.id">{{ item.name }}</Option>
+          <Option v-for="item in versionArry" :value="item.code" :key="item.id">{{ item.name }}</Option>
         </Select>
       </FormItem>
       <FormItem label="应用名称" prop="appName">
@@ -47,7 +47,13 @@
       <FormItem label="包路径" prop="bundle">
         <Input v-model="appVersionInfo.bundle" placeholder="请输入包路径" disabled></Input>
       </FormItem>
-      <FormItem label="上传安装包">
+      <FormItem label="安装包" prop="downloadUrl">
+        <Input v-model="appVersionInfo.downloadUrl" placeholder="请输入安装包地址" disabled></Input>
+      </FormItem>
+      <FormItem label="构建版本" prop="buildVersion">
+        <Input v-model="appVersionInfo.buildVersion" placeholder="请输入构建版本"></Input>
+      </FormItem>
+      <FormItem>
         <input id="upload" type="file" @change="onUpload($event)" title="上传图片" filetype="image/*">
       </FormItem>
       <FormItem label="强制升级" prop="forceUpdate">
@@ -57,13 +63,14 @@
         </RadioGroup>
       </FormItem>
       <FormItem>
-        <Button type="primary">提交</Button>
+        <Button type="primary" @click="modifyAppUpdate">提交</Button>
       </FormItem>
     </Form>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common'
+  import * as upload from 'components/upload-pic'
 
   export default {
     data () {
@@ -81,8 +88,9 @@
           forceUpdate: 0,  // 是否强制升级
           maxSystemVersion: 0, // 最大版本要求
           minSystemVersion: 0,  // 最小版本要求
-          downloadUrl: '',
-          appName: ''
+          downloadUrl: '',  // 安装包地址
+          appName: '', // app应用名称
+          buildVersion: 0
         },
         platFromArry: [], // 平台列表
         appNameArry: [],  // 平台名称列表
@@ -92,8 +100,8 @@
     created () {
       this.getAppDetails()
       this.getPlatformData()
-      this.getPlatformName()
       this.getVersionData()
+      this.getPlatformName()
     },
     methods: {
       // 关闭app更新详情
@@ -123,33 +131,16 @@
       // 选择对应的平台
       changPlatForm (value) {
         this.appVersionInfo.platform = value   // 选择对应的平台
-        this.getPlatformName()
         this.getVersionData()
+        this.getPlatformName()
       },
-      // 根据平台获取应用名称
-      getPlatformName () {
-        if (this.appVersionInfo.platform === 0) {
-          let params = {
-            types: 'app_name_ios'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.appNameArry = res
-            }
-          })
-        } else {
-          let params = {
-            types: 'app_name_android'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.appNameArry = res
-            }
-          })
-        }
-      },
-      changAppName (value) {
-        this.getBundleData(value)
+      // 上传安装包
+      onUpload (e) {
+        upload.uploadpic(e.target.files[0]).then(data => {
+          let res = data[0]
+          res = res.indexOf('?') ? res.split('?')[0] : res
+          this.appVersionInfo.downloadUrl = res
+        })
       },
       // 获取版本要求
       getVersionData () {
@@ -173,6 +164,32 @@
           })
         }
       },
+      // 根据平台获取应用名称
+      getPlatformName () {
+        if (this.appVersionInfo.platform === 0) {
+          let params = {
+            types: 'app_name_ios'
+          }
+          api.getPlatformData(params).then((res) => {
+            if (res) {
+              this.appNameArry = res
+            }
+          })
+        } else {
+          let params = {
+            types: 'app_name_android'
+          }
+          api.getPlatformData(params).then((res) => {
+            if (res) {
+              this.appNameArry = res
+            }
+          })
+        }
+      },
+      // 选择应用名称获取包路径
+      changAppName (value) {
+        this.getBundleData(value)
+      },
       // 获取包路径
       getBundleData (value) {
         if (this.appVersionInfo.platform === 0) {
@@ -181,20 +198,15 @@
           }
           api.getPlatformData(params).then((res) => {
             if (res) {
-              let newArr = this.appNameArry.filter((item, index, array) => {
+              this.appNameArry.forEach((item) => {
                 if (item.name === value) {
-                  return item
+                  res.forEach((it) => {
+                    if (it.idx === item.idx) {
+                      this.appVersionInfo.bundle = it.name
+                    }
+                  })
                 }
               })
-              let idx = newArr[0].idx
-              let bundle = res.filter((item) => {
-                if (item.idx === idx) {
-                  return item
-                }
-              })
-              let bundleName = bundle[0].name
-              console.log(bundleName)
-              this.appVersionInfo.bundle = bundle[0].name
             }
           })
         } else {
@@ -203,23 +215,38 @@
           }
           api.getPlatformData(params).then((res) => {
             if (res) {
-              let newArr = this.appNameArry.filter((item, index, array) => {
+              this.appNameArry.forEach((item) => {
                 if (item.name === value) {
-                  return item
+                  res.forEach((it) => {
+                    if (it.idx === item.idx) {
+                      this.appVersionInfo.bundle = it.name
+                    }
+                  })
                 }
               })
-              let idx = newArr[0].idx
-              let bundle = res.filter((item) => {
-                if (item.idx === idx) {
-                  return item
-                }
-              })
-              let bundleName = bundle[0].name
-              console.log(bundleName)
-              this.appVersionInfo.bundle = bundle[0].name
             }
           })
         }
+      },
+      // 修改更新
+      modifyAppUpdate () {
+        api.putAppDetails(this.id, this.appVersionInfo).then((res) => {
+          if (res) {
+            console.log(res)
+            let that = this
+            this.$Notice.success({
+              title: 'app更新修改成功',
+              duration: 2,
+              onClose () {
+                that.$router.back()
+              }
+            })
+          } else {
+            this.$Notice.error({
+              title: 'app更新修改失败'
+            })
+          }
+        })
       }
     }
   }
