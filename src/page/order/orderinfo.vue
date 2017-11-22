@@ -184,12 +184,12 @@
           },
           {
             title: '规格',
-            key: 'productProperty',
+            key: 'names',
             align: 'center'
           },
           {
             title: '属性',
-            key: 'names',
+            key: 'productProperty',
             align: 'center'
           },
           {

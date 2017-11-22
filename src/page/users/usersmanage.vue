@@ -18,7 +18,7 @@
       <div>
         <Table stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
       </div>
-        <Page v-if="userDate && userDate.length > 0" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
+        <Page v-if="userDate && userDate.length > 0" :curent="pageNo" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
     </div>
     <!-- 导出数据弹框start -->
     <Modal v-model="exportModal" width="300">
@@ -130,14 +130,6 @@ export default {
           key: 'email',
           align: 'center'
         },
-        // {
-        //   title: '最后一次登录时间',
-        //   key: 'lastLoginTime'
-        // },
-        // {
-        //   title: '最后一次登录IP',
-        //   key: 'lastLoginIp'
-        // },
         {
           title: '操作',
           key: 'operation',
