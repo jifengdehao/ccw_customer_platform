@@ -91,7 +91,7 @@
                 <img :src="url" alt="">
                 <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemove(index)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="mainPicRemove(index)"></Icon>
                 </div>
               </div>
               <div class="uploadButton ">
@@ -106,7 +106,7 @@
                 <img :src="url" alt="">
                 <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemove(index)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="picLibRemove(index)"></Icon>
                 </div>
               </div>
               <div class="uploadButton ">
@@ -162,7 +162,7 @@
                 <img :src="url" alt="">
                 <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemove(index)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="productDescRemove(index)"></Icon>
                 </div>
               </div>
               <div class="uploadButton ">
@@ -430,29 +430,48 @@ export default {
     mainPicUpload(e) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
-        this.templateItem.mainPic = this.templateItem.mainPic.concat(res)
+        if (res) {
+          res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+          this.templateItem.mainPic = this.templateItem.mainPic.concat(res)
+        }
       })
     },
     // 图片库
     picLibUpload(e) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
-        this.templateItem.picLib = this.templateItem.picLib.concat(res)
+        if (res) {
+          res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+          this.templateItem.picLib = this.templateItem.picLib.concat(res)
+        }
       })
     },
     // 商品详情
     productDescUpload(e) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
-        this.templateItem.productDesc = this.templateItem.productDesc.concat(
-          res
-        )
+        if (res) {
+          res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+          this.templateItem.productDesc = this.templateItem.productDesc.concat(
+            res
+          )
+        }
       })
     },
     // 查看大图
     handleView(url) {
       this.bigImgUrl = url
       this.picModal = true
+    },
+    // 删除图片
+    mainPicRemove(index) {
+      this.templateItem.mainPic.splice(index, 1)
+    },
+    picLibRemove(index) {
+      this.templateItem.picLib.splice(index, 1)
+    },
+    productDescRemove(index) {
+      this.templateItem.productDesc.splice(index, 1)
     }
   },
   filfter: {},
@@ -596,5 +615,9 @@ input[type='file'] {
   cursor: pointer;
   margin: 0 2px;
   line-height: 100px;
+}
+.bigimg{
+  width: 800px;
+  height: 800px;
 }
 </style>

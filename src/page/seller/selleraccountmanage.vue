@@ -432,20 +432,31 @@ export default {
     shopimgupload(e) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
-        this.shopMessage.shopPicUrl = res[0]
+        if (res) {
+          this.shopMessage.shopPicUrl = res[0].indexOf('?')
+            ? res[0].split('?')[0]
+            : res[0]
+        }
       })
     },
     // 营业资质
     qualificationUpload(e, index) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
-        this.qulification.qualificationList[index].url = res
+        if (res) {
+          this.qulification.qualificationList[index].url = res[0].indexOf('?')
+            ? res[0].split('?')[0]
+            : res[0]
+        }
       })
     },
     // 协议合同
     protocolUpload(e) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
+        if (res) {
+          res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+        }
         this.qulification.protocol = this.qulification.protocol.concat(res)
       })
     },
@@ -606,7 +617,7 @@ input[type='file'] {
   height: 120px;
   overflow-x: auto;
 }
-.agreementImgBox .img{
+.agreementImgBox .img {
   margin: 3px;
 }
 .img img {
