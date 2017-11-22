@@ -24,7 +24,7 @@
     <section>
       <Tabs type="card" :animated="false" @on-click="changedata">
         <TabPane v-for="tab in tabs" key :label="tab.title">
-          <Table border ref="selection" :columns="columns" :data="sellervideodata" @on-select="showselect">
+          <Table border ref="selection" :columns="columns" :data="sellervideodata" @on-selection-change="showselect">
           </Table>
         </TabPane>
         <Button type="success" size="small" slot="extra" @click="batchpass()">批量通过</Button>
@@ -33,7 +33,7 @@
     </section>
     <!-- 分页 -->
     <section class="seller-video-manager-page">
-      <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
+      <Page :total="total" show-total :page-size="pageSize" :current="currentPage" @on-change="changepage"></Page>
     </section>
   </div>
 </template>
@@ -41,244 +41,6 @@
 import * as api from 'api/common.js'
 import tableImg from './sellercomponents/tableimage'
 import * as date from '@/until/time'
-// 商品图片
-let producttitle = [
-  {
-    title: '商品标题',
-    key: 'productName',
-    width: 100
-  },
-  {
-    title: '商品主图',
-    key: 'picUrls',
-    render: (h, params) => {
-      return h('div', [
-        h(tableImg, {
-          props: {
-            picUrls: params.row.picUrls
-          }
-        })
-      ])
-    }
-  },
-  {
-    title: '商品介绍图片',
-    key: 'picDesc',
-    render: (h, params) => {
-      return h('div', [
-        h(tableImg, {
-          props: {
-            picUrls: params.row.picDesc
-          }
-        })
-      ])
-    }
-  },
-  {
-    title: '商品添加或修改时间',
-    key: 'lastUpdateTime',
-    width: 200,
-    align: 'center',
-    render: (h, params) => {
-      return date.formatDateTime(params.row.lastUpdateTime)
-    }
-  },
-  {
-    title: '操作',
-    key: 'operation',
-    width: 140,
-    render: (h, params) => {
-      return h('div', [
-        h(
-          'Button',
-          {
-            props: {
-              type: 'warning',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.productPicPass(params.row.spProductId)
-              }
-            }
-          },
-          '不通过'
-        ),
-        h(
-          'Button',
-          {
-            props: {
-              type: 'success',
-              size: 'small'
-            },
-            on: {
-              click: () => {
-                this.productPicNotPass(params.row.spProductId)
-              }
-            }
-          },
-          '通过'
-        )
-      ])
-    }
-  },
-  {
-    type: 'selection',
-    width: 60,
-    align: 'center'
-  }
-]
-// 档口图片审核
-let shoptitle = [
-  {
-    title: '档口',
-    key: 'shopName'
-  },
-  {
-    title: '档口图片',
-    key: 'shoppic',
-    render: (h, params) => {
-      return h('div', [
-        h(tableImg, {
-          props: {
-            picUrls: params.row.shopPicUrl
-          }
-        })
-      ])
-    }
-  },
-  {
-    title: '商品添加或修改时间',
-    key: 'lastUpdateTime',
-    render: (h, params) => {
-      return date.formatDateTime(params.row.lastUpdateTime)
-    }
-  },
-  {
-    title: '操作',
-    key: 'operation',
-    width: 140,
-    render: (h, params) => {
-      return h('div', [
-        h(
-          'Button',
-          {
-            props: {
-              type: 'warning',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.shopPicPass(params.row.spProductId)
-              }
-            }
-          },
-          '不通过'
-        ),
-        h(
-          'Button',
-          {
-            props: {
-              type: 'success',
-              size: 'small'
-            },
-            on: {
-              click: () => {
-                this.shopPicNotPass(params.row.spProductId)
-              }
-            }
-          },
-          '通过'
-        )
-      ])
-    }
-  },
-  {
-    type: 'selection',
-    width: 60,
-    align: 'center'
-  }
-]
-// 档口头像审核
-let avatar = [
-  {
-    title: '档口',
-    key: 'shopName'
-  },
-  {
-    title: '档口头像图片',
-    key: 'headUrl',
-    render: (h, params) => {
-      return h('div', [
-        h(tableImg, {
-          props: {
-            picUrls: params.row.headUrl
-          }
-        })
-      ])
-    }
-  },
-  {
-    title: '商品添加或修改时间',
-    key: 'lastUpdateTime',
-    render: (h, params) => {
-      return date.formatDateTime(params.row.pushTime)
-    }
-  },
-  {
-    title: '操作',
-    key: 'operation',
-    width: 140,
-    render: (h, params) => {
-      return h('div', [
-        h(
-          'Button',
-          {
-            props: {
-              type: 'warning',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.shopHeaderPicPass(params.row.spProductId)
-              }
-            }
-          },
-          '不通过'
-        ),
-        h(
-          'Button',
-          {
-            props: {
-              type: 'success',
-              size: 'small'
-            },
-            on: {
-              click: () => {
-                this.shopHeaderPicNotPass(params.row.spProductId)
-              }
-            }
-          },
-          '通过'
-        )
-      ])
-    }
-  },
-  {
-    type: 'selection',
-    width: 60,
-    align: 'center'
-  }
-]
 export default {
   components: {
     tableImg
@@ -287,6 +49,7 @@ export default {
   data() {
     return {
       total: 1,
+      currentPage: 1,
       pageSize: 1,
       current: 1,
       selectiondata: [],
@@ -297,12 +60,247 @@ export default {
         lastdate: ''
       },
       tabs: [{ title: '商品图片审核' }, { title: '档口图片审核' }, { title: '档口头像审核' }],
-      columns: []
+      columns: [],
+      producttitle: [
+        {
+          title: '商品标题',
+          key: 'productName',
+          width: 100
+        },
+        {
+          title: '商品主图',
+          key: 'picUrls',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.picUrls
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '商品介绍图片',
+          key: 'picDesc',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.picDesc
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '商品添加或修改时间',
+          key: 'lastUpdateTime',
+          width: 200,
+          align: 'center',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.lastUpdateTime)
+          }
+        },
+        {
+          title: '操作',
+          key: 'operation',
+          width: 140,
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'warning',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.productPicPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '不通过'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.productPicNotPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '通过'
+              )
+            ])
+          }
+        },
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        }
+      ],
+      shoptitle: [
+        {
+          title: '档口',
+          key: 'shopName'
+        },
+        {
+          title: '档口图片',
+          key: 'shoppic',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.shopPicUrl
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '商品添加或修改时间',
+          key: 'lastUpdateTime',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.lastUpdateTime)
+          }
+        },
+        {
+          title: '操作',
+          key: 'operation',
+          width: 140,
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'warning',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.shopPicPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '不通过'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.shopPicNotPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '通过'
+              )
+            ])
+          }
+        },
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        }
+      ],
+      avatar: [
+        {
+          title: '档口',
+          key: 'shopName'
+        },
+        {
+          title: '档口头像图片',
+          key: 'headUrl',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.headUrl
+                }
+              })
+            ])
+          }
+        },
+        {
+          title: '商品添加或修改时间',
+          key: 'lastUpdateTime',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.lastUpdateTime)
+          }
+        },
+        {
+          title: '操作',
+          key: 'operation',
+          width: 140,
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'warning',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.shopHeaderPicPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '不通过'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'success',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.shopHeaderPicNotPass(params.row.spProductId)
+                    }
+                  }
+                },
+                '通过'
+              )
+            ])
+          }
+        },
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        }
+      ]
     }
   },
   created() {
-    this.getProductPic(1, 5)
-    this.columns = producttitle
+    this.columns = this.producttitle
+    this.getProductPic(1, 10)
   },
   // mounted: {},
   activited: {},
@@ -311,14 +309,14 @@ export default {
     changedata(index) {
       this.current = index
       if (index === 0) {
-        this.getProductPic(1, 5)
-        this.columns = producttitle
+        this.columns = this.producttitle
+        this.getProductPic(1, 10)
       } else if (index === 1) {
-        this.getShopPic(1, 5, 1)
-        this.columns = shoptitle
+        this.columns = this.shoptitle
+        this.getShopPic(1, 10, 1)
       } else if (index === 2) {
-        this.getShopPic(1, 5, 2)
-        this.columns = avatar
+        this.columns = this.avatar
+        this.getShopPic(1, 10, 2)
       }
     },
     // 获取商品图片审核列表
@@ -332,6 +330,7 @@ export default {
         this.sellervideodata = response.records
         this.total = response.total
         this.pageSize = response.size
+        this.currentPage = response.current
       })
     },
     // 获取档口图片和档口头像审核列表
@@ -346,6 +345,7 @@ export default {
         this.sellervideodata = response.records
         this.total = response.total
         this.pageSize = response.size
+        this.currentPage = response.current
       })
     },
     // 审核商品图片
@@ -355,7 +355,7 @@ export default {
         auditStatus: auditStatus // 通过是1 不通过是0
       }
       api.auditProductPicStatus(params).then(response => {
-        this.getProductPic(1, 5)
+        this.getProductPic(1, 10)
       })
     },
     // 审核店铺图片
@@ -369,30 +369,30 @@ export default {
         this.$Message.info('更新成功')
         this.id = ''
         if (this.current === 1) {
-          this.getShopPic(1, 5, 1)
+          this.getShopPic(1, 10, 1)
         } else if (this.current === 2) {
-          this.getShopPic(1, 5, 2)
+          this.getShopPic(1, 10, 2)
         }
       })
     },
     // 分页
     changepage(index) {
       if (this.current === 0) {
-        this.getProductPic(index, 5)
+        this.getProductPic(index, 10)
       } else if (this.current === 1) {
-        this.getShopPic(index, 5, 1)
+        this.getShopPic(index, 10, 1)
       } else if (this.current === 2) {
-        this.getShopPic(index, 5, 2)
+        this.getShopPic(index, 10, 2)
       }
     },
     // 搜索
     searchdata(formItem) {
       if (this.current === 0) {
-        this.getProductPic(1, 5, formItem.startdate, formItem.lastdate)
+        this.getProductPic(1, 10, formItem.startdate, formItem.lastdate)
       } else if (this.current === 1) {
-        this.getShopPic(1, 5, 1, formItem.startdate, formItem.lastdate)
+        this.getShopPic(1, 10, 1, formItem.startdate, formItem.lastdate)
       } else if (this.current === 2) {
-        this.getShopPic(1, 5, 2, formItem.startdate, formItem.lastdate)
+        this.getShopPic(1, 10, 2, formItem.startdate, formItem.lastdate)
       }
     },
     // 多选

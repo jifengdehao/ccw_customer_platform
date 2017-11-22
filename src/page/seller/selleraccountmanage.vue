@@ -90,7 +90,8 @@
             <span>营业状态：</span>
              <Select size="small" v-model="shopMessage.bussinessStatus" :value="shopMessage.bussinessStatus" placeholder="请选择" style="width: 150px">
                 <Option value="1">营业</Option>
-                <Option value="2">休息</Option>
+                <Option value="2">打烊</Option>
+                <Option value="3">关店</Option>
             </Select>
             </br>
             <span>营业时间：</span>
@@ -130,7 +131,7 @@
                   <div class="img vm-fl">
                     <img :src="item.url" alt="">
                     <div class="cover">
-                      <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
+                      <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
                     </div>
                   </div>
                   <div class="qualification">
@@ -144,7 +145,8 @@
           <!-- 协议合同 -->
           <FormItem prop="password" class="shopMessagemModal-agreement">
             <h3>协议合同</h3>
-             <div class="img vm-fl" v-model="qulification.protocol" v-for="url in qulification.protocol" >
+            <div class="agreementImgBox">
+               <div class="img vm-fl" v-model="qulification.protocol" v-for="url in qulification.protocol" >
                 <img :src="url" alt="">
                 <div class="cover">
                     <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
@@ -154,6 +156,7 @@
               <div class="uploadButton ">
                 <input type="file" @change="protocolUpload">+
               </div>
+            </div>
           </FormItem>
           </Col>
         </Row>
@@ -164,9 +167,9 @@
       <Form v-model="shopManageData">
         <FormItem label="设置账号限制：">
           <Select v-model="shopManageData.status" :value="shopManageData.status" placeholder="请选择">
-            <Option value="0">关档</Option>
             <Option value="1">账号恢复</Option>
-            <Option value="2">账号冻结</Option>
+            <Option value="2">关档</Option>
+            <Option value="3">账号冻结</Option>
           </Select>
         </FormItem>
         <FormItem label="添加备注：">
@@ -187,14 +190,14 @@
 <script>
 import * as api from 'api/common.js'
 import * as date from '@/until/time'
-import { uploadpic } from '../../until/upload'
+import { uploadpic } from '../../components/upload-pic'
 export default {
   components: {},
   props: {},
   data() {
     return {
       total: 1,
-      pageSize: 5,
+      pageSize: 10,
       disabled: true,
       sellerId: 0,
       shopId: 0,
@@ -299,7 +302,7 @@ export default {
         },
         {
           title: '账号状态',
-          key: 'status'
+          key: 'statusName'
         },
         {
           title: '入驻日期',
@@ -321,7 +324,7 @@ export default {
     //   alert('asddasd')
     //   console.log(response)
     // })
-    this.getSellerAccountList(1, 5)
+    this.getSellerAccountList(1, 10)
     let params = {
       parentId: -1 // 一级分类传入-1
     }
@@ -381,14 +384,12 @@ export default {
       }
       api.getsellerInfo(params, msSellerId).then(response => {
         this.shopMessage = response
-        console.log(this.shopMessage, '商家信息')
       })
     },
     // 获取商家资质证件图片
     getQulification(id) {
       api.getQulification(id).then(res => {
         this.qulification = res
-        console.log(res, '资质图片')
       })
     },
     // 更新商家信息
@@ -406,7 +407,7 @@ export default {
       console.log(formItem)
       this.getSellerAccountList(
         1,
-        5,
+        10,
         formItem.shopName,
         formItem.mobileno,
         formItem.msSellerId,
@@ -416,7 +417,7 @@ export default {
       )
     },
     changepage(index) {
-      this.getSellerAccountList(index, 5)
+      this.getSellerAccountList(index, 10)
     },
     // 重置密码
     resetPassword(msSellerId) {
@@ -431,20 +432,31 @@ export default {
     shopimgupload(e) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
-        this.shopMessage.shopPicUrl = res[0]
+        if (res) {
+          this.shopMessage.shopPicUrl = res[0].indexOf('?')
+            ? res[0].split('?')[0]
+            : res[0]
+        }
       })
     },
     // 营业资质
     qualificationUpload(e, index) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
-        this.qulification.qualificationList[index].url = res
+        if (res) {
+          this.qulification.qualificationList[index].url = res[0].indexOf('?')
+            ? res[0].split('?')[0]
+            : res[0]
+        }
       })
     },
     // 协议合同
     protocolUpload(e) {
       var file = e.target.files[0]
       uploadpic(file).then(res => {
+        if (res) {
+          res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+        }
         this.qulification.protocol = this.qulification.protocol.concat(res)
       })
     },
@@ -572,10 +584,10 @@ input[type='file'] {
 .qualification {
   position: absolute;
   left: 0;
-  bottom: 100px;
+  bottom: 30px;
   width: 200px;
   height: 30px;
-  background-color: #E6DFBE;
+  background-color: #e6dfbe;
   text-align: center;
 }
 
@@ -598,6 +610,15 @@ input[type='file'] {
   position: relative;
   width: 120px;
   height: 120px;
+  margin: 0 auto;
+}
+.agreementImgBox {
+  position: relative;
+  height: 120px;
+  overflow-x: auto;
+}
+.agreementImgBox .img {
+  margin: 3px;
 }
 .img img {
   width: 100%;
@@ -625,5 +646,9 @@ input[type='file'] {
   cursor: pointer;
   margin: 0 2px;
   line-height: 100px;
+}
+.bigimg {
+  width: 800px;
+  height: 800px;
 }
 </style>

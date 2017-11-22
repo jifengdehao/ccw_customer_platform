@@ -250,12 +250,12 @@ export default {
     },
     //  手机号搜索
     search() {
-      let reg = new RegExp(
-        '^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$'
-      )
-      if (!reg.test(this.formInline.phone)) {
-        return
-      }
+      // let reg = new RegExp(
+      //   '^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$'
+      // )
+      // if (!reg.test(this.formInline.phone)) {
+      //   return
+      // }
       for (let i in this.params) {
         if (i === 'mobileno') {
           this.params.mobileno = this.formInline.phone
