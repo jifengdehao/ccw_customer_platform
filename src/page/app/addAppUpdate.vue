@@ -69,135 +69,140 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import * as api from 'api/common'
-  // import { uploadpic} from 'components/upload-pic'
+import * as api from 'api/common'
+// import { uploadpic} from 'components/upload-pic'
 
-  export default {
-    data () {
-      return {
-        platFromArry: [], // 平台列表
-        appNameArry: [], // 根据平台获取相对于的应用名称
-        bundleArry: [], // 包路径
-        appVersionInfo: {
-          title: '', // 更新标题
-          bundle: '',  // 更新包路径
-          version: '', // 更新版本
-          publishTime: new Date(), // 更新时间
-          platform: 0, // 默认平台为ios
-          content: ''  // 更新内容
-        }
+export default {
+  data() {
+    return {
+      platFromArry: [], // 平台列表
+      appNameArry: [], // 根据平台获取相对于的应用名称
+      bundleArry: [], // 包路径
+      appVersionInfo: {
+        title: '', // 更新标题
+        bundle: '', // 更新包路径
+        version: '', // 更新版本
+        publishTime: new Date(), // 更新时间
+        platform: 0, // 默认平台为ios
+        content: '' // 更新内容
       }
+    }
+  },
+  created() {
+    this.getPlatformData()
+    this.getPlatformName()
+  },
+  methods: {
+    close() {
+      this.$router.back()
     },
-    created () {
-      this.getPlatformData()
+    // 获取移动平台列表
+    getPlatformData() {
+      let params = {
+        types: 'mobile_platforms'
+      }
+      api.getPlatformData(params).then(res => {
+        if (res) {
+          console.log(res)
+          this.platFromArry = res
+        }
+      })
+    },
+    changPlatForm(value) {
+      console.log(value)
+      this.appVersionInfo.platform = value // 选择对应的平台
       this.getPlatformName()
     },
-    methods: {
-      close () {
-        this.$router.back()
-      },
-      // 获取移动平台列表
-      getPlatformData () {
+    // 根据平台获取应用名称
+    getPlatformName() {
+      if (this.appVersionInfo.platform === 0) {
         let params = {
-          types: 'mobile_platforms'
+          types: 'app_name_ios'
         }
-        api.getPlatformData(params).then((res) => {
+        api.getPlatformData(params).then(res => {
           if (res) {
-            console.log(res)
-            this.platFromArry = res
+            this.appNameArry = res
           }
         })
-      },
-      changPlatForm (value) {
-        console.log(value)
-        this.appVersionInfo.platform = value   // 选择对应的平台
-        this.getPlatformName()
-      },
-      // 根据平台获取应用名称
-      getPlatformName () {
-        if (this.appVersionInfo.platform === 0) {
-          let params = {
-            types: 'app_name_ios'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.appNameArry = res
-            }
-          })
-        } else {
-          let params = {
-            types: 'app_name_android'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.appNameArry = res
-            }
-          })
+      } else {
+        let params = {
+          types: 'app_name_android'
         }
-      },
-      // 选择应用名称
-      changAppName (value) {
-        this.getBundleData(value)
-//        let idx = this.appNameArry.filter((element, index, array) => {
-//          if (element.name === value) {
-//            return element
-//          }
-//        })
-//        console.log(idx[0].idx)
-//        let bundle = this.bundleArry.filter((element, index, array) => {
-//          if (element.idx === idx[0].idx) {
-//            return element
-//          }
-//        })
-//        console.log(bundle)
-      },
-      // 获取包路径
-      getBundleData (appName) {
-        if (this.appVersionInfo.platform === 0) {
-          let params = {
-            types: 'app_bundle_ios'
+        api.getPlatformData(params).then(res => {
+          if (res) {
+            this.appNameArry = res
           }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              console.log(res)
-              let appNameItem = this.appNameArry.filter((element, index, array) => {
+        })
+      }
+    },
+    // 选择应用名称
+    changAppName(value) {
+      this.getBundleData(value)
+      //        let idx = this.appNameArry.filter((element, index, array) => {
+      //          if (element.name === value) {
+      //            return element
+      //          }
+      //        })
+      //        console.log(idx[0].idx)
+      //        let bundle = this.bundleArry.filter((element, index, array) => {
+      //          if (element.idx === idx[0].idx) {
+      //            return element
+      //          }
+      //        })
+      //        console.log(bundle)
+    },
+    // 获取包路径
+    getBundleData(appName) {
+      if (this.appVersionInfo.platform === 0) {
+        let params = {
+          types: 'app_bundle_ios'
+        }
+        api.getPlatformData(params).then(res => {
+          if (res) {
+            console.log(res)
+            let appNameItem = this.appNameArry.filter(
+              (element, index, array) => {
                 if (element.name === appName) {
                   return element
                 }
-              })
-              let bundleItem = res.filter((element, index, array) => {
-                debugger
-                if (element.idx === appNameItem[0].idx) {
-                  return element
-                }
-              })
-              this.appVersionInfo.bundle = bundleItem[0].name
-            }
-          })
-        } else {
-          let params = {
-            types: 'app_bundle_android'
+              }
+            )
+            let bundleItem = res.filter((element, index, array) => {
+              if (element.idx === appNameItem[0].idx) {
+                return element
+              }
+            })
+            this.appVersionInfo.bundle = bundleItem[0].name
           }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              console.log(res)
-              this.bundleArry = res
-            }
-          })
+        })
+      } else {
+        let params = {
+          types: 'app_bundle_android'
         }
+        api.getPlatformData(params).then(res => {
+          if (res) {
+            console.log(res)
+            this.bundleArry = res
+          }
+        })
       }
     }
   }
+}
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus" type="text/stylus">
-  #App
-    .addAppUpdate
-      position relative
-      border 1px solid #e9eaec
-      padding 20px
-      .close
-        position absolute
-        top 0
-        right 0
-        z-index 10
+#App {
+  .addAppUpdate {
+    position: relative;
+    border: 1px solid #e9eaec;
+    padding: 20px;
+
+    .close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 10;
+    }
+  }
+}
 </style>
