@@ -193,7 +193,8 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.shopPicPass(params.row.spProductId)
+                      // console.log(params.row.spProductId)
+                      this.shopPicNotPass(params.row.msShopId)
                     }
                   }
                 },
@@ -208,7 +209,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.shopPicNotPass(params.row.spProductId)
+                      this.shopPicPass(params.row.msShopId)
                     }
                   }
                 },
@@ -266,7 +267,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.shopHeaderPicPass(params.row.spProductId)
+                      this.shopHeaderPicNotPass(params.row.msShopId)
                     }
                   }
                 },
@@ -281,7 +282,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.shopHeaderPicNotPass(params.row.spProductId)
+                      this.shopHeaderPicPass(params.row.msShopId)
                     }
                   }
                 },
@@ -346,6 +347,7 @@ export default {
         this.total = response.total
         this.pageSize = response.size
         this.currentPage = response.current
+        console.log(this.sellervideodata)
       })
     },
     // 审核商品图片
@@ -423,6 +425,7 @@ export default {
     },
     // 档口图片通过
     shopPicPass(id) {
+      console.log(id)
       this.auditShopPicStatus(id, 1, 1)
     },
     // 商品图片不通过
