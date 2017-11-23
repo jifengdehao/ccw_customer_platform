@@ -58,17 +58,19 @@
         this.$router.push('/order/' + name)
       },
       getOrderMenu () {
-        let menuIcon = ['ios-navigate', 'ios-keypad', 'ios-analytics', 'ios-telephone', 'ios-paperplane']
-        let resMenu = JSON.parse(sessionStorage.getItem('menu'))
-        resMenu.menusVO.forEach((item) => {
-          if (item.url === 'order') {
-            if (item.childMenusList.length > 0) {
-              this.menu = item.childMenusList.map((item, index) => {
-                return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url, noDropdown: true}
-              })
+        if (sessionStorage.getItem('menu')) {
+          let menuIcon = ['ios-navigate', 'ios-keypad', 'ios-analytics', 'ios-telephone', 'ios-paperplane']
+          let resMenu = JSON.parse(sessionStorage.getItem('menu'))
+          resMenu.forEach((item) => {
+            if (item.url === 'order') {
+              if (item.childMenusList.length > 0) {
+                this.menu = item.childMenusList.map((item, index) => {
+                  return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url, noDropdown: true}
+                })
+              }
             }
-          }
-        })
+          })
+        }
       }
     },
     components: {

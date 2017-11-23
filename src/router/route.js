@@ -399,7 +399,7 @@ export default [
           {path: 'users_manage', component: UsersManage},
           {path: 'users_jurisdiction', component: UsersJurisdiction},
           {path: 'users_log', component: UsersLog},
-          {path: 'user', component: User},
+          {path: 'user/:id', component: User},
           {path: 'seeUserlist', component: userList}
         ]
       },

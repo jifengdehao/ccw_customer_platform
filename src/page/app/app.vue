@@ -34,17 +34,19 @@
         this.$router.push('/app/' + name)
       },
       getAppMenu () {
-        let menuIcon = ['images']
-        let resMenu = JSON.parse(sessionStorage.getItem('menu'))
-        resMenu.menusVO.forEach((item) => {
-          if (item.url === 'app') {
-            if (item.childMenusList.length > 0) {
-              this.menu = item.childMenusList.map((item, index) => {
-                return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url, noDropdown: true}
-              })
+        if (sessionStorage.getItem('menu')) {
+          let menuIcon = ['images']
+          let resMenu = JSON.parse(sessionStorage.getItem('menu'))
+          resMenu.forEach((item) => {
+            if (item.url === 'app') {
+              if (item.childMenusList.length > 0) {
+                this.menu = item.childMenusList.map((item, index) => {
+                  return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url, noDropdown: true}
+                })
+              }
             }
-          }
-        })
+          })
+        }
       }
     },
     components: {

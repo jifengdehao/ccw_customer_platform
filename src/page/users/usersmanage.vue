@@ -36,7 +36,7 @@
     <Modal v-model="showUser" title="新增用户" @on-ok="addUser" @on-cancel="addCancel" class="userShowModal">
       <p>
         <span>用户ID</span>
-        <Input v-model="addUsers.ptUserId" placeholder="请输入..." style="width: 300px"></Input>
+        <Input v-model="addUsers.ptUserId" placeholder="请输入..." style="width: 300px" disabled></Input>
       </p>
       <p>
         <span>用户昵称</span>
