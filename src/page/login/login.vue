@@ -61,7 +61,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common.js'
-  // import hash from 'js-md5'
+  import hash from 'js-md5'
 
   export default {
     name: 'login',
@@ -104,8 +104,8 @@
           if (valid) {
             let params = {
               userName: this.formLogin.userName,
-              // password: hash(this.formLogin.password),
-              password: this.formLogin.password,
+              password: hash(this.formLogin.password),
+              // password: this.formLogin.password,
               verificationCode: this.formLogin.verificationCode
             }
             console.log(params)

@@ -111,362 +111,363 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import * as api from 'api/common'
-  import * as upload from 'components/upload-pic'
-  import draggable from 'vuedraggable'
+import * as api from 'api/common'
+import * as upload from 'components/upload-pic'
+import draggable from 'vuedraggable'
 
-  export default {
-    name: 'bannerManage',
-    components: {draggable},
-    data () {
-      return {
-        bannerMenu: ['已开始', '未开始', '已结束'], // 切换导航数据
-        bannerIndex: 0, // 切换id
-        bannerData: [], // 列表数据
-        addBannerData: [], // 自增列表数据
-        addShow: false, // 显示新增按钮
-        saveShow: true, // 保存按钮
-        changeTitle: [], // 切换table 列表title改变
-        bannerState: '结束', // 操作按钮变更
-        bannerTHdata: [
-          {
-            key: '图片',
-            style: '22%'
-          },
-          {
-            key: '图片管理',
-            style: '10%'
-          },
-          {
-            key: '跳转链接',
-            style: '20%'
-          },
-          {
-            key: '上传说明',
-            style: '20%'
-          },
-          {
-            key: '时间',
-            style: '18%'
-          },
-          {
-            key: '操作',
-            style: '10%'
-          }
-        ], // th title 内容
-        bannerThENDdata: [
-          {
-            key: '序号',
-            style: '20%'
-          },
-          {
-            key: '上传说明',
-            style: '20%'
-          },
-          {
-            key: '开始时间',
-            style: '20%'
-          },
-          {
-            key: '结束时间',
-            style: '20%'
-          },
-          {
-            key: '操作',
-            style: '20%'
-          }
-        ], // th title 已结束内容
-        pageNo: 1, // 当前页面
-        pageSize: 10, // 分页参数，表示每页显示多少条
-        status: 0, // banner图状态（未开始1、已开始0、已结束2）
-        seeBannerClose: false, // 查看banner弹框 默认关闭
-        seeBannerData: [], // 保存查看banner数据
-        formData: {}
+export default {
+  name: 'bannerManage',
+  components: { draggable },
+  data() {
+    return {
+      bannerMenu: ['已开始', '未开始', '已结束'], // 切换导航数据
+      bannerIndex: 0, // 切换id
+      bannerData: [], // 列表数据
+      addBannerData: [], // 自增列表数据
+      addShow: false, // 显示新增按钮
+      saveShow: true, // 保存按钮
+      changeTitle: [], // 切换table 列表title改变
+      bannerState: '结束', // 操作按钮变更
+      bannerTHdata: [
+        {
+          key: '图片',
+          style: '22%'
+        },
+        {
+          key: '图片管理',
+          style: '10%'
+        },
+        {
+          key: '跳转链接',
+          style: '20%'
+        },
+        {
+          key: '上传说明',
+          style: '20%'
+        },
+        {
+          key: '时间',
+          style: '18%'
+        },
+        {
+          key: '操作',
+          style: '10%'
+        }
+      ], // th title 内容
+      bannerThENDdata: [
+        {
+          key: '序号',
+          style: '20%'
+        },
+        {
+          key: '上传说明',
+          style: '20%'
+        },
+        {
+          key: '开始时间',
+          style: '20%'
+        },
+        {
+          key: '结束时间',
+          style: '20%'
+        },
+        {
+          key: '操作',
+          style: '20%'
+        }
+      ], // th title 已结束内容
+      pageNo: 1, // 当前页面
+      pageSize: 10, // 分页参数，表示每页显示多少条
+      status: 0, // banner图状态（未开始1、已开始0、已结束2）
+      seeBannerClose: false, // 查看banner弹框 默认关闭
+      seeBannerData: [], // 保存查看banner数据
+      formData: {}
+    }
+  },
+  created: function() {
+    this.changeTitle = this.columns1 // 默认title数据
+    this.getCurrentListData() // 初始化已开始数据
+  },
+  methods: {
+    // 点击切换导航tabs
+    onBannerMenu(value) {
+      this.status = value // 保存状态值 根据点击table
+      this.addShow = false // 新增按钮 默认隐藏
+      this.bannerState = '结束' // 操作按钮变更
+      this.changeTitle = this.columns1 // title数据变更
+      this.saveShow = true // 保存按钮 默认显示
+      this.getCurrentListData()
+      switch (value) {
+        case 0:
+          break
+        case 1:
+          this.addShow = true // 显示新增按钮
+          this.bannerState = '删除'
+          break
+        case 2:
+          this.changeTitle = this.columns2 // 变更title数据
+          this.saveShow = false // 保存按钮 隐藏
       }
     },
-    created: function () {
-      this.changeTitle = this.columns1 // 默认title数据
-      this.getCurrentListData() // 初始化已开始数据
+    // 新增对象
+    addImage() {
+      this.bannerData.push({
+        picUrl: '',
+        endTime: '',
+        linkUrl: '',
+        startTime: '',
+        position: '',
+        remark: '',
+        status: 0,
+        types: 1
+      })
     },
-    methods: {
-      // 点击切换导航tabs
-      onBannerMenu (value) {
-        this.status = value // 保存状态值 根据点击table
-        this.addShow = false // 新增按钮 默认隐藏
-        this.bannerState = '结束' // 操作按钮变更
-        this.changeTitle = this.columns1 // title数据变更
-        this.saveShow = true // 保存按钮 默认显示
-        this.getCurrentListData()
-        switch (value) {
-          case 0:
-            break
-          case 1:
-            this.addShow = true // 显示新增按钮
-            this.bannerState = '删除'
-            break
-          case 2:
-            this.changeTitle = this.columns2 // 变更title数据
-            this.saveShow = false // 保存按钮 隐藏
+    // 请求banner列表数据
+    getCurrentListData() {
+      if (this.$route.path.startsWith('/custom/banner_manage')) {
+        //  banner管理
+        api
+          .getBannerList({
+            status: this.status,
+            types: 1
+          })
+          .then(data => {
+            this.bannerData = data
+          })
+      } else if (this.$route.path.startsWith('/custom/market_push')) {
+        //  市场推送
+        api
+          .getMarketlist({
+            status: this.status
+          })
+          .then(data => {
+            this.bannerData = data
+          })
+      }
+    },
+    // 点击操作button 结束 删除
+    onChangButton(data) {
+      if (this.$route.path.startsWith('/custom/banner_manage')) {
+        if (this.status === 0) {
+          // 点击结束
+          data.status = 2
+          api.putBannerId(data).then(data => {
+            this.getCurrentListData()
+          })
+        } else if (this.status === 1) {
+          // 点击删除
+          api.delBannerId(data).then(data => {
+            this.getCurrentListData()
+          })
         }
-      },
-      // 新增对象
-      addImage () {
-        this.bannerData.push({
-          picUrl: '',
-          endTime: '',
-          linkUrl: '',
-          startTime: '',
-          position: '',
-          remark: '',
-          status: 0
-        })
-      },
-      // 请求banner列表数据
-      getCurrentListData () {
-        if (this.$route.path.startsWith('/custom/banner_manage')) {
-          //  banner管理
-          api
-            .getBannerList({
-              status: this.status,
-              types: 1
-            })
-            .then(data => {
-              this.bannerData = data
-            })
-        } else if (this.$route.path.startsWith('/custom/market_push')) {
-          //  市场推送
-          api
-            .getMarketlist({
-              status: this.status
-            })
-            .then(data => {
-              this.bannerData = data
-            })
+      } else if (this.$route.path.startsWith('/custom/market_push')) {
+        if (this.status === 0) {
+          //  点击结束
+          data.status = 2
+          api.putMarketId(data).then(data => {
+            this.getCurrentListData()
+          })
+        } else if (this.status === 1) {
+          //  点击删除
+          api.delMarketId(data).then(data => {
+            this.getCurrentListData()
+          })
         }
-      },
-      // 点击操作button 结束 删除
-      onChangButton (data) {
-        if (this.$route.path.startsWith('/custom/banner_manage')) {
-          if (this.status === 0) {
-            // 点击结束
-            data.status = 2
-            api.putBannerId(data).then(data => {
-              this.getCurrentListData()
-            })
-          } else if (this.status === 1) {
-            // 点击删除
-            api.delBannerId(data).then(data => {
-              this.getCurrentListData()
-            })
-          }
-        } else if (this.$route.path.startsWith('/custom/market_push')) {
-          if (this.status === 0) {
-            //  点击结束
-            data.status = 2
-            api.putMarketId(data).then(data => {
-              this.getCurrentListData()
-            })
-          } else if (this.status === 1) {
-            //  点击删除
-            api.delMarketId(data).then(data => {
-              this.getCurrentListData()
-            })
-          }
-        }
-      },
-      // 查看banner弹框数据
-      seeModal (data) {
-        if (this.$route.fullPath.indexOf('market_push') > -1) {
+      }
+    },
+    // 查看banner弹框数据
+    seeModal(data) {
+      if (this.$route.fullPath.indexOf('market_push') > -1) {
+        this.seeBannerData = data
+      } else {
+        api.seeBanner(data.ptBannerId).then(data => {
           this.seeBannerData = data
-        } else {
-          api.seeBanner(data.ptBannerId).then(data => {
-            this.seeBannerData = data
-          })
-        }
-        this.seeBannerClose = true // 打开查看bnner模态框
-      },
-      //  关闭查看banner弹框
-      onClose () {
-        this.seeBannerClose = false
-      },
-      // 保存修改
-      getSaveChanges () {
-        if (this.$route.path.startsWith('/custom/banner_manage')) {
-          //  banner保存
-          api.saveBannerData(this.bannerData).then(data => {
-            this.getCurrentListData()
-          })
-        } else if (this.$route.path.startsWith('/custom/market_push')) {
-          //  市场保存
-          api.saveMarketData(this.bannerData).then(data => {
-            this.getCurrentListData()
-          })
-        }
-      },
-      // 上传图片
-      onUpload (e, item) {
-        upload.uploadpic(e.target.files[0]).then(data => {
-          let res = data[0]
-          res = res.indexOf('?') ? res.split('?')[0] : res
-          item.picUrl = res
-          e.target.value = ''
         })
-      },
-      datadragEnd (evt) {
-        console.log('拖动前的索引 :' + evt.oldIndex)
-        console.log('拖动后的索引 :' + evt.newIndex)
-        console.log(this.bannerData, '22')
-      },
-      //  时间过滤
-      filterTime (value) {
-        let date = new Date(value)
-        let params = {
-          year: date.getFullYear(),
-          month:
-            date.getMonth() + 1 < 10
-              ? '0' + date.getMonth() + 1
-              : date.getMonth() + 1,
-          day: date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
-          hour: date.getHours() < 10 ? '0' + date.getHours() : date.getHours(),
-          minutes:
-            date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
-          seconds:
-            date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
-        }
-        return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
+      }
+      this.seeBannerClose = true // 打开查看bnner模态框
+    },
+    //  关闭查看banner弹框
+    onClose() {
+      this.seeBannerClose = false
+    },
+    // 保存修改
+    getSaveChanges() {
+      if (this.$route.path.startsWith('/custom/banner_manage')) {
+        //  banner保存
+        api.saveBannerData(this.bannerData).then(data => {
+          this.getCurrentListData()
+        })
+      } else if (this.$route.path.startsWith('/custom/market_push')) {
+        //  市场保存
+        api.saveMarketData(this.bannerData).then(data => {
+          this.getCurrentListData()
+        })
       }
     },
-    watch: {
-      $route (to, from) {
-        this.bannerIndex = 0
-        this.status = 0
-        this.addShow = false
-        this.saveShow = true
-        this.getCurrentListData()
+    // 上传图片
+    onUpload(e, item) {
+      upload.uploadpic(e.target.files[0]).then(data => {
+        let res = data[0]
+        res = res.indexOf('?') ? res.split('?')[0] : res
+        item.picUrl = res
+        e.target.value = ''
+      })
+    },
+    datadragEnd(evt) {
+      console.log('拖动前的索引 :' + evt.oldIndex)
+      console.log('拖动后的索引 :' + evt.newIndex)
+      console.log(this.bannerData, '22')
+    },
+    //  时间过滤
+    filterTime(value) {
+      let date = new Date(value)
+      let params = {
+        year: date.getFullYear(),
+        month:
+          date.getMonth() + 1 < 10
+            ? '0' + date.getMonth() + 1
+            : date.getMonth() + 1,
+        day: date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+        hour: date.getHours() < 10 ? '0' + date.getHours() : date.getHours(),
+        minutes:
+          date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
+        seconds:
+          date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       }
+      return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
+    }
+  },
+  watch: {
+    $route(to, from) {
+      this.bannerIndex = 0
+      this.status = 0
+      this.addShow = false
+      this.saveShow = true
+      this.getCurrentListData()
     }
   }
+}
 </script>
 
 <style scoped lang="css">
-  .add-image {
-    text-align: right;
-    margin-bottom: 20px;
-  }
+.add-image {
+  text-align: right;
+  margin-bottom: 20px;
+}
 
-  .add-image .add-button {
-    background-color: #2d8cf0;
-    border-color: #2d8cf0;
-    color: #fff;
-  }
+.add-image .add-button {
+  background-color: #2d8cf0;
+  border-color: #2d8cf0;
+  color: #fff;
+}
 
-  .save-change {
-    text-align: center;
-    margin-top: 20px;
-  }
+.save-change {
+  text-align: center;
+  margin-top: 20px;
+}
 
-  .ivu-table td {
-    height: 190px !important;
-  }
+.ivu-table td {
+  height: 190px !important;
+}
 
-  /* table */
-  table.table-banner,
-  .draggable {
-    font-family: verdana, arial, sans-serif;
-    font-size: 11px;
-    width: 100%;
-    color: #495060;
-    font-size: 12px;
-    border: 1px solid #666666;
-    border-collapse: collapse;
-  }
+/* table */
+table.table-banner,
+.draggable {
+  font-family: verdana, arial, sans-serif;
+  font-size: 11px;
+  width: 100%;
+  color: #495060;
+  font-size: 12px;
+  border: 1px solid #666666;
+  border-collapse: collapse;
+}
 
-  table.table-banner th {
-    padding: 8px;
-    border: 1px solid #e9eaec;
-    background-color: #f8f8f9;
-  }
+table.table-banner th {
+  padding: 8px;
+  border: 1px solid #e9eaec;
+  background-color: #f8f8f9;
+}
 
-  table.table-banner td,
-  .draggable td {
-    position: relative;
-    padding: 8px 0;
-    text-align: center;
-    border: 1px solid #e9eaec;
-    background-color: #ffffff;
-    vertical-align: middle;
-  }
+table.table-banner td,
+.draggable td {
+  position: relative;
+  padding: 8px 0;
+  text-align: center;
+  border: 1px solid #e9eaec;
+  background-color: #ffffff;
+  vertical-align: middle;
+}
 
-  table.table-banner td > input[type='text'],
-  .draggable td > input[type='text'] {
-    width: 200px;
-    padding-left: 5px;
-    outline: none;
-  }
+table.table-banner td > input[type='text'],
+.draggable td > input[type='text'] {
+  width: 200px;
+  padding-left: 5px;
+  outline: none;
+}
 
-  .draggable td > input[type='button'],
-  .draggable td > input[type='file'] {
-    padding: 6px 15px 7px 15px;
-    margin-left: 20px;
-    border-radius: 4px;
-    color: #fff;
-    border: 1px solid #2d8cf0;
-    background-color: #2d8cf0;
-    outline: none;
-  }
+.draggable td > input[type='button'],
+.draggable td > input[type='file'] {
+  padding: 6px 15px 7px 15px;
+  margin-left: 20px;
+  border-radius: 4px;
+  color: #fff;
+  border: 1px solid #2d8cf0;
+  background-color: #2d8cf0;
+  outline: none;
+}
 
-  table.table-banner td > input[type='file'],
-  .draggable td > input[type='file'] {
-    position: absolute;
-    left: 26px;
-    opacity: 0;
-  }
+table.table-banner td > input[type='file'],
+.draggable td > input[type='file'] {
+  position: absolute;
+  left: 26px;
+  opacity: 0;
+}
 
-  .br {
-    border-top: 0 !important;
-    border-right: 0 !important;
-  }
+.br {
+  border-top: 0 !important;
+  border-right: 0 !important;
+}
 
-  /* 查看模态框 */
-  .mask-box {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 9998;
-    background-color: rgba(0, 0, 0, 0.3);
-  }
+/* 查看模态框 */
+.mask-box {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9998;
+  background-color: rgba(0, 0, 0, 0.3);
+}
 
-  .show-box {
-    box-sizing: border-box;
-    padding: 20px;
-    width: calc(100% - 400px);
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: -140px;
-    margin-left: calc(-50% + 240px);
-    background-color: #fff;
-    overflow: hidden;
-  }
+.show-box {
+  box-sizing: border-box;
+  padding: 20px;
+  width: calc(100% - 400px);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -140px;
+  margin-left: calc(-50% + 240px);
+  background-color: #fff;
+  overflow: hidden;
+}
 
-  .show-box table {
-    width: 100%;
-    border: 1px solid #ccc;
-    border-collapse: collapse;
-  }
+.show-box table {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+}
 
-  .show-box table tr th {
-    padding: 8px;
-    border: 1px solid #e9eaec;
-    background-color: #f8f8f9;
-  }
+.show-box table tr th {
+  padding: 8px;
+  border: 1px solid #e9eaec;
+  background-color: #f8f8f9;
+}
 
-  .show-box table tr td {
-    padding: 8px;
-    text-align: center;
-    border: 1px solid #e9eaec;
-    background-color: #ffffff;
-  }
+.show-box table tr td {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #e9eaec;
+  background-color: #ffffff;
+}
 </style>
