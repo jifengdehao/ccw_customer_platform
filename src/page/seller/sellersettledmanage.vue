@@ -209,7 +209,7 @@ export default {
         },
         {
           title: '档口名称',
-          key: 'shopName'
+          key: 'businessType'
         },
         {
           title: '挡主姓名',

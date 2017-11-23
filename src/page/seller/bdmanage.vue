@@ -40,13 +40,13 @@
       <Form :model="modelFormItem" ref="formItem" inline>
         <FormItem>
           <span class="label">姓名：</span>
-          <Input size="small" v-model="modelFormItem.name" :value="modelFormItem.name" placeholder="请输入" style="width: 150px"></Input>
+          <Input size="small" v-model="modelFormItem.name"  placeholder="请输入" style="width: 150px"></Input>
           </br>
           <span class="label">电话：</span>
-          <Input size="small" v-model="modelFormItem.mobileno" :value="modelFormItem.mobileno" placeholder="请输入" style="width: 150px"></Input>
+          <Input size="small" v-model="modelFormItem.mobileno"  placeholder="请输入" style="width: 150px"></Input>
           </br>
           <span class="label">邀请码：</span>
-          <Input size="small" v-model="modelFormItem.invitationCode" :value="modelFormItem.invitationCode" placeholder="请输入" style="width: 150px"></Input>
+          <Input size="small" v-model="modelFormItem.invitationCode"  placeholder="请输入" style="width: 150px"></Input>
           </br>
           <span class="label">负责市场：</span>
           <Select v-model="modelFormItem.psMarketId" :value="modelFormItem.psMarketId" size="small" placeholder="请选择" style="width: 150px">

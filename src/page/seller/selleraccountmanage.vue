@@ -29,7 +29,7 @@
         </FormItem>
         <FormItem>
           <span class="label">商家手机：</span>
-          <Input maxlength="11" v-model="formItem.mobileno" placeholder="请输入" style="width: 200px"></Input>
+          <Input v-model="formItem.mobileno" placeholder="请输入" style="width: 200px"></Input>
         </FormItem>
         <FormItem>
           <span class="label">档口名称：</span>
@@ -60,10 +60,10 @@
             <span>{{shopMessage.msSellerId}}</span>
             </br>
             <span>支付宝账号：</span>
-            <Input size="small" v-model="shopMessage.alipayAccount" :value="shopMessage.alipayAccount" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" v-model="shopMessage.alipayAccount"  placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>手机号：</span>
-            <Input size="small" v-model="shopMessage.mobileno" :value="shopMessage.mobileno" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>密码：</span>
             <Button size="small" @click="resetPassword(shopMessage.msSellerId)">重置密码</Button>
@@ -72,16 +72,16 @@
           <FormItem prop="user" class="shopMessagemModal-shopinfo">
             <h3>店铺信息</h3>
             <span>档口图片：</span>
-              <img :src="shopMessage.headUrl" v-model="shopMessage.headUrl" alt="">
+              <img :src="shopMessage.headUrl"  alt="">
               </br>
             <span>档口名称：</span>
-            <Input size="small"  v-model="shopMessage.shopName" :value="shopMessage.shopName" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small"  v-model="shopMessage.shopName"  placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>档主姓名：</span>
-            <Input size="small"  v-model="shopMessage.shopOwerName" :value="shopMessage.shopOwerName" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small"  v-model="shopMessage.shopOwerName"  placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>档口号：</span>
-            <Input size="small"  v-model="shopMessage.shopNo" :value="shopMessage.shopNo" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small"  v-model="shopMessage.shopNo"  placeholder="请输入" style="width: 150px"></Input>
             </br>
              <span>主营类型：</span>
             <Select size="small"  v-model="shopMessage.businessDictCode" :value="shopMessage.businessDictCode" placeholder="请选择" style="width: 150px">
@@ -95,16 +95,16 @@
             </Select>
             </br>
             <span>营业时间：</span>
-            <Input size="small"  v-model="shopMessage.businessHour" :value="shopMessage.businessHour" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small"  v-model="shopMessage.businessHour"  placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>店铺电话：</span>
-            <Input size="small"  v-model="shopMessage.mobileno" :value="shopMessage.mobileno" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small"  v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px"></Input>
             </br>
             <span>店铺公告：</span>
-            <textarea v-model="shopMessage.notice" :value="shopMessage.notice" cols="30" rows="3"></textarea>
+            <textarea v-model="shopMessage.notice"  cols="30" rows="3"></textarea>
             </br>
             <span>店铺地址：</span>
-            <Input size="small" v-model="shopMessage.stallAddress" :value="shopMessage.stallAddress" placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" v-model="shopMessage.stallAddress"  placeholder="请输入" style="width: 150px"></Input>
             </br>
           </FormItem>
           </Col>
@@ -113,7 +113,7 @@
           <FormItem prop="password" class="shopMessagemModal-shopimag"  >
             <h3>店铺图片</h3>
               <div class="img vm-fl" >
-                <img :src="shopMessage.shopPicUrl" alt="" v-model="shopMessage.shopPicUrl">
+                <img :src="shopMessage.shopPicUrl" alt="" >
                 <div class="cover">
                       <Icon type="ios-eye-outline" @click.native="handleView(shopMessage.shopPicUrl)"></Icon>
                 </div>
@@ -146,7 +146,7 @@
           <FormItem prop="password" class="shopMessagemModal-agreement">
             <h3>协议合同</h3>
             <div class="agreementImgBox">
-               <div class="img vm-fl" v-model="qulification.protocol" v-for="url in qulification.protocol" >
+               <div class="img vm-fl"  v-for="(url,index) in qulification.protocol" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
                     <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
@@ -164,7 +164,7 @@
     </Modal>
     <!-- 商家账号管理模态框 -->
     <Modal v-model="shopManageModal" title="账号管理" width="500" @on-ok="modifySellerStatus(shopManageData)">
-      <Form v-model="shopManageData">
+      <Form>
         <FormItem label="设置账号限制：">
           <Select v-model="shopManageData.status" :value="shopManageData.status" placeholder="请选择">
             <Option value="1">账号恢复</Option>

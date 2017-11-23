@@ -87,7 +87,7 @@
           <Input v-model="templateItem.labels" :value="templateItem.labels" size="small" style="width: 200px"></Input> <br>
          
           <span>图片</span>
-              <div class="img vm-fl" v-model="templateItem.mainPic" v-for="(url,index) in templateItem.mainPic" :key="index">
+              <div class="img vm-fl"  v-for="(url,index) in templateItem.mainPic" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
@@ -102,7 +102,7 @@
            <!-- div隔开图片与图片库 -->
            <div style="height:5px;"></div> 
           <span>图片库</span>
-              <div class="img vm-fl" v-model="templateItem.picLib" v-for="(url,index) in templateItem.picLib" :key="index">
+              <div class="img vm-fl" v-for="(url,index) in templateItem.picLib" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
@@ -122,7 +122,7 @@
               <td>
                 <h4>重量单位</h4>
               </td>
-              <td v-model="templateItem.weightUnit" v-for="(weightitem,index) in templateItem.weightUnit" :key="index">
+              <td  v-for="(weightitem,index) in templateItem.weightUnit" :key="index">
                 <Select size="small" style="width:80px" v-model="weightitem.attributeCode" :value="weightitem.attributeCode">
                   <Option v-for="item in weightdata" :value="item.code" :key="item.code">{{ item.name }}</Option>
                 </Select>
@@ -136,7 +136,7 @@
               <td>
                 <h4>重量属性</h4>
               </td>
-              <td  v-model="templateItem.packAttr" v-for="(item,index) in  templateItem.packAttr" :key="index">
+              <td  v-for="(item,index) in  templateItem.packAttr" :key="index">
                 <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" :value="item.attributeValue"></Input>
                 <Button size="small" type="error" @click="delweightAttribute(index)">删除</Button>
               </td>
@@ -148,7 +148,7 @@
                <td>
                 <h4>商品属性</h4>
               </td>
-              <td v-model="templateItem.productAttr" v-for="(item,index) in templateItem.productAttr" :key="index">
+              <td  v-for="(item,index) in templateItem.productAttr" :key="index">
                 <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" :value="item.attributeValue"></Input>
                 <Button size="small" type="error" @click="delcommodityAttribute(index)">删除</Button>
               </td>
@@ -158,7 +158,7 @@
             </tr>
           </table> <br>
           <span>商品详情</span>
-              <div class="img vm-fl" v-model="templateItem.productDesc" v-for="url in templateItem.productDesc">
+              <div class="img vm-fl"  v-for="url in templateItem.productDesc">
                 <img :src="url" alt="">
                 <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
