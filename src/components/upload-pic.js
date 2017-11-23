@@ -78,7 +78,7 @@ export function uploadpic(file) {
   var imgName = guid()
   var storeAs = '/images/' + imgName + '.' + file.name.split('.').splice(-1)
   // 限制图片大小 2097152 2GB
-  if (file.size < 2097152) {
+  if (file.size < 5242880) {
     // 上传图片
     return client
       .multipartUpload(storeAs, file)
@@ -89,7 +89,7 @@ export function uploadpic(file) {
         return err
       })
   } else {
-    alert('上传图片大小在2MB以内')
+    alert('上传图片大小在5MB以内')
     return false
   }
 }

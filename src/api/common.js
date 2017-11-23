@@ -96,11 +96,25 @@ export const getUserList = params => {
   return ax.g(`/platform/user/${params}`)
 }
 /**
+ * 修改用户信息
+ * @param params
+ */
+export const modifyUserInfo = params => {
+  return ax.u('/platform/user', params)
+}
+/**
  * 退出登录
  * @param params
  */
 export const logout = params => {
   return ax.g('/platform/user/logout', params)
+}
+/**
+ * 修改密码
+ * @param params
+ */
+export const modifyPass = params => {
+  return ax.u('/platform/user/password', params)
 }
 
 /** 用户登录登出，个人信息，修改密码 end**/

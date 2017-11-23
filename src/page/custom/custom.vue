@@ -88,27 +88,29 @@
         this.$router.push('/custom/' + name)
       },
       getCustomMenu () {
-        let menuIcon = ['ios-people', 'ios-chatbubble', 'gear-a', 'ios-people']
-        let resMenu = JSON.parse(sessionStorage.getItem('menu'))
-        resMenu.menusVO.forEach((item) => {
-          if (item.url === 'custom') {
-            this.menu = item.childMenusList.map((item, index) => {
-              if (item.childMenusList.length > 0) {
-                return {
-                  id: item.menusId,
-                  name: item.menuName,
-                  icon: menuIcon[index],
-                  url: item.url,
-                  noDropdown: false,
-                  submenu: item.childMenusList.map((item) => {
-                    return {name: item.menuName, url: item.url}
-                  })
+        if (sessionStorage.getItem('menu')) {
+          let menuIcon = ['ios-people', 'ios-chatbubble', 'gear-a', 'ios-people']
+          let resMenu = JSON.parse(sessionStorage.getItem('menu'))
+          resMenu.forEach((item) => {
+            if (item.url === 'custom') {
+              this.menu = item.childMenusList.map((item, index) => {
+                if (item.childMenusList.length > 0) {
+                  return {
+                    id: item.menusId,
+                    name: item.menuName,
+                    icon: menuIcon[index],
+                    url: item.url,
+                    noDropdown: false,
+                    submenu: item.childMenusList.map((item) => {
+                      return {name: item.menuName, url: item.url}
+                    })
+                  }
                 }
-              }
-              return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url, noDropdown: true}
-            })
-          }
-        })
+                return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url, noDropdown: true}
+              })
+            }
+          })
+        }
       }
     },
     components: {

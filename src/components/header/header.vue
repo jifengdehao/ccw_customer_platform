@@ -11,7 +11,7 @@
         <div class="layout-logo">菜城科技有限公司</div>
       </i-col>
       <i-col :span="18" style="min-width:930px;">
-        <Menu mode="horizontal" theme="dark" @on-select="selectMenu">
+        <Menu mode="horizontal" theme="dark">
           <MenuItem :name="item.url" v-if="menu.length>0" v-for="item in menu" :key="item.id">
             <router-link :to="'/'+item.url">
               <Icon :type="item.icon"></Icon>
@@ -112,30 +112,28 @@
       selectDown (item) {
         switch (item) {
           case 'user':
-            this.$router.push('/users/' + item)
+            this.$router.push('/users/' + item + '/' + this.userinfo.ptUserId)
             break
           case 'logout':
             api.logout().then((res) => {
               if (res) {
                 sessionStorage.removeItem('user')
+                sessionStorage.removeItem('menu')
                 this.$router.push('/login')
               }
             })
-
             break
         }
       },
-      selectMenu (name) {
-        console.log(name)
-      },
       getMenuData () {
         api.getMemuData().then((res) => {
-          if (res) {
+          if (res.menusVO) {
+            console.log(res)
             let menuIcon = ['ios-paper', 'ios-people', 'chatbox-working', 'chatbox', 'help-buoy', 'ios-analytics', 'settings', 'ios-people']
             this.menu = res.menusVO.map((item, index) => {
               return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url}
             })
-            sessionStorage.setItem('menu', JSON.stringify(res))
+            sessionStorage.setItem('menu', JSON.stringify(res.menusVO))
           }
         })
       }

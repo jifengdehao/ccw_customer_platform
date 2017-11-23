@@ -5,7 +5,7 @@
 * 功能：业务组件-登录
 */
 <template>
-  <div id="login">
+  <div id="login" @keyup.enter="handleSubmit">
     <Form ref="formLogin" :model="formLogin" :rules="formLoginRules" class="card-box">
       <Form-item class="formLogin-title">
         <h3>平台后台用户登录</h3>
@@ -49,10 +49,10 @@
       <Form-item class="login-no-bottom">
         <Row type="flex">
           <Col :xs="{ span: 4, offset: 6}">
-          <Button type="primary" @click="handleSubmit('formLogin')">登录</Button>
+          <Button type="primary" @click="handleSubmit">登录</Button>
           </Col>
           <Col :xs="{ span: 4, offset: 4 }">
-          <Button type="primary" @click="formLoginReset('formLogin')">重置</Button>
+          <Button type="primary" @click="formLoginReset">重置</Button>
           </Col>
         </Row>
       </Form-item>
@@ -99,8 +99,8 @@
     },
     methods: {
       // 登录
-      handleSubmit (name) {
-        this.$refs[name].validate(valid => {
+      handleSubmit () {
+        this.$refs.formLogin.validate(valid => {
           if (valid) {
             let params = {
               userName: this.formLogin.userName,
@@ -128,8 +128,8 @@
         })
       },
       // 重置
-      formLoginReset (name) {
-        this.$refs[name].resetFields()
+      formLoginReset () {
+        this.$refs.formLogin.resetFields()
       },
       // 请求code 验证码
       initCode () {
