@@ -50,7 +50,7 @@
     </section>
     <!-- 商家信息模态框 -->
     <Modal v-model="shopMessageModal" title="商家信息" width="900" @on-ok="modifySellerInfo(shopMessage)">
-      <Form ref="formInline" :model="shopMessage" inline>
+      <Form ref="formInline"  :model="shopMessage" inline>
         <Row>
           <Col span="9">
           <!-- 账号信息 -->
@@ -60,10 +60,10 @@
             <span>{{shopMessage.msSellerId}}</span>
             </br>
             <span>支付宝账号：</span>
-            <Input size="small" v-model="shopMessage.alipayAccount"  placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" v-model="shopMessage.alipayAccount"  placeholder="请输入" style="width: 150px" required></Input>
             </br>
             <span>手机号：</span>
-            <Input size="small" v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px"></Input>
+            <Input size="small" v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px" required/>
             </br>
             <span>密码：</span>
             <Button size="small" @click="resetPassword(shopMessage.msSellerId)">重置密码</Button>
