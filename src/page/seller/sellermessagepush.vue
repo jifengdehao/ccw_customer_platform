@@ -21,7 +21,7 @@
       <Button type="primary" @click="pushMessage">{{pushButton}}</Button>
     </div>
      <div>
-       <Tabs type="card" @on-click="onTabsIndex" :animated="false">
+       <Tabs  @on-click="onTabsIndex" :animated="false">
           <TabPane v-for="tab in messgeTabs" :key="tab" :label="tab">
             <Table border :columns="pushMessageTitle" :data="pushMessageData"></Table>
           </TabPane>
