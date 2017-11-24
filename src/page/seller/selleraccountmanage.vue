@@ -50,67 +50,68 @@
     </section>
     <!-- 商家信息模态框 -->
     <Modal v-model="shopMessageModal" title="商家信息" width="900" @on-ok="modifySellerInfo(shopMessage)">
-      <Form ref="formInline"  :model="shopMessage" inline>
+      <Form ref="formInline"  :model="shopMessage" :rules="ruleValidate" label-postion="left" :label-width="100" >
         <Row>
           <Col span="9">
           <!-- 账号信息 -->
-          <FormItem prop="user" class="shopMessagemModal-user">
+          <div  class="shopMessagemModal-user">
             <h3>账号信息</h3>
             <span>账号名：</span>
             <span>{{shopMessage.msSellerId}}</span>
             </br>
-            <span>支付宝账号：</span>
-            <Input size="small" v-model="shopMessage.alipayAccount"  placeholder="请输入" style="width: 150px" required></Input>
-            </br>
-            <span>手机号：</span>
-            <Input size="small" v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px" required/>
-            </br>
-            <span>密码：</span>
-            <Button size="small" @click="resetPassword(shopMessage.msSellerId)">重置密码</Button>
-          </FormItem>
+            <FormItem label="支付宝账号：" prop="alipayAccount">
+              <Input size="small" v-model="shopMessage.alipayAccount"  placeholder="请输入" style="width: 150px" required></Input>
+            </FormItem>
+            <FormItem label="手机号：" prop="mobileno">
+              <Input size="small" :maxlength="11" v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px" required/>
+            </FormItem>
+            <FormItem label="密码：">
+              <Button size="small" @click="resetPassword(shopMessage.msSellerId)">重置密码</Button>
+            </FormItem>
+          </div>
           <!-- 店铺信息 -->
-          <FormItem prop="user" class="shopMessagemModal-shopinfo">
+          <div class="shopMessagemModal-shopinfo">
             <h3>店铺信息</h3>
             <span>档口图片：</span>
               <img :src="shopMessage.headUrl"  alt="">
               </br>
-            <span>档口名称：</span>
-            <Input size="small"  v-model="shopMessage.shopName"  placeholder="请输入" style="width: 150px"></Input>
-            </br>
-            <span>档主姓名：</span>
-            <Input size="small"  v-model="shopMessage.shopOwerName"  placeholder="请输入" style="width: 150px"></Input>
-            </br>
-            <span>档口号：</span>
-            <Input size="small"  v-model="shopMessage.shopNo"  placeholder="请输入" style="width: 150px"></Input>
-            </br>
-             <span>主营类型：</span>
-            <Select size="small"  v-model="shopMessage.businessDictCode" :value="shopMessage.businessDictCode" placeholder="请选择" style="width: 150px">
-            <Option v-for="item in businessDictCode" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
-            </Select> </br>
-            <span>营业状态：</span>
-             <Select size="small" v-model="shopMessage.bussinessStatus" :value="shopMessage.bussinessStatus" placeholder="请选择" style="width: 150px">
+              <FormItem label="档口名称：" prop="shopName">
+                <Input size="small"  v-model="shopMessage.shopName"  placeholder="请输入" style="width: 150px"></Input>
+              </FormItem>
+               <FormItem label="档主姓名：" prop="shopOwerName">
+                <Input size="small"  v-model="shopMessage.shopOwerName"  placeholder="请输入" style="width: 150px"></Input>
+              </FormItem>
+              <FormItem label="档口号：" prop="shopNo">
+                <Input size="small"  v-model="shopMessage.shopNo"  placeholder="请输入" style="width: 150px"></Input>
+              </FormItem>
+              <FormItem label="主营类型：">
+                <Select size="small"  v-model="shopMessage.businessDictCode" :value="shopMessage.businessDictCode" placeholder="请选择" style="width: 150px">
+                <Option v-for="item in businessDictCode" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option></Select> 
+              </FormItem>
+              <FormItem label="营业状态：" prop="bussinessStatus">
+                <Select size="small" v-model="shopMessage.bussinessStatus" :value="shopMessage.bussinessStatus" placeholder="请选择" style="width: 150px">
                 <Option value="1">营业</Option>
                 <Option value="2">打烊</Option>
                 <Option value="3">关店</Option>
-            </Select>
-            </br>
-            <span>营业时间：</span>
-            <Input size="small"  v-model="shopMessage.businessHour"  placeholder="请输入" style="width: 150px"></Input>
-            </br>
-            <span>店铺电话：</span>
-            <Input size="small"  v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px"></Input>
-            </br>
-            <span>店铺公告：</span>
-            <textarea v-model="shopMessage.notice"  cols="30" rows="3"></textarea>
-            </br>
-            <span>店铺地址：</span>
-            <Input size="small" v-model="shopMessage.stallAddress"  placeholder="请输入" style="width: 150px"></Input>
-            </br>
-          </FormItem>
+                </Select>
+              </FormItem>
+              <FormItem label="营业时间：" prop="businessHour">
+                <Input size="small"  v-model="shopMessage.businessHour"  placeholder="请输入" style="width: 150px"></Input>
+              </FormItem>
+              <FormItem label="店铺电话：" prop="mobileno">
+                <Input size="small"  v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px"></Input>
+              </FormItem>
+              <FormItem label="店铺公告：" prop="notice">
+                 <textarea v-model="shopMessage.notice"  cols="22" rows="2"></textarea>
+              </FormItem>
+              <FormItem label="店铺地址：" prop="stallAddress">
+                <Input size="small" v-model="shopMessage.stallAddress"  placeholder="请输入" style="width: 150px"></Input>
+              </FormItem>
+          </div>
           </Col>
           <Col span="15">
           <!-- 店铺图片 -->
-          <FormItem prop="password" class="shopMessagemModal-shopimag"  >
+          <div prop="password" class="shopMessagemModal-shopimag"  >
             <h3>店铺图片</h3>
               <div class="img vm-fl" >
                 <img :src="shopMessage.shopPicUrl" alt="" >
@@ -118,12 +119,12 @@
                       <Icon type="ios-eye-outline" @click.native="handleView(shopMessage.shopPicUrl)"></Icon>
                 </div>
               </div>
-              <div class="qualification" style="width:120px;top:130px">
+              <div class="qualification" style="width:120px;top:130px;left:16px;lineHeight:30px">
                 <input type="file" @change="shopimgupload">上传图片
               </div>
-          </FormItem>
+          </div>
           <!-- 营业资质 -->
-          <FormItem prop="password" class="shopMessagemModal-qualification">
+          <div prop="password" class="shopMessagemModal-qualification">
             <h3>营业资质</h3>
             <ul>
               <li v-for="(item,index) in qulification.qualificationList" :key="index">
@@ -141,9 +142,9 @@
                 <p>{{item.name}}</p>
               </li>
             </ul>
-          </FormItem>
+          </div>
           <!-- 协议合同 -->
-          <FormItem prop="password" class="shopMessagemModal-agreement">
+          <div prop="password" class="shopMessagemModal-agreement">
             <h3>协议合同</h3>
             <div class="agreementImgBox">
                <div class="img vm-fl"  v-for="(url,index) in qulification.protocol" :key="index">
@@ -157,7 +158,7 @@
                 <input type="file" @change="protocolUpload">+
               </div>
             </div>
-          </FormItem>
+          </div>
           </Col>
         </Row>
       </Form>
@@ -316,7 +317,73 @@ export default {
           title: '备注说明',
           key: 'remark'
         }
-      ]
+      ],
+      ruleValidate: {
+        alipayAccount: [
+          {
+            required: true,
+            message: '支付宝账号不能为空',
+            trigger: 'blur'
+          }
+        ],
+        shopName: [
+          {
+            required: true,
+            message: '档口名称不能为空',
+            trigger: 'blur'
+          }
+        ],
+        mobileno: [
+          {
+            required: true,
+            message: '手机号不能为空',
+            trigger: 'blur',
+            pattern: '^[1][0-9]{10}'
+          }
+        ],
+        shopNo: [
+          {
+            required: true,
+            message: '档口号不能为空',
+            trigger: 'blur'
+          }
+        ],
+        shopOwerName: [
+          {
+            required: true,
+            message: '档主姓名不能为空',
+            trigger: 'blur'
+          }
+        ],
+        bussinessStatus: [
+          {
+            required: true,
+            message: '请选择营业状态',
+            trigger: 'change'
+          }
+        ],
+        businessHour: [
+          {
+            required: true,
+            message: '营业时间不能为空',
+            trigger: 'blur'
+          }
+        ],
+        notice: [
+          {
+            required: true,
+            message: '小伙子，写个公告呗',
+            trigger: 'blur'
+          }
+        ],
+        stallAddress: [
+          {
+            required: true,
+            message: '地址不要漏了哦！',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   created() {
@@ -489,7 +556,9 @@ export default {
   margin-top: 10px;
   text-align: right;
 }
-
+h3 {
+  margin: 5px 0 10px 10px;
+}
 .shopMessagemModal-user,
 .shopMessagemModal-shopinfo,
 .shopMessagemModal-qualification,
@@ -506,24 +575,28 @@ export default {
   display: inline-block;
   width: 80px;
   vertical-align: top;
+  text-align: right;
 }
 
 .shopMessagemModal-user {
-  height: 170px;
+  height: 190px;
+  margin-bottom: 10px;
 }
 
 .shopMessagemModal-shopimag {
-  height: 170px;
+  height: 190px;
   margin-left: 5px;
+  margin-bottom: 10px;
 }
 
 .shopMessagemModal-shopinfo {
-  height: 600px;
+  height: 650px;
 }
 
 .shopMessagemModal-qualification {
-  height: 376px;
+  height: 400px;
   margin-left: 5px;
+  margin-bottom: 20px;
 }
 .shopMessagemModal-qualification li {
   position: relative;
@@ -558,7 +631,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.05);
 }
 .shopMessagemModal-agreement {
-  height: 200px;
+  height: 230px;
   margin-left: 5px;
 }
 

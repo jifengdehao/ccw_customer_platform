@@ -24,80 +24,92 @@
   </div>
 </template>
 <script>
-  export default {
-    name: 'authTree',
-    props: ['menuData', 'parentData'],
-    data() {
-      return {}
+export default {
+  name: 'authTree',
+  props: ['menuData', 'parentData'],
+  data() {
+    return {}
+  },
+  created() {},
+  methods: {
+    // 判断浏览器
+    isFirefox() {
+      if (navigator.userAgent.indexOf('Firefox') > -1) return true
+      else return false
     },
-    created() {},
-    methods: {
-      //  查看选中
-      changeCheck(child, bool) {
+    isIE() {
+      if (!!window.ActiveXObject || 'ActiveXObject' in window) return true
+      else return false
+    },
+    //  查看选中
+    changeCheck(child, bool) {
+      if (this.isFirefox()) {
         child.isHave = bool || !child.isHave
-        if (!bool) {
-          this.selectChildAll(child)
-        }
-        this.$emit('forward', {
-          isHave: child.isHave,
-          parent: this.parentData
+      } else {
+        child.isHave = bool || child.isHave
+      }
+      if (!bool) {
+        this.selectChildAll(child)
+      }
+      this.$emit('forward', {
+        isHave: child.isHave,
+        parent: this.parentData
+      })
+    },
+    //  子项菜单全部选中状态
+    selectChildAll(parent) {
+      let bool = parent.isHave
+      if (parent.childMenuList) {
+        parent.childMenuList.forEach(item => {
+          item.isHave = bool
+          this.selectChildAll(item)
         })
-      },
-      //  子项菜单全部选中状态
-      selectChildAll(parent) {
-        let bool = parent.isHave
-        if (parent.childMenuList) {
-          parent.childMenuList.forEach(item => {
-            item.isHave = bool
-            this.selectChildAll(item)
-          })
-        }
+      }
 
-        if (parent.permissonList) {
-          parent.permissonList.forEach(permission => {
-            permission.isHave = bool
-            this.selectChildAll(permission)
+      if (parent.permissonList) {
+        parent.permissonList.forEach(permission => {
+          permission.isHave = bool
+          this.selectChildAll(permission)
+        })
+      }
+    },
+    //  自定义权限点击
+    checkPermission(permission, item, bool) {
+      if (!this.parentData.childMenuList || !this.parentData.permissonList) {
+        item.isHave = true
+        return
+      }
+      this.$emit('permissionCheck', {
+        permission: permission,
+        item: item,
+        bool: bool,
+        parent: this.parentData
+      })
+    },
+    //  权限点击
+    permissionCheck(data) {
+      data.permission.isHave = !data.bool ? !data.permission.isHave : data.bool
+      // data.item.isHave = data.permission.isHave
+      data.item.isHave = true
+      this.checkPermission(data.item, data.parent, true)
+    },
+    //  向上传递值
+    forwardChecked(data) {
+      if (data.parent && data.isHave) {
+        data.parent.isHave = true
+        if (data.parent.permissonList) {
+          data.parent.permissonList.forEach(item => {
+            item.isHave = true
           })
         }
-      },
-      //  自定义权限点击
-      checkPermission(permission, item, bool) {
-        if (!this.parentData.childMenuList || !this.parentData.permissonList) {
-          item.isHave = true
-          return
-        }
-        this.$emit('permissionCheck', {
-          permission: permission,
-          item: item,
-          bool: bool,
-          parent: this.parentData
-        })
-      },
-      //  权限点击
-      permissionCheck(data) {
-        data.permission.isHave = !data.bool ? !data.permission.isHave : data.bool
-        // data.item.isHave = data.permission.isHave
-        data.item.isHave = true
-        this.checkPermission(data.item, data.parent, true)
-      },
-      //  向上传递值
-      forwardChecked(data) {
-        if (data.parent && data.isHave) {
-          console.log(data.isHave, 'forward')
-          data.parent.isHave = true
-          if (data.parent.permissonList) {
-            data.parent.permissonList.forEach(item => {
-              item.isHave = true
-            })
-          }
-          this.changeCheck(data.parent, true)
-        }
+        this.changeCheck(data.parent, true)
       }
     }
   }
+}
 </script>
 <style lang="css" scoped>
-  ul {
-    padding-left: 1.5em;
-  }
+ul {
+  padding-left: 1.5em;
+}
 </style>

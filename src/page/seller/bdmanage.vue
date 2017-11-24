@@ -37,19 +37,18 @@
     </section>
     <!-- 新增 修改BD -->
     <Modal v-model="BDmodal" :title="modelTitle" width="400" class="BDmodal" @on-ok="confirmAdd(modelFormItem,modelTitle)">
-      <Form :model="modelFormItem" ref="formItem" inline>
-        <FormItem>
-          <span class="label">姓名：</span>
+      <Form :model="modelFormItem" :rules="ruleValidate" ref="formItem" label-postion="left" :label-width="100">
+        <FormItem label="姓名：" prop="name">
           <Input size="small" v-model="modelFormItem.name"  placeholder="请输入" style="width: 150px"></Input>
-          </br>
-          <span class="label">电话：</span>
+        </FormItem>
+        <FormItem label="电话：" prop="mobileno">
           <Input size="small" v-model="modelFormItem.mobileno"  placeholder="请输入" style="width: 150px"></Input>
-          </br>
-          <span class="label">邀请码：</span>
+        </FormItem>
+        <FormItem label="邀请码：" prop="invitationCode">
           <Input size="small" v-model="modelFormItem.invitationCode"  placeholder="请输入" style="width: 150px"></Input>
-          </br>
-          <span class="label">负责市场：</span>
-          <Select v-model="modelFormItem.psMarketId" :value="modelFormItem.psMarketId" size="small" placeholder="请选择" style="width: 150px">
+        </FormItem> 
+        <FormItem label="负责市场：" >
+          <Select v-model="modelFormItem.psMarketId"  size="small" placeholder="请选择" style="width: 150px">
              <Option v-for="item in allMarket" :value="item.psMarketId" :key="item.psMarketId">{{ item.marketName }}</Option>
           </Select>
         </FormItem>
@@ -131,7 +130,31 @@ export default {
           }
         }
       ],
-      BDdata: [{ name: '小二' }]
+      BDdata: [],
+      ruleValidate: {
+        name: [
+          {
+            required: true,
+            message: '用户名不能为空',
+            trigger: 'blur'
+          }
+        ],
+        mobileno: [
+          {
+            required: true,
+            message: '手机号不能为空',
+            trigger: 'blur',
+            pattern: '^[1][0-9]{10}'
+          }
+        ],
+        invitationCode: [
+          {
+            required: true,
+            message: '邀请码必填',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   created() {
@@ -168,30 +191,6 @@ export default {
         this.pageSize = response.size
       })
     },
-    // 添加BD
-    addPlatformBD(name, mobileno, invitCode, market) {
-      let params = {
-        name: name,
-        mobileno: mobileno,
-        invitCode: invitCode,
-        marketId: market
-      }
-      api.addPlatformBD(params).then(response => {})
-    },
-    // 删除BD
-    // delPlatformBD(id) {
-    //   api.addPlatformBD(id).then(response => {})
-    // },
-    // 修改BD
-    modifyBD(id, name, mobileno, invitCode, market) {
-      let params = {
-        name: name,
-        mobileno: mobileno,
-        invitCode: invitCode,
-        marketId: market
-      }
-      api.modifyBD(params, id).then(response => {})
-    },
     // 分页
     changepage(index) {
       this.getBDlist(index, 10)
@@ -214,13 +213,14 @@ export default {
     confirmAdd(modelFormItem, modelTitle) {
       if (modelTitle === '增加BD') {
         api.addPlatformBD(modelFormItem).then(response => {
-          this.BDdata.push(modelFormItem)
           this.$Message.info('添加成功')
+          this.getBDlist(1, 10)
         })
       } else if (modelTitle === '修改BD') {
         let id = modelFormItem.ptBdId
         api.modifyBD(modelFormItem, id).then(response => {
           this.$Message.info('修改成功')
+          this.getBDlist(1, 10)
         })
       }
       this.getBDlist(1, 10)
