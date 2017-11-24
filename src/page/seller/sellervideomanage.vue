@@ -120,7 +120,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.productPicPass(params.row.spProductId)
+                      this.productPicNotPass(params.row.spProductId)
                     }
                   }
                 },
@@ -135,7 +135,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.productPicNotPass(params.row.spProductId)
+                      this.productPicPass(params.row.spProductId)
                     }
                   }
                 },

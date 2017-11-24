@@ -191,30 +191,6 @@ export default {
         this.pageSize = response.size
       })
     },
-    // 添加BD
-    addPlatformBD(name, mobileno, invitCode, market) {
-      let params = {
-        name: name,
-        mobileno: mobileno,
-        invitCode: invitCode,
-        marketId: market
-      }
-      api.addPlatformBD(params).then(response => {})
-    },
-    // 删除BD
-    // delPlatformBD(id) {
-    //   api.addPlatformBD(id).then(response => {})
-    // },
-    // 修改BD
-    modifyBD(id, name, mobileno, invitCode, market) {
-      let params = {
-        name: name,
-        mobileno: mobileno,
-        invitCode: invitCode,
-        marketId: market
-      }
-      api.modifyBD(params, id).then(response => {})
-    },
     // 分页
     changepage(index) {
       this.getBDlist(index, 10)
@@ -237,13 +213,14 @@ export default {
     confirmAdd(modelFormItem, modelTitle) {
       if (modelTitle === '增加BD') {
         api.addPlatformBD(modelFormItem).then(response => {
-          this.BDdata.push(modelFormItem)
           this.$Message.info('添加成功')
+          this.getBDlist(1, 10)
         })
       } else if (modelTitle === '修改BD') {
         let id = modelFormItem.ptBdId
         api.modifyBD(modelFormItem, id).then(response => {
           this.$Message.info('修改成功')
+          this.getBDlist(1, 10)
         })
       }
       this.getBDlist(1, 10)
