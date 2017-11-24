@@ -22,7 +22,7 @@
     </section>
     <!-- 标签页 -->
     <section>
-      <Tabs type="card" :animated="false" @on-click="changedata">
+      <Tabs  :animated="false" @on-click="changedata">
         <TabPane v-for="tab in tabs" key :label="tab.title">
           <Table border ref="selection" :columns="columns" :data="sellervideodata" @on-selection-change="showselect">
           </Table>
