@@ -375,9 +375,13 @@ export default {
     },
     // 搜索
     searchtemplate(formItem) {
-      api.getProductTemplateList(formItem).then(response => {
-        this.templatedata = response
-      })
+      if (this.formItem.catId) {
+        api.getProductTemplateList(formItem).then(response => {
+          this.templatedata = response
+        })
+      } else {
+        alert('请选择二级菜单')
+      }
     },
     // 添加，修改模板
     addtemplate(templateItem) {

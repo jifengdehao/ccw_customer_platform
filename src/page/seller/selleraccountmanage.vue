@@ -440,9 +440,11 @@ export default {
     },
     // 商家账号管理状态
     modifySellerStatus(sellerAccountData) {
-      let status = sellerAccountData.status
-      let remark = sellerAccountData.remark
-      this.updataShopStatus(this.shopId, status, remark)
+      if (this.shopManageData) {
+        let status = sellerAccountData.status
+        let remark = sellerAccountData.remark
+        this.updataShopStatus(this.shopId, status, remark)
+      }
     },
     // getsellerInfo 查看商家信息详情
     getsellerInfo(msSellerId, shopId) {
