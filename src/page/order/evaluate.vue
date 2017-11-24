@@ -162,8 +162,8 @@
                           onOk () {
                             // api 操作
                             api.putOrderSellerEval(rkShopId).then((res) => {
-                              console.log(res)
-                              if (res === null) {
+                              if (res) {
+                                console.log(res)
                                 params.row.isDelete = true
                               }
                             })
@@ -257,8 +257,8 @@
                           onOk () {
                             // api 操作
                             api.putOrderDeliverEval(rkDeliverId).then((res) => {
-                              console.log(res)
-                              if (res === null) {
+                              if (res) {
+                                console.log(res)
                                 params.row.isDelete = true
                               }
                             })
@@ -352,8 +352,8 @@
                           onOk () {
                             // api 操作
                             api.putOrderSellerEval(rkShopId).then((res) => {
-                              console.log(res)
-                              if (res === null) {
+                              if (res) {
+                                console.log(res)
                                 params.row.isDelete = true
                               }
                             })
