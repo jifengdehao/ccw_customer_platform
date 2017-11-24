@@ -9,45 +9,24 @@
     <div class="close-eval" @click="closeEval">
       <Button type="text" icon="close"></Button>
     </div>
-    <Row class="mb20">
-      <Col span="24">
-      用户信息</Col>
-      <Col span="2">
-      用户ID：</Col>
-      <Col span="22">
-      {{result.mcCustomerId}}</Col>
-      <Col span="2">
-      收货人手机：</Col>
-      <Col span="22">
-      {{result.mobileno}}</Col>
-      <Col span="2">
-      收货人：</Col>
-      <Col span="22">
-      {{result.custName}}</Col>
-    </Row>
     <Row>
       <Col span="24">
-      评价信息</Col>
-      <Col span="2">
-      配送员ID：</Col>
-      <Col span="22">
-      {{result.psDeliverId}}</Col>
-      <Col span="2">
-      配送员姓名：</Col>
-      <Col span="22">
-      {{result.name}}</Col>
-      <Col span="2">
-      评价时间：</Col>
-      <Col span="22">
-      {{result.remarkAt}}</Col>
-      <Col span="2">
-      评价星级：</Col>
-      <Col span="22">
-      {{result.starLevel}}</Col>
-      <Col span="2">
-      评价内容：</Col>
-      <Col span="22">
-      {{result.content}}</Col>
+      <dl>
+        <dt>用户信息</dt>
+        <dd>用户ID：{{result.mcCustomerId}}</dd>
+        <dd>收货人手机：{{result.mobileno}}</dd>
+        <dd>收货人：{{result.custName}}</dd>
+      </dl>
+      <dl class="mb10">
+        <dt>评价信息</dt>
+        <dd>配送员ID：{{result.psDeliverId}}</dd>
+        <dd>配送员姓名：{{result.name}}</dd>
+        <dd>评价时间：{{result.remarkAt | filterTime}}</dd>
+        <dd>评价星级：<Rate v-model="result.starLevel"></Rate></dd>
+        <dd>评价内容：{{result.content}}</dd>
+        <dd>是否隐藏：{{result.isDelete | filterIsHidden}}</dd>
+      </dl>
+      </Col>
     </Row>
   </div>
 </template>
@@ -67,6 +46,14 @@
     created () {
       this.getDeliverEvalDetail()
     },
+    filters: {
+      filterTime (value) {
+        return time.formatDateTime(value)
+      },
+      filterIsHidden (value) {
+        return value === true ? '是' : '否'
+      }
+    },
     methods: {
       closeEval () {
         this.$router.back()
@@ -76,7 +63,6 @@
           if (res) {
             console.log(res)
             this.result = res
-            this.result.remarkAt = time.formatDateTime(this.result.remarkAt)
           }
         })
       }

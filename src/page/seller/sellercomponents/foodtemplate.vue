@@ -70,9 +70,8 @@
     </section> -->
     <!-- 增加和编辑的模板 -->
     <Modal v-model="templateModal" :title="templateTitle" width="900" @on-ok="addtemplate(templateItem)">
-      <Form :model="templateItem" ref="templateItem" class="templateModal-from">
-        <FormItem>
-           <span class="label">所属分类</span>
+      <Form :model="templateItem" ref="templateItem" :rules="ruleValidate" class="templateModal-from" label-postion="left" :label-width="100">
+        <FormItem label="所属分类:" prop="spCategoryId">
           <i>一级分类</i>
           <Select v-model="templateItem.spCategoryParentId" :value="templateItem.spCategoryParentId" size="small" style="width:100px" @on-change="searchParent(templateItem.spCategoryParentId)">
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId" placeholder="一级分类">{{ item.name }}</Option>
@@ -81,12 +80,14 @@
           <Select v-model="templateItem.spCategoryId" :value="templateItem.spCategoryId" size="small" style="width:100px">
             <Option v-for="item in childdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
           </Select> <br>
-          <span>商品名称</span>
+        </FormItem>
+        <FormItem prop="name" label="商品名称:">
           <Input v-model="templateItem.name" :value="templateItem.name" size="small" style="width: 200px"></Input> <br>
-          <span>商品标签</span>
+        </FormItem>
+        <FormItem label="商品标签:" prop="labels">
           <Input v-model="templateItem.labels" :value="templateItem.labels" size="small" style="width: 200px"></Input> <br>
-         
-          <span>图片</span>
+        </FormItem> 
+        <FormItem label="图片:">
               <div class="img vm-fl"  v-for="(url,index) in templateItem.mainPic" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
@@ -97,11 +98,8 @@
               <div class="uploadButton">
                 <input type="file" @change="mainPicUpload">+
               </div>
-          <!-- <update-pic v-model="templateItem.mainPic" :imgList="templateItem.mainPic" class="mainpic"></update-pic> -->
-           <br>
-           <!-- div隔开图片与图片库 -->
-           <div style="height:5px;"></div> 
-          <span>图片库</span>
+        </FormItem>
+        <FormItem label="图片库:">
               <div class="img vm-fl" v-for="(url,index) in templateItem.picLib" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
@@ -112,11 +110,11 @@
               <div class="uploadButton ">
                 <input type="file" @change="picLibUpload">+
               </div>
-          <!-- <update-pic v-model="templateItem.picLib" :imgList="templateItem.picLib" class="mainpic"></update-pic> -->
-          <br>
-          <span>产地默认值</span>
+        </FormItem>
+        <FormItem label="产地默认值:" prop="originPlace">
           <Input v-model="templateItem.originPlace" :value="templateItem.originPlace" size="small" style="width: 200px"></Input> <br>
-          <span>产品规格</span>
+        </FormItem>
+        <FormItem label="产品规格:">
           <table class="templateModal-table">
             <tr>
               <td>
@@ -157,7 +155,8 @@
               </td>
             </tr>
           </table> <br>
-          <span>商品详情</span>
+        </FormItem>
+        <FormItem label="商品详情:">
               <div class="img vm-fl"  v-for="url in templateItem.productDesc">
                 <img :src="url" alt="">
                 <div class="cover">
@@ -168,7 +167,6 @@
               <div class="uploadButton ">
                 <input type="file" @change="productDescUpload">+
               </div>
-          <!-- <update-pic v-model="templateItem.productDesc" :imgList="templateItem.productDesc" class="mainpic"></update-pic>   -->
         </FormItem>
       </Form>
     </Modal>
@@ -270,6 +268,36 @@ export default {
       table: {
         hasDragged: false,
         isDragging: false
+      },
+      ruleValidate: {
+        spCategoryId: [
+          {
+            required: true,
+            message: '请选择所属分类',
+            trigger: 'blur'
+          }
+        ],
+        name: [
+          {
+            required: true,
+            message: '商品名称不能为空',
+            trigger: 'blur'
+          }
+        ],
+        originPlace: [
+          {
+            required: true,
+            message: '默认产地不能为空',
+            trigger: 'blur'
+          }
+        ],
+        labels: [
+          {
+            required: true,
+            message: '商品标签不能为空',
+            trigger: 'blur'
+          }
+        ]
       }
     }
   },
@@ -347,9 +375,13 @@ export default {
     },
     // 搜索
     searchtemplate(formItem) {
-      api.getProductTemplateList(formItem).then(response => {
-        this.templatedata = response
-      })
+      if (this.formItem.catId) {
+        api.getProductTemplateList(formItem).then(response => {
+          this.templatedata = response
+        })
+      } else {
+        alert('请选择二级菜单')
+      }
     },
     // 添加，修改模板
     addtemplate(templateItem) {

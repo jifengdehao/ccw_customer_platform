@@ -8,7 +8,7 @@
   <div class="seller-template-manager">
     <!-- 表格内容 -->
     <section seller-template-manager-container>
-      <Tabs type="card" :animated="false" @on-click="changedata">
+      <Tabs :animated="false" @on-click="changedata">
         <TabPane label="商品分类管理">
           <div class="seller-template-manager-container-classify">
             <Row>

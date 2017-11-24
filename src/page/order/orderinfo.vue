@@ -239,7 +239,8 @@
                           api.putRefundOrder(foodId).then((res) => {
                             console.log(res)
                             if (res) {
-                              _this.getOrderDetails()
+                              // _this.getOrderDetails()
+                              params.row.isRefunded = 1
                             } else {
                               _this.$Notice.error({
                                 title: '退款失败'
@@ -284,7 +285,6 @@
       }
     },
     created () {
-      console.log(this.options)
       this.getOrderDetails()
       this.hiddenOptions()
     },
@@ -296,8 +296,8 @@
           onOk () {
             // api 操作
             api.putRefundOrderAll(that.orderId).then((res) => {
-              console.log(res)
               if (res) {
+                console.log(res)
                 that.getOrderDetails()
               } else {
                 that.$Notice.error({
@@ -316,9 +316,15 @@
           if (res) {
             console.log(res)
             this.data4 = res.dealInfoList
-            this.data1 = Array.of(res.orderInfo)
-            this.data2 = Array.of(res.deliverInfo)
-            this.data3 = Array.of(res.paymentInfo)
+            if (res.orderInfo) {
+              this.data1 = Array.of(res.orderInfo)
+            }
+            if (res.deliverInfo) {
+              this.data2 = Array.of(res.deliverInfo)
+            }
+            if (res.paymentInfo) {
+              this.data3 = Array.of(res.paymentInfo)
+            }
           }
         })
       },

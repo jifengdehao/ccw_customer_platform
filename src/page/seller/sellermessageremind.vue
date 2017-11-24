@@ -8,7 +8,7 @@
   <div class="seller-message-remind">
     <!-- 表格内容 -->
     <section class="seller-message-remind-tab">
-      <Tabs type="card" :animated="false"  @on-click="changeTable">
+      <Tabs :animated="false"  @on-click="changeTable">
         <TabPane v-for="tab in tabs" key :label="tab.title">
           <Table :columns="remindColumns" :data="remindData"></Table>
         </TabPane>
