@@ -12,7 +12,7 @@
         <div class="add-image" v-if="addShow">
           <Button class="add-button" @click="addImage" type="primary" size="large">新增</Button>
         </div>
-        <div style="width: 100%; min-width: 1200px;">
+        <div style="width: 100%; min-width: 1220px;">
           <!-- <Table ref="currentRowTable" :columns="changeTitle" :data="bannerData"></Table> -->
           <table class="table-banner" v-if="status === 0 || status === 1">
             <tbody>
@@ -27,16 +27,16 @@
             <draggable @update="datadragEnd" v-if="status === 0 || status === 1" v-model="bannerData">
               <tr v-for="(data, index) in bannerData" :key="data.id" class="draggable">
                   <td class="br" style="width: 22%">
-                    <img style="height: 200px; width: 100%;" v-if="data.picUrl" :src="data.picUrl">
+                    <img style="height: 156px; width: 100%;" v-if="data.picUrl" :src="data.picUrl">
                   </td>
                   <td class="br" style="width: 10%">
                     <div class="upload">
-                      <input type="file" @change="onUpload($event, data)" value="上传图片">上传图片
+                      <input type="file" @change="onUpload($event, data)" value="上传">上传
                     </div>
                   </td>
                   <td class="br link" style="width: 20%">
                     <input v-model="data.linkUrl" type="text" :value="data.linkUrl">
-                    <!-- <a target="_brank" :href="data.linkUrl"></a> -->
+                    <a target="_blank" :href="data.linkUrl">跳转链接</a>
                   </td>
                   <td class="br" style="width: 20%">
                     <input v-model="data.remark" type="text" :value="data.remark">
@@ -419,20 +419,9 @@ table.table-banner td > input[type='text'],
   opacity: 0;
 }
 
-.link {
-  position: relative;
-  margin: 10px 20px;
-}
-
 .link > a {
   display: inline-block;
-  position: absolute;
-  left: 26px;
-  top: 103px;
-  height: 22px;
-  width: 200px;
   text-align: center;
-  line-height: 14px;
 }
 
 .br {
@@ -480,5 +469,11 @@ table.table-banner td > input[type='text'],
   text-align: center;
   border: 1px solid #e9eaec;
   background-color: #ffffff;
+}
+.ds {
+  display: none;
+}
+.show {
+  display: block;
 }
 </style>
