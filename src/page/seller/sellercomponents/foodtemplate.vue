@@ -49,10 +49,13 @@
                   <span>{{data.name}}</span>
                 </div>
                 <div style="width:30%"> 
-                  <p v-for="(item,index) in data.mainPic" :key="index" class="tabImg">
+                  <div class="tabImgs">
+                    <p v-for="(item,index) in data.mainPic" :key="index" >
                     <img :src="item" alt="" class="tabImg">
                     <!-- <tableimage :pic-urls="item.mainPic"></tableimage>   -->
                   </p>
+                  </div>
+                  
                 </div>    
                 <div style="width:30%">
                   <Button type="warning" @click="modfiyTemplate(index)">修改模板</Button>
@@ -378,6 +381,7 @@ export default {
       if (this.formItem.catId) {
         api.getProductTemplateList(formItem).then(response => {
           this.templatedata = response
+          console.log(response)
         })
       } else {
         alert('请选择一，二级分类')
@@ -385,17 +389,22 @@ export default {
     },
     // 添加，修改模板
     addtemplate(templateItem) {
-      templateItem.specification = this.specification
-      if (this.templateTitle === '增加商品模板') {
-        api.addProductTemplate(templateItem).then(response => {
-          this.$Message.success('添加成功')
-        })
-      } else if (this.templateTitle === '修改商品模板') {
-        api
-          .modifyProductTemplate(templateItem, templateItem.spTemplateId)
-          .then(response => {
-            this.$Message.success('修改成功')
+      let lab = templateItem.labels
+      if (lab.indexOf(templateItem.name) !== -1) {
+        templateItem.specification = this.specification
+        if (this.templateTitle === '增加商品模板') {
+          api.addProductTemplate(templateItem).then(response => {
+            this.$Message.success('添加成功')
           })
+        } else if (this.templateTitle === '修改商品模板') {
+          api
+            .modifyProductTemplate(templateItem, templateItem.spTemplateId)
+            .then(response => {
+              this.$Message.success('修改成功')
+            })
+        }
+      } else {
+        alert('商品标签必须包含商品名称')
       }
     },
     // 增加重量单位
@@ -560,6 +569,10 @@ export default {
   width: 100px;
   height: 80px;
   margin: 0 auto;
+}
+.tabImgs {
+  width: 100px;
+  height: 80px;
 }
 .templateModal-from span {
   display: inline-block;
