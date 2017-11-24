@@ -24,7 +24,7 @@
             </tbody>
           </table>
           <draggable @update="datadragEnd" v-if="status === 0 || status === 1" v-model="bannerData">
-            <tr v-for="data in bannerData" :key="data.id" class="draggable">
+            <tr v-for="(data,index) in bannerData" :key="data.id" class="draggable">
               <td class="br">
                 <img style="width:calc(100% - 25px);" :src="data.picUrl">
               </td>
@@ -47,7 +47,7 @@
                             v-model="data.endTime" :value="data.endTime"></DatePicker>
               </td>
               <td style="width: 10%; border-top: 0 !important;">
-                <Button type="error" @click="onChangButton(data)">{{ bannerState }}</Button>
+                <Button type="error" @click="onChangButton(data,index)">{{ bannerState }}</Button>
               </td>
             </tr>
           </draggable>
@@ -246,7 +246,7 @@ export default {
       }
     },
     // 点击操作button 结束 删除
-    onChangButton(data) {
+    onChangButton(data, index) {
       if (this.$route.path.startsWith('/custom/banner_manage')) {
         if (this.status === 0) {
           // 点击结束
@@ -255,10 +255,14 @@ export default {
             this.getCurrentListData()
           })
         } else if (this.status === 1) {
-          // 点击删除
-          api.delBannerId(data).then(data => {
-            this.getCurrentListData()
-          })
+          if (data.ptBannerId) {
+            // 点击删除
+            api.delBannerId(data).then(data => {
+              this.getCurrentListData()
+            })
+          } else {
+            this.bannerData.splice(index, 1)
+          }
         }
       } else if (this.$route.path.startsWith('/custom/market_push')) {
         if (this.status === 0) {
@@ -268,10 +272,14 @@ export default {
             this.getCurrentListData()
           })
         } else if (this.status === 1) {
-          //  点击删除
-          api.delMarketId(data).then(data => {
-            this.getCurrentListData()
-          })
+          if (data.ptMarketPushId) {
+            //  点击删除
+            api.delMarketId(data).then(data => {
+              this.getCurrentListData()
+            })
+          } else {
+            this.bannerData.splice(index, 1)
+          }
         }
       }
     },
