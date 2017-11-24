@@ -241,7 +241,7 @@ export default {
         // 点击删除
         if (!data.ptBannerId) {
           // 如果为空id 不发送请求
-          this.bannerData.splice(this.bannerData.length - 1, 1)
+          this.bannerData.splice(index, 1)
           return false
         } else {
           api.deleteBanner(data.ptBannerId).then(data => {
