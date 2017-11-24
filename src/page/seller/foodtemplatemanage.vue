@@ -39,13 +39,14 @@
       </Tabs>
     </section>
     <!-- 查看 -->
-    <Modal v-model="classifymodal" :title="classifytitle" width="300" @on-ok="postdata">
+    <Modal v-model="classifymodal" :title="classifytitle" width="350" @on-ok="postdata">
       <draggable v-model="dragdata" @update="datadragEnd">
         <transition-group>
           <div v-for="(item,index) in dragdata" :key="index" v-if="item.operation !== 0">
             <div style="lineHeight:30px">
             <Input v-model="item.name" size="small" style="width: 200px"></Input>
             <Button type="error" size="small" v-if="item.canDelete !== 0" @click="delClassify(index)" >删除</Button>
+            <Button type="info" size="small" v-if="item.canDelete === 0" disabled>已关联模板</Button>
            </div>
           </div>
         </transition-group>
