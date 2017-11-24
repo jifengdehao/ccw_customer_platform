@@ -24,7 +24,7 @@
         <li>{{feedbackDetails.creatorId}}</li>
         <li>{{feedbackDetails.creatorName}}</li>
         <li>{{feedbackDetails.content}}</li>
-        <li>{{feedbackTime}}</li>
+        <li>{{feedbackDetails.createdDt | filterTime}}</li>
       </ul>
       </Col>
     </Row>
@@ -52,6 +52,11 @@
       console.log(this.ptFeedbackId)
       this._getFeedbackDetails()
     },
+    filters: {
+      filterTime (value) {
+        return time.formatDateTime(value)
+      }
+    },
     methods: {
       close () {
         this.$router.back()
@@ -60,7 +65,6 @@
         api.getFeedBackInfo(this.ptFeedbackId).then((data) => {
           console.log(data)
           this.feedbackDetails = data
-          this.feedbackTime = time.formatDateTime(data.createdDt)
         })
       }
     }
