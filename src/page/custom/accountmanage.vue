@@ -162,6 +162,7 @@ export default {
                         this.singleData = params.row
                       } else {
                         //  恢复账户
+                        this.singleData = params.row
                         this.changeStatus.custId = this.singleData.mcCustomerId
                         this.changeStatus.frezonTime = null
                         http.changeStatus(this.changeStatus).then(data => {
@@ -199,7 +200,7 @@ export default {
         data.records.forEach((item, index) => {
           if (item.status === 1) {
             item.statusName = '正常'
-          } else if (item.status === 2) {
+          } else if (item.status === 2 || item.status === 3) {
             item.statusName = '冻结'
           }
         })
