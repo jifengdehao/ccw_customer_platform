@@ -380,7 +380,7 @@ export default {
           this.templatedata = response
         })
       } else {
-        alert('请选择二级菜单')
+        alert('请选择一，二级分类')
       }
     },
     // 添加，修改模板
