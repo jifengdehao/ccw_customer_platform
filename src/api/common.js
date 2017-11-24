@@ -624,7 +624,7 @@ export const putTag = params => {
  * 删除评价标签
  */
 export const delTag = params => {
-  return ax.d(`/customer/tag`, params)
+  return ax.d(`/customer/tag/${params.id}`)
 }
 
 /**
