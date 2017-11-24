@@ -120,7 +120,7 @@
                 </div>
               </div>
               <div class="qualification" style="width:120px;top:130px;left:16px;lineHeight:30px">
-                <input type="file" @change="shopimgupload">上传图片
+                <input type="file" @change="shopimgupload" accept="image/*">上传图片
               </div>
           </div>
           <!-- 营业资质 -->
@@ -136,7 +136,7 @@
                     </div>
                   </div>
                   <div class="qualification">
-                    <input type="file" @change="qualificationUpload($event,index)">上传图片
+                    <input type="file" @change="qualificationUpload($event,index)" accept="image/*">上传图片
                   </div>
                 </div>
                 <p>{{item.name}}</p>
@@ -155,7 +155,7 @@
                 </div>
               </div>
               <div class="uploadButton ">
-                <input type="file" @change="protocolUpload">+
+                <input type="file" @change="protocolUpload" accept="image/*">+
               </div>
             </div>
           </div>
