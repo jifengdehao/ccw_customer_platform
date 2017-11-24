@@ -99,7 +99,7 @@
                 </div>
               </div>
               <div class="uploadButton">
-                <input type="file" @change="mainPicUpload">+
+                <input type="file" @change="mainPicUpload" accept="image/*">+
               </div>
         </FormItem>
         <FormItem label="图片库:">
@@ -111,7 +111,7 @@
                 </div>
               </div>
               <div class="uploadButton ">
-                <input type="file" @change="picLibUpload">+
+                <input type="file" @change="picLibUpload" accept="image/*">+
               </div>
         </FormItem>
         <FormItem label="产地默认值:" prop="originPlace">
@@ -168,7 +168,7 @@
                 </div>
               </div>
               <div class="uploadButton ">
-                <input type="file" @change="productDescUpload">+
+                <input type="file" @change="productDescUpload" accept="image/*">+
               </div>
         </FormItem>
       </Form>
