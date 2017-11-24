@@ -5,7 +5,7 @@
 * 功能：公共组件-头部组件
 */
 <template>
-  <div class="layout-header">
+  <div class="layout-header" style="min-width: 1200px;">
     <Row type="flex">
       <Col :span="3">
         <div class="layout-logo">菜城科技有限公司</div>
