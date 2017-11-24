@@ -102,7 +102,7 @@
                 <Input size="small"  v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px"></Input>
               </FormItem>
               <FormItem label="店铺公告：" prop="notice">
-                 <textarea v-model="shopMessage.notice"  cols="22" rows="2"></textarea>
+                <Input v-model="shopMessage.notice" type="textarea" style="width: 150px" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>   
               </FormItem>
               <FormItem label="店铺地址：" prop="stallAddress">
                 <Input size="small" v-model="shopMessage.stallAddress"  placeholder="请输入" style="width: 150px"></Input>
@@ -440,9 +440,13 @@ export default {
     },
     // 商家账号管理状态
     modifySellerStatus(sellerAccountData) {
-      let status = sellerAccountData.status
-      let remark = sellerAccountData.remark
-      this.updataShopStatus(this.shopId, status, remark)
+      if (this.shopManageData.status) {
+        let status = sellerAccountData.status
+        let remark = sellerAccountData.remark
+        this.updataShopStatus(this.shopId, status, remark)
+      } else {
+        alert('请选择状态')
+      }
     },
     // getsellerInfo 查看商家信息详情
     getsellerInfo(msSellerId, shopId) {

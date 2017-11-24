@@ -62,9 +62,12 @@ module.exports = {
         include: [
           resolve('src'),
           resolve('test'),
-          resolve('/node_modules/_ali-oss@4.11.2@ali-oss/'),
-          resolve('/node_modules/_co-gather@0.0.1@co-gather')
-        ]
+          resolve('/node_modules/ali-oss/'),
+          resolve('/node_modules/co-gather/')
+        ],
+        query: {
+          presets: ['es2015']
+        }
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
