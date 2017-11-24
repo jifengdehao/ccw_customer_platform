@@ -227,6 +227,13 @@
             align: 'center',
             render: (h, params) => {
               let orderId = params.row.orderId
+              let status = params.row.status
+              let isabled
+              if (status === 5 || status === 6) {
+                isabled = false
+              } else {
+                isabled = true
+              }
               return h('div', [
                 h('Button', {
                   props: {
@@ -246,7 +253,8 @@
                 h('Button', {
                   props: {
                     type: 'error',
-                    size: 'small'
+                    size: 'small',
+                    disabled: isabled
                   },
                   on: {
                     click: () => {
@@ -262,7 +270,6 @@
         data: []
       }
     },
-    computed: {},
     created () {
       this._getOrderData()
     },
@@ -273,7 +280,7 @@
       },
       // 选择tab
       selectTab (name) {
-        this.status = name
+        this.status = parseInt(name)
         this._getOrderData()
       },
       // 导出数据
@@ -282,14 +289,14 @@
         let params = {
           startTime: this.startTime,
           endTime: this.endTime,
-          types: this.types,
+          status: this.status,
           mobileno: this.mobileno
         }
         console.log(params)
         api.exportOrderList(params).then((res) => {
           if (res) {
-            this.modal_loading = false
             console.log(res)
+            this.modal_loading = false
             window.location.href = res
           }
         })
@@ -306,8 +313,8 @@
           mobileno: this.phone
         }
         api.getOrderList(params, this.curr).then((res) => {
-          console.log(res)
           if (res) {
+            console.log(res)
             this.loading = false
             this.tableTotal = res.total
             this.data = res.records

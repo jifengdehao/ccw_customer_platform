@@ -5,8 +5,8 @@
 * 功能：公共组件-侧栏组件
 */
 <template>
-  <i-row type="flex" style="height: 100%;min-width:1200px;">
-    <i-col :span="spanLeft" :class="{'layout-hide-text': spanLeft < 3}" class="sidebar">
+  <Row type="flex" style="height: 100%;">
+    <Col :span="spanLeft" :class="{'layout-hide-text': spanLeft < 3}" class="sidebar">
       <div class="close-menu" @click="toggleClick()">
         <Icon type="navicon-round" :size="iconSize"></Icon>
       </div>
@@ -27,11 +27,11 @@
           </Submenu>
         </template>
       </Menu>
-    </i-col>
-    <i-col :span="spanRight" style="overflow-y: scroll;padding: 40px;">
+    </Col>
+    <Col :span="spanRight" style="overflow-y: scroll;padding: 40px;">
       <router-view></router-view>
-    </i-col>
-  </i-row>
+    </Col>
+  </Row>
 </template>
 <script type="text/ecmascript-6">
   export default {

@@ -6,11 +6,11 @@
 */
 <template>
   <div class="layout-header">
-    <i-row type="flex" style="min-width:1200px;">
-      <i-col :span="3">
+    <Row type="flex">
+      <Col :span="3">
         <div class="layout-logo">菜城科技有限公司</div>
-      </i-col>
-      <i-col :span="18" style="min-width:930px;">
+      </Col>
+      <Col :span="18" class="menu">
         <Menu mode="horizontal" theme="dark">
           <MenuItem :name="item.url" v-if="menu.length>0" v-for="item in menu" :key="item.id">
             <router-link :to="'/'+item.url">
@@ -73,8 +73,8 @@
           <!--</router-link>-->
           <!--</MenuItem>-->
         </Menu>
-      </i-col>
-      <i-col :span="3">
+      </Col>
+      <Col :span="3">
         <div class="user-info">
           <Dropdown trigger="click" @on-click="selectDown">
             <a href="javascript:void(0);">
@@ -87,8 +87,8 @@
             </DropdownMenu>
           </Dropdown>
         </div>
-      </i-col>
-    </i-row>
+      </Col>
+    </Row>
   </div>
 </template>
 <script type="text/ecmascript-6">
