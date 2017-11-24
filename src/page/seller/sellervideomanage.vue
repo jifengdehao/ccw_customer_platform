@@ -51,10 +51,10 @@ export default {
       total: 1,
       currentPage: 1,
       pageSize: 1,
-      current: 1,
+      current: 0,
       selectiondata: [],
       sellervideodata: [],
-      id: '',
+      id: '', // 获取的id数组
       formItem: {
         startdate: '',
         lastdate: ''
@@ -402,6 +402,7 @@ export default {
       this.selectiondata = selection
     },
     getID() {
+      this.id = []
       this.selectiondata.forEach(item => {
         if (this.current === 0) {
           this.id += item.spProductId + ','

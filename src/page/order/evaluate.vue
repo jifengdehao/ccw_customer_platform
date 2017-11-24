@@ -53,9 +53,9 @@
     <Modal v-model="exportModal" width="300">
       <div slot="header">导出表格</div>
       <div class="vm-textCenter">
-        <DatePicker type="date" placeholder="选择日期" style="width: 100%" :value="startTime"></DatePicker>
+        <DatePicker type="date" placeholder="选择日期" style="width: 100%" v-model="startTime"></DatePicker>
         <div class="mtb10">到</div>
-        <DatePicker type="date" placeholder="选择日期" style="width: 100%" :value="endTime"></DatePicker>
+        <DatePicker type="date" placeholder="选择日期" style="width: 100%" v-model="endTime"></DatePicker>
       </div>
       <div slot="footer">
         <Button type="primary" long :loading="modal_loading" @click="exportData()">确定</Button>
@@ -141,7 +141,8 @@
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '52px'
                   },
                   on: {
                     click: () => {
@@ -153,6 +154,9 @@
                   props: {
                     type: 'error',
                     size: 'small'
+                  },
+                  style: {
+                    width: '52px'
                   },
                   on: {
                     click: () => {
@@ -236,7 +240,8 @@
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '52px'
                   },
                   on: {
                     click: () => {
@@ -248,6 +253,9 @@
                   props: {
                     type: 'error',
                     size: 'small'
+                  },
+                  style: {
+                    width: '52px'
                   },
                   on: {
                     click: () => {
@@ -331,7 +339,8 @@
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '52px'
                   },
                   on: {
                     click: () => {
@@ -343,6 +352,9 @@
                   props: {
                     type: 'error',
                     size: 'small'
+                  },
+                  style: {
+                    width: '52px'
                   },
                   on: {
                     click: () => {
@@ -405,10 +417,9 @@
           mobileno: this.phone,
           types: this.status
         }
-        console.log(this.params)
         api.exportEval(params).then((res) => {
-          console.log(res)
           if (res) {
+            console.log(res)
             this.modal_loading = false
             window.open(res)
           }
