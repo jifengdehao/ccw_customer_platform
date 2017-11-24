@@ -255,6 +255,7 @@ export default {
       }
     },
     deleteTag(item) {
+      console.log(item)
       //  删除标签
       http
         .delTag({
