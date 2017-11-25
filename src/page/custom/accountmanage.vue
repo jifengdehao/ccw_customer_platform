@@ -26,7 +26,7 @@
         <span>{{count.totalCustomer}}</span>
       </label>
     </i-form>
-    <Table border :columns="allUsersTitle" :data="usersDatas.records"></Table>
+    <Table stripe border :columns="allUsersTitle" :data="usersDatas.records"></Table>
     <Page :total="usersDatas.total" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
     <Modal v-if="tabIndex == 0" v-model="modalBoolean" :styles="{top: '40px'}" @on-ok="isOkDelete" @on-cancel="modalBoolean=false;">
       <p>设置冻结时间
@@ -237,10 +237,11 @@ export default {
       //  冻结账户
       http.changeStatus(this.changeStatus).then(data => {
         this.usersDatas.records.forEach((item, index) => {
-          if (item.mcCustomerId === this.singleData.mcCustomerId) {
-            this.usersDatas.records.splice(index, 1)
-            return
-          }
+          // if (item.mcCustomerId === this.singleData.mcCustomerId) {
+          //   this.usersDatas.records.splice(index, 1)
+          //   return
+          // }
+          this.getUsersList()
         }, this)
       })
     },
@@ -270,6 +271,7 @@ export default {
     selectLoad() {
       this.params.mobileno = ''
       this.formInline.phone = ''
+      this.pageNo = 1
       this.getUsersList()
     },
     //  时间过滤

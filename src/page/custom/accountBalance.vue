@@ -16,10 +16,10 @@
     </i-form>
     <Tabs type="card" @on-click='chooseTabs'>
       <TabPane label="账户余额">
-        <Table border :columns="accountBalance" :data="usersDatas.records"></Table>
+        <Table border stripe :columns="accountBalance" :data="usersDatas.records"></Table>
       </TabPane>
       <TabPane label="账户积分">
-        <Table border :columns="accountCoins" :data="usersDatas.records"></Table>
+        <Table border stripe :columns="accountCoins" :data="usersDatas.records"></Table>
       </TabPane>
       <TabPane label="账户延期">
         <!-- <Table border :columns="accountBalance" :data="usersDatas.records"></Table> -->

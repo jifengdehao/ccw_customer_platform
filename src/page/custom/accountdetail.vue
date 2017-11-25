@@ -43,14 +43,6 @@ export default {
         {
           title: '注册时间',
           key: 'createdAt'
-        },
-        {
-          title: '最近登录时间',
-          key: 'lastUpdateTime'
-        },
-        {
-          title: '登录IP',
-          key: 'lastLoginIp'
         }
       ],
       userInfoData: [], //  用户信息数据
@@ -84,7 +76,10 @@ export default {
         {
           title: '默认收货地址',
           key: 'isDefault',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h('span', params.row._index === 0 ? '是' : '否')
+          }
         }
       ],
       userAcceptData: [], //  用户收货地址数据集合

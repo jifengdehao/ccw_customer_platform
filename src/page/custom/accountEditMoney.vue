@@ -19,7 +19,7 @@
         <td>{{singleData.custId}}</td>
         <td>{{singleData.mobileno}}</td>
         <td>{{singleData.custName}}</td>
-        <td v-if="params.accountType == 1">{{singleData.balance}}</td>
+        <td v-if="params.accountType == 1">{{singleData.balance/100}}</td>
         <td>{{singleData.status === 1 ? '正常':'冻结'}}</td>
         <td><a @click="editAccount">编辑</a></td>
       </tr>
@@ -73,7 +73,10 @@ export default {
         },
         {
           title: '账户余额(元)',
-          key: 'chanerAfter'
+          key: 'chanerAfter',
+          render: (h, params) => {
+            return h('span', params.row.chanerAfter / 100)
+          }
         }
       ],
       data: null
@@ -143,7 +146,7 @@ export default {
           str = '分销获得积分'
           break
       }
-      return str + '  ' + value
+      return str + '  ' + value / 100
     },
     //  查看用户账户变更流水
     getAccountMoneyChange() {
@@ -165,7 +168,7 @@ export default {
       http
         .refundMoney({
           id: this.params.custId,
-          changeVal: this.changeVal
+          changeVal: parseInt(this.changeVal * 100)
         })
         .then(data => {
           console.log(data)
