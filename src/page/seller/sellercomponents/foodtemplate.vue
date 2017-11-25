@@ -10,9 +10,8 @@
     <section class="seller-template-manager-search vm-clearfix">
       <Form :model="formItem" ref="formItem" inline class="vm-fl from">
         <FormItem>
-          <span class="label">筛选条件：</span>
           <i>一级分类</i>
-          <Select v-model="formItem.parentCatId" style="width:150px" @on-change="searchParent(formItem.parentCatId)">
+          <Select v-model="formItem.parentCatId" style="width:150px;marginRight:20px" @on-change="searchParent(formItem.parentCatId)">
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId" placeholder="一级分类">{{ item.name }}</Option>
           </Select>
           <i>二级分类</i>

@@ -233,19 +233,23 @@ export default {
       columns: [
         {
           title: '档口名称',
-          key: 'shopName'
+          key: 'shopName',
+          align: 'center'
         },
         {
           title: '商家账号',
-          key: 'msSellerId'
+          key: 'msSellerId',
+          align: 'center'
         },
         {
           title: '商家手机',
-          key: 'mobileno'
+          key: 'mobileno',
+          align: 'center'
         },
         {
           title: '商家信息详情',
           key: 'shopMessage',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -277,6 +281,7 @@ export default {
         {
           title: '账号管理',
           key: 'shopManage',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -303,11 +308,13 @@ export default {
         },
         {
           title: '账号状态',
-          key: 'statusName'
+          key: 'statusName',
+          align: 'center'
         },
         {
           title: '入驻日期',
           key: 'settleDate',
+          align: 'center',
           width: 150,
           render: (h, params) => {
             return date.formatDateTime(params.row.settleDate)
@@ -315,7 +322,8 @@ export default {
         },
         {
           title: '备注说明',
-          key: 'remark'
+          key: 'remark',
+          align: 'center'
         }
       ],
       ruleValidate: {
@@ -552,7 +560,6 @@ export default {
 }
 
 .seller-account-manager-select .label {
-  font-size: 16px;
   vertical-align: middle;
 }
 

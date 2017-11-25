@@ -201,11 +201,9 @@ export default {
           case '2':
             this.single.pushType = 2
         }
-        api
-          .modifySysMessage(this.single, this.single.smMssageId)
-          .then(data => {
-            this.getSysMessage()
-          })
+        api.modifySysMessage(this.single, this.single.smMssageId).then(data => {
+          this.getSysMessage()
+        })
         this.single = {}
         this.single.pushType = '1'
         this.pushButton = '确定'
