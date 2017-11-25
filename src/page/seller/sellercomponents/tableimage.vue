@@ -63,8 +63,8 @@ export default {
   float: left;
 }
 .bigimg {
-  width: 800px;
-  height: 800px;
+  max-width: 800px;
+  max-height: 800px;
 }
 .bigimgs {
   z-index: 1001;

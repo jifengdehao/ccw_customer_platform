@@ -725,7 +725,7 @@ input[type='file'] {
   line-height: 100px;
 }
 .bigimg {
-  width: 800px;
-  height: 800px;
+  max-width: 800px;
+  max-height: 800px;
 }
 </style>
