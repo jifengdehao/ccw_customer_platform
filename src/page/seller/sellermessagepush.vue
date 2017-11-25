@@ -76,6 +76,7 @@ export default {
           title: '推送时间',
           key: 'pushTime',
           align: 'center',
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.pushTime)
           }

@@ -141,6 +141,7 @@ export default {
         {
           title: '提交时间',
           key: 'applyDate',
+          width: 150,
           render: (h, params) => {
             return h('div', [
               h('span', {}, this.formatDateTime(params.row.applyDate))
@@ -277,6 +278,7 @@ export default {
           title: '提交时间',
           key: 'applyDate',
           align: 'center',
+          width: 150,
           render: (h, params) => {
             return h('div', [
               h('span', {}, this.formatDateTime(params.row.applyDate))

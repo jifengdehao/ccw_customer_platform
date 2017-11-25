@@ -315,7 +315,7 @@ export default {
           title: '入驻日期',
           key: 'settleDate',
           align: 'center',
-          width: 150,
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.settleDate)
           }

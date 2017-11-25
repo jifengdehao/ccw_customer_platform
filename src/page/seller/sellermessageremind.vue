@@ -70,6 +70,7 @@ export default {
           title: '提交日期',
           key: 'createdAt',
           align: 'center',
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.createdAt)
           }

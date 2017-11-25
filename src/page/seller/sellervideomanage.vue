@@ -178,6 +178,7 @@ export default {
           title: '商品添加或修改时间',
           key: 'lastUpdateTime',
           align: 'center',
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.lastUpdateTime)
           }
@@ -256,6 +257,7 @@ export default {
           title: '商品添加或修改时间',
           key: 'lastUpdateTime',
           align: 'center',
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.lastUpdateTime)
           }
