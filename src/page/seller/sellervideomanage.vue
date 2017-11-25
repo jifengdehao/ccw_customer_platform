@@ -10,7 +10,7 @@
     <section class="seller-video-manager-datepick">
       <Form :model="formItem" ref="formItem" inline>
         <FormItem>
-          <span class="label">日期筛选：</span>
+          <span class="label">日期：</span>
           <DatePicker type="date" v-model="formItem.startdate" placement="bottom-start" placeholder="选择开始日期" style="width: 200px"></DatePicker>
           <i> - </i>
           <DatePicker type="date" v-model="formItem.lastdate" placement="bottom-start" placeholder="选择结束日期" style="width: 200px"></DatePicker>
@@ -51,10 +51,10 @@ export default {
       total: 1,
       currentPage: 1,
       pageSize: 1,
-      current: 1,
+      current: 0,
       selectiondata: [],
       sellervideodata: [],
-      id: '',
+      id: '', // 获取的id数组
       formItem: {
         startdate: '',
         lastdate: ''
@@ -65,11 +65,13 @@ export default {
         {
           title: '商品标题',
           key: 'productName',
-          width: 100
+          width: 100,
+          align: 'center'
         },
         {
           title: '商品主图',
           key: 'picUrls',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(tableImg, {
@@ -83,6 +85,7 @@ export default {
         {
           title: '商品介绍图片',
           key: 'picDesc',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(tableImg, {
@@ -106,6 +109,7 @@ export default {
           title: '操作',
           key: 'operation',
           width: 140,
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -116,7 +120,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -132,6 +137,9 @@ export default {
                   props: {
                     type: 'success',
                     size: 'small'
+                  },
+                  style: {
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -153,11 +161,13 @@ export default {
       shoptitle: [
         {
           title: '档口',
-          key: 'shopName'
+          key: 'shopName',
+          align: 'center'
         },
         {
           title: '档口图片',
           key: 'shoppic',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(tableImg, {
@@ -171,6 +181,8 @@ export default {
         {
           title: '商品添加或修改时间',
           key: 'lastUpdateTime',
+          align: 'center',
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.lastUpdateTime)
           }
@@ -179,6 +191,7 @@ export default {
           title: '操作',
           key: 'operation',
           width: 140,
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -189,7 +202,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -206,6 +220,9 @@ export default {
                   props: {
                     type: 'success',
                     size: 'small'
+                  },
+                  style: {
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -227,11 +244,13 @@ export default {
       avatar: [
         {
           title: '档口',
-          key: 'shopName'
+          key: 'shopName',
+          align: 'center'
         },
         {
           title: '档口头像图片',
           key: 'headUrl',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(tableImg, {
@@ -245,6 +264,8 @@ export default {
         {
           title: '商品添加或修改时间',
           key: 'lastUpdateTime',
+          align: 'center',
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.lastUpdateTime)
           }
@@ -253,6 +274,7 @@ export default {
           title: '操作',
           key: 'operation',
           width: 140,
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -263,7 +285,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -279,6 +302,9 @@ export default {
                   props: {
                     type: 'success',
                     size: 'small'
+                  },
+                  style: {
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -402,6 +428,7 @@ export default {
       this.selectiondata = selection
     },
     getID() {
+      this.id = []
       this.selectiondata.forEach(item => {
         if (this.current === 0) {
           this.id += item.spProductId + ','
@@ -470,7 +497,6 @@ export default {
 </script>
 <style lang="css" scoped>
 .seller-video-manager-datepick .label {
-  font-size: 16px;
   vertical-align: middle;
 }
 

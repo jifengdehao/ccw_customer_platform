@@ -15,7 +15,7 @@
     .layout-logo
       color #fff
       text-align center
-      font-size 18px
+      font-size 15px
     .user-info
       text-align center
       font-size 14px
@@ -37,7 +37,7 @@
         & > li > i, & > li > div > i:first-child
           margin-right 0
         & > li > div > i:last-child
-          right 4px
+          margin-right 0
     .ivu-col
       transition width .2s ease-in-out
     .sidebar
@@ -50,7 +50,7 @@
         cursor pointer
         background #495060
 
-#custom, #data, #home, #seller, #users, #distribution, #activity, #order,#App
+#custom, #data, #home, #seller, #users, #distribution, #activity, #order, #App
   height 100%
 
 #login
@@ -79,3 +79,13 @@
 .ivu-menu
   .ivu-menu-item > a
     display block
+.menu
+  .ivu-menu-item
+    padding 0 10px
+
+@media (min-width: 1200px)
+  .menu
+    .ivu-menu-item
+      padding 0 15px
+  .layout-logo
+    font-size 18px

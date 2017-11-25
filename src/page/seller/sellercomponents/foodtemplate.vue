@@ -10,9 +10,8 @@
     <section class="seller-template-manager-search vm-clearfix">
       <Form :model="formItem" ref="formItem" inline class="vm-fl from">
         <FormItem>
-          <span class="label">筛选条件：</span>
           <i>一级分类</i>
-          <Select v-model="formItem.parentCatId" style="width:150px" @on-change="searchParent(formItem.parentCatId)">
+          <Select v-model="formItem.parentCatId" style="width:150px;marginRight:20px" @on-change="searchParent(formItem.parentCatId)">
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId" placeholder="一级分类">{{ item.name }}</Option>
           </Select>
           <i>二级分类</i>
@@ -49,10 +48,13 @@
                   <span>{{data.name}}</span>
                 </div>
                 <div style="width:30%"> 
-                  <p v-for="(item,index) in data.mainPic" :key="index" class="tabImg">
+                  <div class="tabImgs">
+                    <p v-for="(item,index) in data.mainPic" :key="index" >
                     <img :src="item" alt="" class="tabImg">
                     <!-- <tableimage :pic-urls="item.mainPic"></tableimage>   -->
                   </p>
+                  </div>
+                  
                 </div>    
                 <div style="width:30%">
                   <Button type="warning" @click="modfiyTemplate(index)">修改模板</Button>
@@ -96,7 +98,7 @@
                 </div>
               </div>
               <div class="uploadButton">
-                <input type="file" @change="mainPicUpload">+
+                <input type="file" @change="mainPicUpload" accept="image/*">+
               </div>
         </FormItem>
         <FormItem label="图片库:">
@@ -108,7 +110,7 @@
                 </div>
               </div>
               <div class="uploadButton ">
-                <input type="file" @change="picLibUpload">+
+                <input type="file" @change="picLibUpload" accept="image/*">+
               </div>
         </FormItem>
         <FormItem label="产地默认值:" prop="originPlace">
@@ -157,7 +159,7 @@
           </table> <br>
         </FormItem>
         <FormItem label="商品详情:">
-              <div class="img vm-fl"  v-for="url in templateItem.productDesc">
+              <div class="img vm-fl"  v-for="(url,index) in templateItem.productDesc" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
@@ -165,7 +167,7 @@
                 </div>
               </div>
               <div class="uploadButton ">
-                <input type="file" @change="productDescUpload">+
+                <input type="file" @change="productDescUpload" accept="image/*">+
               </div>
         </FormItem>
       </Form>
@@ -378,6 +380,7 @@ export default {
       if (this.formItem.catId) {
         api.getProductTemplateList(formItem).then(response => {
           this.templatedata = response
+          console.log(response)
         })
       } else {
         alert('请选择一，二级分类')
@@ -385,17 +388,22 @@ export default {
     },
     // 添加，修改模板
     addtemplate(templateItem) {
-      templateItem.specification = this.specification
-      if (this.templateTitle === '增加商品模板') {
-        api.addProductTemplate(templateItem).then(response => {
-          this.$Message.success('添加成功')
-        })
-      } else if (this.templateTitle === '修改商品模板') {
-        api
-          .modifyProductTemplate(templateItem, templateItem.spTemplateId)
-          .then(response => {
-            this.$Message.success('修改成功')
+      let lab = templateItem.labels
+      if (lab.indexOf(templateItem.name) !== -1) {
+        templateItem.specification = this.specification
+        if (this.templateTitle === '增加商品模板') {
+          api.addProductTemplate(templateItem).then(response => {
+            this.$Message.success('添加成功')
           })
+        } else if (this.templateTitle === '修改商品模板') {
+          api
+            .modifyProductTemplate(templateItem, templateItem.spTemplateId)
+            .then(response => {
+              this.$Message.success('修改成功')
+            })
+        }
+      } else {
+        alert('商品标签必须包含商品名称')
       }
     },
     // 增加重量单位
@@ -561,6 +569,10 @@ export default {
   height: 80px;
   margin: 0 auto;
 }
+.tabImgs {
+  width: 100px;
+  height: 80px;
+}
 .templateModal-from span {
   display: inline-block;
   width: 80px;
@@ -653,7 +665,7 @@ input[type='file'] {
   line-height: 100px;
 }
 .bigimg {
-  width: 800px;
-  height: 800px;
+  max-width: 800px;
+  max-height: 800px;
 }
 </style>

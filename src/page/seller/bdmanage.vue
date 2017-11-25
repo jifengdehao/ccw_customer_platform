@@ -16,13 +16,13 @@
           </Select>
         </FormItem>
         <FormItem>
-          <span class="label">负责人筛选：</span>
+          <span class="label">负责人：</span>
           <Select v-model="formItem.ptBdId" clearable placeholder="请选择负责人" style="width: 200px">
             <Option v-for="item in allCharge" :value="item.ptBdId" :key="item.ptBdId">{{ item.name }}</Option>
           </Select>
         </FormItem>
         <FormItem>
-          <Button type="primary" @click="search(formItem)">筛选</Button>
+          <Button type="primary" @click="search(formItem)">搜索</Button>
         </FormItem>
       </Form>
     </section>
@@ -74,15 +74,18 @@ export default {
       columns: [
         {
           title: 'BD姓名',
-          key: 'name'
+          key: 'name',
+          align: 'center'
         },
         {
           title: '邀请码',
-          key: 'invitationCode'
+          key: 'invitationCode',
+          align: 'center'
         },
         {
           title: '负责市场',
-          key: 'marketName'
+          key: 'marketName',
+          align: 'center'
         },
         {
           title: '操作',
