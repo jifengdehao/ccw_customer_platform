@@ -160,7 +160,7 @@
           </table> <br>
         </FormItem>
         <FormItem label="商品详情:">
-              <div class="img vm-fl"  v-for="url in templateItem.productDesc">
+              <div class="img vm-fl"  v-for="(url,index) in templateItem.productDesc" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
