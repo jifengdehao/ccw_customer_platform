@@ -72,7 +72,8 @@ export default {
         {
           title: '商家手机',
           key: 'mobileno',
-          align: 'center'
+          align: 'center',
+          width: 110
         },
         {
           title: '入驻市场',
@@ -97,12 +98,14 @@ export default {
         {
           title: '档口号',
           key: 'shopNo',
-          align: 'center'
+          align: 'center',
+          width: 80
         },
         {
           title: '证件上传状态',
           key: 'uploadStatus',
           align: 'center',
+          width: 150,
           render: (h, params) => {
             return h('div', [
               h('span', {}, params.row.uploadStatus),
@@ -114,7 +117,7 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginLeft: '5px'
+                    marginLeft: '3px'
                   },
                   on: {
                     click: () => {
@@ -151,7 +154,8 @@ export default {
         {
           title: '负责人',
           key: 'chargeman',
-          align: 'center'
+          align: 'center',
+          width: 80
         },
         {
           title: '操作',
@@ -169,7 +173,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -188,6 +193,9 @@ export default {
                   props: {
                     type: 'success',
                     size: 'small'
+                  },
+                  style: {
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -209,6 +217,7 @@ export default {
         {
           title: '商家手机',
           key: 'mobileno',
+          width: 110,
           align: 'center'
         },
         {
@@ -234,15 +243,17 @@ export default {
         {
           title: '档口号',
           key: 'shopNo',
+          width: 80,
           align: 'center'
         },
         {
           title: '证件上传状态',
-          key: 'upstatus',
+          key: 'uploadStatus',
           align: 'center',
+          width: 150,
           render: (h, params) => {
             return h('div', [
-              h('span', {}, params.row.upstatus),
+              h('span', {}, params.row.uploadStatus),
               h(
                 'Button',
                 {

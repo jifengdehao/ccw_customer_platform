@@ -120,7 +120,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -136,6 +137,9 @@ export default {
                   props: {
                     type: 'success',
                     size: 'small'
+                  },
+                  style: {
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -198,7 +202,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -215,6 +220,9 @@ export default {
                   props: {
                     type: 'success',
                     size: 'small'
+                  },
+                  style: {
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -277,7 +285,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -293,6 +302,9 @@ export default {
                   props: {
                     type: 'success',
                     size: 'small'
+                  },
+                  style: {
+                    width: '50px'
                   },
                   on: {
                     click: () => {
