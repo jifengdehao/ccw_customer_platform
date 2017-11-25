@@ -38,7 +38,7 @@ export const itr = (type, url, params) => {
     token = userInfo.token ? userInfo.token : ''
   }
   let sign = ''
-  if (type === 'get') {
+  if (type === 'get' || type === 'delete') {
     sign = hash(arg + token)
   } else {
     sign = hash(JSON.stringify(params) + token)
