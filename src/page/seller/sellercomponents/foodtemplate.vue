@@ -73,7 +73,7 @@
     <!-- 增加和编辑的模板 -->
     <Modal v-model="templateModal" :title="templateTitle" width="900">
       <Form :model="templateItem" ref="templateItem" :rules="ruleValidate" class="templateModal-from" label-postion="left" :label-width="100">
-        <FormItem label="一级分类:" prop="spCategoryParentId">
+        <FormItem label="一级分类:" prop="spCategoryParentId" >
           <Select v-model="templateItem.spCategoryParentId"  size="small" style="width:100px" @on-change="searchParent(templateItem.spCategoryParentId)">
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
           </Select>
@@ -118,9 +118,11 @@
         </FormItem>
         <div >
           <table class="templateModal-table" border="0">
-            <FormItem label="重量单位" prop="attributeCode">
-              <td  v-for="(weightitem,index) in templateItem.weightUnit" :key="index">
-                  <Select size="small" style="width:80px" v-model="weightitem.attributeCode" :value="weightitem.attributeCode">
+            <FormItem label="重量单位" :prop="'weightUnit.'+ index + '.attributeCode'" 
+            v-for="(weightitem,index) in templateItem.weightUnit" :key="index"
+            :rules="{type: 'number',required: true, message: '请选择重量单位', trigger: 'change'}">
+              <td  >
+                  <Select size="small" style="width:80px" v-model="weightitem.attributeCode" >
                   <Option v-for="item in weightdata" :value="item.code" :key="item.code">{{ item.name }}</Option>
                 </Select>
                 <Button size="small" type="error" @click="delWeight(index)">删除</Button>
@@ -138,9 +140,11 @@
                 <Button size="small" @click="addWeightAttribute">增加</Button>
               </td>
             </FormItem>
-            <FormItem label="商品属性" prop="productAttr">
-               <td  v-for="(item,index) in templateItem.productAttr" :key="index">
-                <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" :value="item.attributeValue"></Input>
+            <FormItem label="商品属性" :prop="'productAttr.'+ index + '.attributeValue'" 
+            v-for="(item,index) in templateItem.productAttr" :key="index" 
+            :rules="{required: true, message: '商品属性不能为空', trigger: 'blur'}">
+               <td >
+                <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" ></Input>
                 <Button size="small" type="error" @click="delcommodityAttribute(index)">删除</Button>
               </td>
               <td>
