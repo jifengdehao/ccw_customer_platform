@@ -36,13 +36,13 @@
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 新增 修改BD -->
-    <Modal v-model="BDmodal" :title="modelTitle" width="400" class="BDmodal" @on-ok="confirmAdd(modelFormItem,modelTitle)">
+    <Modal v-model="BDmodal" :title="modelTitle" width="400" class="BDmodal">
       <Form :model="modelFormItem" :rules="ruleValidate" ref="formItem" label-postion="left" :label-width="100">
         <FormItem label="姓名：" prop="name">
           <Input size="small" v-model="modelFormItem.name"  placeholder="请输入" style="width: 150px"></Input>
         </FormItem>
         <FormItem label="电话：" prop="mobileno">
-          <Input size="small" v-model="modelFormItem.mobileno"  placeholder="请输入" style="width: 150px"></Input>
+          <Input :maxlength="11" size="small" v-model="modelFormItem.mobileno"  placeholder="请输入" style="width: 150px"></Input>
         </FormItem>
         <FormItem label="邀请码：" prop="invitationCode">
           <Input size="small" v-model="modelFormItem.invitationCode"  placeholder="请输入" style="width: 150px"></Input>
@@ -52,7 +52,11 @@
              <Option v-for="item in allMarket" :value="item.psMarketId" :key="item.psMarketId">{{ item.marketName }}</Option>
           </Select>
         </FormItem>
+        <FormItem >
+         <Button type="info" style="width:150px" @click="confirmAdd(modelFormItem,modelTitle)">确定</Button>
+        </FormItem>
       </Form>
+      <div slot="footer"></div>
     </Modal>
   </div>
 </template>
@@ -214,19 +218,36 @@ export default {
     },
     // 确定添加或者修改
     confirmAdd(modelFormItem, modelTitle) {
+      if (!modelFormItem.name) {
+        this.$Message.error('姓名必填')
+        return false
+      }
+      if (!modelFormItem.mobileno) {
+        this.$Message.error('电话必填')
+        return false
+      }
+      if (!modelFormItem.invitationCode) {
+        this.$Message.error('邀请码必填')
+        return false
+      }
+      if (!modelFormItem.psMarketId) {
+        this.$Message.error('请选择菜市场')
+        return false
+      }
       if (modelTitle === '增加BD') {
         api.addPlatformBD(modelFormItem).then(response => {
           this.$Message.info('添加成功')
+          this.BDmodal = false
           this.getBDlist(1, 10)
         })
       } else if (modelTitle === '修改BD') {
         let id = modelFormItem.ptBdId
         api.modifyBD(modelFormItem, id).then(response => {
           this.$Message.info('修改成功')
+          this.BDmodal = false
           this.getBDlist(1, 10)
         })
       }
-      this.getBDlist(1, 10)
     },
     // 搜索
     search(formItem) {
