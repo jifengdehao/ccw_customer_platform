@@ -125,7 +125,6 @@ export default {
                         .getQulification(params.row.msSellerApplyId)
                         .then(response => {
                           this.sellerpicUrls = response
-                          console.log(response)
                         })
                       this.modal = true
                     }

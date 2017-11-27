@@ -113,7 +113,6 @@ export default {
                         .then(response => {
                           this.single = response
                           this.single.pushType = String(this.single.pushType)
-                          console.log(response)
                         })
                       this.pushButton = '查看完毕'
                     }

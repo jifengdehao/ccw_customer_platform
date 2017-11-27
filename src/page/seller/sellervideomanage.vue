@@ -207,7 +207,6 @@ export default {
                   },
                   on: {
                     click: () => {
-                      // console.log(params.row.spProductId)
                       this.shopPicNotPass(params.row.msShopId)
                     }
                   }
@@ -373,7 +372,6 @@ export default {
         this.total = response.total
         this.pageSize = response.size
         this.currentPage = response.current
-        console.log(this.sellervideodata)
       })
     },
     // 审核商品图片
@@ -452,7 +450,6 @@ export default {
     },
     // 档口图片通过
     shopPicPass(id) {
-      console.log(id)
       this.auditShopPicStatus(id, 1, 1)
     },
     // 商品图片不通过
