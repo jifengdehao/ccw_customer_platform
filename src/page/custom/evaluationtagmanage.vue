@@ -6,7 +6,7 @@
  */
 <template>
   <div class="evaluation-tag-manager" v-if="data">
-    <Tabs type="card" @on-click="chooseTab">
+    <Tabs @on-click="chooseTab">
         <TabPane label="配送评价"></TabPane>
         <TabPane label="档口评价"></TabPane>
     </Tabs>

@@ -23,33 +23,33 @@
             </tr>
             </tbody>
           </table>
-          <draggable @update="datadragEnd" v-if="status === 0 || status === 1" v-model="bannerData">
-            <tr v-for="(data,index) in bannerData" :key="data.id" class="draggable">
-              <td class="br">
-                <img style="width:calc(100% - 25px);" :src="data.picUrl">
-              </td>
-              <td class="br" style="width: 10%">
-                <input type="button" @change="onUpload($event,data)" value="重新上传">
-                <input type="file" @change="onUpload($event,data)" title="上传图片" filetype="image/*">
-              </td>
-              <td class="br" style="width: 20%">
-                <input v-model="data.linkUrl" type="text" :value="data.linkUrl">
-                <a :href="data.linkUrl"></a>
-              </td>
-              <td class="br" style="width: 20%">
-                <input v-model="data.remark" type="text" :value="data.remark">
-              </td>
-              <td style="width: 18%" class="br">
-                <DatePicker type="datetime" placeholder="选择日期和时间" placement="left"
-                            style="width: 180px; margin-bottom: 5px;" v-model="data.startTime"
-                            :value="data.startTime"></DatePicker>
-                <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 180px"
-                            v-model="data.endTime" :value="data.endTime"></DatePicker>
-              </td>
-              <td style="width: 10%; border-top: 0 !important;">
-                <Button type="error" @click="onChangButton(data,index)">{{ bannerState }}</Button>
-              </td>
-            </tr>
+          <draggable class="drag" @update="datadragEnd" v-if="status === 0 || status === 1" v-model="bannerData">
+              <tr v-for="(data,index) in bannerData" :key="data.id" class="draggable">
+                <td style="width:22%;">
+                  <img style="width:100%;padding:0 10px" :src="data.picUrl">
+                </td>
+                <td style="width: 10%">
+                  <input type="button" style="margin-left:0" @change="onUpload($event,data)" value="重新上传">
+                  <input type="file" class="input-file" @change="onUpload($event,data)" title="上传图片" accept="image/*">
+                </td>
+                <td style="width: 20%;">
+                  <input v-model="data.linkUrl" type="text" style="width:60%;" :value="data.linkUrl">
+                  <a :href="filterLink(data.linkUrl)">跳转链接</a>
+                </td>
+                <td style="width: 20%">
+                  <input v-model="data.remark" type="text" :value="data.remark">
+                </td>
+                <td style="width: 18%">
+                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left"
+                              style="width: 180px; margin-bottom: 5px;" v-model="data.startTime"
+                              :value="data.startTime"></DatePicker>
+                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 180px"
+                              v-model="data.endTime" :value="data.endTime"></DatePicker>
+                </td>
+                <td style="width: 10%;">
+                  <Button type="error" @click="onChangButton(data,index)">{{ bannerState }}</Button>
+                </td>
+              </tr>
           </draggable>
           <!-- 已结束start -->
           <table class="table-banner" v-if="status === 2">
@@ -94,7 +94,7 @@
               <tr>
                 <td>{{ seeBannerData.ptBannerId || seeBannerData.position}}</td>
                 <td>
-                  <img :src="seeBannerData.picUrl" width="300" alt="">
+                  <img :src="seeBannerData.picUrl" alt="">
                 </td>
                 <td>{{ seeBannerData.linkUrl }}</td>
                 <td>{{ seeBannerData.remark }}</td>
@@ -324,7 +324,7 @@ export default {
     datadragEnd(evt) {
       console.log('拖动前的索引 :' + evt.oldIndex)
       console.log('拖动后的索引 :' + evt.newIndex)
-      console.log(this.bannerData, '22')
+      console.debug(this.bannerData, '22')
     },
     //  时间过滤
     filterTime(value) {
@@ -343,6 +343,14 @@ export default {
           date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       }
       return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
+    },
+    //  链接过滤
+    filterLink(url) {
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url
+      } else {
+        return `http://${url}`
+      }
     }
   },
   watch: {
@@ -403,7 +411,13 @@ table.table-banner td,
   text-align: center;
   border: 1px solid #e9eaec;
   background-color: #ffffff;
+  border-top: 0;
+  border-right: 0;
   vertical-align: middle;
+}
+
+.draggable td:last-child {
+  border-right: 1px solid #e9eaec;
 }
 
 table.table-banner td > input[type='text'],
@@ -477,5 +491,17 @@ table.table-banner td > input[type='file'],
   text-align: center;
   border: 1px solid #e9eaec;
   background-color: #ffffff;
+}
+
+.drag td {
+  border-collapse: collapse;
+}
+
+.input-file {
+  width: 80px !important;
+  height: 33px !important;
+  top: calc((100% - 33px)/2);
+  left: calc(50% - 40px) !important;
+  margin-left: 0 !important;
 }
 </style>
