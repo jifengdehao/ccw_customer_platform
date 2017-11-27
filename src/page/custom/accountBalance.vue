@@ -76,9 +76,12 @@ export default {
           align: 'center'
         },
         {
-          title: '余额',
+          title: '余额(元)',
           key: 'balance',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h('span', params.row.balance / 100)
+          }
         },
         {
           title: '操作',

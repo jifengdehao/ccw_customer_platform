@@ -19,7 +19,7 @@
         <td>{{singleData.custId}}</td>
         <td>{{singleData.mobileno}}</td>
         <td>{{singleData.custName}}</td>
-        <td v-if="params.accountType == 1">{{singleData.balance}}</td>
+        <td v-if="params.accountType == 1">{{singleData.balance/100}}</td>
         <td v-if="params.accountType != 1">{{singleData.coins}}</td>
         <td v-if="params.accountType != 1">{{singleData.status === 1 ? '正常':'冻结'}}</td>
       </tr>
@@ -48,6 +48,7 @@ export default {
         {
           title: '时间',
           key: 'changeAt',
+          align: 'center',
           render: (h, params) => {
             return h('span', this.filterTime(params.row.changeAt))
           }
@@ -55,6 +56,7 @@ export default {
         {
           title: '方式',
           key: 'changeType',
+          align: 'center',
           render: (h, params) => {
             return h(
               'span',
@@ -64,7 +66,11 @@ export default {
         },
         {
           title: '账户余额(元)',
-          key: 'chanerAfter'
+          key: 'chanerAfter',
+          align: 'center',
+          render: (h, params) => {
+            return h('span', params.row.chanerAfter / 100)
+          }
         }
       ],
       data: null
