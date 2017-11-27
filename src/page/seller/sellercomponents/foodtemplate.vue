@@ -377,7 +377,6 @@ export default {
       if (this.formItem.catId) {
         api.getProductTemplateList(formItem).then(response => {
           this.templatedata = response
-          console.log(response)
         })
       } else {
         alert('请选择一，二级分类')
@@ -386,7 +385,6 @@ export default {
     // 添加，修改模板
     addtemplate(name, templateItem) {
       this.$refs[name].validate(valid => {
-        console.log(this.$refs[name])
         if (valid) {
           let lab = templateItem.labels
           let classData = {

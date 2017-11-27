@@ -476,14 +476,12 @@ export default {
       this.shopMessage.msShopQualification.protocol = this.qulification.protocol
       this.shopMessage.msShopQualification.qualificationList = this.qulification.qualificationList
       let sellerId = shopMessage.msSellerId
-      console.log(this.shopMessage)
       api.modifysellerInfo(shopMessage, sellerId).then(response => {
         this.$Message.info('更新成功')
       })
     },
     // 搜索
     searchAccountData(formItem) {
-      console.log(formItem)
       this.getSellerAccountList(
         1,
         10,
