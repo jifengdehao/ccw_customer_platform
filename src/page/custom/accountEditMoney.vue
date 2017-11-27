@@ -32,9 +32,9 @@
       <Modal
         v-model="isBoolean"
         :closable="false" @on-ok="refundMoney">
+        <p class="money">支付宝账号: <input type="text" v-model="alipayAccount"></p>
         <p class="money">退款金额:¥<input type="number" v-model="changeVal" style="margin-left:10px;"></p>
         <p>请按照客服退款操作手册</p>
-        <p>对话框内容</p>
     </Modal>
   </div>
 </template>
@@ -52,11 +52,13 @@ export default {
       },
       isBoolean: false, //  弹框boolean值
       changeVal: '', //  退款金额
+      alipayAccount: '', // 支付宝账号
       singleData: null, //  查看用户获取到的数据
       changeTitle: [
         {
           title: '时间',
           key: 'changeAt',
+          align: 'center',
           render: (h, params) => {
             return h('span', this.filterTime(params.row.changeAt))
           }
@@ -64,6 +66,7 @@ export default {
         {
           title: '方式',
           key: 'changeType',
+          align: 'center',
           render: (h, params) => {
             return h(
               'span',
@@ -74,6 +77,7 @@ export default {
         {
           title: '账户余额(元)',
           key: 'chanerAfter',
+          align: 'center',
           render: (h, params) => {
             return h('span', params.row.chanerAfter / 100)
           }
@@ -165,13 +169,22 @@ export default {
     },
     //  确定退款
     refundMoney() {
+      if (!this.params.custId || !this.alipayAccount) {
+        this.$Message.info({
+          content: '请输入完整',
+          duration: 3
+        })
+        return
+      }
       http
         .refundMoney({
           id: this.params.custId,
-          changeVal: parseInt(this.changeVal * 100)
+          changeVal: parseInt(this.changeVal * 100),
+          alipayAccount: this.alipayAccount
         })
         .then(data => {
-          console.log(data)
+          console.debug(data)
+          this.changeVal = this.alipayAccount = ''
         })
     }
   }
@@ -198,6 +211,6 @@ p {
 }
 p.money {
   text-align: center;
-  margin: 20px auto 30px;
+  margin: 20px auto;
 }
 </style>
