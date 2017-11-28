@@ -72,8 +72,8 @@
     </section> -->
     <!-- 增加和编辑的模板 -->
     <Modal v-model="templateModal" :title="templateTitle" width="900">
-      <Form :model="templateItem" ref="templateItem" :rules="ruleValidate" class="templateModal-from" label-postion="left" :label-width="100">
-        <FormItem label="一级分类:" prop="spCategoryParentId">
+      <Form :model="templateItem" ref="templateItem"  class="templateModal-from" label-postion="left" :label-width="100">
+        <FormItem label="一级分类:" prop="spCategoryParentId" >
           <Select v-model="templateItem.spCategoryParentId"  size="small" style="width:100px" @on-change="searchParent(templateItem.spCategoryParentId)">
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
           </Select>
@@ -118,29 +118,28 @@
         </FormItem>
         <div >
           <table class="templateModal-table" border="0">
-            <FormItem label="重量单位" prop="attributeCode">
+            <FormItem label="商品规格" >
+              <td><h4>重量单位</h4></td>
               <td  v-for="(weightitem,index) in templateItem.weightUnit" :key="index">
-                  <Select size="small" style="width:80px" v-model="weightitem.attributeCode" :value="weightitem.attributeCode">
+                  <Select size="small" style="width:80px" v-model="weightitem.attributeCode" >
                   <Option v-for="item in weightdata" :value="item.code" :key="item.code">{{ item.name }}</Option>
                 </Select>
                 <Button size="small" type="error" @click="delWeight(index)">删除</Button>
               </td>
               <td>
                 <Button size="small" @click="addWeight">增加</Button>
-              </td>
-            </FormItem>
-            <FormItem label="重量属性">
+              </td> <br>
+              <td><h4>重量属性</h4></td>
               <td  v-for="(item,index) in  templateItem.packAttr" :key="index">
                 <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" :value="item.attributeValue"></Input>
                 <Button size="small" type="error" @click="delweightAttribute(index)">删除</Button>
               </td>
               <td>
                 <Button size="small" @click="addWeightAttribute">增加</Button>
-              </td>
-            </FormItem>
-            <FormItem label="商品属性" prop="productAttr">
-               <td  v-for="(item,index) in templateItem.productAttr" :key="index">
-                <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" :value="item.attributeValue"></Input>
+              </td> <br>
+              <td><h4>商品属性</h4></td>
+               <td v-for="(item,index) in templateItem.productAttr" :key="index">
+                <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" ></Input>
                 <Button size="small" type="error" @click="delcommodityAttribute(index)">删除</Button>
               </td>
               <td>
@@ -265,38 +264,6 @@ export default {
       table: {
         hasDragged: false,
         isDragging: false
-      },
-      ruleValidate: {
-        spCategoryParentId: [
-          {
-            type: 'number',
-            required: true,
-            message: '请选择一级分类',
-            trigger: 'change'
-          }
-        ],
-        spCategoryId: [
-          {
-            type: 'number',
-            required: true,
-            message: '请选择二级分类',
-            trigger: 'change'
-          }
-        ],
-        name: [
-          {
-            required: true,
-            message: '商品名称不能为空',
-            trigger: 'blur'
-          }
-        ],
-        labels: [
-          {
-            required: true,
-            message: '商品标签不能为空',
-            trigger: 'blur'
-          }
-        ]
       }
     }
   },
@@ -374,48 +341,66 @@ export default {
     },
     // 搜索
     searchtemplate(formItem) {
-      if (this.formItem.catId) {
-        api.getProductTemplateList(formItem).then(response => {
-          this.templatedata = response
-        })
-      } else {
-        alert('请选择一，二级分类')
+      if (!this.formItem.parentCatId) {
+        this.$Message.error('请选择一级分类')
+        return false
       }
+      if (!this.formItem.catId) {
+        this.$Message.error('请选择二级分类')
+        return false
+      }
+      api.getProductTemplateList(formItem).then(response => {
+        this.templatedata = response
+      })
     },
     // 添加，修改模板
     addtemplate(name, templateItem) {
-      this.$refs[name].validate(valid => {
-        if (valid) {
-          let lab = templateItem.labels
-          let classData = {
-            parentCatId: templateItem.spCategoryParentId,
-            catId: templateItem.spCategoryId
-          }
-          this.formItem = classData
-          if (lab.indexOf(templateItem.name) !== -1) {
-            templateItem.specification = this.specification
-            if (this.templateTitle === '增加商品模板') {
-              api.addProductTemplate(templateItem).then(response => {
-                this.searchtemplate(classData)
-                this.$Message.success('添加成功')
-                this.templateModal = false
-              })
-            } else if (this.templateTitle === '修改商品模板') {
-              api
-                .modifyProductTemplate(templateItem, templateItem.spTemplateId)
-                .then(response => {
-                  this.searchtemplate(classData)
-                  this.templateModal = false
-                  this.$Message.success('修改成功')
-                })
-            }
-          } else {
-            alert('商品标签必须包含商品名称')
-          }
-        } else {
-          this.$Message.error('Fail!')
-        }
-      })
+      if (!templateItem.spCategoryParentId) {
+        this.$Message.error('请选择一级分类')
+        return false
+      }
+      if (!templateItem.spCategoryId) {
+        this.$Message.error('请选择二级分类')
+        return false
+      }
+      if (!templateItem.name) {
+        this.$Message.error('商品名称不能为空')
+        return false
+      }
+      if (!templateItem.labels) {
+        this.$Message.error('商品标签不能为空')
+        return false
+      }
+      if (templateItem.labels.indexOf(templateItem.name) === -1) {
+        this.$Message.error('商品标签必须包含商品名称')
+        return false
+      }
+      if (!templateItem.weightUnit[0].attributeCode) {
+        this.$Message.error('请选择重量单位')
+        return false
+      }
+      // 验证成功  执行下面的代码
+      let classData = {
+        parentCatId: templateItem.spCategoryParentId,
+        catId: templateItem.spCategoryId
+      }
+      this.formItem = classData
+      templateItem.specification = this.specification
+      if (this.templateTitle === '增加商品模板') {
+        api.addProductTemplate(templateItem).then(response => {
+          this.searchtemplate(classData)
+          this.$Message.success('添加成功')
+          this.templateModal = false
+        })
+      } else if (this.templateTitle === '修改商品模板') {
+        api
+          .modifyProductTemplate(templateItem, templateItem.spTemplateId)
+          .then(response => {
+            this.searchtemplate(classData)
+            this.templateModal = false
+            this.$Message.success('修改成功')
+          })
+      }
     },
     // 增加重量单位
     addWeight() {
