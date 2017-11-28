@@ -68,8 +68,8 @@ export default {
   margin: 5px;
 }
 .bigimg {
-  width: 800px;
-  height: 800px;
+  max-width: 800px;
+  max-height: 800px;
 }
 .bigimgs {
   z-index: 2000;

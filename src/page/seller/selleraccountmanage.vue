@@ -233,19 +233,23 @@ export default {
       columns: [
         {
           title: '档口名称',
-          key: 'shopName'
+          key: 'shopName',
+          align: 'center'
         },
         {
           title: '商家账号',
-          key: 'msSellerId'
+          key: 'msSellerId',
+          align: 'center'
         },
         {
           title: '商家手机',
-          key: 'mobileno'
+          key: 'mobileno',
+          align: 'center'
         },
         {
           title: '商家信息详情',
           key: 'shopMessage',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -277,6 +281,7 @@ export default {
         {
           title: '账号管理',
           key: 'shopManage',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -303,19 +308,22 @@ export default {
         },
         {
           title: '账号状态',
-          key: 'statusName'
+          key: 'statusName',
+          align: 'center'
         },
         {
           title: '入驻日期',
           key: 'settleDate',
-          width: 150,
+          align: 'center',
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.settleDate)
           }
         },
         {
           title: '备注说明',
-          key: 'remark'
+          key: 'remark',
+          align: 'center'
         }
       ],
       ruleValidate: {
@@ -468,14 +476,12 @@ export default {
       this.shopMessage.msShopQualification.protocol = this.qulification.protocol
       this.shopMessage.msShopQualification.qualificationList = this.qulification.qualificationList
       let sellerId = shopMessage.msSellerId
-      console.log(this.shopMessage)
       api.modifysellerInfo(shopMessage, sellerId).then(response => {
         this.$Message.info('更新成功')
       })
     },
     // 搜索
     searchAccountData(formItem) {
-      console.log(formItem)
       this.getSellerAccountList(
         1,
         10,
@@ -552,7 +558,6 @@ export default {
 }
 
 .seller-account-manager-select .label {
-  font-size: 16px;
   vertical-align: middle;
 }
 
@@ -725,7 +730,7 @@ input[type='file'] {
   line-height: 100px;
 }
 .bigimg {
-  width: 800px;
-  height: 800px;
+  max-width: 800px;
+  max-height: 800px;
 }
 </style>

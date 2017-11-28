@@ -10,13 +10,13 @@
     <section class="seller-settled-manage-select">
       <Form :model="formItem" ref="formItem" inline>
         <FormItem>
-          <span class="label">日期筛选：</span>
+          <span class="label">日期：</span>
           <DatePicker type="date" v-model="formItem.startdate" placement="bottom-start" placeholder="选择开始日期" style="width: 200px"></DatePicker>
           <i> - </i>
           <DatePicker type="date" v-model="formItem.lastdate" placement="bottom-start" placeholder="选择结束日期" style="width: 200px"></DatePicker>
         </FormItem>
         <FormItem>
-          <span class="label">负责人筛选：</span>
+          <span class="label">负责人：</span>
           <Select v-model="formItem.charge" placeholder="请选择" style="width: 200px" clearable>
             <Option v-for="item in allCharge" :value="item.ptBdId" :key="item.ptBdId">{{ item.name }}</Option>
           </Select>
@@ -71,31 +71,41 @@ export default {
       columns: [
         {
           title: '商家手机',
-          key: 'mobileno'
+          key: 'mobileno',
+          align: 'center',
+          width: 110
         },
         {
           title: '入驻市场',
-          key: 'marketName'
+          key: 'marketName',
+          align: 'center'
         },
         {
           title: '经营范围',
-          key: 'businessType'
+          key: 'businessType',
+          align: 'center'
         },
         {
           title: '档口名称',
-          key: 'shopName'
+          key: 'shopName',
+          align: 'center'
         },
         {
           title: '挡主姓名',
-          key: 'shopOwerName'
+          key: 'shopOwerName',
+          align: 'center'
         },
         {
           title: '档口号',
-          key: 'shopNo'
+          key: 'shopNo',
+          align: 'center',
+          width: 80
         },
         {
           title: '证件上传状态',
           key: 'uploadStatus',
+          align: 'center',
+          width: 150,
           render: (h, params) => {
             return h('div', [
               h('span', {}, params.row.uploadStatus),
@@ -107,7 +117,7 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginLeft: '5px'
+                    marginLeft: '3px'
                   },
                   on: {
                     click: () => {
@@ -115,7 +125,6 @@ export default {
                         .getQulification(params.row.msSellerApplyId)
                         .then(response => {
                           this.sellerpicUrls = response
-                          console.log(response)
                         })
                       this.modal = true
                     }
@@ -128,11 +137,13 @@ export default {
         },
         {
           title: '档口介绍',
-          key: 'shopDesc'
+          key: 'shopDesc',
+          align: 'center'
         },
         {
           title: '提交时间',
           key: 'applyDate',
+          width: 150,
           render: (h, params) => {
             return h('div', [
               h('span', {}, this.formatDateTime(params.row.applyDate))
@@ -141,12 +152,15 @@ export default {
         },
         {
           title: '负责人',
-          key: 'chargeman'
+          key: 'chargeman',
+          align: 'center',
+          width: 80
         },
         {
           title: '操作',
           key: 'operation',
           width: 140,
+          align: 'center',
           display: 'none',
           render: (h, params) => {
             return h('div', [
@@ -158,7 +172,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -177,6 +192,9 @@ export default {
                   props: {
                     type: 'success',
                     size: 'small'
+                  },
+                  style: {
+                    width: '50px'
                   },
                   on: {
                     click: () => {
@@ -197,34 +215,44 @@ export default {
       lastcolumns: [
         {
           title: '商家手机',
-          key: 'mobileno'
+          key: 'mobileno',
+          width: 110,
+          align: 'center'
         },
         {
           title: '入驻市场',
-          key: 'marketName'
+          key: 'marketName',
+          align: 'center'
         },
         {
           title: '经营范围',
-          key: 'businessType'
+          key: 'businessType',
+          align: 'center'
         },
         {
           title: '档口名称',
-          key: 'businessType'
+          key: 'businessType',
+          align: 'center'
         },
         {
           title: '挡主姓名',
-          key: 'shopOwerName'
+          key: 'shopOwerName',
+          align: 'center'
         },
         {
           title: '档口号',
-          key: 'shopNo'
+          key: 'shopNo',
+          width: 80,
+          align: 'center'
         },
         {
           title: '证件上传状态',
-          key: 'upstatus',
+          key: 'uploadStatus',
+          align: 'center',
+          width: 150,
           render: (h, params) => {
             return h('div', [
-              h('span', {}, params.row.upstatus),
+              h('span', {}, params.row.uploadStatus),
               h(
                 'Button',
                 {
@@ -253,11 +281,14 @@ export default {
         },
         {
           title: '档口介绍',
-          key: 'shopDesc'
+          key: 'shopDesc',
+          align: 'center'
         },
         {
           title: '提交时间',
           key: 'applyDate',
+          align: 'center',
+          width: 150,
           render: (h, params) => {
             return h('div', [
               h('span', {}, this.formatDateTime(params.row.applyDate))
@@ -266,7 +297,8 @@ export default {
         },
         {
           title: '负责人',
-          key: 'chargeman'
+          key: 'chargeman',
+          align: 'center'
         }
       ]
     }
@@ -389,7 +421,6 @@ export default {
 </script>
 <style scoped>
 .seller-settled-manage-select .label {
-  font-size: 16px;
   vertical-align: middle;
 }
 
