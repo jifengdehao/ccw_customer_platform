@@ -447,6 +447,7 @@ export default {
         templateList: this.checkedData
       }
       api.sortPlatformDict(params).then(response => {
+        this.searchtemplate(formItem)
         this.$Message.success('批量修改成功')
       })
     },

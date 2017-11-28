@@ -14,7 +14,7 @@
           <DatePicker type="date" v-model="formItem.startdate" placement="bottom-start" placeholder="选择开始日期" style="width: 200px"></DatePicker>
           <i> - </i>
           <DatePicker type="date" v-model="formItem.lastdate" placement="bottom-start" placeholder="选择结束日期" style="width: 200px"></DatePicker>
-        </FormItem>
+        </FormItem> <br>
         <FormItem>
           <span class="label">账号状态：</span>
           <Select v-model="formItem.status" placeholder="请选择" style="width: 200px" clearable>
@@ -422,11 +422,18 @@ export default {
 
     // 更新商家信息
     modifySellerInfo(shopMessage) {
-      if (!shopMessage.alipayAccount) {
-        this.$Message.error('支付宝账号不能为空')
+      if (
+        !shopMessage.alipayAccount ||
+        (!/^1[34578]\d{9}$/.test(shopMessage.alipayAccount) &&
+          !/^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/.test(shopMessage.alipayAccount))
+      ) {
+        this.$Message.error('支付宝账号为手机号或者邮箱地址')
         return false
       }
-      if (!shopMessage.mobileno) {
+      if (
+        !shopMessage.mobileno ||
+        !/^1[34578]\d{9}$/.test(shopMessage.mobileno)
+      ) {
         this.$Message.error('手机号不能为空')
         return false
       }
