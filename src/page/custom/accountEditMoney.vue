@@ -176,16 +176,31 @@ export default {
         })
         return
       }
+
+      console.log(this.toFixed(this.changeVal), '111222')
+      this.changeVal = this.toFixed(this.changeVal)
       http
         .refundMoney({
           id: this.params.custId,
-          changeVal: parseInt(this.changeVal * 100),
+          changeVal: this.changeVal,
           alipayAccount: this.alipayAccount
         })
         .then(data => {
-          console.debug(data)
           this.changeVal = this.alipayAccount = ''
+          this.loopAccount()
+          this.getAccountMoneyChange()
         })
+    },
+    //  精准度缺失解决办法
+    toFixed(value) {
+      if (value.indexOf('.') > 0) {
+        let array = value.split('.')
+        let arrayInt = array[0]
+        let arrayFloat = array[1]
+
+        return arrayInt * 100 + ('0.' + arrayFloat) * 100
+      }
+      return value * 100
     }
   }
 }
