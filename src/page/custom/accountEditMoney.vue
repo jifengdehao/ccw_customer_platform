@@ -19,7 +19,7 @@
         <td>{{singleData.custId}}</td>
         <td>{{singleData.mobileno}}</td>
         <td>{{singleData.custName}}</td>
-        <td v-if="params.accountType == 1">{{singleData.balance}}</td>
+        <td v-if="params.accountType == 1">{{singleData.balance/100}}</td>
         <td>{{singleData.status === 1 ? '正常':'冻结'}}</td>
         <td><a @click="editAccount">编辑</a></td>
       </tr>
@@ -32,9 +32,9 @@
       <Modal
         v-model="isBoolean"
         :closable="false" @on-ok="refundMoney">
+        <p class="money">支付宝账号: <input type="text" v-model="alipayAccount"></p>
         <p class="money">退款金额:¥<input type="number" v-model="changeVal" style="margin-left:10px;"></p>
         <p>请按照客服退款操作手册</p>
-        <p>对话框内容</p>
     </Modal>
   </div>
 </template>
@@ -52,11 +52,13 @@ export default {
       },
       isBoolean: false, //  弹框boolean值
       changeVal: '', //  退款金额
+      alipayAccount: '', // 支付宝账号
       singleData: null, //  查看用户获取到的数据
       changeTitle: [
         {
           title: '时间',
           key: 'changeAt',
+          align: 'center',
           render: (h, params) => {
             return h('span', this.filterTime(params.row.changeAt))
           }
@@ -64,6 +66,7 @@ export default {
         {
           title: '方式',
           key: 'changeType',
+          align: 'center',
           render: (h, params) => {
             return h(
               'span',
@@ -73,7 +76,11 @@ export default {
         },
         {
           title: '账户余额(元)',
-          key: 'chanerAfter'
+          key: 'chanerAfter',
+          align: 'center',
+          render: (h, params) => {
+            return h('span', params.row.chanerAfter / 100)
+          }
         }
       ],
       data: null
@@ -143,7 +150,7 @@ export default {
           str = '分销获得积分'
           break
       }
-      return str + '  ' + value
+      return str + '  ' + value / 100
     },
     //  查看用户账户变更流水
     getAccountMoneyChange() {
@@ -162,14 +169,38 @@ export default {
     },
     //  确定退款
     refundMoney() {
+      if (!this.params.custId || !this.alipayAccount) {
+        this.$Message.info({
+          content: '请输入完整',
+          duration: 3
+        })
+        return
+      }
+
+      console.log(this.toFixed(this.changeVal), '111222')
+      this.changeVal = this.toFixed(this.changeVal)
       http
         .refundMoney({
           id: this.params.custId,
-          changeVal: this.changeVal
+          changeVal: this.changeVal,
+          alipayAccount: this.alipayAccount
         })
         .then(data => {
-          console.log(data)
+          this.changeVal = this.alipayAccount = ''
+          this.loopAccount()
+          this.getAccountMoneyChange()
         })
+    },
+    //  精准度缺失解决办法
+    toFixed(value) {
+      if (value.indexOf('.') > 0) {
+        let array = value.split('.')
+        let arrayInt = array[0]
+        let arrayFloat = array[1]
+
+        return arrayInt * 100 + ('0.' + arrayFloat) * 100
+      }
+      return value * 100
     }
   }
 }
@@ -195,6 +226,6 @@ p {
 }
 p.money {
   text-align: center;
-  margin: 20px auto 30px;
+  margin: 20px auto;
 }
 </style>

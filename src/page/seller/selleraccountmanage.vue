@@ -49,8 +49,8 @@
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 商家信息模态框 -->
-    <Modal v-model="shopMessageModal" title="商家信息" width="900" @on-ok="modifySellerInfo(shopMessage)">
-      <Form ref="formInline"  :model="shopMessage" :rules="ruleValidate" label-postion="left" :label-width="100" >
+    <Modal v-model="shopMessageModal" title="商家信息" width="900">
+      <Form ref="formInline"  :model="shopMessage"  label-postion="left" :label-width="100" >
         <Row>
           <Col span="9">
           <!-- 账号信息 -->
@@ -162,9 +162,13 @@
           </Col>
         </Row>
       </Form>
+      <div slot="footer">
+        <Button  style="width:60px;margin:auto" @click="hidde">取消</Button>
+        <Button type="info" style="width:60px;margin:auto" @click="modifySellerInfo(shopMessage)">保存</Button>
+      </div>
     </Modal>
     <!-- 商家账号管理模态框 -->
-    <Modal v-model="shopManageModal" title="账号管理" width="500" @on-ok="modifySellerStatus(shopManageData)">
+    <Modal v-model="shopManageModal" title="账号管理" width="300" >
       <Form>
         <FormItem label="设置账号限制：">
           <Select v-model="shopManageData.status" :value="shopManageData.status" placeholder="请选择">
@@ -176,7 +180,11 @@
         <FormItem label="添加备注：">
           <Input v-model="shopManageData.remark" :value="shopManageData.remark" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
         </FormItem>
+       
       </Form>
+      <div slot="footer">
+        <Button type="info" style="width:60px;margin:auto" @click="modifySellerStatus(shopManageData)">确定</Button>
+      </div>
     </Modal>
      <!-- 查看大图 -->
      <Modal
@@ -233,19 +241,23 @@ export default {
       columns: [
         {
           title: '档口名称',
-          key: 'shopName'
+          key: 'shopName',
+          align: 'center'
         },
         {
           title: '商家账号',
-          key: 'msSellerId'
+          key: 'msSellerId',
+          align: 'center'
         },
         {
           title: '商家手机',
-          key: 'mobileno'
+          key: 'mobileno',
+          align: 'center'
         },
         {
           title: '商家信息详情',
           key: 'shopMessage',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -277,6 +289,7 @@ export default {
         {
           title: '账号管理',
           key: 'shopManage',
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h(
@@ -303,87 +316,24 @@ export default {
         },
         {
           title: '账号状态',
-          key: 'statusName'
+          key: 'statusName',
+          align: 'center'
         },
         {
           title: '入驻日期',
           key: 'settleDate',
-          width: 150,
+          align: 'center',
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.settleDate)
           }
         },
         {
           title: '备注说明',
-          key: 'remark'
+          key: 'remark',
+          align: 'center'
         }
-      ],
-      ruleValidate: {
-        alipayAccount: [
-          {
-            required: true,
-            message: '支付宝账号不能为空',
-            trigger: 'blur'
-          }
-        ],
-        shopName: [
-          {
-            required: true,
-            message: '档口名称不能为空',
-            trigger: 'blur'
-          }
-        ],
-        mobileno: [
-          {
-            required: true,
-            message: '手机号不能为空',
-            trigger: 'blur',
-            pattern: '^[1][0-9]{10}'
-          }
-        ],
-        shopNo: [
-          {
-            required: true,
-            message: '档口号不能为空',
-            trigger: 'blur'
-          }
-        ],
-        shopOwerName: [
-          {
-            required: true,
-            message: '档主姓名不能为空',
-            trigger: 'blur'
-          }
-        ],
-        bussinessStatus: [
-          {
-            required: true,
-            message: '请选择营业状态',
-            trigger: 'change'
-          }
-        ],
-        businessHour: [
-          {
-            required: true,
-            message: '营业时间不能为空',
-            trigger: 'blur'
-          }
-        ],
-        notice: [
-          {
-            required: true,
-            message: '小伙子，写个公告呗',
-            trigger: 'blur'
-          }
-        ],
-        stallAddress: [
-          {
-            required: true,
-            message: '地址不要漏了哦！',
-            trigger: 'blur'
-          }
-        ]
-      }
+      ]
     }
   },
   created() {
@@ -436,17 +386,20 @@ export default {
         status: status,
         remark: remark
       }
-      api.updataShopStatus(params).then(response => {})
+      api.updataShopStatus(params).then(response => {
+        this.$Message.success('商家状态修改成功')
+        this.shopManageModal = false
+      })
     },
     // 商家账号管理状态
     modifySellerStatus(sellerAccountData) {
-      if (this.shopManageData.status) {
-        let status = sellerAccountData.status
-        let remark = sellerAccountData.remark
-        this.updataShopStatus(this.shopId, status, remark)
-      } else {
-        alert('请选择状态')
+      if (!this.shopManageData.status) {
+        this.$Message.error('请选择状态')
+        return false
       }
+      let status = sellerAccountData.status
+      let remark = sellerAccountData.remark
+      this.updataShopStatus(this.shopId, status, remark)
     },
     // getsellerInfo 查看商家信息详情
     getsellerInfo(msSellerId, shopId) {
@@ -463,19 +416,62 @@ export default {
         this.qulification = res
       })
     },
+    hidde() {
+      this.shopMessageModal = false
+    },
+
     // 更新商家信息
     modifySellerInfo(shopMessage) {
+      if (!shopMessage.alipayAccount) {
+        this.$Message.error('支付宝账号不能为空')
+        return false
+      }
+      if (!shopMessage.mobileno) {
+        this.$Message.error('手机号不能为空')
+        return false
+      }
+      if (!shopMessage.shopName) {
+        this.$Message.error('档口名称不能为空')
+        return false
+      }
+      if (!shopMessage.shopOwerName) {
+        this.$Message.error('档主姓名不能为空')
+        return false
+      }
+      if (!shopMessage.shopNo) {
+        this.$Message.error('档口号不能为空')
+        return false
+      }
+      if (!shopMessage.businessDictCode) {
+        this.$Message.error('主营类型不能为空')
+        return false
+      }
+      if (!shopMessage.bussinessStatus) {
+        this.$Message.error('营业状态不能为空')
+        return false
+      }
+      if (!shopMessage.businessHour) {
+        this.$Message.error('营业时间不能为空')
+        return false
+      }
+      if (!shopMessage.notice) {
+        this.$Message.error('店铺公告不能为空')
+        return false
+      }
+      if (!shopMessage.stallAddress) {
+        this.$Message.error('店铺地址不能为空')
+        return false
+      }
       this.shopMessage.msShopQualification.protocol = this.qulification.protocol
       this.shopMessage.msShopQualification.qualificationList = this.qulification.qualificationList
       let sellerId = shopMessage.msSellerId
-      console.log(this.shopMessage)
       api.modifysellerInfo(shopMessage, sellerId).then(response => {
         this.$Message.info('更新成功')
+        this.shopMessageModal = false
       })
     },
     // 搜索
     searchAccountData(formItem) {
-      console.log(formItem)
       this.getSellerAccountList(
         1,
         10,
@@ -552,7 +548,6 @@ export default {
 }
 
 .seller-account-manager-select .label {
-  font-size: 16px;
   vertical-align: middle;
 }
 
@@ -725,7 +720,7 @@ input[type='file'] {
   line-height: 100px;
 }
 .bigimg {
-  width: 800px;
-  height: 800px;
+  max-width: 800px;
+  max-height: 800px;
 }
 </style>

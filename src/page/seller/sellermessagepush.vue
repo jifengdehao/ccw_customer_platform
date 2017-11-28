@@ -76,6 +76,7 @@ export default {
           title: '推送时间',
           key: 'pushTime',
           align: 'center',
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.pushTime)
           }
@@ -112,7 +113,6 @@ export default {
                         .then(response => {
                           this.single = response
                           this.single.pushType = String(this.single.pushType)
-                          console.log(response)
                         })
                       this.pushButton = '查看完毕'
                     }
@@ -201,11 +201,9 @@ export default {
           case '2':
             this.single.pushType = 2
         }
-        api
-          .modifySysMessage(this.single, this.single.smMssageId)
-          .then(data => {
-            this.getSysMessage()
-          })
+        api.modifySysMessage(this.single, this.single.smMssageId).then(data => {
+          this.getSysMessage()
+        })
         this.single = {}
         this.single.pushType = '1'
         this.pushButton = '确定'

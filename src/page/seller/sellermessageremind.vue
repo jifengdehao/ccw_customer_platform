@@ -10,7 +10,7 @@
     <section class="seller-message-remind-tab">
       <Tabs :animated="false"  @on-click="changeTable">
         <TabPane v-for="tab in tabs" key :label="tab.title">
-          <Table :columns="remindColumns" :data="remindData"></Table>
+          <Table border :columns="remindColumns" :data="remindData"></Table>
         </TabPane>
       </Tabs>
     </section>
@@ -38,28 +38,39 @@ export default {
         {
           title: '序号',
           type: 'index',
-          width: 60,
+          width: 80,
           align: 'center'
         },
         {
           title: '类型',
-          key: 'assistantTypeName'
+          key: 'assistantTypeName',
+          align: 'center'
         },
         {
           title: '商户账号',
-          key: 'msSellerId'
+          key: 'msSellerId',
+          align: 'center'
         },
         {
-          title: '商户手机号',
-          key: 'mobileno'
+          title: '档主姓名',
+          key: 'shopOwerName',
+          align: 'center'
+        },
+        {
+          title: '联系方式',
+          key: 'mobileno',
+          align: 'center'
         },
         {
           title: '商户账号状态',
-          key: 'sellerStatusName'
+          key: 'sellerStatusName',
+          align: 'center'
         },
         {
           title: '提交日期',
           key: 'createdAt',
+          align: 'center',
+          width: 200,
           render: (h, params) => {
             return date.formatDateTime(params.row.createdAt)
           }
@@ -67,6 +78,7 @@ export default {
         {
           title: '操作',
           key: 'operation',
+          align: 'center',
           width: 140,
           render: (h, params) => {
             return h('div', [

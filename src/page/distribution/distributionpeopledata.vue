@@ -6,8 +6,8 @@
  */
 
 <template>
-  <div>
-    <div class="header">
+  <div>延期功能
+    <!-- <div class="header">
       <ul>
         <li>
           <span>当前平台用户量</span>
@@ -42,7 +42,7 @@
       <div class="circular">
         <ve-line :data="chartData2" :settings="chartSettings" style="width: 700px; margin-top: 40px; padding: 10px;"></ve-line>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -55,10 +55,7 @@ export default {
   created: function() {
     this.chartData = {
       columns: ['用户', '销量'],
-      rows: [
-        { '用户': '参与分销用户量', '销量': 40 },
-        { '用户': '未参与分销用户量', '销量': 60 }
-      ]
+      rows: [{ 用户: '参与分销用户量', 销量: 40 }, { 用户: '未参与分销用户量', 销量: 60 }]
     }
     this.chartSettings = {
       dimension: '用户',
@@ -68,11 +65,11 @@ export default {
     this.chartData2 = {
       columns: ['date', 'balance'],
       rows: [
-        { 'date': '1月分销用户量', 'balance': 123 },
-        { 'date': '2月分销用户量', 'balance': 1223 },
-        { 'date': '3月分销用户量', 'balance': 2123 },
-        { 'date': '4月分销用户量', 'balance': 4123 },
-        { 'date': '5月分销用户量', 'balance': 3123 }
+        { date: '1月分销用户量', balance: 123 },
+        { date: '2月分销用户量', balance: 1223 },
+        { date: '3月分销用户量', balance: 2123 },
+        { date: '4月分销用户量', balance: 4123 },
+        { date: '5月分销用户量', balance: 3123 }
       ]
     }
     this.chartSettings = {

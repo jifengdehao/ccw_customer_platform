@@ -31,7 +31,7 @@
                   </td>
                   <td class="br" style="width: 10%">
                     <div class="upload">
-                      <input type="file" @change="onUpload($event, data)" value="上传">上传
+                      <input type="file" @change="onUpload($event, data)" value="上传图片" accept="image/*">上传图片
                     </div>
                   </td>
                   <td class="br link" style="width: 20%">

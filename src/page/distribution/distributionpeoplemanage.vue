@@ -6,8 +6,8 @@
  */
 
 <template>
-  <div>
-    <div class="searchInput">
+  <div>延期功能
+    <!-- <div class="searchInput">
       <input type="text">
       <Button type="primary" icon="ios-search">搜索</Button>
     </div>
@@ -17,14 +17,15 @@
           <Table :columns="columns" :data="userDate"></Table>
         </TabPane>
       </Tabs>
-    </div>
+    </div> -->
   </div>
 </template>
 <script type="text/ecmascript-6">
 export default {
   data() {
     return {
-      tabPaneValue: [ // table值
+      tabPaneValue: [
+        // table值
         {
           label: '全部',
           name: 'allTab'
@@ -84,17 +85,24 @@ export default {
           align: 'center',
           render: (h, params) => {
             return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.$router.push('/distribution/distributionUserInfo?userId=' + params.row.userId)
+              h(
+                'Button',
+                {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push(
+                        '/distribution/distributionUserInfo?userId=' +
+                          params.row.userId
+                      )
+                    }
                   }
-                }
-              }, '查看')
+                },
+                '查看'
+              )
             ])
           }
         }
@@ -142,10 +150,18 @@ export default {
     // 获取ID 判断当前点击table 渲染数据
     onUserName(index) {
       switch (index) {
-        case 0: this.userDate = this.data; break
-        case 1: this.userDate = this.data2; break
-        case 2: this.userDate = this.data3; break
-        case 3: this.userDate = this.data4; break
+        case 0:
+          this.userDate = this.data
+          break
+        case 1:
+          this.userDate = this.data2
+          break
+        case 2:
+          this.userDate = this.data3
+          break
+        case 3:
+          this.userDate = this.data4
+          break
       }
     }
   }

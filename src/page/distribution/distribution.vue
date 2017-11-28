@@ -10,53 +10,59 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import SideBar from 'components/sidebar/sidebar'
+import SideBar from 'components/sidebar/sidebar'
 
-  export default {
-    name: 'distribution',
-    data () {
-      return {
-        menu: [
-//          {
-//            name: 'distribution_people_data',
-//            text: '分销用户数据',
-//            icon: 'ios-analytics',
-//            noDropdown: true
-//          },
-//          {
-//            name: 'distribution_people_manage',
-//            text: '分销用户管理',
-//            icon: 'ios-people',
-//            noDropdown: true
-//          }
-        ]
-      }
-    },
-    created () {
-      this.getDistributionMenu()
-    },
-    methods: {
-      route (name) {
-        this.$router.push('/distribution/' + name)
-      },
-      getDistributionMenu () {
-        if (sessionStorage.getItem('menu')) {
-          let menuIcon = ['ios-analytics', 'ios-people']
-          let resMenu = JSON.parse(sessionStorage.getItem('menu'))
-          resMenu.forEach((item) => {
-            if (item.url === 'distribution') {
-              if (item.childMenusList.length > 0) {
-                this.menu = item.childMenusList.map((item, index) => {
-                  return {id: item.menusId, name: item.menuName, icon: menuIcon[index], url: item.url, noDropdown: true}
-                })
-              }
-            }
-          })
-        }
-      }
-    },
-    components: {
-      SideBar
+export default {
+  name: 'distribution',
+  data() {
+    return {
+      menu: [
+        //          {
+        //            name: 'distribution_people_data',
+        //            text: '分销用户数据',
+        //            icon: 'ios-analytics',
+        //            noDropdown: true
+        //          },
+        //          {
+        //            name: 'distribution_people_manage',
+        //            text: '分销用户管理',
+        //            icon: 'ios-people',
+        //            noDropdown: true
+        //          }
+      ]
     }
+  },
+  created() {
+    this.getDistributionMenu()
+  },
+  methods: {
+    route(name) {
+      this.$router.push('/distribution/' + name)
+    },
+    getDistributionMenu() {
+      if (sessionStorage.getItem('menu')) {
+        let menuIcon = ['ios-analytics', 'ios-people']
+        let resMenu = JSON.parse(sessionStorage.getItem('menu'))
+        resMenu.forEach(item => {
+          if (item.url === 'distribution') {
+            if (item.childMenusList.length > 0) {
+              this.menu = item.childMenusList.map((item, index) => {
+                return {
+                  id: item.menusId,
+                  name: item.menuName,
+                  icon: menuIcon[index],
+                  url: item.url,
+                  noDropdown: true
+                }
+              })
+            }
+          }
+        })
+      }
+    }
+  },
+  components: {
+    SideBar
   }
+}
 </script>

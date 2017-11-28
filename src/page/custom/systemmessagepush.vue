@@ -36,13 +36,13 @@
     <div class="btn-ok" v-if="tabIndex != 3">
       <Button type="primary"  @click="editMessage" :disabled="isAbled">确定</Button>
     </div>
-    <Tabs type="card" @on-click="chooseTabs" v-model="tabIndex">
+    <Tabs @on-click="chooseTabs" v-model="tabIndex">
       <TabPane label="全部" name="0"></TabPane>
       <TabPane label="待推送" name="1"></TabPane>
       <TabPane label="历史推送" name="2"></TabPane>
       <TabPane label="推送失败" name="3"></TabPane>
     </Tabs>
-    <Table v-if="pushMessageData" border :columns="pushMessageTitle" :data="pushMessageData.records"></Table>
+    <Table v-if="pushMessageData" border stripe :columns="pushMessageTitle" :data="pushMessageData.records"></Table>
     <Page v-if="pushMessageData" className='page-style' :current="pageNo" :total="pushMessageData.total" show-total @on-change="loadData"></Page>
   </div>
 </template>
