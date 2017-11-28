@@ -140,6 +140,7 @@
   import * as time from '@/until/time'
 
   export default {
+    name: 'manage',
     data () {
       return {
         curr: 1, // 当前页

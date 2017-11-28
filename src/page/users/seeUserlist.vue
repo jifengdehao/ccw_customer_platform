@@ -49,7 +49,8 @@ export default {
     filterValue(array) {
       array.forEach(item => {
         if (item.isHave) {
-          if (item.permissonList && item.permissonList.length > 0) {
+          if (item.childMenuList && item.childMenuList.length === 0) {
+            //  单个菜单  (首页)
             item.permissonList.forEach(permissin => {
               let single = {
                 menuId: item.menuId
@@ -60,6 +61,23 @@ export default {
               }
             })
             this.filterValue(item.childMenuList)
+          } else if (item.childMenuList && item.childMenuList.length > 0) {
+            //  有多个子菜单
+            item.childMenuList.forEach(child => {
+              if (child.isHave) {
+                if (child.permissonList && child.permissonList.length > 0) {
+                  child.permissonList.forEach(son => {
+                    let single = {
+                      menuId: child.menuId
+                    }
+                    if (son.isHave) {
+                      single.permissionId = son.permissionId
+                    }
+                  })
+                }
+                this.filterValue(child.childMenuList)
+              }
+            })
           }
         }
       })

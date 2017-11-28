@@ -75,10 +75,13 @@ export default {
     },
     //  自定义权限点击
     checkPermission(permission, item, bool) {
-      if (!this.parentData.childMenuList || !this.parentData.permissonList) {
-        item.isHave = true
-        return
-      }
+      this.parentData.isHave = true
+
+      // if (this.parentData.childMenuList || this.parentData.permissonList) {
+      //   item.isHave = true
+      // }
+      item.isHave = true
+
       this.$emit('permissionCheck', {
         permission: permission,
         item: item,
@@ -88,9 +91,10 @@ export default {
     },
     //  权限点击
     permissionCheck(data) {
-      data.permission.isHave = !data.bool ? !data.permission.isHave : data.bool
+      // data.permission.isHave = !data.bool ? !data.permission.isHave : data.bool
       // data.item.isHave = data.permission.isHave
       data.item.isHave = true
+
       this.checkPermission(data.item, data.parent, true)
     },
     //  向上传递值

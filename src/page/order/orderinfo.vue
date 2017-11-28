@@ -238,7 +238,6 @@
                         onOk () {
                           // api 操作
                           api.putRefundOrder(foodId).then((res) => {
-                            console.log(res)
                             if (res) {
                               _this.getOrderDetails()
                               _this.$Modal.remove()

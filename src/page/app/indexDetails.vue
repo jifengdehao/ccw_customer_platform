@@ -48,7 +48,7 @@
         <Input v-model="appVersionInfo.bundle" placeholder="请输入包路径" disabled></Input>
       </FormItem>
       <FormItem label="安装包" prop="downloadUrl">
-        <Input v-model="appVersionInfo.downloadUrl" placeholder="请输入安装包地址" disabled></Input>
+        <Input v-model="appVersionInfo.downloadUrl" placeholder="请输入安装包地址"></Input>
       </FormItem>
       <FormItem label="构建版本" prop="buildVersion">
         <Input v-model="appVersionInfo.buildVersion" placeholder="请输入构建版本"></Input>
