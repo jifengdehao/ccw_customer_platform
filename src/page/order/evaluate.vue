@@ -68,6 +68,7 @@
   import * as time from '@/until/time'
 
   export default {
+    name: 'evaluate',
     data () {
       return {
         curr: 1, // 当前分页
@@ -124,7 +125,14 @@
           {
             title: '评价内容',
             key: 'content',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              if (params.row.content.length > 10) {
+                return params.row.content.substr(0, 10) + '...'
+              } else {
+                return params.row.content
+              }
+            }
           },
           {
             title: '操作',
@@ -135,48 +143,58 @@
               let rkShopId = params.row.rkShopId
               let isDelete = params.row.isDelete
               return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px',
-                    width: '52px'
-                  },
-                  on: {
-                    click: () => {
-                      this.$router.push('/order/evaluateInfoSeller/' + rkShopId)
-                    }
-                  }
-                }, '查看'),
-                h('Button', {
-                  props: {
-                    type: 'error',
-                    size: 'small'
-                  },
-                  style: {
-                    width: '52px'
-                  },
-                  on: {
-                    click: () => {
-                      if (!isDelete) {
-                        this.$Modal.confirm({
-                          content: '确定隐藏这评价？',
-                          onOk () {
-                            // api 操作
-                            api.putOrderSellerEval(rkShopId).then((res) => {
-                              if (res) {
-                                console.log(res)
-                                params.row.isDelete = true
-                              }
-                            })
-                          }
-                        })
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px',
+                      width: '52px'
+                    },
+                    on: {
+                      click: () => {
+                        this.$router.push(
+                          '/order/evaluateInfoSeller/' + rkShopId
+                        )
                       }
                     }
-                  }
-                }, isDelete === true ? '已隐藏' : '隐藏')
+                  },
+                  '查看'
+                ),
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'error',
+                      size: 'small'
+                    },
+                    style: {
+                      width: '52px'
+                    },
+                    on: {
+                      click: () => {
+                        if (!isDelete) {
+                          this.$Modal.confirm({
+                            content: '确定隐藏这评价？',
+                            onOk () {
+                              // api 操作
+                              api.putOrderSellerEval(rkShopId).then(res => {
+                                if (res) {
+                                  console.log(res)
+                                  params.row.isDelete = true
+                                }
+                              })
+                            }
+                          })
+                        }
+                      }
+                    }
+                  },
+                  isDelete === true ? '已隐藏' : '隐藏'
+                )
               ])
             }
           }
@@ -224,7 +242,14 @@
           {
             title: '评价内容',
             key: 'content',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              if (params.row.content.length > 10) {
+                return params.row.content.substr(0, 10) + '...'
+              } else {
+                return params.row.content
+              }
+            }
           },
           {
             title: '操作',
@@ -234,48 +259,58 @@
               let isDetlete = params.row.isDelete
               let rkDeliverId = params.row.rkDeliverId
               return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px',
-                    width: '52px'
-                  },
-                  on: {
-                    click: () => {
-                      this.$router.push('/order/evaluateInfoDeliver/' + rkDeliverId)
-                    }
-                  }
-                }, '查看'),
-                h('Button', {
-                  props: {
-                    type: 'error',
-                    size: 'small'
-                  },
-                  style: {
-                    width: '52px'
-                  },
-                  on: {
-                    click: () => {
-                      if (!isDetlete) {
-                        this.$Modal.confirm({
-                          content: '确定隐藏这评价？',
-                          onOk () {
-                            // api 操作
-                            api.putOrderDeliverEval(rkDeliverId).then((res) => {
-                              if (res) {
-                                console.log(res)
-                                params.row.isDelete = true
-                              }
-                            })
-                          }
-                        })
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px',
+                      width: '52px'
+                    },
+                    on: {
+                      click: () => {
+                        this.$router.push(
+                          '/order/evaluateInfoDeliver/' + rkDeliverId
+                        )
                       }
                     }
-                  }
-                }, isDetlete === true ? '已隐藏' : '隐藏')
+                  },
+                  '查看'
+                ),
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'error',
+                      size: 'small'
+                    },
+                    style: {
+                      width: '52px'
+                    },
+                    on: {
+                      click: () => {
+                        if (!isDetlete) {
+                          this.$Modal.confirm({
+                            content: '确定隐藏这评价？',
+                            onOk () {
+                              // api 操作
+                              api.putOrderDeliverEval(rkDeliverId).then(res => {
+                                if (res) {
+                                  console.log(res)
+                                  params.row.isDelete = true
+                                }
+                              })
+                            }
+                          })
+                        }
+                      }
+                    }
+                  },
+                  isDetlete === true ? '已隐藏' : '隐藏'
+                )
               ])
             }
           }
@@ -323,7 +358,14 @@
           {
             title: '评价内容',
             key: 'content',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              if (params.row.content.length > 10) {
+                return params.row.content.substr(0, 10) + '...'
+              } else {
+                return params.row.content
+              }
+            }
           },
           {
             title: '操作',
@@ -333,48 +375,58 @@
               let rkShopId = params.row.rkShopId
               let isDelete = params.row.isDelete
               return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px',
-                    width: '52px'
-                  },
-                  on: {
-                    click: () => {
-                      this.$router.push('/order/evaluateInfoSeller/' + rkShopId)
-                    }
-                  }
-                }, '查看'),
-                h('Button', {
-                  props: {
-                    type: 'error',
-                    size: 'small'
-                  },
-                  style: {
-                    width: '52px'
-                  },
-                  on: {
-                    click: () => {
-                      if (!isDelete) {
-                        this.$Modal.confirm({
-                          content: '确定隐藏这评价？',
-                          onOk () {
-                            // api 操作
-                            api.putOrderSellerEval(rkShopId).then((res) => {
-                              if (res) {
-                                console.log(res)
-                                params.row.isDelete = true
-                              }
-                            })
-                          }
-                        })
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px',
+                      width: '52px'
+                    },
+                    on: {
+                      click: () => {
+                        this.$router.push(
+                          '/order/evaluateInfoSeller/' + rkShopId
+                        )
                       }
                     }
-                  }
-                }, isDelete === true ? '已隐藏' : '隐藏')
+                  },
+                  '查看'
+                ),
+                h(
+                  'Button',
+                  {
+                    props: {
+                      type: 'error',
+                      size: 'small'
+                    },
+                    style: {
+                      width: '52px'
+                    },
+                    on: {
+                      click: () => {
+                        if (!isDelete) {
+                          this.$Modal.confirm({
+                            content: '确定隐藏这评价？',
+                            onOk () {
+                              // api 操作
+                              api.putOrderSellerEval(rkShopId).then(res => {
+                                if (res) {
+                                  console.log(res)
+                                  params.row.isDelete = true
+                                }
+                              })
+                            }
+                          })
+                        }
+                      }
+                    }
+                  },
+                  isDelete === true ? '已隐藏' : '隐藏'
+                )
               ])
             }
           }
@@ -417,7 +469,7 @@
           mobileno: this.phone,
           types: this.status
         }
-        api.exportEval(params).then((res) => {
+        api.exportEval(params).then(res => {
           if (res) {
             console.log(res)
             this.modal_loading = false
@@ -444,7 +496,7 @@
           pageSize: this.pageNum,
           mobileno: this.phone
         }
-        api.getOrderSellerListEval(params, this.curr).then((res) => {
+        api.getOrderSellerListEval(params, this.curr).then(res => {
           console.log(res)
           if (res) {
             this.loading1 = false
@@ -459,7 +511,7 @@
           pageSize: this.pageNum,
           mobileno: this.phone
         }
-        api.getOrderDeliverListeEval(params, this.curr).then((res) => {
+        api.getOrderDeliverListeEval(params, this.curr).then(res => {
           console.log(res)
           if (res) {
             this.loading2 = false
@@ -474,7 +526,7 @@
           pageSize: this.pageNum,
           mobileno: this.phone
         }
-        api.getOrderBadListEval(params, this.curr).then((res) => {
+        api.getOrderBadListEval(params, this.curr).then(res => {
           console.log(res)
           if (res) {
             this.loading3 = false

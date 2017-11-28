@@ -69,6 +69,7 @@
   import * as time from '@/until/time'
 
   export default {
+    name: 'feedback',
     data () {
       return {
         curr: 1, // 当前页

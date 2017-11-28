@@ -29,7 +29,7 @@
       </Menu>
     </Col>
     <Col :span="spanRight" style="overflow-y: scroll;padding: 40px;">
-      <router-view></router-view>
+        <router-view></router-view>
     </Col>
   </Row>
 </template>
