@@ -49,7 +49,7 @@ export default {
     filterValue(array) {
       array.forEach(item => {
         if (item.isHave) {
-          if (item.childMenuList.length === 0) {
+          if (item.childMenuList && item.childMenuList.length === 0) {
             //  单个菜单  (首页)
             item.permissonList.forEach(permissin => {
               let single = {
@@ -61,23 +61,25 @@ export default {
               }
             })
             this.filterValue(item.childMenuList)
-          } else if (item.childMenuList.length > 0) {
+          } else if (item.childMenuList && item.childMenuList.length > 0) {
             //  有多个子菜单
             item.childMenuList.forEach(child => {
-              child.permissonList.forEach(son => {
-                let single = {
-                  menuId: child.menuId
+              if (child.isHave) {
+                if (child.permissonList && child.permissonList.length > 0) {
+                  child.permissonList.forEach(son => {
+                    let single = {
+                      menuId: child.menuId
+                    }
+                    if (son.isHave) {
+                      single.permissionId = son.permissionId
+                    }
+                  })
                 }
-                if (son.isHave) {
-                  single.permissionId = son.permissionId
-                  this.putParams.permissionList.push(single)
-                }
-              })
-              this.filterValue(child.childMenuList)
+                this.filterValue(child.childMenuList)
+              }
             })
           }
         }
-        console.log(this.putParams.permissionList)
       })
     },
     //  确认
