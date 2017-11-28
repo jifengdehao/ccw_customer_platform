@@ -75,6 +75,8 @@ export default {
     },
     //  自定义权限点击
     checkPermission(permission, item, bool) {
+      console.log(permission, 'permissiontrue')
+      this.parentData.isHave = true
       if (!this.parentData.childMenuList || !this.parentData.permissonList) {
         item.isHave = true
         return

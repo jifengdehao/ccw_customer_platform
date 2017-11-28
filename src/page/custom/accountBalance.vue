@@ -14,7 +14,7 @@
         <Button type="primary" @click="search">搜索</Button>
       </FormItem>
     </i-form>
-    <Tabs type="card" @on-click='chooseTabs'>
+    <Tabs @on-click='chooseTabs'>
       <TabPane label="账户余额">
         <Table border stripe :columns="accountBalance" :data="usersDatas.records"></Table>
       </TabPane>
