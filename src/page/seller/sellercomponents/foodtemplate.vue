@@ -287,8 +287,8 @@ export default {
       this.templateItem = {
         name: '',
         labels: '',
-        spCategoryParentId: 0,
-        spCategoryId: 0,
+        spCategoryParentId: null,
+        spCategoryId: null,
         mainPic: [],
         picLib: [],
         originPlace: '',
