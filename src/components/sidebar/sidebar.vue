@@ -6,7 +6,7 @@
 */
 <template>
   <Row type="flex" style="height: 100%;min-width: 1200px;">
-    <Col :span="spanLeft" :class="{'layout-hide-text': spanLeft < 3}" class="sidebar">
+    <Col :class="{'layout-hide-text': spanLeft < 3}" class="sidebar" :xs="spanLeft" :sm="spanLeft" :md="spanLeft" :lg="spanLeft" >
       <div class="close-menu" @click="toggleClick()">
         <Icon type="navicon-round" :size="iconSize"></Icon>
       </div>
@@ -28,7 +28,7 @@
         </template>
       </Menu>
     </Col>
-    <Col :span="spanRight" style="overflow-y: scroll;padding: 40px;">
+    <Col style="overflow-y: scroll;padding: 40px;" :xs="spanRight" :sm="spanRight" :md="spanRight" :lg="spanRight">
         <router-view></router-view>
     </Col>
   </Row>

@@ -72,6 +72,7 @@ export default {
                     }
                     if (son.isHave) {
                       single.permissionId = son.permissionId
+                      this.putParams.permissionList.push(single)
                     }
                   })
                 }
@@ -86,6 +87,7 @@ export default {
     submitInfoData() {
       this.putParams.permissionList = []
       this.filterValue(this.menuData.menu)
+      console.log(this.putParams)
       if (this.putParams.permissionList.length === 0) {
         return
       }
