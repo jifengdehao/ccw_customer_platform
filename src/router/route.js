@@ -337,6 +337,24 @@ const AddAppUpdate = resolve => {
   })
 }
 
+// 财务管理
+const Finance = resolve => {
+  import('page/finance/finance').then(module => {
+    resolve(module)
+  })
+}
+// 用户账户退款
+const FinanceAccountRefund = resolve => {
+  import('page/finance/account_refund').then(module => {
+    resolve(module)
+  })
+}
+// 商户账户退款
+const FinanceAccountBalance = resolve => {
+  import('page/finance/account_balance').then(module => {
+    resolve(module)
+  })
+}
 export default [
   {
     path: '/',
@@ -464,6 +482,16 @@ export default [
           {path: 'index', component: AppIndex},
           {path: 'index/:id', component: AppIndexDetails},
           {path: 'addAppUpdate', component: AddAppUpdate}
+        ]
+      },
+      {
+        path: '/finance',
+        name: 'finance',
+        component: Finance,
+        redirect: '/finance/account_refund',
+        children: [
+          {path: 'account_refund', component: FinanceAccountRefund},
+          {path: 'account_balance', component: FinanceAccountBalance}
         ]
       }
     ]
