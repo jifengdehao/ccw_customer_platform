@@ -54,7 +54,7 @@
         columns: [
           {
             title: '交易号',
-            key: 'coPickingId',
+            key: 'coSubOrderId',
             align: 'center'
           },
           {

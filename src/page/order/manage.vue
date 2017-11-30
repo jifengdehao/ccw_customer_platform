@@ -159,6 +159,7 @@
             width: 50,
             render: (h, params) => {
               let orderId = params.row.orderId
+              console.log(orderId)
               return h(expandRow, {
                 props: {
                   orderId: orderId
