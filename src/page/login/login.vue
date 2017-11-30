@@ -124,6 +124,9 @@
           if (this.remember) {
             sessionStorage.setItem('username', this.formLogin.userName)
             sessionStorage.setItem('password', this.formLogin.password)
+          } else {
+            sessionStorage.removeItem('username')
+            sessionStorage.removeItem('password')
           }
         })
       },
