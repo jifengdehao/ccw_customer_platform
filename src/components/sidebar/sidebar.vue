@@ -6,30 +6,31 @@
 */
 <template>
   <Row type="flex" style="height: 100%;min-width: 1200px;">
-    <Col :class="{'layout-hide-text': spanLeft < 3}" class="sidebar" :xs="spanLeft" :sm="spanLeft" :md="spanLeft" :lg="spanLeft" >
-      <div class="close-menu" @click="toggleClick()">
-        <Icon type="navicon-round" :size="iconSize"></Icon>
-      </div>
-      <Menu theme="dark" @on-select="route" width="auto" :active-name="activeName">
-        <template v-for="item in menu">
-          <MenuItem v-if="item.noDropdown && item.name" :name="item.url">
+    <Col :class="{'layout-hide-text': spanLeft < 3}" class="sidebar" :xs="spanLeft" :sm="spanLeft" :md="spanLeft"
+         :lg="spanLeft">
+    <div class="close-menu" @click="toggleClick()">
+      <Icon type="navicon-round" :size="iconSize"></Icon>
+    </div>
+    <Menu theme="dark" @on-select="route" width="auto" :active-name="activeName">
+      <template v-for="item in menu">
+        <MenuItem v-if="item.noDropdown && item.name" :name="item.url">
+          <Icon :type="item.icon" :size="iconSize"></Icon>
+          <span class="layout-text">{{item.name}}</span>
+        </MenuItem>
+        <Submenu v-else :name="item.name">
+          <template slot="title">
             <Icon :type="item.icon" :size="iconSize"></Icon>
             <span class="layout-text">{{item.name}}</span>
-          </MenuItem>
-          <Submenu v-else :name="item.name">
-            <template slot="title">
-              <Icon :type="item.icon" :size="iconSize"></Icon>
-              <span class="layout-text">{{item.name}}</span>
-            </template>
-            <template v-for="m in item.submenu">
-              <Menu-item :name="m.url">{{m.name}}</Menu-item>
-            </template>
-          </Submenu>
-        </template>
-      </Menu>
+          </template>
+          <template v-for="m in item.submenu">
+            <Menu-item :name="m.url">{{m.name}}</Menu-item>
+          </template>
+        </Submenu>
+      </template>
+    </Menu>
     </Col>
     <Col style="overflow-y: scroll;padding: 40px;" :xs="spanRight" :sm="spanRight" :md="spanRight" :lg="spanRight">
-        <router-view></router-view>
+      <router-view></router-view>
     </Col>
   </Row>
 </template>

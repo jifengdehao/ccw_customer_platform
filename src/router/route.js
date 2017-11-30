@@ -354,12 +354,12 @@ export default [
         component: Order,
         redirect: '/order/manage',
         children: [
-          {path: 'manage', component: OrderManage, name: 'manage'},
+          {path: 'manage', component: OrderManage},
           {path: 'abnormal', component: OrderAbnormal},
-          {path: 'evaluate', component: OrderEvaluate, name: 'evaluate'},
+          {path: 'evaluate', component: OrderEvaluate},
           {path: 'evaluateInfoDeliver/:id', component: OrderEvaluateDeliver},
           {path: 'evaluateInfoSeller/:id', component: OrderEvaluateSeller},
-          {path: 'feedback', component: OrderFeedback, name: 'feedback'},
+          {path: 'feedback', component: OrderFeedback},
           {path: 'feedbackInfo/:id', component: OrderFeedbackInfo},
           {path: 'sw', component: OrderSw},
           {path: 'orderInfo/:id', component: OrderInfo}

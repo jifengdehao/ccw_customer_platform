@@ -43,9 +43,9 @@
           </Col>
         </Row>
       </Form-item>
-      <Form-item class="login-no-bottom">
-        <Checkbox v-model="remember">记住密码</Checkbox>
-      </Form-item>
+      <!--<Form-item class="login-no-bottom">-->
+        <!--<Checkbox v-model="remember">记住密码</Checkbox>-->
+      <!--</Form-item>-->
       <Form-item class="login-no-bottom">
         <Row type="flex">
           <Col :xs="{ span: 4, offset: 6}">
@@ -68,7 +68,7 @@
     data () {
       return {
         Code: '',
-        remember: false,
+        // remember: false,
         formLogin: {
           userName: '',
           password: '',
@@ -89,14 +89,16 @@
     created () {
       this.initCode()
     },
+    /*
     mounted () {
-      if (sessionStorage.getItem('username')) {
-        this.formLogin.userName = sessionStorage.getItem('username')
+      if (localStorage.getItem('username')) {
+        this.formLogin.userName = localStorage.getItem('username')
       }
-      if (sessionStorage.getItem('password')) {
-        this.formLogin.password = sessionStorage.getItem('password')
+      if (localStorage.getItem('password')) {
+        this.formLogin.password = localStorage.getItem('password')
       }
     },
+    */
     methods: {
       // 登录
       handleSubmit () {
@@ -105,13 +107,12 @@
             let params = {
               userName: this.formLogin.userName,
               password: hash(this.formLogin.password),
-              // password: this.formLogin.password,
               verificationCode: this.formLogin.verificationCode
             }
             console.log(params)
-            api.login(params).then((res) => {
-              console.log(res)
+            api.login(params).then(res => {
               if (res) {
+                console.log(res)
                 sessionStorage.setItem('user', JSON.stringify(res))
                 this.$router.go('/')
               }
@@ -121,13 +122,15 @@
               title: '登录验证失败！'
             })
           }
+          /*
           if (this.remember) {
-            sessionStorage.setItem('username', this.formLogin.userName)
-            sessionStorage.setItem('password', this.formLogin.password)
+            localStorage.setItem('username', (this.formLogin.userName))
+            localStorage.setItem('password', this.formLogin.password)
           } else {
-            sessionStorage.removeItem('username')
-            sessionStorage.removeItem('password')
+            localStorage.removeItem('username')
+            localStorage.removeItem('password')
           }
+          */
         })
       },
       // 重置

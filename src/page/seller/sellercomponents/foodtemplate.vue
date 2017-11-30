@@ -61,7 +61,7 @@
                 </div>
                 <div style="width:15%">
                   <!-- <input type="checkbox" v-modal="data.check"  @click="clickCheck(index)"> -->
-                  <Checkbox v-model="data.single" ></Checkbox>
+                  <Checkbox v-model="data.single" @on-change="eachChecked"></Checkbox>
                 </div>
             </div>
           </draggable>
@@ -287,8 +287,8 @@ export default {
       this.templateItem = {
         name: '',
         labels: '',
-        spCategoryParentId: 0,
-        spCategoryId: 0,
+        spCategoryParentId: null,
+        spCategoryId: null,
         mainPic: [],
         picLib: [],
         originPlace: '',
@@ -453,6 +453,7 @@ export default {
     },
     // 全选
     clickAll() {
+      // 点击全选 子元素选择 或者全不选
       if (this.Allsingle) {
         this.templatedata.forEach(item => {
           item.single = true
@@ -462,6 +463,14 @@ export default {
           item.single = false
         })
       }
+    },
+    // 子级选择判断全选是否选中
+    eachChecked() {
+      this.Allsingle = this.templatedata.every(item => {
+        if (item.single) {
+          return true
+        }
+      })
     },
     // 图片上传
     mainPicUpload(e) {
