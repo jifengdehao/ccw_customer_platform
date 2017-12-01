@@ -77,7 +77,6 @@
       getEvalDetailsData () {
         api.getOrderSellerDetails(this.id).then((res) => {
           if (res) {
-            console.log(res)
             this.result = res
           }
         })

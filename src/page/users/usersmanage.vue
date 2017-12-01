@@ -24,8 +24,10 @@
     <Modal v-model="exportModal" width="300">
       <div class="vm-textCenter">
         <DatePicker type="date" placeholder="选择日期" v-model="startTime" style="width: 100%"></DatePicker>
+        <!-- <DatePicker type="datetime" @on-change="onChangeStartTime" placeholder="请输入开始时间" style="width: 100%"></DatePicker> -->
         <div class="mtb10">到</div>
         <DatePicker type="date" placeholder="选择日期" v-model="endTime" style="width: 100%"></DatePicker>
+        <!-- <DatePicker type="datetime" @on-change="onChangeEndTime" placeholder="请输入结束时间" style="width: 100%"></DatePicker> -->
       </div>
       <div slot="footer">
         <Button type="primary" long @click="getExportData()">确定</Button>
@@ -236,19 +238,29 @@ export default {
       this.endTime = ''
       this.exportModal = true
     },
+    // // 获取开始 时间源
+    // onChangeStartTime(data) {
+    //   this.startTime = data
+    // },
+    // // 获取结束 时间源
+    // onChangeEndTime(data) {
+    //   this.endTime = data
+    // },
     // 导出数据
     getExportData() {
-      let params = {
-        status: this.status,
-        mobileno: this.searchMobileno,
-        startTime: this.startTime,
-        endTime: this.endTime
-      }
-      api.getUserExport(params).then(res => {
-        if (res && res != null) {
-          window.open(res)
+      if (!!this.startTime && !!this.endTime) {
+        let params = {
+          status: this.status,
+          mobileno: this.searchMobileno,
+          startTime: this.startTime,
+          endTime: this.endTime
         }
-      })
+        api.getUserExport(params).then(res => {
+          if (res && res != null) {
+            window.open(res)
+          }
+        })
+      }
       this.exportModal = false
     },
     // 新增用户 打开弹框 清空默认值
@@ -260,11 +272,16 @@ export default {
     addUser() {
       api.getAddUser(this.addUsers).then(res => {
         if (res === true) {
+          this.$Message.info('新增成功');
           this.getUserData() // 数据调用
+        } else {
+          this.$Message.info('新增失败');
         }
       })
     },
-    addCancel() {}
+    addCancel() {
+      this.$Message.info('关闭新增弹框');
+    }
   }
 }
 </script>

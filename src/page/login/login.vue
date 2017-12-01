@@ -28,18 +28,7 @@
           </Input>
           </Col>
           <Col span="6" offset="1">
-          <div style="height: 36px;line-height: 36px;
-                      text-align: center;
-                      font-size:18px;
-                      cursor: pointer;
-                      color: #ed3f14;
-                      background-color: #ffffff;
-                      font-style:italic;
-                      border: 1px solid #dddee1;
-                      border-radius: 4px;
-                      letter-spacing: .2em;"
-               @click="refCode">{{Code}}
-          </div>
+          <div @click="refCode" class="refCode">{{Code}}</div>
           </Col>
         </Row>
       </Form-item>
@@ -91,7 +80,7 @@
     },
     /*
     mounted () {
-      if (localStorage.getItem('username')) {
+      if (se.getItem('username')) {
         this.formLogin.userName = localStorage.getItem('username')
       }
       if (localStorage.getItem('password')) {
@@ -109,10 +98,8 @@
               password: hash(this.formLogin.password),
               verificationCode: this.formLogin.verificationCode
             }
-            console.log(params)
             api.login(params).then(res => {
               if (res) {
-                console.log(res)
                 sessionStorage.setItem('user', JSON.stringify(res))
                 this.$router.go('/')
               }
@@ -140,7 +127,6 @@
       // 请求code 验证码
       initCode () {
         api.getCode().then(res => {
-          console.log(res)
           if (res) {
             this.Code = res
           }
@@ -152,3 +138,18 @@
     }
   }
 </script>
+<style lang="stylus" type="text/stylus">
+  #login
+    .refCode
+      height: 36px;
+      line-height: 36px;
+      text-align: center;
+      font-size:18px;
+      cursor: pointer;
+      color: #ed3f14;
+      background-color: #ffffff;
+      font-style:italic;
+      border: 1px solid #dddee1;
+      border-radius: 4px;
+      letter-spacing: .2em;
+</style>

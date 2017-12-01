@@ -56,7 +56,6 @@
             }
             api.postOrderSw(params).then((res) => {
               if (res) {
-                console.log(res)
                 let that = this
                 that.$Notice.success({
                   title: '更新成功！',
@@ -80,7 +79,6 @@
       getSwData () {
         api.getOrderSw().then((res) => {
           if (res) {
-            console.log(res)
             this.formValidate.desc = res.content
             this.formValidate.dateTime = res.startAt
             this.formValidate.rkShieldWordId = res.rkShieldWordId
