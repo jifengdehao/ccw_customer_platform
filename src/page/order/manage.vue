@@ -16,7 +16,7 @@
     </i-form>
     <Tabs value="0" @on-click="selectTab" :animated="false">
       <Tab-pane label="全部订单" name="0">
-        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -29,7 +29,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待付款" name="1">
-        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Table :columns="columns" :data="data"  :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -42,7 +42,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待接单" name="2">
-        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -55,7 +55,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待发货" name="3">
-        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Table :columns="columns" :data="data"  :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -68,7 +68,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="配送中" name="4">
-        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Table :columns="columns" :data="data"  :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -81,7 +81,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待评价" name="5">
-        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Table :columns="columns" :data="data"  :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -94,7 +94,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="已完成" name="6">
-        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Table :columns="columns" :data="data"  :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -107,7 +107,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="取消订单" name="7">
-        <Table :columns="columns" :data="data" stripe :loading="loading"></Table>
+        <Table :columns="columns" :data="data"  :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -159,7 +159,6 @@
             width: 50,
             render: (h, params) => {
               let orderId = params.row.orderId
-              console.log(orderId)
               return h(expandRow, {
                 props: {
                   orderId: orderId
@@ -194,34 +193,6 @@
             title: '订单状态',
             key: 'statusChinese',
             align: 'center'
-//            ,
-//            render: (h, params) => {
-//              let status = params.row.status
-//              let statusName
-//              switch (status) {
-//                case 1:
-//                  statusName = '待付款'
-//                  break
-//                case 2:
-//                  statusName = '待接单'
-//                  break
-//                case 3:
-//                  statusName = '待发货'
-//                  break
-//                case 4:
-//                  statusName = '配送中'
-//                  break
-//                case 5:
-//                  statusName = '待评价'
-//                  break
-//                case 6:
-//                  statusName = '已完成'
-//                  break
-//                default:
-//                  statusName = '无'
-//              }
-//              return h('span', statusName)
-//            }
           },
           {
             title: '操作',
@@ -231,7 +202,7 @@
               let orderId = params.row.orderId
               let status = params.row.status
               let isabled
-              if (status === 5 || status === 6) {
+              if (status === 6) {
                 isabled = false
               } else {
                 isabled = true
@@ -247,7 +218,6 @@
                   },
                   on: {
                     click: () => {
-                      console.log(orderId)
                       this.$router.push('/order/orderInfo/' + orderId + '?options=see')
                     }
                   }
@@ -260,7 +230,6 @@
                   },
                   on: {
                     click: () => {
-                      console.log(orderId)
                       this.$router.push('/order/orderInfo/' + orderId + '?options=edit')
                     }
                   }
@@ -278,11 +247,13 @@
     methods: {
       // 搜索
       handleSubmit () {
+        this.curr = 1
         this._getOrderData()
       },
       // 选择tab
       selectTab (name) {
         this.status = parseInt(name)
+        this.curr = 1
         this._getOrderData()
       },
       // 导出数据
@@ -294,12 +265,10 @@
           status: this.status,
           mobileno: this.mobileno
         }
-        console.log(params)
         api.exportOrderList(params).then((res) => {
           if (res) {
-            console.log(res)
             this.modal_loading = false
-            window.location.href = res
+            window.open(res)
           }
         })
       },
@@ -316,7 +285,6 @@
         }
         api.getOrderList(params, this.curr).then((res) => {
           if (res) {
-            console.log(res)
             this.loading = false
             this.tableTotal = res.total
             this.data = res.records

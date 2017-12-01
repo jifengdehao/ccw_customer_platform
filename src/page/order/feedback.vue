@@ -75,7 +75,7 @@
         curr: 1, // 当前页
         pageNum: 10, // 当前页展示的数据量
         tableTotal: 0, // 数据总数
-        types: 0, // 评价类型
+        types: '0', // 评价类型
         phone: '', // 手机号
         loading: true, // 表格加载
         exportModal: false, // 弹出导出表格
@@ -101,7 +101,14 @@
           {
             title: '反馈内容',
             key: 'content',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              if (params.row.content && params.row.content.length > 10) {
+                return params.row.content.substr(0, 10) + '...'
+              } else {
+                return params.row.content
+              }
+            }
           },
           {
             title: '反馈时间',
@@ -154,6 +161,7 @@
     },
     methods: {
       handleSubmit () {
+        this.curr = 1
         this.getFeedbackListData()
       },
       changePage (index) {
@@ -162,6 +170,7 @@
       },
       selectTab (name) {
         this.types = name
+        this.curr = 1
         this.getFeedbackListData()
       },
       exportData () {
@@ -172,12 +181,10 @@
           types: this.types,
           mobileno: this.mobileno
         }
-        console.log(params)
         api.exportFeedback(params).then((res) => {
           if (res) {
             this.modal_loading = false
-            console.log(res)
-            window.location.href = res
+            window.open(res)
           }
         })
       },
@@ -187,9 +194,7 @@
           types: this.types,
           mobileno: this.phone
         }
-        console.log(params)
         api.getFeedBackList(params, this.curr).then((res) => {
-          console.log(res)
           if (res) {
             this.tableTotal = res.total
             this.data = res.records

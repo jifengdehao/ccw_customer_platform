@@ -127,7 +127,7 @@
             key: 'content',
             align: 'center',
             render: (h, params) => {
-              if (params.row.content.length > 10) {
+              if (params.row.content && params.row.content.length > 10) {
                 return params.row.content.substr(0, 10) + '...'
               } else {
                 return params.row.content
@@ -143,58 +143,47 @@
               let rkShopId = params.row.rkShopId
               let isDelete = params.row.isDelete
               return h('div', [
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      width: '52px'
-                    },
-                    on: {
-                      click: () => {
-                        this.$router.push(
-                          '/order/evaluateInfoSeller/' + rkShopId
-                        )
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px',
+                    width: '52px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push('/order/evaluateInfoSeller/' + rkShopId)
+                    }
+                  }
+                }, '查看'),
+                h('Button', {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  style: {
+                    width: '52px'
+                  },
+                  on: {
+                    click: () => {
+                      if (!isDelete) {
+                        this.$Modal.confirm({
+                          content: '确定隐藏这评价？',
+                          onOk () {
+                            // api 操作
+                            api.putOrderSellerEval(rkShopId).then(res => {
+                              if (res) {
+                                params.row.isDelete = true
+                              }
+                            })
+                          }
+                        })
                       }
                     }
-                  },
-                  '查看'
-                ),
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'error',
-                      size: 'small'
-                    },
-                    style: {
-                      width: '52px'
-                    },
-                    on: {
-                      click: () => {
-                        if (!isDelete) {
-                          this.$Modal.confirm({
-                            content: '确定隐藏这评价？',
-                            onOk () {
-                              // api 操作
-                              api.putOrderSellerEval(rkShopId).then(res => {
-                                if (res) {
-                                  console.log(res)
-                                  params.row.isDelete = true
-                                }
-                              })
-                            }
-                          })
-                        }
-                      }
-                    }
-                  },
-                  isDelete === true ? '已隐藏' : '隐藏'
-                )
+                  }
+                }, isDelete === true ? '已隐藏' : '隐藏')
               ])
             }
           }
@@ -244,7 +233,7 @@
             key: 'content',
             align: 'center',
             render: (h, params) => {
-              if (params.row.content.length > 10) {
+              if (params.row.content && params.row.content.length > 10) {
                 return params.row.content.substr(0, 10) + '...'
               } else {
                 return params.row.content
@@ -259,58 +248,49 @@
               let isDetlete = params.row.isDelete
               let rkDeliverId = params.row.rkDeliverId
               return h('div', [
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      width: '52px'
-                    },
-                    on: {
-                      click: () => {
-                        this.$router.push(
-                          '/order/evaluateInfoDeliver/' + rkDeliverId
-                        )
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px',
+                    width: '52px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push(
+                        '/order/evaluateInfoDeliver/' + rkDeliverId
+                      )
+                    }
+                  }
+                }, '查看'),
+                h('Button', {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  style: {
+                    width: '52px'
+                  },
+                  on: {
+                    click: () => {
+                      if (!isDetlete) {
+                        this.$Modal.confirm({
+                          content: '确定隐藏这评价？',
+                          onOk () {
+                            // api 操作
+                            api.putOrderDeliverEval(rkDeliverId).then(res => {
+                              if (res) {
+                                params.row.isDelete = true
+                              }
+                            })
+                          }
+                        })
                       }
                     }
-                  },
-                  '查看'
-                ),
-                h(
-                  'Button',
-                  {
-                    props: {
-                      type: 'error',
-                      size: 'small'
-                    },
-                    style: {
-                      width: '52px'
-                    },
-                    on: {
-                      click: () => {
-                        if (!isDetlete) {
-                          this.$Modal.confirm({
-                            content: '确定隐藏这评价？',
-                            onOk () {
-                              // api 操作
-                              api.putOrderDeliverEval(rkDeliverId).then(res => {
-                                if (res) {
-                                  console.log(res)
-                                  params.row.isDelete = true
-                                }
-                              })
-                            }
-                          })
-                        }
-                      }
-                    }
-                  },
-                  isDetlete === true ? '已隐藏' : '隐藏'
-                )
+                  }
+                }, isDetlete === true ? '已隐藏' : '隐藏')
               ])
             }
           }
@@ -360,7 +340,7 @@
             key: 'content',
             align: 'center',
             render: (h, params) => {
-              if (params.row.content.length > 10) {
+              if (params.row.content && params.row.content.length > 10) {
                 return params.row.content.substr(0, 10) + '...'
               } else {
                 return params.row.content
@@ -415,7 +395,6 @@
                               // api 操作
                               api.putOrderSellerEval(rkShopId).then(res => {
                                 if (res) {
-                                  console.log(res)
                                   params.row.isDelete = true
                                 }
                               })
@@ -471,7 +450,6 @@
         }
         api.exportEval(params).then(res => {
           if (res) {
-            console.log(res)
             this.modal_loading = false
             window.open(res)
           }
@@ -497,7 +475,6 @@
           mobileno: this.phone
         }
         api.getOrderSellerListEval(params, this.curr).then(res => {
-          console.log(res)
           if (res) {
             this.loading1 = false
             this.tableTotal = res.total
@@ -512,7 +489,6 @@
           mobileno: this.phone
         }
         api.getOrderDeliverListeEval(params, this.curr).then(res => {
-          console.log(res)
           if (res) {
             this.loading2 = false
             this.tableTotal = res.total
@@ -527,7 +503,6 @@
           mobileno: this.phone
         }
         api.getOrderBadListEval(params, this.curr).then(res => {
-          console.log(res)
           if (res) {
             this.loading3 = false
             this.tableTotal = res.total
