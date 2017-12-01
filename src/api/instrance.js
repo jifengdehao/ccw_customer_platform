@@ -73,7 +73,7 @@ export const op = (url, params) => {
 // 上传地址
 export const uploadUrl = config.imgUpload
 
-export function base(type, url, params) {
+export function base (type, url, params) {
   return new Promise((resolve, reject) => {
     itr(type, url, params)
       .then(response => {
@@ -97,7 +97,7 @@ export function base(type, url, params) {
             onOk: () => {
               sessionStorage.removeItem('user')
               sessionStorage.removeItem('menu')
-              window.location.reload()
+              window.location.href = window.location.origin
             }
           })
         } else {
@@ -105,7 +105,7 @@ export function base(type, url, params) {
             title: '操作失败',
             desc: `<p><span style="color:#ff3300">${
               response.data.code
-            }</span>&nbsp;&nbsp;${response.data.msg}</p>`
+              }</span>&nbsp;&nbsp;${response.data.msg}</p>`
           })
           reject(response.data.msg)
         }
