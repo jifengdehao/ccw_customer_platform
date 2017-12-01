@@ -84,7 +84,8 @@ export function base(type, url, params) {
             title: '提示',
             content: response.data.msg,
             onOk: () => {
-              sessionStorage.removeItem('userInfo')
+              sessionStorage.removeItem('user')
+              sessionStorage.removeItem('menu')
               window.location.reload()
             }
           })
@@ -94,7 +95,8 @@ export function base(type, url, params) {
             title: '提示',
             content: '您已在其他设备登录',
             onOk: () => {
-              sessionStorage.removeItem('userInfo')
+              sessionStorage.removeItem('user')
+              sessionStorage.removeItem('menu')
               window.location.href = window.location.origin
             }
           })
