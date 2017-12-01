@@ -231,7 +231,7 @@ export default {
         },
         {
           title: '档口名称',
-          key: 'businessType',
+          key: 'shopName',
           align: 'center'
         },
         {
