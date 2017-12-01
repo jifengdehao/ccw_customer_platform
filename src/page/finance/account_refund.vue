@@ -8,15 +8,15 @@
   <div class="refundApplication">
     <!-- 表格内容 -->
     <section>
-       <Tabs :animated="false"  @on-click="changeTable">
-      <TabPane v-for="tab in tabs" key :label="tab.title">
-        <Table border :columns="refundColumns" :data="remindData"></Table>
+    <Tabs :animated="false"  @on-click="changeTable">
+      <TabPane v-for="(tab,index) in tabs" :key="index" :label="tab.title">
+        <Table border :columns="refundColumns" :data="refundData"></Table>
       </TabPane>
     </Tabs>
     </section>
    <!-- 按钮 和分页 -->
     <section>
-      <div class="buttons" v-if="current === 0">
+      <div class="buttons" v-if="showButton === 0">
         <Button>全选</Button>
         <Button type="success">通过</Button>
         <Button type="warning">驳回</Button>
@@ -28,20 +28,27 @@
   </div>
 </template>
 <script>
+import * as api from 'api/common.js'
 export default {
   components: {},
   props: {},
   data() {
     return {
       pageNo: 1,
+      pageSize: 10,
       total: 0,
-      current: 0,
+      showButton: 0,
       tabs: [
         { title: '申请中' },
         { title: '退款中' },
         { title: '已完成' },
         { title: '已驳回' }
       ],
+      params: {
+        auditStatus: 0, // 审核状态 (0待审核1审核通过2审核不通过)
+        status: null, // 退款状态 (1退款中2退款完成3退款失败)
+        pageSize: 10
+      },
       refundColumns: [],
       refundColumns1: [
         {
@@ -187,11 +194,12 @@ export default {
           align: 'center'
         }
       ],
-      remindData: []
+      refundData: []
     }
   },
   created() {
     this.refundColumns = this.refundColumns1
+    // this.getRefundList(this.pageNo, {auditStatus: 0,pageSize:this.pageSize})
   },
   mounted() {},
   activited: {},
@@ -199,20 +207,46 @@ export default {
   methods: {
     // 切换tab
     changeTable(index) {
-      this.current = index
+      this.showButton = index
       if (index === 0) {
         this.refundColumns = this.refundColumns1
-      } else if (index === 1) {
+        this.params.auditStatus = index
+        this.params.status = null
+      } else {
         this.refundColumns = this.refundColumns2
-      } else if (index === 2) {
-        this.refundColumns = this.refundColumns2
-      } else if (index === 3) {
-        this.refundColumns = this.refundColumns2
+        if (index === 3) {
+          this.params.auditStatus = 2
+          this.params.status = null
+        } else {
+          this.params.auditStatus = null
+          this.params.status = index
+        }
       }
+      // this.getRefundList(1, this.params)
     },
     // 切换分页
     changePage(number) {
-      console.log(number)
+      this.pageNo = number
+      // this.getRefundList(this.pageNo, this.params)
+    },
+    // 获取用户退款列表
+    getRefundList(pageNo, params) {
+      api.getRefundList(pageNo, params).then(res => {
+        // console.log(res)
+        this.refundData = res.records
+        this.total = res.total
+        this.pageNo = res.current
+      })
+    },
+    // 通过或驳回用户退款申请
+    auditRefund(idList, auditStatus) {
+      let params = {
+        idList: idList,
+        auditStatus: auditStatus // 审核状态 0待审核1审核通过2审核不通过
+      }
+      api.auditRefund(params).then(res => {
+        console.log(res)
+      })
     }
   },
   filfter: {},
