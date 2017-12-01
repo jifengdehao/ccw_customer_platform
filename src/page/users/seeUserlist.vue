@@ -12,9 +12,17 @@
         <auth-tree :menuData="menuData.menu" :parentData="menuData"></auth-tree>
       </ul>
     </div>
+    <!-- 确定弹框 -->
+    <Modal
+        v-model="userHid"
+        title="修改权限"
+        @on-ok="submitInfoData"
+        @on-cancel="cancel">
+        <p>是否修改权限用户？</p>
+    </Modal>
     <p class="btn-p" v-if="showButton && showButton != null">
       <Button @click="getTreeList">取消</Button>
-      <Button @click="submitInfoData">确认</Button>
+      <Button @click="onUserOk">确认</Button>
     </p>
   </div>
 </template>
@@ -26,6 +34,7 @@ export default {
   data() {
     return {
       menuData: null, //  传递给子组件的值
+      userHid: false, // 隐藏弹框
       putParams: {
         accountId: '', //  角色ID
         permissionList: [] //  用户权限
@@ -83,6 +92,10 @@ export default {
         }
       })
     },
+    // 打开弹框
+    onUserOk() {
+      this.userHid = true
+    },
     //  确认
     submitInfoData() {
       this.putParams.permissionList = []
@@ -94,8 +107,14 @@ export default {
       api.getUserPermission(this.putParams).then(data => {
         if (data && data === true) {
           this.getTreeList()
+          this.$Message.info('修改成功')
+        } else {
+          this.$Message.info('修改失败')
         }
       })
+    },
+    cancel() {
+      this.$Message.info('取消修改')
     }
   }
 }
