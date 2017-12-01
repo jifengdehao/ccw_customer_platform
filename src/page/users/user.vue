@@ -137,12 +137,6 @@
                   title: '个人信息修改成功',
                   duration: 2
                 })
-              } else {
-                this.$Notice.error({
-                  title: '个人信息修改失败',
-                  duration: 2,
-                  desc: res.msg
-                })
               }
             })
           }

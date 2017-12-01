@@ -79,6 +79,7 @@
       getSwData () {
         api.getOrderSw().then((res) => {
           if (res) {
+            console.log(res)
             this.formValidate.desc = res.content
             this.formValidate.dateTime = res.startAt
             this.formValidate.rkShieldWordId = res.rkShieldWordId
