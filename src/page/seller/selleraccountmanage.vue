@@ -50,7 +50,7 @@
     </section>
     <!-- 商家信息模态框 -->
     <Modal v-model="shopMessageModal" title="商家信息" width="900">
-      <Form ref="formInline"  :model="shopMessage"  label-postion="left" :label-width="100" >
+      <Form ref="formInline" class="modelForm"  :model="shopMessage"  label-postion="left" :label-width="100" >
         <Row>
           <Col span="9">
           <!-- 账号信息 -->
