@@ -235,7 +235,7 @@ export default {
       shopManageModal: false, // 商家账号管理模态框
       picModal: false, // 查看大图模态框
       bigImgUrl: '', // 查看大图的图片地址
-      sellerAccountData: [{ shopName: 'jjj' }],
+      sellerAccountData: [],
       formItem: {},
       businessDictCode: [],
       columns: [
