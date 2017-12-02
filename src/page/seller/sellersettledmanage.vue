@@ -181,6 +181,7 @@ export default {
                         params.row.msSellerApplyId,
                         params.row.applyStatus + 2
                       )
+                      this.auditdata.splice(params.row.index, 1)
                     }
                   }
                 },
