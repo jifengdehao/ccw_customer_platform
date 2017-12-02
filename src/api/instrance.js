@@ -11,7 +11,11 @@ import iview from 'iview'
 // import * as ac from '../data/index.js'
 import hash from 'js-md5'
 
-var URI = config.apiDomain
+// var URI = config.apiDomain
+var URI =
+  window.location.host.indexOf('localhost:') > -1
+    ? config.apiDomain
+    : 'http://192.168.0.151:8093/globalpt'
 var ax = axios.create({
   baseURL: URI,
   timeout: 30000,
