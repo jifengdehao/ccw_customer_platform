@@ -78,8 +78,17 @@ export function uploadpic(file) {
   var imgName = guid()
   var storeAs = '/images/' + imgName + '.' + file.name.split('.').splice(-1)
   // 限制图片大小 2097152 2GB
-  if (file.size < 5242880) {
+  if (file.type.indexOf('image/') && file.size < 5242880) {
     // 上传图片
+    return client
+      .multipartUpload(storeAs, file)
+      .then(result => {
+        return result.res.requestUrls
+      })
+      .catch(function(err) {
+        return err
+      })
+  } else if (file.name.lastIndexOf('.apk') > 0 && file.size < 5242880 * 20) {
     return client
       .multipartUpload(storeAs, file)
       .then(result => {
