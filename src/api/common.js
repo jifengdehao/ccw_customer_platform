@@ -708,3 +708,16 @@ export const getTreeList = id => {
 export const getUserPermission = params => {
   return ax.u('/platform/permission', params)
 }
+/**
+ * 财务管理相关接口
+ * ZengFanlu
+ */
+// 用户退款 胡上军
+// 获取用户退款记录列表
+export const getRefundList = (pageNo, params) => {
+  return ax.g(`/finance/customer/refund/list/${pageNo}`, params)
+}
+// 通过或驳回用户退款申请
+export const auditRefund = (params) => {
+  return ax.pa(`/finance/customer/refund/audit`, params)
+}

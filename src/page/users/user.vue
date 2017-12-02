@@ -9,7 +9,7 @@
     <p slot="title">
       <Icon type="person"></Icon>&nbsp;&nbsp;个人信息
     </p>
-    <Form ref="userForm" :model="userForm" :label-width="100" :rules="inforValidate" style="width: 500px;">
+    <Form ref="userForm" :model="userForm" :label-width="100" :rules="inforValidate" style="width: 500px;" id="userForm">
       <FormItem label="用户ID：" prop="ptUserId">
         <Input v-model="userForm.ptUserId" disabled></Input>
       </FormItem>
@@ -19,7 +19,7 @@
       <FormItem label="用户手机：" prop="mobileno">
         <Input v-model="userForm.mobileno"></Input>
       </FormItem>
-      <FormItem label="邮箱：" prop="email">
+      <FormItem label="邮箱：" prop="email" class="mb20">
         <Input v-model="userForm.email"></Input>
       </FormItem>
       <FormItem label="登录密码：">
@@ -27,7 +27,7 @@
       </FormItem>
       <FormItem>
         <Button type="ghost" class="mr10" @click="cancelEditUserInfor">取消</Button>
-        <Button type="primary"  @click="saveEdit">保存</Button>
+        <Button type="primary" @click="saveEdit">保存</Button>
       </FormItem>
     </Form>
     <Modal v-model="editPasswordModal" :width="500">
@@ -46,7 +46,7 @@
       </Form>
       <div slot="footer">
         <Button type="ghost" @click="cancelEditPass">取消</Button>
-        <Button type="primary"  @click="saveEditPass">保存</Button>
+        <Button type="primary" @click="saveEditPass">保存</Button>
       </div>
     </Modal>
   </Card>
@@ -81,7 +81,8 @@
           ptUserId: '',
           nickname: '',
           mobileno: '',
-          email: ''
+          email: '',
+          token: ''
         },
         editPasswordModal: false,
         editPasswordForm: {
@@ -127,18 +128,13 @@
       },
       saveEdit () {
         // 修改个人信息后保存
-        this.$refs['userForm'].validate((valid) => {
+        this.$refs.userForm.validate((valid) => {
           if (valid) {
             this.userForm.token = JSON.parse(sessionStorage.getItem('user')).token
             api.modifyUserInfo(this.userForm).then((res) => {
               if (res) {
                 this.$Notice.success({
                   title: '个人信息修改成功',
-                  duration: 2
-                })
-              } else {
-                this.$Notice.error({
-                  title: '个人信息修改失败',
                   duration: 2
                 })
               }
@@ -153,7 +149,7 @@
         this.editPasswordModal = false
       },
       saveEditPass () {
-        this.$refs['editPasswordForm'].validate((valid) => {
+        this.$refs.editPasswordForm.validate((valid) => {
           if (valid) {
             let params = {
               accountId: this.id,
@@ -162,12 +158,10 @@
             }
             api.modifyPass(params).then((res) => {
               if (res) {
-                console.log(res)
-                // 退出登录
+                // 重新登录
                 this.editPasswordModal = false
                 api.logout().then((res) => {
                   if (res) {
-                    console.log(res)
                     sessionStorage.removeItem('user')
                     sessionStorage.removeItem('menu')
                     this.$router.push('/login')
@@ -187,7 +181,6 @@
       init () {
         api.getUserList(this.id).then((res) => {
           if (res) {
-            console.log(res)
             this.userForm = res
           }
         })

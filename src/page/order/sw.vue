@@ -56,7 +56,6 @@
             }
             api.postOrderSw(params).then((res) => {
               if (res) {
-                console.log(res)
                 let that = this
                 that.$Notice.success({
                   title: '更新成功！',

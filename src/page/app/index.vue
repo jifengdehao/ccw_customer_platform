@@ -95,50 +95,10 @@
             }
           }
         ],
-        data: [
-//          {
-//            title: '安卓更新',
-//            name: '菜城配送端',
-//            version: 'V1.1.3',
-//            updateTime: '2017-11-24 00:00'
-//          },
-//          {
-//            title: '安卓更新',
-//            name: '菜城配送端',
-//            version: 'V1.1.3',
-//            updateTime: '2017-11-24 00:00'
-//          },
-//          {
-//            title: '安卓更新',
-//            name: '菜城配送端',
-//            version: 'V1.1.3',
-//            updateTime: '2017-11-24 00:00'
-//          },
-//          {
-//            title: '安卓更新',
-//            name: '菜城配送端',
-//            version: 'V1.1.3',
-//            updateTime: '2017-11-24 00:00'
-//          },
-//          {
-//            title: '安卓更新',
-//            name: '菜城配送端',
-//            version: 'V1.1.3',
-//            updateTime: '2017-11-24 00:00'
-//          },
-//          {
-//            title: '安卓更新',
-//            name: '菜城配送端',
-//            version: 'V1.1.3',
-//            updateTime: '2017-11-24 00:00'
-//          }
-        ],
-        pageNum:
-          10, // 当前页的显示的数据数量
-        curr:
-          1, // 当前页
-        tableTotal:
-          0 // 当前页的数据总数
+        data: [],
+        pageNum: 10, // 当前页的显示的数据数量
+        curr: 1, // 当前页
+        tableTotal: 0 // 当前页的数据总数
       }
     },
     created () {
@@ -154,7 +114,6 @@
         }
         api.getAppListData(this.curr, params).then((res) => {
           if (res) {
-            console.log(res)
             this.data = res.records
             this.tableTotal = res.total
           }
@@ -167,7 +126,6 @@
       deleteAppUpdate (id) {
         api.deleteApp(id).then((res) => {
           if (res) {
-            console.log(res)
             this.getAppListData()
           }
         })

@@ -50,7 +50,7 @@
     </section>
     <!-- 商家信息模态框 -->
     <Modal v-model="shopMessageModal" title="商家信息" width="900">
-      <Form ref="formInline"  :model="shopMessage"  label-postion="left" :label-width="100" >
+      <Form ref="formInline" class="modelForm"  :model="shopMessage"  label-postion="left" :label-width="100" >
         <Row>
           <Col span="9">
           <!-- 账号信息 -->
@@ -235,7 +235,7 @@ export default {
       shopManageModal: false, // 商家账号管理模态框
       picModal: false, // 查看大图模态框
       bigImgUrl: '', // 查看大图的图片地址
-      sellerAccountData: [{ shopName: 'jjj' }],
+      sellerAccountData: [],
       formItem: {},
       businessDictCode: [],
       columns: [

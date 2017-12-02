@@ -5,7 +5,7 @@
 * 功能：公共组件-侧栏组件
 */
 <template>
-  <Row type="flex" style="height: 100%;min-width: 1200px;">
+  <Row type="flex" style="height: 100%;min-width: 1400px;">
     <Col :class="{'layout-hide-text': spanLeft < 3}" class="sidebar" :xs="spanLeft" :sm="spanLeft" :md="spanLeft"
          :lg="spanLeft">
     <div class="close-menu" @click="toggleClick()">

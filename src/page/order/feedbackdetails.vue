@@ -42,8 +42,7 @@
       }
     },
     created () {
-      console.log(this.ptFeedbackId)
-      this._getFeedbackDetails()
+      this.getFeedbackDetails()
     },
     filters: {
       filterTime (value) {
@@ -54,10 +53,9 @@
       close () {
         this.$router.back()
       },
-      _getFeedbackDetails () {
-        api.getFeedBackInfo(this.ptFeedbackId).then((data) => {
-          console.log(data)
-          this.feedbackDetails = data
+      getFeedbackDetails () {
+        api.getFeedBackInfo(this.ptFeedbackId).then((res) => {
+          this.feedbackDetails = res
         })
       }
     }
