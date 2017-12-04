@@ -30,7 +30,9 @@
     <Row class="mb20">
       <Col span="24">
       <h2 class="vm-clearfix mb10">交易信息
-        <Button type="primary" class="vm-fr" @click="refundAll" v-show="options==='edit'? true: false ">全部退款</Button>
+        <Button type="primary" class="vm-fr" @click="refundAll" v-show="options==='edit'? true: false "
+                :disabled="isAllRefund">全部退款
+        </Button>
       </h2>
       <Table :columns="columns4" :data="data4" :border="true"></Table>
       </Col>
@@ -281,12 +283,25 @@
         data1: [],
         data2: [],
         data3: [],
-        data4: []
+        data4: [],
+        isAllRefund: false
       }
     },
     created () {
       this.getOrderDetails()
       this.hiddenOptions()
+    },
+    watch: {
+      data4 (newValue, oldValue) {
+        newValue.forEach((item) => {
+          if (item.isRefunded !== 1) {
+            this.isAllRefund = false
+            return
+          } else {
+            this.isAllRefund = true
+          }
+        })
+      }
     },
     methods: {
       refundAll () {
