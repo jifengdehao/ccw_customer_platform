@@ -65,7 +65,7 @@ export default {
         lastdate: '',
         select: ''
       },
-      auditdata: [{ marketName: '日本菜市场', applyDate: 154332444 }],
+      auditdata: [],
       auditcolumns: [],
       tabs: [{ title: '商家待审核' }, { title: '商家待审批' }, { title: '已通过' }],
       columns: [
@@ -181,6 +181,7 @@ export default {
                         params.row.msSellerApplyId,
                         params.row.applyStatus + 2
                       )
+                      this.auditdata.splice(params.row.index, 1)
                     }
                   }
                 },

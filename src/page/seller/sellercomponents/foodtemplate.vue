@@ -72,7 +72,7 @@
     </section> -->
     <!-- 增加和编辑的模板 -->
     <Modal v-model="templateModal" :title="templateTitle" width="900">
-      <Form :model="templateItem" ref="templateItem"  class="templateModal-from" label-postion="left" :label-width="100">
+      <Form :model="templateItem" ref="templateItem"  class="templateModal-from modelForm" label-postion="left" :label-width="100">
         <FormItem label="一级分类:" prop="spCategoryParentId" >
           <Select v-model="templateItem.spCategoryParentId"  size="small" style="width:100px" @on-change="searchParent(templateItem.spCategoryParentId)">
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
