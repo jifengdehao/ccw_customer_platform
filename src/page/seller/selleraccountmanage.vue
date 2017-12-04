@@ -62,6 +62,9 @@
             <FormItem label="支付宝账号：" prop="alipayAccount">
               <Input size="small" v-model="shopMessage.alipayAccount"  placeholder="请输入" style="width: 150px" required></Input>
             </FormItem>
+            <FormItem label="支付宝姓名：" >
+              <Input size="small" v-model="shopMessage.alipay_name"  placeholder="请输入" style="width: 150px" required></Input>
+            </FormItem>
             <FormItem label="手机号：" prop="mobileno">
               <Input size="small" :maxlength="11" v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px" required/>
             </FormItem>
@@ -129,7 +132,7 @@
             <ul>
               <li v-for="(item,index) in qulification.qualificationList" :key="index">
                 <div class="" >
-                  <div class="img vm-fl">
+                  <div class="img">
                     <img :src="item.url" alt="">
                     <div class="cover">
                       <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
@@ -430,6 +433,10 @@ export default {
         this.$Message.error('支付宝账号为手机号或者邮箱地址')
         return false
       }
+      if (!shopMessage.alipay_name) {
+        this.$Message.error('支付宝姓名不能为空')
+        return false
+      }
       if (
         !shopMessage.mobileno ||
         !/^1[34578]\d{9}$/.test(shopMessage.mobileno)
@@ -606,7 +613,7 @@ h3 {
 }
 .shopMessagemModal-qualification li {
   position: relative;
-  width: 45%;
+  width: 30%;
   height: 160px;
   /* border: 1px solid #ddd; */
   margin: 5px;
@@ -614,14 +621,15 @@ h3 {
 }
 .shopMessagemModal-qualification li .img {
   display: block;
-  width: 200px;
+  width: 150px;
   height: 130px;
   border: 1px solid #ddd;
 }
 .shopMessagemModal-qualification li p {
-  width: 200px;
+  /* width: 200px; */
   height: 30px;
   line-height: 30px;
+  margin-top: 10px;
   text-align: center;
 }
 .shopMessagemModal-shopimag .upload {
@@ -662,10 +670,11 @@ input[type='file'] {
 }
 .qualification {
   position: absolute;
-  left: 0;
-  bottom: 30px;
-  width: 200px;
+  left: 4px;
+  bottom: 20px;
+  width: 150px;
   height: 30px;
+  line-height: 30px;
   background-color: #e6dfbe;
   text-align: center;
 }
