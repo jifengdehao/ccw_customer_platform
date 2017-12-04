@@ -54,7 +54,7 @@
         <Input v-model="appVersionInfo.buildVersion" placeholder="请输入构建版本"></Input>
       </FormItem>
       <FormItem>
-        <input id="upload" type="file" @change="onUpload($event)" title="上传图片" filetype="image/*">
+        <input id="upload" type="file" @change="onUpload($event)" title="上传图片" accept=".apk">
       </FormItem>
       <FormItem label="强制升级" prop="forceUpdate">
         <RadioGroup v-model="appVersionInfo.forceUpdate">
@@ -69,197 +69,201 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import * as api from 'api/common'
-  import * as upload from 'components/upload-pic'
+import * as api from 'api/common'
+import * as upload from 'components/upload-pic'
 
-  export default {
-    data () {
-      return {
-        id: (() => {
-          return this.$route.params.id
-        })(),
-        appVersionInfo: {
-          title: '', // 更新标题
-          bundle: '',  // 更新包路径
-          appVersion: '', // 更新版本
-          publishTime: new Date(), // 更新时间
-          platform: 0, // 默认平台为ios
-          content: '',  // 更新内容
-          forceUpdate: 0,  // 是否强制升级
-          maxSystemVersion: 0, // 最大版本要求
-          minSystemVersion: 0,  // 最小版本要求
-          downloadUrl: '',  // 安装包地址
-          appName: '', // app应用名称
-          buildVersion: 0
-        },
-        platFromArry: [], // 平台列表
-        appNameArry: [],  // 平台名称列表
-        versionArry: []   // 版本要求列表
-      }
+export default {
+  data() {
+    return {
+      id: (() => {
+        return this.$route.params.id
+      })(),
+      appVersionInfo: {
+        title: '', // 更新标题
+        bundle: '', // 更新包路径
+        appVersion: '', // 更新版本
+        publishTime: new Date(), // 更新时间
+        platform: 0, // 默认平台为ios
+        content: '', // 更新内容
+        forceUpdate: 0, // 是否强制升级
+        maxSystemVersion: 0, // 最大版本要求
+        minSystemVersion: 0, // 最小版本要求
+        downloadUrl: '', // 安装包地址
+        appName: '', // app应用名称
+        buildVersion: 0
+      },
+      platFromArry: [], // 平台列表
+      appNameArry: [], // 平台名称列表
+      versionArry: [] // 版本要求列表
+    }
+  },
+  created() {
+    this.getAppDetails()
+    this.getPlatformData()
+    this.getVersionData()
+    this.getPlatformName()
+  },
+  methods: {
+    // 关闭app更新详情
+    close() {
+      this.$router.back()
     },
-    created () {
-      this.getAppDetails()
-      this.getPlatformData()
+    // 获取app更新
+    getAppDetails() {
+      api.getAppDetails(this.id).then(res => {
+        if (res) {
+          console.log(res)
+          this.appVersionInfo = res
+        }
+      })
+    },
+    // 获取移动平台列表
+    getPlatformData() {
+      let params = {
+        types: 'mobile_platforms'
+      }
+      api.getPlatformData(params).then(res => {
+        if (res) {
+          this.platFromArry = res
+        }
+      })
+    },
+    // 选择对应的平台
+    changPlatForm(value) {
+      this.appVersionInfo.platform = value // 选择对应的平台
       this.getVersionData()
       this.getPlatformName()
     },
-    methods: {
-      // 关闭app更新详情
-      close () {
-        this.$router.back()
-      },
-      // 获取app更新
-      getAppDetails () {
-        api.getAppDetails(this.id).then((res) => {
-          if (res) {
-            console.log(res)
-            this.appVersionInfo = res
-          }
-        })
-      },
-      // 获取移动平台列表
-      getPlatformData () {
+    // 上传安装包
+    onUpload(e) {
+      upload.uploadpic(e.target.files[0]).then(data => {
+        let res = data[0]
+        res = res.indexOf('?') ? res.split('?')[0] : res
+        this.appVersionInfo.downloadUrl = res
+      })
+    },
+    // 获取版本要求
+    getVersionData() {
+      if (this.appVersionInfo.platform === 0) {
         let params = {
-          types: 'mobile_platforms'
+          types: 'ios_versions'
         }
-        api.getPlatformData(params).then((res) => {
+        api.getPlatformData(params).then(res => {
           if (res) {
-            this.platFromArry = res
+            this.versionArry = res
           }
         })
-      },
-      // 选择对应的平台
-      changPlatForm (value) {
-        this.appVersionInfo.platform = value   // 选择对应的平台
-        this.getVersionData()
-        this.getPlatformName()
-      },
-      // 上传安装包
-      onUpload (e) {
-        upload.uploadpic(e.target.files[0]).then(data => {
-          let res = data[0]
-          res = res.indexOf('?') ? res.split('?')[0] : res
-          this.appVersionInfo.downloadUrl = res
-        })
-      },
-      // 获取版本要求
-      getVersionData () {
-        if (this.appVersionInfo.platform === 0) {
-          let params = {
-            types: 'ios_versions'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.versionArry = res
-            }
-          })
-        } else {
-          let params = {
-            types: 'android_versions'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.versionArry = res
-            }
-          })
+      } else {
+        let params = {
+          types: 'android_versions'
         }
-      },
-      // 根据平台获取应用名称
-      getPlatformName () {
-        if (this.appVersionInfo.platform === 0) {
-          let params = {
-            types: 'app_name_ios'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.appNameArry = res
-            }
-          })
-        } else {
-          let params = {
-            types: 'app_name_android'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.appNameArry = res
-            }
-          })
-        }
-      },
-      // 选择应用名称获取包路径
-      changAppName (value) {
-        this.getBundleData(value)
-      },
-      // 获取包路径
-      getBundleData (value) {
-        if (this.appVersionInfo.platform === 0) {
-          let params = {
-            types: 'app_bundle_ios'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.appNameArry.forEach((item) => {
-                if (item.name === value) {
-                  res.forEach((it) => {
-                    if (it.idx === item.idx) {
-                      this.appVersionInfo.bundle = it.name
-                    }
-                  })
-                }
-              })
-            }
-          })
-        } else {
-          let params = {
-            types: 'app_bundle_android'
-          }
-          api.getPlatformData(params).then((res) => {
-            if (res) {
-              this.appNameArry.forEach((item) => {
-                if (item.name === value) {
-                  res.forEach((it) => {
-                    if (it.idx === item.idx) {
-                      this.appVersionInfo.bundle = it.name
-                    }
-                  })
-                }
-              })
-            }
-          })
-        }
-      },
-      // 修改更新
-      modifyAppUpdate () {
-        api.putAppDetails(this.id, this.appVersionInfo).then((res) => {
+        api.getPlatformData(params).then(res => {
           if (res) {
-            console.log(res)
-            let that = this
-            this.$Notice.success({
-              title: 'app更新修改成功',
-              duration: 2,
-              onClose () {
-                that.$router.back()
+            this.versionArry = res
+          }
+        })
+      }
+    },
+    // 根据平台获取应用名称
+    getPlatformName() {
+      if (this.appVersionInfo.platform === 0) {
+        let params = {
+          types: 'app_name_ios'
+        }
+        api.getPlatformData(params).then(res => {
+          if (res) {
+            this.appNameArry = res
+          }
+        })
+      } else {
+        let params = {
+          types: 'app_name_android'
+        }
+        api.getPlatformData(params).then(res => {
+          if (res) {
+            this.appNameArry = res
+          }
+        })
+      }
+    },
+    // 选择应用名称获取包路径
+    changAppName(value) {
+      this.getBundleData(value)
+    },
+    // 获取包路径
+    getBundleData(value) {
+      if (this.appVersionInfo.platform === 0) {
+        let params = {
+          types: 'app_bundle_ios'
+        }
+        api.getPlatformData(params).then(res => {
+          if (res) {
+            this.appNameArry.forEach(item => {
+              if (item.name === value) {
+                res.forEach(it => {
+                  if (it.idx === item.idx) {
+                    this.appVersionInfo.bundle = it.name
+                  }
+                })
               }
             })
-          } else {
-            this.$Notice.error({
-              title: 'app更新修改失败'
+          }
+        })
+      } else {
+        let params = {
+          types: 'app_bundle_android'
+        }
+        api.getPlatformData(params).then(res => {
+          if (res) {
+            this.appNameArry.forEach(item => {
+              if (item.name === value) {
+                res.forEach(it => {
+                  if (it.idx === item.idx) {
+                    this.appVersionInfo.bundle = it.name
+                  }
+                })
+              }
             })
           }
         })
       }
+    },
+    // 修改更新
+    modifyAppUpdate() {
+      api.putAppDetails(this.id, this.appVersionInfo).then(res => {
+        if (res) {
+          console.log(res)
+          let that = this
+          this.$Notice.success({
+            title: 'app更新修改成功',
+            duration: 2,
+            onClose() {
+              that.$router.back()
+            }
+          })
+        } else {
+          this.$Notice.error({
+            title: 'app更新修改失败'
+          })
+        }
+      })
     }
   }
+}
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus" type="text/stylus">
-  #App
-    .indexDetails
-      position relative
-      border 1px solid #e9eaec
-      padding 20px
-      .close
-        position absolute
-        top 0
-        right 0
-        z-index 10
+#App {
+  .indexDetails {
+    position: relative;
+    border: 1px solid #e9eaec;
+    padding: 20px;
+
+    .close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 10;
+    }
+  }
+}
 </style>

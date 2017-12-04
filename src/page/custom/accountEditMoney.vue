@@ -31,10 +31,12 @@
     </div>
       <Modal
         v-model="isBoolean"
-        :closable="false" @on-ok="refundMoney">
+        :closable="false" @on-ok="refundMoney" @on-cancel="resetSome">
+        <p class="money">退款金额:¥<input type="number" v-model="amount" style="margin-left:10px;"></p>
+        <p class="money">支付宝姓名: <input type="text" v-model="alipayName"></p>
         <p class="money">支付宝账号: <input type="text" v-model="alipayAccount"></p>
-        <p class="money">退款金额:¥<input type="number" v-model="changeVal" style="margin-left:10px;"></p>
-        <p>请按照客服退款操作手册</p>
+        <p class="money"><span style="display:inline-block;vertical-align:top;">退款原因:&nbsp;&nbsp;</span><textarea style="resize:none;height:60px;" v-model="reason"></textarea></p>
+        <p>请按照客服退款操作手册进行正确的合算</p>
     </Modal>
   </div>
 </template>
@@ -51,7 +53,9 @@ export default {
         pageNo: 1
       },
       isBoolean: false, //  弹框boolean值
-      changeVal: '', //  退款金额
+      amount: '', //  退款金额
+      alipayName: '', //  支付宝姓名
+      reason: '', //  退款原因
       alipayAccount: '', // 支付宝账号
       singleData: null, //  查看用户获取到的数据
       changeTitle: [
@@ -169,27 +173,48 @@ export default {
     },
     //  确定退款
     refundMoney() {
-      if (!this.params.custId || !this.alipayAccount) {
-        this.$Message.info({
+      if (
+        !this.params.custId ||
+        !this.alipayAccount ||
+        !this.amount ||
+        !this.alipayName ||
+        !this.reason
+      ) {
+        this.$Modal.error({
+          title: '提示',
           content: '请输入完整',
-          duration: 3
+          onOk: () => {
+            this.amount = this.alipayName = this.alipayAccount = this.reason =
+              ''
+          }
         })
         return
       }
 
-      console.log(this.toFixed(this.changeVal), '111222')
-      this.changeVal = this.toFixed(this.changeVal)
+      this.amount = this.toFixed(this.amount)
       http
         .refundMoney({
-          id: this.params.custId,
-          changeVal: this.changeVal,
-          alipayAccount: this.alipayAccount
+          mcCustomerId: this.params.custId,
+          amount: this.amount,
+          alipayAccount: this.alipayAccount,
+          alipayName: this.alipayName,
+          reason: this.reason
         })
         .then(data => {
-          this.changeVal = this.alipayAccount = ''
-          this.loopAccount()
-          this.getAccountMoneyChange()
+          this.amount = this.alipayAccount = ''
+          this.$Modal.success({
+            title: '提示',
+            content: '已发起申请退款',
+            onOk: () => {
+              this.loopAccount()
+              this.getAccountMoneyChange()
+            }
+          })
         })
+    },
+    //  取消
+    resetSome() {
+      this.amount = this.alipayName = this.alipayAccount = this.reason = ''
     },
     //  精准度缺失解决办法
     toFixed(value) {

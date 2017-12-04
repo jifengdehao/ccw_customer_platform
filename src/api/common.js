@@ -655,7 +655,7 @@ export const getAccountMoneyChange = params => {
  * 用户账户退款
  */
 export const refundMoney = params => {
-  return ax.u(`/customer/account/${params.id}`, params)
+  return ax.u(`/customer/account`, params)
 }
 
 /**
