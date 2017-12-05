@@ -36,16 +36,16 @@
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 新增 修改BD -->
-    <Modal v-model="BDmodal" :title="modelTitle" width="400" class="BDmodal">
+    <Modal v-model="BDmodal" :title="modelTitle" width="400" class="BDmodal" :mask-closable="false">
       <Form :model="modelFormItem" :rules="ruleValidate" ref="formItem" label-postion="left" :label-width="100">
         <FormItem label="姓名：" prop="name">
           <Input size="small" v-model="modelFormItem.name"  placeholder="请输入" style="width: 150px"></Input>
         </FormItem>
         <FormItem label="电话：" prop="mobileno">
-          <Input :maxlength="11" size="small" v-model="modelFormItem.mobileno"  placeholder="请输入" style="width: 150px"></Input>
+          <Input :maxlength="11" size="small"  v-model="modelFormItem.mobileno"  placeholder="请输入" style="width: 150px"></Input>
         </FormItem>
         <FormItem label="邀请码：" prop="invitationCode">
-          <Input size="small" v-model="modelFormItem.invitationCode"  placeholder="请输入" style="width: 150px"></Input>
+          <Input size="small" v-model="modelFormItem.invitationCode" :maxlength="4"  placeholder="请输入" style="width: 150px"></Input>
         </FormItem> 
         <FormItem label="负责市场：" >
           <Select v-model="modelFormItem.psMarketId"  size="small" placeholder="请选择" style="width: 150px">
