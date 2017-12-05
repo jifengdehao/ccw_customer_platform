@@ -22,7 +22,7 @@
         <dd>配送员ID：{{result.psDeliverId}}</dd>
         <dd>配送员姓名：{{result.name}}</dd>
         <dd>评价时间：{{result.remarkAt | filterTime}}</dd>
-        <dd>评价星级：<Rate v-model="result.starLevel"></Rate></dd>
+        <dd>评价星级：<Rate v-model="result.starLevel" disabled></Rate></dd>
         <dd>评价内容：{{result.content}}</dd>
         <dd>是否隐藏：{{result.isDelete | filterIsHidden}}</dd>
       </dl>
