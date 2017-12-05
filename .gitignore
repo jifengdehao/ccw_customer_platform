@@ -13,5 +13,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 .gitignore
-config/
-config/config.js
+config

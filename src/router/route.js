@@ -364,7 +364,8 @@ export default [
       {
         path: '/home',
         name: 'home',
-        component: Home
+        component: Home,
+        meta: {keepAlive: true}
       },
       {
         path: '/order',
@@ -372,12 +373,12 @@ export default [
         component: Order,
         redirect: '/order/manage',
         children: [
-          {path: 'manage', component: OrderManage},
+          {path: 'manage', component: OrderManage, meta: {keepAlive: true}},
           {path: 'abnormal', component: OrderAbnormal},
-          {path: 'evaluate', component: OrderEvaluate},
+          {path: 'evaluate', component: OrderEvaluate, meta: {keepAlive: true}},
           {path: 'evaluateInfoDeliver/:id', component: OrderEvaluateDeliver},
           {path: 'evaluateInfoSeller/:id', component: OrderEvaluateSeller},
-          {path: 'feedback', component: OrderFeedback},
+          {path: 'feedback', component: OrderFeedback, meta: {keepAlive: true}},
           {path: 'feedbackInfo/:id', component: OrderFeedbackInfo},
           {path: 'sw', component: OrderSw},
           {path: 'orderInfo/:id', component: OrderInfo}
@@ -479,7 +480,7 @@ export default [
         component: App,
         redirect: '/app/index',
         children: [
-          {path: 'index', component: AppIndex},
+          {path: 'index', component: AppIndex, meta: {keepAlive: true}},
           {path: 'index/:id', component: AppIndexDetails},
           {path: 'addAppUpdate', component: AddAppUpdate}
         ]

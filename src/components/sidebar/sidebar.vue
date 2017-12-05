@@ -30,7 +30,10 @@
     </Menu>
     </Col>
     <Col style="overflow-y: scroll;padding: 40px;" :xs="spanRight" :sm="spanRight" :md="spanRight" :lg="spanRight">
-      <router-view></router-view>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
     </Col>
   </Row>
 </template>

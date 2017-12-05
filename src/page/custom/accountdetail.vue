@@ -12,13 +12,14 @@
     <h3>用户收货地址</h3>
     <Table border :columns="userAcceptTitle" :data="userAcceptData"></Table>
     <h3>用户购买记录</h3>
-    <Table :columns="userBuyTitle" :data="userBuyData.custOrderRecord"></Table>
-    <Page :total="userBuyData.total" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
+    <Table :columns="userBuyTitle" :data="userBuyData.custOrderRecord.records"></Table>
+    <Page :total="userBuyData.custOrderRecord.total" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
   </div>
 </template>
 <script>
 import * as http from 'api/common'
 import expandRow from 'page/custom/unfold'
+import * as time from '@/until/time'
 
 export default {
   name: 'accountDetail',
@@ -30,19 +31,26 @@ export default {
         //  用户信息表头
         {
           title: '用户ID',
-          key: 'mcCustomerId'
+          key: 'mcCustomerId',
+          align: 'center'
         },
         {
           title: '手机号码',
-          key: 'mobileno'
+          key: 'mobileno',
+          align: 'center'
         },
         {
           title: '昵称',
-          key: 'custName'
+          key: 'custName',
+          align: 'center'
         },
         {
           title: '注册时间',
-          key: 'createdAt'
+          key: 'createdAt',
+          align: 'center',
+          render: (h, params) => {
+            return time.formatDateTime(params.row.createdAt)
+          }
         }
       ],
       userInfoData: [], //  用户信息数据
@@ -56,7 +64,10 @@ export default {
         {
           title: '创建时间',
           key: 'createdAt',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return time.formatDateTime(params.row.createdAt)
+          }
         },
         {
           title: '收货人',
@@ -110,7 +121,10 @@ export default {
         },
         {
           title: '下单时间',
-          key: 'submitTime'
+          key: 'submitTime',
+          render: (h, params) => {
+            return time.formatDateTime(params.row.submitTime)
+          }
         },
         {
           title: '订单状态',
