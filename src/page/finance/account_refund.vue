@@ -25,15 +25,7 @@
       <div>
         <Page class="page-style" :current="pageNo" show-total :total="total" @on-change="changePage"></Page>
       </div>
-      <Modal
-        v-model="modal"
-        title="Title"
-        >
-        <h2>是否跳转到支付宝？</h2>
-        <div v-html="returnData" class="formdata">
-      </div>
-      <div slot="footer"></div>
-    </Modal>
+      <div v-html="returnData"></div>
     </section>
   </div>
 </template>
@@ -44,7 +36,6 @@ export default {
   props: {},
   data() {
     return {
-      modal: false,
       pageNo: 1,
       pageSize: 10,
       total: 0,
@@ -236,7 +227,7 @@ export default {
           this.params.auditStatus = 2
           this.params.status = null
         } else {
-          this.params.auditStatus = null
+          this.params.auditStatus = 1
           this.params.status = index
         }
       }
@@ -267,8 +258,11 @@ export default {
       }
       api.auditRefund(params).then(res => {
         if (res !== '驳回成功') {
-          this.modal = true
           this.returnData = res
+          // 设置计时器 延迟1秒再跳转
+          setTimeout(() => {
+            this.toApplication()
+          }, 1000)
         }
         this.getRefundList(this.pageNo, this.params)
         this.$Message.success('修改成功')
@@ -293,6 +287,12 @@ export default {
     // 批量不通过
     notPass() {
       this.auditRefund(this.selection, 2)
+    },
+    // 跳转到支付宝页面
+    toApplication() {
+      var form = document.getElementById('alipaysubmit')
+      form.setAttribute('target', '_blank') // 给表格添加target属性 跳转的时候打开新页面
+      document.forms['alipaysubmit'].submit()
     }
   },
   filfter: {},
