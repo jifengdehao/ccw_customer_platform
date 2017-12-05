@@ -90,22 +90,14 @@ export default {
         year: date.getFullYear(),
         month:
           date.getMonth() + 1 < 10
-            ? '0' + date.getMonth() + 1
+            ? '0' + (date.getMonth() + 1)
             : date.getMonth() + 1,
-        day:
-          date.getDate() + 1 < 10
-            ? '0' + date.getDate() + 1
-            : date.getDate() + 1,
-        hour:
-          date.getHours() + 1 < 10 ? '0' + date.getHours() : date.getHours(),
+        day: date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+        hour: date.getHours() < 10 ? '0' + date.getHours() : date.getHours(),
         minutes:
-          date.getMinutes() + 1 < 10
-            ? '0' + date.getMinutes()
-            : date.getMinutes(),
+          date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
         seconds:
-          date.getSeconds() + 1 < 10
-            ? '0' + date.getSeconds()
-            : date.getSeconds()
+          date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       }
       return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
     },
@@ -135,7 +127,7 @@ export default {
           str = '分销获得积分'
           break
       }
-      return str + '  ' + value
+      return str + '  ' + value / 100
     },
     //  查看用户账户
     loopAccount() {

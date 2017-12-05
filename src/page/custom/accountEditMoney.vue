@@ -109,12 +109,9 @@ export default {
         year: date.getFullYear(),
         month:
           date.getMonth() + 1 < 10
-            ? '0' + date.getMonth() + 1
+            ? '0' + (date.getMonth() + 1)
             : date.getMonth() + 1,
-        day:
-          date.getDate() + 1 < 10
-            ? '0' + date.getDate() + 1
-            : date.getDate() + 1,
+        day: date.getDate() + 1 < 10 ? '0' + date.getDate() : date.getDate(),
         hour:
           date.getHours() + 1 < 10 ? '0' + date.getHours() : date.getHours(),
         minutes:
@@ -176,13 +173,13 @@ export default {
       if (
         !this.params.custId ||
         !this.alipayAccount ||
-        !this.amount ||
+        (!this.amount || this.amount < 0) ||
         !this.alipayName ||
         !this.reason
       ) {
         this.$Modal.error({
           title: '提示',
-          content: '请输入完整',
+          content: '您输入的有误，请重新来过',
           onOk: () => {
             this.amount = this.alipayName = this.alipayAccount = this.reason =
               ''
