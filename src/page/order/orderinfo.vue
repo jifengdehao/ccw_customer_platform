@@ -236,7 +236,7 @@
                       let _this = this // 这里有个bug this指向重新来
                       this.$Modal.confirm({
                         content: '确定退还此商品金额？',
-                        loading: true,
+                        // loading: true,
                         onOk () {
                           // api 操作
                           api.putRefundOrder(foodId).then((res) => {
@@ -253,7 +253,7 @@
                       })
                     }
                   }
-                }, isRefunded === false ? '退款' : '已退款')
+                }, isRefunded === false ? '退款' : params.row.statusName)
               ])
             }
           },
