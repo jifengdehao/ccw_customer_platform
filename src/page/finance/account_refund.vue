@@ -25,6 +25,7 @@
       <div>
         <Page class="page-style" :current="pageNo" show-total :total="total" @on-change="changePage"></Page>
       </div>
+      <!-- <iframe v-if="true" src="" frameborder="0" @load="load"></iframe> -->
     </section>
   </div>
 </template>
@@ -287,10 +288,7 @@ export default {
     notPass() {
       this.auditRefund(this.selection, 2)
     },
-    to() {
-      window.open('#/finance/aplication')
-      // this.$router.push('/finance/aplication')
-    }
+    to() {}
   },
   filfter: {},
   computed: {},
