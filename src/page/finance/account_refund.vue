@@ -9,17 +9,18 @@
     <!-- 表格内容 -->
     <section>
     <Tabs :animated="false"  @on-click="changeTable">
-      <TabPane v-for="(tab,index) in tabs" :key="index" :label="tab.title">
-        <Table border :columns="refundColumns" :data="refundData"></Table>
+      <TabPane v-for="(tab,index) in tabs" :key="index" :label="tab.title" >
+        <Table ref="selection" border :columns="refundColumns" :data="refundData" @on-selection-change="changeData"></Table>
       </TabPane>
     </Tabs>
     </section>
    <!-- 按钮 和分页 -->
     <section>
       <div class="buttons" v-if="showButton === 0">
-        <Button>全选</Button>
-        <Button type="success">通过</Button>
-        <Button type="warning">驳回</Button>
+        <Button @click="handleSelectAll(true)">全选</Button>
+        <Button type="success" @click="pass">通过</Button>
+        <Button type="warning" @click="notPass">驳回</Button>
+        <!--  -->
       </div>
       <div>
         <Page class="page-style" :current="pageNo" show-total :total="total" @on-change="changePage"></Page>
@@ -34,10 +35,13 @@ export default {
   props: {},
   data() {
     return {
+      modal: true,
       pageNo: 1,
       pageSize: 10,
       total: 0,
       showButton: 0,
+      selection: [], // 选中的数据
+      returnData: '', // 审核通过时返回的数据
       tabs: [
         { title: '申请中' },
         { title: '退款中' },
@@ -99,7 +103,7 @@ export default {
         },
         {
           title: '操作客服',
-          key: 'operatorName',
+          key: 'creatorName',
           align: 'center'
         },
         {
@@ -121,7 +125,9 @@ export default {
                     width: '50px'
                   },
                   on: {
-                    click: () => {}
+                    click: () => {
+                      this.auditRefund(params.row.mcAccountRefundId, 1)
+                    }
                   }
                 },
                 '通过'
@@ -137,7 +143,10 @@ export default {
                     width: '50px'
                   },
                   on: {
-                    click: () => {}
+                    click: () => {
+                      // console.log(params.row.mcAccountRefundId)
+                      this.auditRefund(params.row.mcAccountRefundId, 2)
+                    }
                   }
                 },
                 '驳回'
@@ -190,7 +199,7 @@ export default {
         },
         {
           title: '操作客服',
-          key: 'operatorName',
+          key: 'creatorName',
           align: 'center'
         }
       ],
@@ -199,7 +208,7 @@ export default {
   },
   created() {
     this.refundColumns = this.refundColumns1
-    // this.getRefundList(this.pageNo, {auditStatus: 0,pageSize:this.pageSize})
+    this.getRefundList(this.pageNo, this.params)
   },
   mounted() {},
   activited: {},
@@ -222,12 +231,12 @@ export default {
           this.params.status = index
         }
       }
-      // this.getRefundList(1, this.params)
+      this.getRefundList(1, this.params)
     },
     // 切换分页
     changePage(number) {
       this.pageNo = number
-      // this.getRefundList(this.pageNo, this.params)
+      this.getRefundList(this.pageNo, this.params)
     },
     // 获取用户退款列表
     getRefundList(pageNo, params) {
@@ -240,13 +249,47 @@ export default {
     },
     // 通过或驳回用户退款申请
     auditRefund(idList, auditStatus) {
+      if (idList.constructor !== Array) {
+        idList = [idList]
+      }
       let params = {
         idList: idList,
         auditStatus: auditStatus // 审核状态 0待审核1审核通过2审核不通过
       }
       api.auditRefund(params).then(res => {
-        console.log(res)
+        // console.log(res)
+        if (res) {
+          this.modal = true
+          this.returnData = JSON.parse(res)
+        }
+        // this.getRefundList(this.pageNo, this.params)
+        // this.$Message.success('修改成功')
       })
+    },
+    // 全选
+    handleSelectAll(status) {
+      this.$refs.selection[0].selectAll(status)
+    },
+    // 选中的数据
+    changeData(selection) {
+      // console.log(selection)
+      this.selection = selection.map(item => {
+        if (item.mcAccountRefundId) {
+          return item.mcAccountRefundId
+        }
+      })
+    },
+    // 批量通过
+    pass() {
+      this.auditRefund(this.selection, 1)
+    },
+    // 批量不通过
+    notPass() {
+      this.auditRefund(this.selection, 2)
+    },
+    to() {
+      window.open('#/finance/aplication')
+      // this.$router.push('/finance/aplication')
     }
   },
   filfter: {},
