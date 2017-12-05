@@ -161,6 +161,15 @@ export default {
       //  检查值
       let value = event.target.value
 
+      if (value.length > 8) {
+        this.$Modal.warning({
+          title: '提示',
+          content: '您输入的标签内容超过8个字符，请重新输入'
+        })
+        this.data[name] = this.data[name].splice(0, this.data[name].length - 1)
+        return
+      }
+
       if (this.data[name][index].rkTagId) {
         //  修改 ——> 值未变
         if (this.data[name][index].tagContent === value) {
@@ -249,6 +258,12 @@ export default {
             })
             .then(data => {
               this.loadData()
+            })
+            .catch(() => {
+              this.data[name] = this.data[name].splice(
+                0,
+                this.data[name].length - 1
+              )
             })
         }
         this.status = false
