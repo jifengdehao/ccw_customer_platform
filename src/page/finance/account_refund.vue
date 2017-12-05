@@ -25,7 +25,15 @@
       <div>
         <Page class="page-style" :current="pageNo" show-total :total="total" @on-change="changePage"></Page>
       </div>
-      <!-- <iframe v-if="true" src="" frameborder="0" @load="load"></iframe> -->
+      <Modal
+        v-model="modal"
+        title="Title"
+        >
+        <h2>是否跳转到支付宝？</h2>
+        <div v-html="returnData" class="formdata">
+      </div>
+      <div slot="footer"></div>
+    </Modal>
     </section>
   </div>
 </template>
@@ -36,13 +44,13 @@ export default {
   props: {},
   data() {
     return {
-      modal: true,
+      modal: false,
       pageNo: 1,
       pageSize: 10,
       total: 0,
       showButton: 0,
       selection: [], // 选中的数据
-      returnData: '', // 审核通过时返回的数据
+      returnData: '',
       tabs: [
         { title: '申请中' },
         { title: '退款中' },
@@ -258,13 +266,12 @@ export default {
         auditStatus: auditStatus // 审核状态 0待审核1审核通过2审核不通过
       }
       api.auditRefund(params).then(res => {
-        // console.log(res)
-        if (res) {
+        if (res !== '驳回成功') {
           this.modal = true
-          this.returnData = JSON.parse(res)
+          this.returnData = res
         }
-        // this.getRefundList(this.pageNo, this.params)
-        // this.$Message.success('修改成功')
+        this.getRefundList(this.pageNo, this.params)
+        this.$Message.success('修改成功')
       })
     },
     // 全选
@@ -273,7 +280,6 @@ export default {
     },
     // 选中的数据
     changeData(selection) {
-      // console.log(selection)
       this.selection = selection.map(item => {
         if (item.mcAccountRefundId) {
           return item.mcAccountRefundId
@@ -287,8 +293,7 @@ export default {
     // 批量不通过
     notPass() {
       this.auditRefund(this.selection, 2)
-    },
-    to() {}
+    }
   },
   filfter: {},
   computed: {},
