@@ -39,7 +39,7 @@
       </Tabs>
     </section>
     <!-- 查看 -->
-    <Modal v-model="classifymodal" :title="classifytitle" width="350" @on-ok="postdata">
+    <Modal v-model="classifymodal" :title="classifytitle" width="350" @on-ok="postdata"  :mask-closable = "false">
       <draggable v-model="dragdata" @update="datadragEnd">
         <transition-group>
           <div v-for="(item,index) in dragdata" :key="index" v-if="item.operation !== 0">
@@ -52,7 +52,7 @@
         </transition-group>
       </draggable>
       </Table>
-      <Button size="small" style="marginTop:10px" @click="addClassify">新增分类</Button>
+      <Button size="small" style="marginTop:10px" @click="addClassify" v-if="classifytitle !== '一级分类管理'">新增分类</Button>
     </Modal>
   </div>
 </template>

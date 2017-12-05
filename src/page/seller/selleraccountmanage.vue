@@ -49,7 +49,7 @@
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section>
     <!-- 商家信息模态框 -->
-    <Modal v-model="shopMessageModal" title="商家信息" width="900">
+    <Modal v-model="shopMessageModal" title="商家信息" width="900"  :mask-closable = "false">
       <Form ref="formInline" class="modelForm"  :model="shopMessage"  label-postion="left" :label-width="100" >
         <Row>
           <Col span="9">
@@ -63,7 +63,7 @@
               <Input size="small" v-model="shopMessage.alipayAccount"  placeholder="请输入" style="width: 150px" required></Input>
             </FormItem>
             <FormItem label="支付宝姓名：" >
-              <Input size="small" v-model="shopMessage.alipay_name"  placeholder="请输入" style="width: 150px" required></Input>
+              <Input size="small" v-model="shopMessage.alipayName"  placeholder="请输入" style="width: 150px" required></Input>
             </FormItem>
             <FormItem label="手机号：" prop="mobileno">
               <Input size="small" :maxlength="11" v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px" required/>
@@ -392,6 +392,7 @@ export default {
       api.updataShopStatus(params).then(response => {
         this.$Message.success('商家状态修改成功')
         this.shopManageModal = false
+        this.getSellerAccountList(1, 10)
       })
     },
     // 商家账号管理状态
@@ -433,7 +434,7 @@ export default {
         this.$Message.error('支付宝账号为手机号或者邮箱地址')
         return false
       }
-      if (!shopMessage.alipay_name) {
+      if (!shopMessage.alipayName) {
         this.$Message.error('支付宝姓名不能为空')
         return false
       }
