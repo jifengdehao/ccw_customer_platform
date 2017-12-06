@@ -393,6 +393,7 @@ export default {
         this.$Message.success('商家状态修改成功')
         this.shopManageModal = false
         this.getSellerAccountList(1, 10)
+        this.formItem = {}
       })
     },
     // 商家账号管理状态
@@ -481,6 +482,8 @@ export default {
       this.shopMessage.msShopQualification.qualificationList = this.qulification.qualificationList
       let sellerId = shopMessage.msSellerId
       api.modifysellerInfo(shopMessage, sellerId).then(response => {
+        this.getSellerAccountList(1, 10)
+        this.formItem = {}
         this.$Message.info('更新成功')
         this.shopMessageModal = false
       })
