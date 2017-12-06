@@ -293,14 +293,15 @@
     },
     watch: {
       data4 (newValue, oldValue) {
-        newValue.forEach((item) => {
-          if (item.isRefunded !== 1) {
-            this.isAllRefund = false
-            return
-          } else {
-            this.isAllRefund = true
-          }
+        let map = []
+        newValue.forEach((item, index) => {
+          map[index] = item.isRefunded
         })
+        if (map.indexOf(0) > -1) {
+          this.isAllRefund = false
+        } else {
+          this.isAllRefund = true
+        }
       }
     },
     methods: {
@@ -329,6 +330,7 @@
       getOrderDetails () {
         api.getOrderInfo(this.orderId).then((res) => {
           if (res) {
+            console.log(res.dealInfoList)
             this.data4 = res.dealInfoList
             if (res.orderInfo) {
               this.data1 = Array.of(res.orderInfo)
