@@ -10,7 +10,7 @@
       <h1>欢迎来到菜城平台后台</h1>
     </div>
     <div class="data-total">
-      <i-row :gutter="32">
+      <i-row :gutter="16">
         <i-col span="8">
           <h2>平台数据</h2>
           <i-table :columns="columns1" :data="data1" border></i-table>
@@ -24,7 +24,7 @@
           <i-table :columns="columns3" :data="data3" border></i-table>
         </i-col>
       </i-row>
-      <i-row :gutter="32">
+      <i-row :gutter="16">
         <i-col span="12">
           <h2>送达时间订单量</h2>
           <div class="vm-border">

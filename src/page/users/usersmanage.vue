@@ -35,7 +35,7 @@
     </Modal>
     <!-- 导出数据弹框end -->
     <!-- 新增数据弹框start -->
-    <Modal v-model="showUser" title="新增用户" @on-ok="addUser" @on-cancel="addCancel" class="userShowModal">
+    <Modal v-model="showUser" title="新增用户" @on-ok="addUser" @on-cancel="addCancel" class="userShowModal" :mask-closable="false">
       <p>
         <span>用户ID</span>
         <Input v-model="addUsers.ptUserId" placeholder="请输入..." style="width: 300px" disabled></Input>
@@ -223,6 +223,11 @@ export default {
       }
       api.getpaltformUserChange(params).then(data => {
         if (data === true) {
+          if (this.userStatus === '解冻') {
+            this.$Message.info('解冻成功')
+          } else if (this.userStatus === '冻结') {
+            this.$Message.info('冻结成功')
+          }
           this.getUserData() // 数据调用
         }
       })

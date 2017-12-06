@@ -5,7 +5,7 @@
 * 功能：公共组件-侧栏组件
 */
 <template>
-  <Row type="flex" style="height: 100%;min-width: 1400px;">
+  <Row type="flex" style="height: 100%;">
     <Col :class="{'layout-hide-text': spanLeft < 3}" class="sidebar" :xs="spanLeft" :sm="spanLeft" :md="spanLeft"
          :lg="spanLeft">
     <div class="close-menu" @click="toggleClick()">
@@ -29,7 +29,7 @@
       </template>
     </Menu>
     </Col>
-    <Col style="overflow-y: scroll;padding: 40px;" :xs="spanRight" :sm="spanRight" :md="spanRight" :lg="spanRight">
+    <Col style="overflow-y:scroll;padding: 40px;" :xs="spanRight" :sm="spanRight" :md="spanRight" :lg="spanRight">
     <keep-alive>
       <router-view v-if="$route.meta.keepAlive"></router-view>
     </keep-alive>

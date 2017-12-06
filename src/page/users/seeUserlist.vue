@@ -21,7 +21,7 @@
         <p>是否修改权限用户？</p>
     </Modal>
     <p class="btn-p" v-if="showButton && showButton != null">
-      <Button @click="getTreeList">取消</Button>
+      <Button @click="getTreeList">重置</Button>
       <Button @click="onUserOk">确认</Button>
     </p>
   </div>
