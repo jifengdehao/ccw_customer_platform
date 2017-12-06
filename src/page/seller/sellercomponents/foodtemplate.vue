@@ -131,7 +131,7 @@
               </td> <br>
               <td><h4>重量属性</h4></td>
               <td  v-for="(item,index) in  templateItem.packAttr" :key="index">
-                <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" :value="item.attributeValue"></Input>
+                <Input type="text" :maxlength="2" style="width:80px" size="small" v-model="item.attributeValue" :value="item.attributeValue"></Input>
                 <Button size="small" type="error" @click="delweightAttribute(index)">删除</Button>
               </td>
               <td>
@@ -139,8 +139,8 @@
               </td> <br>
               <td><h4>商品属性</h4></td>
                <td v-for="(item,index) in templateItem.productAttr" :key="index">
-                <Input type="text" style="width:80px" size="small" v-model="item.attributeValue" ></Input>
-                <Button size="small" type="error" @click="delcommodityAttribute(index)">删除</Button>
+                <Input type="text" :maxlength="4" style="width:80px" size="small" v-model="item.attributeValue" ></Input>
+                <Button size="small"  type="error" @click="delcommodityAttribute(index)">删除</Button>
               </td>
               <td>
                 <Button size="small" @click="addCommodityAttribute">增加</Button>
@@ -377,6 +377,14 @@ export default {
       }
       if (!templateItem.weightUnit[0].attributeCode) {
         this.$Message.error('请选择重量单位')
+        return false
+      }
+      if (!/[\u4e00-\u9fa5]/.test(templateItem.packAttr[0].attributeValue)) {
+        this.$Message.error('重量属性请输入中文')
+        return false
+      }
+      if (!/[\u4e00-\u9fa5]/.test(templateItem.productAttr[0].attributeValue)) {
+        this.$Message.error('商品属性请输入中文')
         return false
       }
       // 验证成功  执行下面的代码
