@@ -645,10 +645,10 @@ export const loopAccount = params => {
  * 获取用户账户余额流水变更记录
  */
 export const getAccountMoneyChange = params => {
-  return ax.g(
-    `/customer/account/detail/${params.custId}/${params.pageNo}`,
-    params
-  )
+  return ax.g(`/customer/account/detail/${params.custId}/${params.pageNo}`, {
+    accountType: params.accountType,
+    pageSize: params.pageSize
+  })
 }
 
 /**
@@ -718,7 +718,7 @@ export const getRefundList = (pageNo, params) => {
   return ax.g(`/finance/customer/refund/list/${pageNo}`, params)
 }
 // 通过或驳回用户退款申请
-export const auditRefund = (params) => {
+export const auditRefund = params => {
   return ax.pa(`/finance/customer/refund/audit`, params)
 }
 

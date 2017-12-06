@@ -71,7 +71,7 @@
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section> -->
     <!-- 增加和编辑的模板 -->
-    <Modal v-model="templateModal" :title="templateTitle" width="900">
+    <Modal v-model="templateModal" :title="templateTitle" width="900" :mask-closable = "false">
       <Form :model="templateItem" ref="templateItem"  class="templateModal-from modelForm" label-postion="left" :label-width="100">
         <FormItem label="一级分类:" prop="spCategoryParentId" >
           <Select v-model="templateItem.spCategoryParentId"  size="small" style="width:100px" @on-change="searchParent(templateItem.spCategoryParentId)">
@@ -166,8 +166,8 @@
       </Form>
       <div slot="footer"></div>
     </Modal>
-    <Modal v-model="moveModal" title="移动至分类" @on-ok="movetemplate(formItem)" class="vm-clearfix">
-     <Form :model="formItem" ref="formItem" inline class="vm-fl from">
+    <Modal v-model="moveModal" title="移动至分类" @on-ok="movetemplate(formItem)" class="vm-clearfix"  :mask-closable = "false">
+     <Form :model="formItem" ref="formItem" inline class="from">
         <FormItem>
           <span class="label">筛选条件：</span>
           <i>一级分类</i>
@@ -181,7 +181,7 @@
         </FormItem>
       </Form>
     </Modal>
-    <Modal v-model="sortModal" title="保存排序" @on-ok="saveSorts">
+    <Modal v-model="sortModal" title="保存排序" @on-ok="saveSorts" >
       <h2>确定保存位置调整？</h2>
     </Modal>
     <!-- 查看大图 -->

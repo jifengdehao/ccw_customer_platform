@@ -29,7 +29,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待付款" name="1">
-        <Table :columns="columns" :data="data"  :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -55,7 +55,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待发货" name="3">
-        <Table :columns="columns" :data="data"  :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -68,7 +68,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="配送中" name="4">
-        <Table :columns="columns" :data="data"  :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -81,7 +81,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待评价" name="5">
-        <Table :columns="columns" :data="data"  :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -94,7 +94,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="已完成" name="6">
-        <Table :columns="columns" :data="data"  :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -107,7 +107,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="取消订单" name="7">
-        <Table :columns="columns" :data="data"  :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -265,6 +265,7 @@
           status: this.status,
           mobileno: this.mobileno
         }
+        console.log(params)
         api.exportOrderList(params).then((res) => {
           if (res) {
             this.modal_loading = false
@@ -283,6 +284,7 @@
           status: this.status,
           mobileno: this.phone
         }
+        this.loading = true
         api.getOrderList(params, this.curr).then((res) => {
           if (res) {
             this.loading = false

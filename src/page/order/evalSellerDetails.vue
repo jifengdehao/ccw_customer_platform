@@ -24,7 +24,7 @@
         <dd>档口名称：{{result.shopName}}</dd>
         <dd>评价时间：{{result.remarkAt | filterTime}}</dd>
         <dd>评价星级：
-          <Rate v-model="result.starLevel"></Rate>
+          <Rate v-model="result.starLevel" disabled></Rate>
         </dd>
         <dd>评价内容：{{result.content}}</dd>
         <dd>是否隐藏：{{result.isDelete | filterIsHidden}}</dd>
