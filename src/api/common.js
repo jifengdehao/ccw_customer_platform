@@ -721,3 +721,13 @@ export const getRefundList = (pageNo, params) => {
 export const auditRefund = (params) => {
   return ax.pa(`/finance/customer/refund/audit`, params)
 }
+
+// 商户结算列表
+export const getFinanceList = (pageNo, params) => {
+  return ax.g(`/finance/seller/bill/list/${pageNo}`, params)
+}
+
+// 商户结算申请/finance/seller/bill
+export const getFinanceBill = (Id) => {
+  return ax.pa('/finance/seller/bill', Id)
+}
