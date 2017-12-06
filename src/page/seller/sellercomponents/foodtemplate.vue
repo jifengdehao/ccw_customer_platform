@@ -167,7 +167,7 @@
       <div slot="footer"></div>
     </Modal>
     <Modal v-model="moveModal" title="移动至分类" @on-ok="movetemplate(formItem)" class="vm-clearfix"  :mask-closable = "false">
-     <Form :model="formItem" ref="formItem" inline class="vm-fl from">
+     <Form :model="formItem" ref="formItem" inline class="from">
         <FormItem>
           <span class="label">筛选条件：</span>
           <i>一级分类</i>
