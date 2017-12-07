@@ -53,9 +53,12 @@
       <FormItem label="构建版本" prop="buildVersion">
         <Input v-model="appVersionInfo.buildVersion" placeholder="请输入构建版本"></Input>
       </FormItem>
-
       <FormItem>
         <input id="upload" type="file" @change="onUpload($event)" title="上传图片" filetype="image/*">
+        <Spin fix v-if="isFinishUpload">
+          <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+          <div>上传中....</div>
+        </Spin>
       </FormItem>
       <FormItem label="强制升级" prop="forceUpdate">
         <RadioGroup v-model="appVersionInfo.forceUpdate">
@@ -71,7 +74,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as api from 'api/common'
-  import * as upload from 'components/upload-pic'
+  import * as upload from 'components/upload-apk'
 
   export default {
     data () {
@@ -92,7 +95,8 @@
           downloadUrl: '',
           appName: '', // 应用名称
           buildVersion: 0
-        }
+        },
+        isFinishUpload: false
       }
     },
     created () {
@@ -146,7 +150,10 @@
       },
       // 上传安装包
       onUpload (e) {
+        this.isFinishUpload = true
         upload.uploadpic(e.target.files[0]).then(data => {
+          this.isFinishUpload = false
+          console.log(data)
           let res = data[0]
           res = res.indexOf('?') ? res.split('?')[0] : res
           this.appVersionInfo.downloadUrl = res
@@ -250,4 +257,23 @@
         top 0
         right 0
         z-index 10
+    .demo-spin-icon-load {
+      animation: ani-demo-spin 1s linear infinite;
+    }
+    @keyframes ani-demo-spin {
+      from {
+        transform: rotate(0deg);
+      }
+      50% {
+        transform: rotate(180deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    .demo-spin-col {
+      height: 100px;
+      position: relative;
+      border: 1px solid #eee;
+    }
 </style>
