@@ -10,7 +10,7 @@ import iview from 'iview'
 import hash from 'js-md5'
 
 var ax = axios.create({
-  baseURL: process.env.BASE_API,
+  baseURL: 'http://globalpt.caichengwang.com',
   timeout: 30000,
   withCredentials: true, // 跨域携带证书
   headers: {
