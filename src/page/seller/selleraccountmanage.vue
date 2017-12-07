@@ -470,10 +470,6 @@ export default {
         this.$Message.error('营业时间不能为空')
         return false
       }
-      if (!shopMessage.notice) {
-        this.$Message.error('店铺公告不能为空')
-        return false
-      }
       if (!shopMessage.stallAddress) {
         this.$Message.error('店铺地址不能为空')
         return false
@@ -541,6 +537,9 @@ export default {
       uploadpic(file).then(res => {
         if (res) {
           res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+        }
+        if (this.qulification.protocol === null) {
+          this.qulification.protocol = []
         }
         this.qulification.protocol = this.qulification.protocol.concat(res)
       })
