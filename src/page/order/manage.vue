@@ -258,20 +258,22 @@
       },
       // 导出数据
       exportData () {
-        this.modal_loading = true
-        let params = {
-          startTime: this.startTime,
-          endTime: this.endTime,
-          status: this.status,
-          mobileno: this.mobileno
-        }
-        console.log(params)
-        api.exportOrderList(params).then((res) => {
-          if (res) {
-            this.modal_loading = false
-            window.open(res)
+        if (this.startTime !== '' && this.endTime !== '') {
+          this.modal_loading = true
+          let params = {
+            startTime: this.startTime,
+            endTime: this.endTime,
+            status: this.status,
+            mobileno: this.mobileno
           }
-        })
+          console.log(params)
+          api.exportOrderList(params).then((res) => {
+            if (res) {
+              this.modal_loading = false
+              window.open(res)
+            }
+          })
+        }
       },
       // 分页
       changePage (index) {
