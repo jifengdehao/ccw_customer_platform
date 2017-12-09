@@ -393,6 +393,7 @@ export default {
         this.$Message.success('商家状态修改成功')
         this.shopManageModal = false
         this.getSellerAccountList(1, 10)
+        this.formItem = {}
       })
     },
     // 商家账号管理状态
@@ -469,10 +470,6 @@ export default {
         this.$Message.error('营业时间不能为空')
         return false
       }
-      if (!shopMessage.notice) {
-        this.$Message.error('店铺公告不能为空')
-        return false
-      }
       if (!shopMessage.stallAddress) {
         this.$Message.error('店铺地址不能为空')
         return false
@@ -481,6 +478,8 @@ export default {
       this.shopMessage.msShopQualification.qualificationList = this.qulification.qualificationList
       let sellerId = shopMessage.msSellerId
       api.modifysellerInfo(shopMessage, sellerId).then(response => {
+        this.getSellerAccountList(1, 10)
+        this.formItem = {}
         this.$Message.info('更新成功')
         this.shopMessageModal = false
       })
@@ -538,6 +537,9 @@ export default {
       uploadpic(file).then(res => {
         if (res) {
           res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+        }
+        if (this.qulification.protocol === null) {
+          this.qulification.protocol = []
         }
         this.qulification.protocol = this.qulification.protocol.concat(res)
       })

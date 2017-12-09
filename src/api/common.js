@@ -6,8 +6,6 @@
  */
 import * as ax from './instrance'
 
-// 上传地址
-export const uploadUrl = ax.uploadUrl
 /** app 更新模块 author: zhangwenlong start **/
 
 /**

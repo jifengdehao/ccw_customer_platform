@@ -172,6 +172,8 @@ export default {
             this.addID = this.parentdata[0].spCategoryId
             this.getProductCategory(this.parentdata[0].spCategoryId)
           })
+        } else if (this.classifytitle === '二级分类管理') {
+          this.getProductCategory(this.addID)
         }
       })
     }

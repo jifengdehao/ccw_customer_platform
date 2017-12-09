@@ -76,7 +76,7 @@ export function uploadpic(file) {
   })
   // 根据guid命名图片的名字
   var imgName = guid()
-  var storeAs = '/images/' + imgName + '.' + file.name.split('.').splice(-1)
+  var storeAs = '/temp/' + imgName + '.' + file.name.split('.').splice(-1)
   // 限制图片大小 2097152 2GB
   if (file.type.indexOf('image/') > -1 && file.size < 5242880) {
     // 上传图片

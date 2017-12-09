@@ -173,20 +173,23 @@
         this.curr = 1
         this.getFeedbackListData()
       },
+      // 导出表格
       exportData () {
-        this.modal_loading = true
-        let params = {
-          startTime: this.startTime,
-          endTime: this.endTime,
-          types: this.types,
-          mobileno: this.mobileno
-        }
-        api.exportFeedback(params).then((res) => {
-          if (res) {
-            this.modal_loading = false
-            window.open(res)
+        if (this.startTime !== '' && this.endTime !== '') {
+          this.modal_loading = true
+          let params = {
+            startTime: this.startTime,
+            endTime: this.endTime,
+            types: this.types,
+            mobileno: this.mobileno
           }
-        })
+          api.exportFeedback(params).then((res) => {
+            if (res) {
+              this.modal_loading = false
+              window.open(res)
+            }
+          })
+        }
       },
       getFeedbackListData () {
         let params = {
