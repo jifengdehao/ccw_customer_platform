@@ -12,8 +12,8 @@
     <h3>用户收货地址</h3>
     <Table border :columns="userAcceptTitle" :data="userAcceptData"></Table>
     <h3>用户购买记录</h3>
-    <Table :columns="userBuyTitle" :data="userBuyData.custOrderRecord.records"></Table>
-    <Page :total="userBuyData.custOrderRecord.total" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
+    <Table :columns="userBuyTitle" :data="userBuyData"></Table>
+    <Page :total="userBuyTotal" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
   </div>
 </template>
 <script>
@@ -102,7 +102,7 @@ export default {
           render: (h, params) => {
             return h(expandRow, {
               props: {
-                row: params.row
+                row: params.row.orderId
               }
             })
           }
@@ -147,7 +147,8 @@ export default {
       params: {
         pageNo: 1,
         custId: ''
-      } //  http传递的参数
+      }, //  http传递的参数
+      userBuyTotal: null
     }
   },
   activited: {},
@@ -163,7 +164,17 @@ export default {
       http.getUserInfoData(this.params).then(data => {
         this.userInfoData = data.custInfo
         this.userAcceptData = data.custAddress
-        this.userBuyData = data
+        if (
+          data.custOrderRecord &&
+          data.custOrderRecord != null &&
+          data.custOrderRecord.records &&
+          data.custOrderRecord.records != null
+        ) {
+          this.userBuyData = data.custOrderRecord.records
+        }
+        if (data.custOrderRecord.total) {
+          this.userBuyTotal = data.custOrderRecord.total
+        }
       })
     },
     //  下一页
