@@ -379,15 +379,27 @@ export default {
         this.$Message.error('请选择重量单位')
         return false
       }
-      if (!/[\u4e00-\u9fa5]/.test(templateItem.packAttr[0].attributeValue)) {
-        this.$Message.error('重量属性请输入中文')
-        return false
+      if (templateItem.packAttr[0]) {
+        for (var i = 0; i < templateItem.packAttr.length; i++) {
+          if (
+            !/[\u4e00-\u9fa5]/.test(templateItem.packAttr[i].attributeValue)
+          ) {
+            this.$Message.error('重量属性请输入中文')
+            return false
+          }
+        }
       }
-      if (!/[\u4e00-\u9fa5]/.test(templateItem.productAttr[0].attributeValue)) {
-        this.$Message.error('商品属性请输入中文')
-        return false
+      if (templateItem.productAttr[0]) {
+        for (var j = 0; j < templateItem.productAttr.length; j++) {
+          if (
+            !/[\u4e00-\u9fa5]/.test(templateItem.productAttr[j].attributeValue)
+          ) {
+            this.$Message.error('商品属性请输入中文')
+            return false
+          }
+        }
       }
-      // 验证成功  执行下面的代码
+      // // 验证成功  执行下面的代码
       let classData = {
         parentCatId: templateItem.spCategoryParentId,
         catId: templateItem.spCategoryId
