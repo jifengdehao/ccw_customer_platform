@@ -25,5 +25,5 @@
     top 0
     bottom 0
     overflow hidden
-    min-width 1500px
+    min-width 1200px
 </style>
