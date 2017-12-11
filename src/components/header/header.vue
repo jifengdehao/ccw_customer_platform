@@ -10,7 +10,7 @@
       <Col :xs="3" :sm="3" :md="3" :lg="3">
         <div class="layout-logo">菜城科技有限公司</div>
       </Col>
-      <Col class="menu" :xs="18" :sm="18" :md="18" :lg="18">
+      <Col class="menu" :xs="19" :sm="19" :md="19" :lg="19">
         <Menu mode="horizontal" theme="dark">
           <MenuItem :name="item.url" v-if="menu.length>0" v-for="item in menu" :key="item.id">
             <router-link :to="'/'+item.url">
@@ -74,7 +74,7 @@
           <!--</MenuItem>-->
         </Menu>
       </Col>
-      <Col :xs="3" :sm="3" :md="3" :lg="3">
+      <Col :xs="2" :sm="2" :md="2" :lg="2">
         <div class="user-info">
           <Dropdown trigger="click" @on-click="selectDown">
             <a href="javascript:void(0);">
