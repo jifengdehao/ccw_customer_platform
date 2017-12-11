@@ -483,6 +483,13 @@ export const seeBanner = id => {
 export const getUsersList = (params, pageNo) => {
   return ax.g(`customer/${pageNo}`, params)
 }
+/**
+ * 查询用户端所有用户列表下的个人子订单/order/seed/
+ */
+
+export const getOrderSeed = id => {
+  return ax.g(`order/seed/${id}`)
+}
 
 /**
  * 获取用户端昨日新增用户量和当前用户量
@@ -726,6 +733,6 @@ export const getFinanceList = (pageNo, params) => {
 }
 
 // 商户结算申请/finance/seller/bill
-export const getFinanceBill = (Id) => {
+export const getFinanceBill = Id => {
   return ax.pa('/finance/seller/bill', Id)
 }

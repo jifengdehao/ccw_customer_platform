@@ -441,19 +441,21 @@
       },
       // 导出表格
       exportData () {
-        this.modal_loading = true
-        let params = {
-          startTime: this.startTime,
-          endTime: this.endTime,
-          mobileno: this.phone,
-          types: this.status
-        }
-        api.exportEval(params).then(res => {
-          if (res) {
-            this.modal_loading = false
-            window.open(res)
+        if (this.startTime !== '' && this.endTime !== '') {
+          this.modal_loading = true
+          let params = {
+            startTime: this.startTime,
+            endTime: this.endTime,
+            mobileno: this.phone,
+            types: this.status
           }
-        })
+          api.exportEval(params).then(res => {
+            if (res) {
+              this.modal_loading = false
+              window.open(res)
+            }
+          })
+        }
       },
       // 切换
       selectTab (name) {
