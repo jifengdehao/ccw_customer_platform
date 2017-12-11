@@ -70,7 +70,20 @@ export default {
         {
           title: '内容',
           key: 'content',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h(
+              'div',
+              {
+                style: {
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden'
+                }
+              },
+              params.row.content
+            )
+          }
         },
         {
           title: '推送时间',

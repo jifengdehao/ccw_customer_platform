@@ -201,10 +201,10 @@ export default {
           str = '待评价'
           break
         case 6:
-          str = '完成'
+          str = '已完成'
           break
         case 7:
-          str = '用户取消订单'
+          str = '已取消'
           break
       }
       return str
