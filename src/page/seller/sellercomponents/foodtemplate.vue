@@ -380,7 +380,7 @@ export default {
         return false
       }
       if (templateItem.packAttr[0]) {
-        for (var i = 0; i < templateItem.packAttr.length; i++) {
+        for (var i = 0, leng = templateItem.packAttr.length; i < leng; i++) {
           if (
             !/[\u4e00-\u9fa5]/.test(templateItem.packAttr[i].attributeValue)
           ) {
@@ -390,7 +390,7 @@ export default {
         }
       }
       if (templateItem.productAttr[0]) {
-        for (var j = 0; j < templateItem.productAttr.length; j++) {
+        for (var j = 0, len = templateItem.productAttr.lengt; j < len; j++) {
           if (
             !/[\u4e00-\u9fa5]/.test(templateItem.productAttr[j].attributeValue)
           ) {
