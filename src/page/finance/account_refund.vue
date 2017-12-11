@@ -31,6 +31,7 @@
 </template>
 <script>
 import * as api from 'api/common.js'
+import * as date from '@/until/time'
 export default {
   components: {},
   props: {},
@@ -79,12 +80,18 @@ export default {
         {
           title: '账户余额',
           key: 'balance',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return params.row.balance / 100
+          }
         },
         {
           title: '申请退款金额',
           key: 'amount',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return params.row.amount / 100
+          }
         },
         {
           title: '用户姓名',
@@ -99,7 +106,10 @@ export default {
         {
           title: '申请时间',
           key: 'createdAt',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.createdAt)
+          }
         },
         {
           title: '操作客服',
@@ -175,12 +185,18 @@ export default {
         {
           title: '账户余额',
           key: 'balance',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return params.row.balance / 100
+          }
         },
         {
           title: '申请退款金额',
           key: 'amount',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return params.row.amount / 100
+          }
         },
         {
           title: '用户姓名',
@@ -195,7 +211,10 @@ export default {
         {
           title: '申请时间',
           key: 'createdAt',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return date.formatDateTime(params.row.createdAt)
+          }
         },
         {
           title: '操作客服',
