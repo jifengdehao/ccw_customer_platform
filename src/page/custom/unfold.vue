@@ -32,7 +32,7 @@
         <td>{{formatDateTime(order.submitTime)}}</td>
         <td>{{order.statusChinese}}</td>
         <td>{{order.msShopId}}</td>
-        <td>{{order.realPayAmount}}</td>
+        <td>{{order.realPayAmount/100}}</td>
       </tr>
       <tr v-if="orderData && orderData.length < 1">
         <td colspan="7">暂无数据</td>

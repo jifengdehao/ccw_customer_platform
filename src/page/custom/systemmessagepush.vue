@@ -187,7 +187,7 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    display: params.row.status === 2 ? 'none' : 'initial'
+                    display: params.row.status === 0 ? 'initial' : 'none'
                   },
                   on: {
                     click: () => {
