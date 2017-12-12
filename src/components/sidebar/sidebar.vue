@@ -5,8 +5,11 @@
 * 功能：公共组件-侧栏组件
 */
 <template>
-  <Row type="flex" style="height: 100%;">
-    <Col :class="{'layout-hide-text': spanLeft < 3}" class="sidebar" :xs="spanLeft" :sm="spanLeft" :md="spanLeft"
+  <Row type="flex" style="height: 100%;overflow:auto;">
+    <Col :class="{'layout-hide-text': spanLeft < 3}" class="sidebar"
+         :xs="spanLeft"
+         :sm="spanLeft"
+         :md="spanLeft"
          :lg="spanLeft">
     <div class="close-menu" @click="toggleClick()">
       <Icon type="navicon-round" :size="iconSize"></Icon>
@@ -29,11 +32,11 @@
       </template>
     </Menu>
     </Col>
-    <Col style="overflow-y:scroll;padding: 40px;" :xs="spanRight" :sm="spanRight" :md="spanRight" :lg="spanRight">
-    <keep-alive>
-      <router-view v-if="$route.meta.keepAlive"></router-view>
-    </keep-alive>
-    <router-view v-if="!$route.meta.keepAlive"></router-view>
+    <Col :xs="spanRight" :sm="spanRight" :md="spanRight" :lg="spanRight" style="padding: 40px;overflow-y: scroll;">
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
     </Col>
   </Row>
 </template>
