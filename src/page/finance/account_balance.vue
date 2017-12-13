@@ -40,7 +40,10 @@ export default {
         {
           title: '结算总金额(元)',
           key: 'amount',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return params.row.amount / 100
+          }
         },
         {
           title: '结算档口数量',
@@ -106,7 +109,10 @@ export default {
         {
           title: '结算总金额(元)',
           key: 'amount',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return params.row.amount / 100
+          }
         },
         {
           title: '结算档口数量',
@@ -131,7 +137,10 @@ export default {
         {
           title: '结算总金额(元)',
           key: 'amount',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return params.row.amount / 100
+          }
         },
         {
           title: '结算档口数量',
