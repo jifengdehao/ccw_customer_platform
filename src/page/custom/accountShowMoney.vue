@@ -105,9 +105,6 @@ export default {
     filterType(type, value) {
       let str = ''
       switch (type) {
-        case 0:
-          str = '退款'
-          break
         case 1:
           str = '充值'
           break
@@ -121,10 +118,7 @@ export default {
           str = '奖励'
           break
         case 5:
-          str = '购物获得积分'
-          break
-        case 6:
-          str = '分销获得积分'
+          str = '退款'
           break
       }
       return str + '  ' + value / 100
