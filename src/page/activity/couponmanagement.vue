@@ -275,9 +275,8 @@ export default {
     },
     // 双击一行查看优惠券详情
     onTabTh(params) {
-      console.log(this.params.status, 'status')
       if (this.params.status === 0 || this.params.status === 2) {
-        this.$router.push('coupon_management/?id=' + params.couponId)
+        return this.$router.push('check_coupon/yxcoupon/?id=' + params.couponId)
       } else if (this.params.status === 1) {
         this.$router.push('resive_coupon/detail/?detail=' + params.couponId)
       }

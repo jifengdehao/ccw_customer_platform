@@ -441,7 +441,7 @@ export default [
         children: [
           { path: 'index_banner_manage', component: IndexBannerManage },
           { path: 'coupon_management', component: CouponManagement },
-          { path: 'coupon_management/:id', component: checkCoupon },
+          { path: 'check_coupon/:id', component: checkCoupon },
           { path: 'resive_coupon/:detail', component: resiveCoupon },
           { path: 'add_check_coupon', component: addCheckCoupon }
         ]

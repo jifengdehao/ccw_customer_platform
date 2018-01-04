@@ -185,7 +185,6 @@ export default {
       }
       // 发送请求
       http.addCoupon(this.newValue).then(res => {
-        console.log(res)
         if (res === true) {
           this.$Message.info('添加成功')
           window.history.back(-1)

@@ -73,6 +73,7 @@ export default {
         effectiveStartTime: '', // 领券开始时间
         effectiveEndTime: '', // 领券结束时间
         effectivePeriod: 3, // 有效周期
+        yxCouponId: Number,
         remark: '' // 备注信息
       },
       ifType: false, // 判断折扣券百分号显影
@@ -81,7 +82,6 @@ export default {
       cyclelabel: '',
       saveAlert: false,
       newValue: {},
-      couponId: '',
       amountNum: ''
     }
   },
@@ -91,8 +91,8 @@ export default {
   methods: {
     // 优惠券详情
     seeCoupon() {
-      this.couponId = this.$route.query.detail
-      http.seeCoupon(this.couponId).then(res => {
+      this.addCoupon.yxCouponId = this.$route.query.detail
+      http.seeCoupon(this.addCoupon.yxCouponId).then(res => {
         this.addCoupon.types = res.types
         this.addCoupon.couponAttribute = res.couponAttributeName
         this.addCoupon.couponName = res.couponName
@@ -211,17 +211,17 @@ export default {
 
       for (let oldValue in this.newValue) {
         if (this.newValue[oldValue] === '' || this.newValue[oldValue] === null) {
-          console.log(this.newValue[oldValue])
           this.$Message.error('新增数据请填写完整')
           return false
         }
       }
       // 发送请求
-      http.addCoupon(this.newValue).then(res => {
-        console.log(res)
+      http.resiveCoupon(this.newValue).then(res => {
         if (res === true) {
           this.$Message.info('修改成功')
           window.history.back(-1)
+        } else {
+          this.$Message.error('修改失败')
         }
       })
     },

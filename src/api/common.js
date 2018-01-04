@@ -486,6 +486,10 @@ export const addCoupon = (params) => {
 export const seeCoupon = (Id) => {
   return ax.g(`/activity/coupon/${Id}`)
 }
+// 修改优惠券
+export const resiveCoupon = (params) => {
+  return ax.u('/activity/coupon/', params)
+}
 
 /* 用户端相关接口
  * @author by WuFengliang
