@@ -57,7 +57,7 @@ export default {
       ],
       attributeList: ['常规券', '补偿券'],
       limitAmount: ['发券周期内限领1张', '发券周期内每天限领1张'],
-      voucherSetting: ['新用户可领', '邀请好友后，好友可领', '全部用户可领'],
+      voucherSetting: ['新用户可领', '邀请好友后,好友可领', '全部用户可领'],
       numberCoupon: ['无限制', '有限制'],
       addCoupon: {
         types: null, // 发放类型
@@ -82,6 +82,7 @@ export default {
       cyclelabel: '',
       saveAlert: false,
       newValue: {},
+      oldValue: {},
       amountNum: ''
     }
   },
@@ -170,15 +171,23 @@ export default {
     // 保存
     changeSave() {
       this.newValue = {}
-      // 判断有效期值
+      // 判断是否为免配送券
       Object.keys(this.addCoupon).forEach(key => {
+        if (this.addCoupon.types === 4) {
+          if (key !== 'discount') {
+            this.oldValue[key] = this.addCoupon[key]
+          }
+        }
+      })
+      // 判断有效期值
+      Object.keys(((this.addCoupon.types === 4) ? this.oldValue : this.addCoupon)).forEach(key => {
         if (this.cyclelabel === '有效周期') {
           if (key !== 'effectivePeriod') {
-            return (this.newValue[key] = this.addCoupon[key])
+            this.newValue[key] = this.oldValue[key] || this.addCoupon[key]
           }
         } else if (this.cyclelabel === '优惠券领取后') {
           if (key !== 'effectiveStartTime' && key !== 'effectiveEndTime') {
-            return (this.newValue[key] = this.addCoupon[key])
+            this.newValue[key] = this.oldValue[key] || this.addCoupon[key]
           }
         }
       })
@@ -203,7 +212,7 @@ export default {
 
       if (this.newValue.couponSet === '新用户可领') {
         this.newValue.couponSet = 1
-      } else if (this.newValue.couponSet === '邀请好友后，好友可领') {
+      } else if (this.newValue.couponSet === '邀请好友后,好友可领') {
         this.newValue.couponSet = 2
       } else if (this.newValue.couponSet === '全部用户可领') {
         this.newValue.couponSet = 3
@@ -226,7 +235,7 @@ export default {
       })
     },
     cacle() {
-      this.$Message.info('取消新增')
+      this.$Message.info('取消修改')
     }
   }
 }

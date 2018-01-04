@@ -81,6 +81,7 @@ export default {
       cyclelabel: '有效周期',
       saveAlert: false,
       newValue: {},
+      oldValue: {},
       amountNum: ''
     }
   },
@@ -90,6 +91,7 @@ export default {
     changeType(type) {
       this.iftypes = true
       this.ifType = false
+      this.addCoupon.types = type
       this.addCoupon.discount = ''
       switch (type) {
         case 2:
@@ -97,6 +99,7 @@ export default {
           break
         case 4:
           this.iftypes = false
+          delete this.addCoupon.discount
       }
     },
     // 鼠标进入全选
@@ -138,15 +141,24 @@ export default {
     // 保存
     changeSave() {
       this.newValue = {}
-      // 判断有效期值
+      // 判断是否为免配送券
       Object.keys(this.addCoupon).forEach(key => {
+        if (this.addCoupon.types === 4) {
+          if (key !== 'discount') {
+            this.oldValue[key] = this.addCoupon[key]
+          }
+        }
+      })
+      console.log(this.oldValue, 'old')
+      // 判断有效期值
+      Object.keys(((this.addCoupon.types === 4) ? this.oldValue : this.addCoupon)).forEach(key => {
         if (this.cyclelabel === '有效周期') {
           if (key !== 'effectivePeriod') {
-            return (this.newValue[key] = this.addCoupon[key])
+            this.newValue[key] = this.oldValue[key] || this.addCoupon[key]
           }
         } else if (this.cyclelabel === '优惠券领取后') {
           if (key !== 'effectiveStartTime' && key !== 'effectiveEndTime') {
-            return (this.newValue[key] = this.addCoupon[key])
+            this.newValue[key] = this.oldValue[key] || this.addCoupon[key]
           }
         }
       })
@@ -154,7 +166,11 @@ export default {
       if (this.newValue.amount === '无限制') {
         this.newValue.amount = -1
       } else if (this.newValue.amount === '有限制') {
-        this.newValue.amount = this.amountNum
+        if (this.amountNum === '') {
+          return this.$Message.error('新增数据请填写完整')
+        } else {
+          this.newValue.amount = this.amountNum
+        }
       }
 
       if (this.newValue.couponAttribute === '常规券') {
