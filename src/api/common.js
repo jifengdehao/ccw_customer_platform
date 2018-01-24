@@ -318,11 +318,11 @@ export const getShopPic = (params, pageNo) => {
 }
 // 商品图片审核
 export const auditProductPicStatus = params => {
-  return ax.g(`seller/pic/product/audit`, params)
+  return ax.pa(`seller/pic/product/audit`, params)
 }
 // 审核店铺图片
 export const auditShopPicStatus = params => {
-  return ax.g(`seller/pic/shop/audit`, params)
+  return ax.pa(`seller/pic/shop/audit`, params)
 }
 //  ********************** 商户账号管理 *******************************
 // 获取商户账号列表

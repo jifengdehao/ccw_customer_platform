@@ -23,18 +23,37 @@
     <!-- 标签页 -->
     <section>
       <Tabs  :animated="false" @on-click="changedata">
-        <TabPane v-for="tab in tabs" key :label="tab.title">
+        <TabPane v-for="(tab,index) in tabs" :key="index" :label="tab.title">
           <Table border ref="selection" :columns="columns" :data="sellervideodata" @on-selection-change="showselect">
           </Table>
         </TabPane>
         <Button type="success" size="small" slot="extra" @click="batchpass()">批量通过</Button>
-        <Button type="warning" @click="batchnotpass()" size="small" slot="extra" style="marginLeft:5px">批量不通过</Button>
+                      
+        <Button type="warning" @click="batchnotpass" size="small" slot="extra" style="marginLeft:5px">批量不通过</Button>
       </Tabs>
     </section>
     <!-- 分页 -->
     <section class="seller-video-manager-page">
       <Page :total="total" show-total :page-size="pageSize" :current="currentPage" @on-change="changepage"></Page>
     </section>
+    <!-- 不通过弹窗 -->
+     <Modal v-model="notPassModal" title="请输入不通过原因：" width="300" :mask-closable="false">
+      <Form>
+        <FormItem>
+          <Input v-model="auditPicParams.failReason"  type="textarea" :maxlength='50' :autosize="{minRows: 3,maxRows: 5}" placeholder="请输入..."></Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="info" style="width:60px" @click="notPass">确定</Button>
+      </div>
+    </Modal>
+    <!-- 通过弹窗 -->
+     <Modal v-model="PassModal" title="通过"  width="300" :mask-closable="false">
+        <h2>确定审核通过？</h2>
+      <div slot="footer">
+        <Button type="info" style="width:60px" @click="auditPass">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -48,9 +67,11 @@ export default {
   props: {},
   data() {
     return {
+      notPassModal: false, // 不通过时弹窗
+      PassModal: false, // 通过时弹窗
       total: 1,
       currentPage: 1,
-      pageSize: 1,
+      pageSize: 10,
       current: 0,
       selectiondata: [],
       sellervideodata: [],
@@ -59,14 +80,58 @@ export default {
         startdate: '',
         lastdate: ''
       },
+      productParams: {
+        // 获取商品图片列表审核传参
+        pageSize: 10,
+        updateStartTime: '',
+        updateEndTime: ''
+      },
+      shopParams: {
+        // 获取档口或头像图片列表审核传参
+        pageSize: 10,
+        picType: 1, // 档口图片类型 (1 档口图片，2 档口头像）
+        updateStartTime: '',
+        updateEndTime: ''
+      },
+      auditPicParams: {
+        // 审核图片传值
+        auditStatus: 0,
+        failReason: '',
+        idList: [],
+        picType: NaN
+      },
       tabs: [{ title: '商品图片审核' }, { title: '档口图片审核' }, { title: '档口头像审核' }],
       columns: [],
       producttitle: [
         {
           title: '商品标题',
-          key: 'productName',
           width: 100,
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('div', params.row.productName),
+              h(
+                'div',
+                {
+                  style: {
+                    position: 'absolute',
+                    top: '0',
+                    left: '-2px',
+                    width: '80px',
+                    height: '20px',
+                    lineHeight: '20px',
+                    color: '#fff',
+                    backgroundColor: '#ff9900',
+                    display:
+                      params.row.status === 5 && params.row.auditStatus === 2
+                        ? 'block'
+                        : 'none'
+                  }
+                },
+                '违规重新上架'
+              )
+            ])
+          }
         },
         {
           title: '商品主图',
@@ -125,7 +190,10 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.productPicNotPass(params.row.spProductId)
+                      this.notPassModal = true
+                      this.auditPicParams.failReason = ''
+                      this.id = params.row.spProductId
+                      // this.productPicNotPass(params.row.spProductId)
                     }
                   }
                 },
@@ -143,7 +211,8 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.productPicPass(params.row.spProductId)
+                      this.PassModal = true
+                      this.id = params.row.spProductId
                     }
                   }
                 },
@@ -207,7 +276,10 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.shopPicNotPass(params.row.msShopId)
+                      this.notPassModal = true
+                      this.auditPicParams.failReason = ''
+                      this.id = params.row.msShopId
+                      // this.shopPicNotPass(params.row.msShopId)
                     }
                   }
                 },
@@ -225,7 +297,8 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.shopPicPass(params.row.msShopId)
+                      this.PassModal = true
+                      this.id = params.row.msShopId
                     }
                   }
                 },
@@ -289,7 +362,10 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.shopHeaderPicNotPass(params.row.msShopId)
+                      this.notPassModal = true
+                      this.auditPicParams.failReason = ''
+                      this.id = params.row.msShopId
+                      // this.shopHeaderPicNotPass(params.row.msShopId)
                     }
                   }
                 },
@@ -307,7 +383,8 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.shopHeaderPicPass(params.row.msShopId)
+                      this.PassModal = true
+                      this.id = params.row.msShopId
                     }
                   }
                 },
@@ -326,7 +403,7 @@ export default {
   },
   created() {
     this.columns = this.producttitle
-    this.getProductPic(1, 10)
+    this.getProductPic(1)
   },
   // mounted: {},
   activited: {},
@@ -336,23 +413,25 @@ export default {
       this.current = index
       if (index === 0) {
         this.columns = this.producttitle
-        this.getProductPic(1, 10)
-      } else if (index === 1) {
-        this.columns = this.shoptitle
-        this.getShopPic(1, 10, 1)
-      } else if (index === 2) {
-        this.columns = this.avatar
-        this.getShopPic(1, 10, 2)
+        this.productParams.updateStartTime = this.formItem.startdate
+        this.productParams.updateEndTime = this.formItem.lastdate
+        this.getProductPic(1)
+      } else {
+        this.shopParams.updateStartTime = this.formItem.startdate
+        this.shopParams.updateEndTime = this.formItem.lastdate
+        if (index === 1) {
+          this.columns = this.shoptitle
+          this.shopParams.picType = 1
+        } else if (index === 2) {
+          this.columns = this.avatar
+          this.shopParams.picType = 2
+        }
+        this.getShopPic(1)
       }
     },
     // 获取商品图片审核列表
-    getProductPic(pageNo, pageSize, updateStartTime, updateEndTime) {
-      let params = {
-        pageSize: pageSize,
-        updateStartTime: updateStartTime,
-        updateEndTime: updateEndTime
-      }
-      api.getProductPic(params, pageNo).then(response => {
+    getProductPic(pageNo) {
+      api.getProductPic(this.productParams, pageNo).then(response => {
         this.sellervideodata = response.records
         this.total = response.total
         this.pageSize = response.size
@@ -360,14 +439,8 @@ export default {
       })
     },
     // 获取档口图片和档口头像审核列表
-    getShopPic(pageNo, pageSize, picType, updateStartTime, updateEndTime) {
-      let params = {
-        pageSize: pageSize,
-        picType: picType, // 档口图片类型 (1 档口图片，2 档口头像）
-        updateStartTime: updateStartTime,
-        updateEndTime: updateEndTime
-      }
-      api.getShopPic(params, pageNo).then(response => {
+    getShopPic(pageNo) {
+      api.getShopPic(this.shopParams, pageNo).then(response => {
         this.sellervideodata = response.records
         this.total = response.total
         this.pageSize = response.size
@@ -375,115 +448,107 @@ export default {
       })
     },
     // 审核商品图片
-    auditProductPicStatus(productId, auditStatus) {
-      let params = {
-        productId: productId,
-        auditStatus: auditStatus // 通过是1 不通过是0
-      }
-      api.auditProductPicStatus(params).then(response => {
-        this.getProductPic(1, 10)
+    auditProductPicStatus() {
+      api.auditProductPicStatus(this.auditPicParams).then(response => {
+        this.$Message.info('更新成功')
+        this.getProductPic(1)
       })
     },
     // 审核店铺图片
-    auditShopPicStatus(shopId, picType, auditStatus) {
-      let params = {
-        shopIds: shopId,
-        picType: picType, // 1：档口图片，2：档口头像
-        auditStatus: auditStatus // 通过是3 不通过是2
-      }
-      api.auditShopPicStatus(params).then(response => {
+    auditShopPicStatus() {
+      api.auditShopPicStatus(this.auditPicParams).then(response => {
         this.$Message.info('更新成功')
         this.id = ''
         if (this.current === 1) {
-          this.getShopPic(1, 10, 1)
+          this.getShopPic(1)
         } else if (this.current === 2) {
-          this.getShopPic(1, 10, 2)
+          this.getShopPic(1)
         }
       })
     },
     // 分页
     changepage(index) {
       if (this.current === 0) {
-        this.getProductPic(index, 10)
-      } else if (this.current === 1) {
-        this.getShopPic(index, 10, 1)
-      } else if (this.current === 2) {
-        this.getShopPic(index, 10, 2)
+        this.getProductPic(index)
+      } else {
+        this.getShopPic(index)
       }
     },
     // 搜索
     searchdata(formItem) {
       if (this.current === 0) {
-        this.getProductPic(1, 10, formItem.startdate, formItem.lastdate)
-      } else if (this.current === 1) {
-        this.getShopPic(1, 10, 1, formItem.startdate, formItem.lastdate)
-      } else if (this.current === 2) {
-        this.getShopPic(1, 10, 2, formItem.startdate, formItem.lastdate)
+        this.productParams.updateStartTime = formItem.startdate
+        this.productParams.updateEndTime = formItem.lastdate
+        this.getProductPic(1)
+      } else {
+        this.shopParams.updateStartTime = formItem.startdate
+        this.shopParams.updateEndTime = formItem.lastdate
+        this.getShopPic(1)
       }
     },
     // 多选
     showselect(selection) {
       this.selectiondata = selection
+      this.getID()
     },
     getID() {
-      this.id = []
-      this.selectiondata.forEach(item => {
+      this.id = this.selectiondata.map(item => {
         if (this.current === 0) {
-          this.id += item.spProductId + ','
-        } else if (this.current === 1) {
-          this.id += item.msShopId + ','
-        } else if (this.current === 2) {
-          this.id += item.msShopId + ','
+          return item.spProductId
+        } else {
+          return item.item.msShopId
         }
       })
-      if (this.id.indexOf(',') !== -1) {
-        this.id = this.id.substring(0, this.id.length - 1)
+    },
+
+    // 审核
+    audit() {
+      if (!Array.isArray(this.id)) {
+        this.id = [this.id]
+      } else {
+        this.getID()
+      }
+      this.auditPicParams.idList = this.id
+      // this.auditPicParams.auditStatus = 0
+      if (this.current === 0) {
+        this.auditPicParams.picType = 3
+        this.auditProductPicStatus()
+      } else {
+        if (this.current === 1) {
+          this.auditPicParams.picType = 1
+        } else if (this.current === 2) {
+          this.auditPicParams.picType = 2
+        }
+        this.auditShopPicStatus()
       }
     },
-    // 商品图片通过
-    productPicPass(id) {
-      this.auditProductPicStatus(id, 1)
+    // 不通过
+    notPass() {
+      this.auditPicParams.auditStatus = 0
+      this.audit()
+      this.notPassModal = false
     },
-    // 商品图片不通过
-    productPicNotPass(id) {
-      this.auditProductPicStatus(id, 0)
-    },
-    // 档口图片通过
-    shopPicPass(id) {
-      this.auditShopPicStatus(id, 1, 1)
-    },
-    // 商品图片不通过
-    shopPicNotPass(id) {
-      this.auditShopPicStatus(id, 1, 0)
-    },
-    // 档口头像图片通过
-    shopHeaderPicPass(id) {
-      this.auditShopPicStatus(id, 2, 1)
-    },
-    // 商品头像图片不通过
-    shopHeaderPicNotPass(id) {
-      this.auditShopPicStatus(id, 2, 0)
+    // 审核通过
+    auditPass() {
+      this.auditPicParams.auditStatus = 1
+      this.audit()
+      this.PassModal = false
     },
     // 批量通过
     batchpass() {
-      this.getID()
-      if (this.current === 0) {
-        this.auditProductPicStatus(this.id, 1)
-      } else if (this.current === 1) {
-        this.auditShopPicStatus(this.id, 1, 1)
-      } else if (this.current === 2) {
-        this.auditShopPicStatus(this.id, 2, 1)
+      if (this.selectiondata.length > 0) {
+        this.PassModal = true
+      } else {
+        alert('没有选择')
       }
     },
     // 批量不通过
     batchnotpass() {
-      this.getID()
-      if (this.current === 0) {
-        this.auditProductPicStatus(this.id, 0)
-      } else if (this.current === 1) {
-        this.auditShopPicStatus(this.id, 1, 0)
-      } else if (this.current === 2) {
-        this.auditShopPicStatus(this.id, 2, 0)
+      if (this.selectiondata.length > 0) {
+        this.notPassModal = true
+        this.auditPicParams.failReason = ''
+      } else {
+        alert('没有选择')
       }
     }
   },
@@ -496,7 +561,6 @@ export default {
 .seller-video-manager-datepick .label {
   vertical-align: middle;
 }
-
 .seller-video-manager-page {
   margin-top: 10px;
   text-align: right;

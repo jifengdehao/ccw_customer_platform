@@ -8,16 +8,16 @@
   <div class="seller-account-manager">
     <!-- 搜索 -->
     <section class="seller-account-manager-select">
-      <Form :model="formItem" inline>
+      <Form :model="accountListParams" inline>
         <FormItem>
           <span class="label">入驻日期：</span>
-          <DatePicker type="date" v-model="formItem.startdate" placement="bottom-start" placeholder="选择开始日期" style="width: 200px"></DatePicker>
+          <DatePicker type="date" v-model="accountListParams.settleStartdate" placement="bottom-start" placeholder="选择开始日期" style="width: 200px"></DatePicker>
           <i> - </i>
-          <DatePicker type="date" v-model="formItem.lastdate" placement="bottom-start" placeholder="选择结束日期" style="width: 200px"></DatePicker>
+          <DatePicker type="date" v-model="accountListParams.settleEnddate" placement="bottom-start" placeholder="选择结束日期" style="width: 200px"></DatePicker>
         </FormItem> <br>
         <FormItem>
           <span class="label">账号状态：</span>
-          <Select v-model="formItem.status" placeholder="请选择" style="width: 200px" clearable>
+          <Select v-model="accountListParams.status" placeholder="请选择" style="width: 200px" clearable>
                 <Option value="1">正常</Option>
                 <Option value="2">关档</Option>
                 <Option value="3">冻结</Option>
@@ -25,18 +25,18 @@
         </FormItem>
         <FormItem>
           <span class="label">商家账号：</span>
-          <Input v-model="formItem.msSellerId" placeholder="请输入" style="width: 200px"></Input>
+          <Input v-model="accountListParams.sellerId" placeholder="请输入" style="width: 200px"></Input>
         </FormItem>
         <FormItem>
           <span class="label">商家手机：</span>
-          <Input v-model="formItem.mobileno" placeholder="请输入" style="width: 200px"></Input>
+          <Input v-model="accountListParams.mobileno" placeholder="请输入" style="width: 200px"></Input>
         </FormItem>
         <FormItem>
           <span class="label">档口名称：</span>
-          <Input v-model="formItem.shopName" placeholder="请输入" style="width: 200px"></Input>
+          <Input v-model="accountListParams.shopName" placeholder="请输入" style="width: 200px"></Input>
         </FormItem>
         <FormItem>
-          <Button type="primary" @click="searchAccountData(formItem)">搜索</Button>
+          <Button type="primary" @click="searchAccountData()">搜索</Button>
         </FormItem>
       </Form>
     </section>
@@ -76,7 +76,13 @@
           <div class="shopMessagemModal-shopinfo">
             <h3>店铺信息</h3>
             <span>档口图片：</span>
-              <img :src="shopMessage.headUrl"  alt="">
+            <div class="img" style="marginLeft:13px">
+               <img :src="shopMessage.headUrl"  alt="">
+              <div class="qualification" style="width:100px;top:85px;lineHeight:20px">
+                <input type="file" @change="headUrlUpload" accept="image/*">上传图片
+              </div>
+            </div>
+             
               </br>
               <FormItem label="档口名称：" prop="shopName">
                 <Input size="small"  v-model="shopMessage.shopName"  placeholder="请输入" style="width: 150px"></Input>
@@ -107,6 +113,10 @@
               <FormItem label="店铺公告：" prop="notice">
                 <Input v-model="shopMessage.notice" type="textarea" style="width: 150px" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>   
               </FormItem>
+              <FormItem label="入住市场：">
+                <Select size="small"  v-model="shopMessage.psMarketId" placeholder="请选择" style="width: 150px">
+                <Option v-for="item in allMarket" :value="item.psMarketId" :key="item.psMarketId">{{ item.address }}</Option></Select> 
+              </FormItem>
               <FormItem label="店铺地址：" prop="stallAddress">
                 <Input size="small" v-model="shopMessage.stallAddress"  placeholder="请输入" style="width: 150px"></Input>
               </FormItem>
@@ -122,7 +132,7 @@
                       <Icon type="ios-eye-outline" @click.native="handleView(shopMessage.shopPicUrl)"></Icon>
                 </div>
               </div>
-              <div class="qualification" style="width:120px;top:130px;left:16px;lineHeight:30px">
+              <div class="qualification" style="width:120px;top:140px;left:16px;lineHeight:20px">
                 <input type="file" @change="shopimgupload" accept="image/*">上传图片
               </div>
           </div>
@@ -224,13 +234,15 @@ export default {
         businessHour: '',
         mobileno: '',
         notice: '',
-        stallAddress: '',
+        stallAddress: '', // 市场名称
+        psMarketId: NaN, // 市场ID
         shopPicUrl: [],
         msShopQualification: {
           protocol: [],
           qualificationList: []
         }
       },
+      allMarket: [],
       qulification: [], // 资质证件图片
       shopManageData: {},
       bussinessStatus: [],
@@ -239,7 +251,16 @@ export default {
       picModal: false, // 查看大图模态框
       bigImgUrl: '', // 查看大图的图片地址
       sellerAccountData: [],
-      formItem: {},
+      accountListParams: {
+        // 搜索参数
+        pageSize: 10,
+        shopName: '',
+        mobileno: '',
+        sellerId: '',
+        status: '',
+        settleStartdate: '',
+        settleEnddate: ''
+      },
       businessDictCode: [],
       columns: [
         {
@@ -340,16 +361,17 @@ export default {
     }
   },
   created() {
-    // api.getOssInfo().then(response => {
-    //   alert('asddasd')
-    //   console.log(response)
-    // })
-    this.getSellerAccountList(1, 10)
+    this.getSellerAccountList(1)
     let params = {
       parentId: -1 // 一级分类传入-1
     }
+    // 获取主营类型
     api.getProductCategory(params).then(response => {
       this.businessDictCode = response
+    })
+    // 获取所有的市场
+    api.getAllMarket(params).then(res => {
+      this.allMarket = res
     })
   },
   // mounted: {},
@@ -357,30 +379,14 @@ export default {
   update: {},
   methods: {
     // 获取商户账号列表
-    getSellerAccountList(
-      pageNo,
-      pageSize,
-      shopName,
-      mobileno,
-      sellerId,
-      status,
-      settleStartdate,
-      settleEnddate
-    ) {
-      let params = {
-        pageSize: pageSize,
-        shopName: shopName,
-        mobileno: mobileno,
-        sellerId: sellerId,
-        status: status,
-        settleStartdate: settleStartdate,
-        settleEnddate: settleEnddate
-      }
-      api.getSellerAccountList(params, pageNo).then(response => {
-        this.sellerAccountData = response.records
-        this.total = response.total
-        this.pageSize = response.size
-      })
+    getSellerAccountList(pageNo) {
+      api
+        .getSellerAccountList(this.accountListParams, pageNo)
+        .then(response => {
+          this.sellerAccountData = response.records
+          this.total = response.total
+          this.pageSize = response.size
+        })
     },
     // 商家账号管理
     updataShopStatus(shopId, status, remark) {
@@ -392,8 +398,7 @@ export default {
       api.updataShopStatus(params).then(response => {
         this.$Message.success('商家状态修改成功')
         this.shopManageModal = false
-        this.getSellerAccountList(1, 10)
-        this.formItem = {}
+        this.getSellerAccountList(1)
       })
     },
     // 商家账号管理状态
@@ -478,27 +483,17 @@ export default {
       this.shopMessage.msShopQualification.qualificationList = this.qulification.qualificationList
       let sellerId = shopMessage.msSellerId
       api.modifysellerInfo(shopMessage, sellerId).then(response => {
-        this.getSellerAccountList(1, 10)
-        this.formItem = {}
+        this.getSellerAccountList(1)
         this.$Message.info('更新成功')
         this.shopMessageModal = false
       })
     },
     // 搜索
-    searchAccountData(formItem) {
-      this.getSellerAccountList(
-        1,
-        10,
-        formItem.shopName,
-        formItem.mobileno,
-        formItem.msSellerId,
-        formItem.status,
-        formItem.startdate,
-        formItem.lastdate
-      )
+    searchAccountData() {
+      this.getSellerAccountList(1)
     },
     changepage(index) {
-      this.getSellerAccountList(index, 10)
+      this.getSellerAccountList(index)
     },
     // 重置密码
     resetPassword(msSellerId) {
@@ -507,6 +502,17 @@ export default {
       }
       api.resetPassword(params).then(response => {
         this.$Message.info('重置成功')
+      })
+    },
+    // 头像图片
+    headUrlUpload(e) {
+      var file = e.target.files[0]
+      uploadpic(file).then(res => {
+        if (res) {
+          this.shopMessage.headUrl = res[0].indexOf('?')
+            ? res[0].split('?')[0]
+            : res[0]
+        }
       })
     },
     // 店铺图片
@@ -652,11 +658,14 @@ h3 {
   margin-left: 5px;
 }
 
-.shopMessagemModal-shopinfo img {
+.shopMessagemModal-shopinfo .img {
   display: inline-block;
   width: 100px;
   height: 100px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
+}
+.shopMessagemModal-shopinfo .img img {
+  margin-left: 5px;
   border-radius: 50%;
 }
 /* 上传图片按钮和图片位置样式 */
@@ -673,11 +682,11 @@ input[type='file'] {
 }
 .qualification {
   position: absolute;
-  left: 4px;
+  left: 5px;
   bottom: 20px;
   width: 150px;
-  height: 30px;
-  line-height: 30px;
+  height: 20px;
+  line-height: 20px;
   background-color: #e6dfbe;
   text-align: center;
 }

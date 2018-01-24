@@ -29,14 +29,14 @@
     <!-- 标签页 表格内容 -->
     <section>
       <Tabs :animated="false" @on-click="changedata">
-        <TabPane v-for="tab in tabs" key :label="tab.title">
+        <TabPane v-for="(tab,index) in tabs" :key="index" :label="tab.title">
           <Table :columns="auditcolumns" :data="auditdata"></Table>
         </TabPane>
       </Tabs>
     </section>
     <!-- 分页 -->
     <section class="seller-settled-manage-page">
-      <Page :total="total" show-total :page-size="pageSize" :current="currentPage" @on-change="changepage"></Page>
+      <Page :total="total" show-total :page-size="applyParams.pageSize" :current="currentPage" @on-change="changepage"></Page>
     </section>
     <!-- 查看图片 -->
     <Modal v-model="modal" title="商家证件图片" width="800">
@@ -54,7 +54,6 @@ export default {
   data() {
     return {
       total: 1,
-      pageSize: 10,
       modal: false,
       currentPage: 1,
       current: 0, // 申请的状态
@@ -65,9 +64,17 @@ export default {
         lastdate: '',
         select: ''
       },
+      applyParams: {
+        // 获取入驻审核列表传参
+        pageSize: 10,
+        applyStatus: 1, // 申请的状态
+        chargeMan: '', // 负责人
+        applyStartTime: '',
+        applyEndTime: ''
+      },
       auditdata: [],
       auditcolumns: [],
-      tabs: [{ title: '商家待审核' }, { title: '商家待审批' }, { title: '已通过' }],
+      tabs: [{ title: '商家待审核' }, { title: '已通过' }],
       columns: [
         {
           title: '商家手机',
@@ -177,10 +184,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.updateApplyStatus(
-                        params.row.msSellerApplyId,
-                        params.row.applyStatus + 2
-                      )
+                      this.updateApplyStatus(params.row.msSellerApplyId, 6)
                       this.auditdata.splice(params.row.index, 1)
                     }
                   }
@@ -199,10 +203,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.updateApplyStatus(
-                        params.row.msSellerApplyId,
-                        params.row.applyStatus + 1
-                      )
+                      this.updateApplyStatus(params.row.msSellerApplyId, 5)
                       this.auditdata.splice(params.row.index, 1)
                     }
                   }
@@ -306,68 +307,50 @@ export default {
   },
   created() {
     this.auditcolumns = this.columns
-    this.getSellerApplyList(1, this.pageSize, 1)
+    this.getSellerApplyList(1, this.applyParams)
     api.getAllBD().then(response => {
       this.allCharge = response
     })
   },
   mounted() {},
   methods: {
-    // 状态 1：待审核  4：待审批 5：已通过
+    // 状态 1：待审核  5：已通过
     // 切换tab栏
     changedata(index) {
       this.current = index
       if (index === 0) {
         this.auditcolumns = this.columns
-        this.getSellerApplyList(1, this.pageSize, 1)
-      } else if (index === 1) {
-        this.auditcolumns = this.columns
-        this.getSellerApplyList(1, this.pageSize, 4)
-      } else if (index === 2) {
+        this.applyParams.applyStatus = 1
+      } else {
         this.auditcolumns = this.lastcolumns
-        this.getSellerApplyList(1, this.pageSize, 5)
+        this.applyParams.applyStatus = 5
       }
+      this.getSellerApplyList(1)
     },
     // 分页
     changepage(index) {
       if (this.current === 0) {
-        this.getSellerApplyList(index, this.pageSize, 1)
+        this.applyParams.applyStatus = 1
       } else if (this.current === 1) {
-        this.getSellerApplyList(index, this.pageSize, 4)
-      } else if (this.current === 2) {
-        this.getSellerApplyList(index, this.pageSize, 5)
+        this.applyParams.applyStatus = 5
       }
+      this.getSellerApplyList(index)
     },
     remove(index) {
       this.auditdata.splice(index, 1)
     },
     // 获取入驻审核列表
-    getSellerApplyList(
-      pageNo,
-      pageSize,
-      applyStatus,
-      chargeMan,
-      applyStartTime,
-      applyEndTime
-    ) {
-      let params = {
-        pageSize: pageSize,
-        applyStatus: applyStatus, // 申请的状态
-        chargeMan: chargeMan, // 负责人
-        applyStartTime: applyStartTime,
-        applyEndTime: applyEndTime
-      }
-      api.getSellerApplyList(params, pageNo).then(response => {
+    getSellerApplyList(pageNo) {
+      api.getSellerApplyList(this.applyParams, pageNo).then(response => {
         this.auditdata = response.records
         this.total = response.total
-        this.pageSize = response.size
         this.currentPage = response.current
       })
     },
     // 更新商户入驻信息审核状态
     updateApplyStatus(id, applyStatus) {
       let params = {
-        applyStatus: applyStatus // 商家入驻申请状态
+        applyStatus: applyStatus // 商家入驻申请状态 5 通过  6 不通过
       }
       api.updateApplyStatus(params, id).then(response => {
         this.$Message.success('发送成功')
@@ -375,34 +358,15 @@ export default {
     },
     // 搜索
     searchdata(formItem) {
+      this.applyParams.chargeMan = formItem.charge
+      this.applyParams.applyStartTime = formItem.startdate
+      this.applyParams.applyEndTime = formItem.lastdate
       if (this.current === 0) {
-        this.getSellerApplyList(
-          1,
-          this.pageSize,
-          1,
-          formItem.charge,
-          formItem.startdate,
-          formItem.lastdate
-        )
+        this.applyParams.applyStatus = 1
       } else if (this.current === 1) {
-        this.getSellerApplyList(
-          1,
-          this.pageSize,
-          4,
-          formItem.charge,
-          formItem.startdate,
-          formItem.lastdate
-        )
-      } else if (this.current === 2) {
-        this.getSellerApplyList(
-          1,
-          this.pageSize,
-          5,
-          formItem.charge,
-          formItem.startdate,
-          formItem.lastdate
-        )
+        this.applyParams.applyStatus = 5
       }
+      this.getSellerApplyList(1)
     },
     formatDateTime(inputTime) {
       if (inputTime) {
