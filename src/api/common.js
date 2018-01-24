@@ -467,6 +467,30 @@ export const deleteBanner = id => {
 export const seeBanner = id => {
   return ax.g(`/activity/banner/${id}`)
 }
+
+// ************* 优惠券管理 **********/
+
+// 查看优惠券列表 /activity/coupon/list/
+export const activtyCouponList = (id, params) => {
+  return ax.g(`/activity/coupon/list/${id}`, params)
+}
+// 终结优惠券/activity/coupon
+export const activityCouponDelete = (params) => {
+  return ax.pa(`/activity/coupon/`, params)
+}
+// 新增优惠券POST /activity/coupon
+export const addCoupon = (params) => {
+  return ax.p('/activity/coupon', params)
+}
+// 查看优惠券详情/activity/coupon/{couponId}
+export const seeCoupon = (Id) => {
+  return ax.g(`/activity/coupon/${Id}`)
+}
+// 修改优惠券
+export const resiveCoupon = (params) => {
+  return ax.u('/activity/coupon/', params)
+}
+
 /* 用户端相关接口
  * @author by WuFengliang
  */

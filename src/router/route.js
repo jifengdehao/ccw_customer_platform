@@ -213,24 +213,27 @@ const CouponManagement = resolve => {
   })
 }
 
-// 优惠券管理 查看进行中优惠券
-const viewOngoingCoupons = resolve => {
-  import('page/activity/viewOngoingCoupons').then(module => {
+// 查看优惠券
+const checkCoupon = resolve => {
+  import('page/activity/checkCoupon').then(module => {
     resolve(module)
   })
 }
-// 优惠券管理 进行中添加优惠券
-const addCoupons = resolve => {
-  import('page/activity/addCoupons').then(module => {
+
+// 新增查看优惠券
+const addCheckCoupon = resolve => {
+  import('page/activity/addCheckCoupon').then(module => {
     resolve(module)
   })
 }
-// 优惠券管理 待生效查看编辑
-const pendingOpreation = resolve => {
-  import('page/activity/pendingOpreation').then(module => {
+
+// 修改优惠券
+const resiveCoupon = resolve => {
+  import('page/activity/resiveCoupon').then(module => {
     resolve(module)
   })
 }
+
 // 数据中心
 const DataIndex = resolve => {
   import('page/data/index').then(module => {
@@ -365,7 +368,7 @@ export default [
         path: '/home',
         name: 'home',
         component: Home,
-        meta: {keepAlive: true}
+        meta: { keepAlive: true }
       },
       {
         path: '/order',
@@ -373,15 +376,23 @@ export default [
         component: Order,
         redirect: '/order/manage',
         children: [
-          {path: 'manage', component: OrderManage, meta: {keepAlive: true}},
-          {path: 'abnormal', component: OrderAbnormal},
-          {path: 'evaluate', component: OrderEvaluate, meta: {keepAlive: true}},
-          {path: 'evaluateInfoDeliver/:id', component: OrderEvaluateDeliver},
-          {path: 'evaluateInfoSeller/:id', component: OrderEvaluateSeller},
-          {path: 'feedback', component: OrderFeedback, meta: {keepAlive: true}},
-          {path: 'feedbackInfo/:id', component: OrderFeedbackInfo},
-          {path: 'sw', component: OrderSw},
-          {path: 'orderInfo/:id', component: OrderInfo}
+          { path: 'manage', component: OrderManage, meta: { keepAlive: true } },
+          { path: 'abnormal', component: OrderAbnormal },
+          {
+            path: 'evaluate',
+            component: OrderEvaluate,
+            meta: { keepAlive: true }
+          },
+          { path: 'evaluateInfoDeliver/:id', component: OrderEvaluateDeliver },
+          { path: 'evaluateInfoSeller/:id', component: OrderEvaluateSeller },
+          {
+            path: 'feedback',
+            component: OrderFeedback,
+            meta: { keepAlive: true }
+          },
+          { path: 'feedbackInfo/:id', component: OrderFeedbackInfo },
+          { path: 'sw', component: OrderSw },
+          { path: 'orderInfo/:id', component: OrderInfo }
         ]
       },
       {
@@ -390,23 +401,23 @@ export default [
         component: Custom,
         redirect: '/custom/account_manage',
         children: [
-          {path: 'account_manage', component: AccountManage},
-          {path: 'account_detail/:id', component: AccountDetail},
-          {path: 'system_message_push', component: SystemMessagePush},
-          {path: 'activity_message_push', component: SystemMessagePush},
-          {path: 'daily_menu_push', component: SystemMessagePush},
-          {path: 'app_notice_push', component: SystemMessagePush},
-          {path: 'banner_manage', component: BannerManage},
-          {path: 'market_push', component: BannerManage},
-          {path: 'start_price_see', component: StartPriceSee},
-          {path: 'evaluation_tag_manage', component: EvaluationTagManage},
-          {path: 'account_balance', component: AccountBalance},
+          { path: 'account_manage', component: AccountManage },
+          { path: 'account_detail/:id', component: AccountDetail },
+          { path: 'system_message_push', component: SystemMessagePush },
+          { path: 'activity_message_push', component: SystemMessagePush },
+          { path: 'daily_menu_push', component: SystemMessagePush },
+          { path: 'app_notice_push', component: SystemMessagePush },
+          { path: 'banner_manage', component: BannerManage },
+          { path: 'market_push', component: BannerManage },
+          { path: 'start_price_see', component: StartPriceSee },
+          { path: 'evaluation_tag_manage', component: EvaluationTagManage },
+          { path: 'account_balance', component: AccountBalance },
           {
             path: 'account_balance/detail',
             name: 'balance_detail',
             component: AccountMoneyDetail
           },
-          {path: 'account_balance/edit/:custId', component: AccountEditMoney}
+          { path: 'account_balance/edit/:custId', component: AccountEditMoney }
         ]
       },
       {
@@ -415,11 +426,11 @@ export default [
         component: Users,
         redirect: '/users/users_manage',
         children: [
-          {path: 'users_manage', component: UsersManage},
-          {path: 'users_jurisdiction', component: UsersJurisdiction},
-          {path: 'users_log', component: UsersLog},
-          {path: 'user/:id', component: User},
-          {path: 'seeUserlist', component: userList}
+          { path: 'users_manage', component: UsersManage },
+          { path: 'users_jurisdiction', component: UsersJurisdiction },
+          { path: 'users_log', component: UsersLog },
+          { path: 'user/:id', component: User },
+          { path: 'seeUserlist', component: userList }
         ]
       },
       {
@@ -428,11 +439,11 @@ export default [
         component: Activity,
         redirect: '/activity/index_banner_manage',
         children: [
-          {path: 'index_banner_manage', component: IndexBannerManage},
-          {path: 'coupon_management', component: CouponManagement},
-          {path: 'vieOngoingInfo', component: viewOngoingCoupons},
-          {path: 'addCoupons', component: addCoupons},
-          {path: 'pendingDetali', component: pendingOpreation}
+          { path: 'index_banner_manage', component: IndexBannerManage },
+          { path: 'coupon_management', component: CouponManagement },
+          { path: 'check_coupon/:id', component: checkCoupon },
+          { path: 'resive_coupon/:detail', component: resiveCoupon },
+          { path: 'add_check_coupon', component: addCheckCoupon }
         ]
       },
       {
@@ -440,7 +451,7 @@ export default [
         name: 'data',
         component: Data,
         redirect: '/data/index',
-        children: [{path: 'index', component: DataIndex}]
+        children: [{ path: 'index', component: DataIndex }]
       },
       {
         path: '/distribution',
@@ -464,14 +475,14 @@ export default [
         component: Seller,
         redirect: '/seller/seller_settled_manage',
         children: [
-          {path: 'seller_settled_manage', component: SellerSettledManage},
-          {path: 'seller_video_manage', component: SellerVideoManage},
-          {path: 'seller_account_manage', component: SellerAccountManage},
-          {path: 'seller_observant_manage', component: SellerObservantManage},
-          {path: 'bd_manage', component: BdManage},
-          {path: 'food_template_manage', component: FoodTemplateManage},
-          {path: 'seller_message_push', component: SellerMessagePush},
-          {path: 'seller_message_remind', component: SellerMessageRemind}
+          { path: 'seller_settled_manage', component: SellerSettledManage },
+          { path: 'seller_video_manage', component: SellerVideoManage },
+          { path: 'seller_account_manage', component: SellerAccountManage },
+          { path: 'seller_observant_manage', component: SellerObservantManage },
+          { path: 'bd_manage', component: BdManage },
+          { path: 'food_template_manage', component: FoodTemplateManage },
+          { path: 'seller_message_push', component: SellerMessagePush },
+          { path: 'seller_message_remind', component: SellerMessageRemind }
         ]
       },
       {
@@ -480,9 +491,9 @@ export default [
         component: App,
         redirect: '/app/index',
         children: [
-          {path: 'index', component: AppIndex, meta: {keepAlive: true}},
-          {path: 'index/:id', component: AppIndexDetails},
-          {path: 'addAppUpdate', component: AddAppUpdate}
+          { path: 'index', component: AppIndex, meta: { keepAlive: true } },
+          { path: 'index/:id', component: AppIndexDetails },
+          { path: 'addAppUpdate', component: AddAppUpdate }
         ]
       },
       {
@@ -491,8 +502,8 @@ export default [
         component: Finance,
         redirect: '/finance/account_refund',
         children: [
-          {path: 'account_refund', component: FinanceAccountRefund},
-          {path: 'account_balance', component: FinanceAccountBalance}
+          { path: 'account_refund', component: FinanceAccountRefund },
+          { path: 'account_balance', component: FinanceAccountBalance }
         ]
       }
     ]
