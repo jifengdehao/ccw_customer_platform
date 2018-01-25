@@ -78,7 +78,7 @@
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
           </Select>
         </FormItem>
-        <FormItem label="二级分类" prop="spCategoryId"> 
+        <FormItem label="二级分类:" prop="spCategoryId"> 
           <Select v-model="templateItem.spCategoryId"  size="small" style="width:100px">
             <Option v-for="item in childdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
           </Select> <br>
@@ -116,9 +116,15 @@
         <FormItem label="产地默认值:">
           <Input v-model="templateItem.originPlace" :value="templateItem.originPlace" size="small" style="width: 200px"></Input> <br>
         </FormItem>
+        <FormItem label="是否为标品:">
+          <Select v-model="templateItem.isStandard"  size="small" style="width:100px">
+            <Option  :value="1" :key="1">标品</Option>
+            <Option  :value="0" :key="0">非标品</Option>
+          </Select> <br>
+        </FormItem>
         <div >
           <table class="templateModal-table" border="0">
-            <FormItem label="商品规格" >
+            <FormItem label="商品规格:" >
               <td><h4>重量单位</h4></td>
               <td  v-for="(weightitem,index) in templateItem.weightUnit" :key="index">
                   <Select size="small" style="width:80px" v-model="weightitem.attributeCode" >
@@ -160,11 +166,11 @@
                 <input type="file" @change="productDescUpload" accept="image/*">+
               </div>
         </FormItem>
-        <FormItem>
-          <Button type="info" value="提交" @click="addtemplate('templateItem',templateItem)">提交</Button>
-        </FormItem>
       </Form>
-      <div slot="footer"></div>
+      <div slot="footer">
+         <Button type="info" value="提交" @click="addtemplate('templateItem',templateItem)">保存模板</Button>
+           <Button type="error" value="提交" @click="addtemplate('templateItem',templateItem)">删除模板</Button>
+      </div>
     </Modal>
     <Modal v-model="moveModal" title="移动至分类" @on-ok="movetemplate(formItem)" class="vm-clearfix"  :mask-closable = "false">
      <Form :model="formItem" ref="formItem" inline class="from">
@@ -226,6 +232,7 @@ export default {
       templateItem: {
         name: '',
         labels: '',
+        isStandard: 0,
         spCategoryParentId: 0,
         spCategoryId: 0,
         mainPic: [],
