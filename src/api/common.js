@@ -158,7 +158,13 @@ export const getOrderList = (params, pageNo) => {
 export const exportOrderList = params => {
   return ax.g('/order/export/poi', params)
 }
-
+/**
+ * 取消订单
+ * @param params
+ */
+export const cancelOrder = params => {
+  return ax.pa(`/order/order/cancelOrder`, params)
+}
 /**
  * 获取订单详情
  * @param params => {orderId}
