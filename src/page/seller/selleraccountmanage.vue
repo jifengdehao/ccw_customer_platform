@@ -105,7 +105,8 @@
                 </Select>
               </FormItem>
               <FormItem label="营业时间：" prop="businessHour">
-                <Input size="small"  v-model="shopMessage.businessHour"  placeholder="请输入" style="width: 150px"></Input>
+                <Input size="small" v-for="(time,index) in shopMessage.businessHour" v-model="shopMessage.businessHour" :key="index" icon="ios-close-outline" placeholder="请输入" style="width: 150px" @on-click="deltime(index)"></Input>
+                <Button size="small" :disabled="shopMessage.businessHour.length > 2">增加</Button>
               </FormItem>
               <FormItem label="店铺电话：" prop="mobileno">
                 <Input size="small"  v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px"></Input>
@@ -231,7 +232,7 @@ export default {
         shopOwerName: '',
         shopNo: '',
         businessDictCode: [],
-        businessHour: '',
+        businessHour: [],
         mobileno: '',
         notice: '',
         stallAddress: '', // 市场名称
@@ -429,7 +430,12 @@ export default {
     hidde() {
       this.shopMessageModal = false
     },
-
+    // 删除营业时间输入框
+    deltime(index) {
+      if (this.shopMessage.businessHour.length === 2) {
+        this.shopMessage.businessHour.splice(index, 1)
+      }
+    },
     // 更新商家信息
     modifySellerInfo(shopMessage) {
       if (
@@ -471,10 +477,10 @@ export default {
         this.$Message.error('营业状态不能为空')
         return false
       }
-      if (!shopMessage.businessHour) {
-        this.$Message.error('营业时间不能为空')
-        return false
-      }
+      // if (!shopMessage.businessHour) {
+      //   this.$Message.error('营业时间不能为空')
+      //   return false
+      // }
       if (!shopMessage.stallAddress) {
         this.$Message.error('店铺地址不能为空')
         return false
