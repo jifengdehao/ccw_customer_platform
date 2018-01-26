@@ -358,6 +358,36 @@ const FinanceAccountBalance = resolve => {
     resolve(module)
   })
 }
+// 积分商城
+const ShopppingMall = resolve => {
+  import('page/shopppingMall/shopppingMall').then(module => {
+    resolve(module)
+  })
+}
+// 积分商城-banner
+const bannerManage = resolve => {
+  import('page/shopppingMall/banner_manage').then(module => {
+    resolve(module)
+  })
+}
+// 积分商城-产品管理
+const productManage = resolve => {
+  import('page/shopppingMall/product_manage').then(module => {
+    resolve(module)
+  })
+}
+// 积分商城-分类管理
+const sortManage = resolve => {
+  import('page/shopppingMall/sort_manage').then(module => {
+    resolve(module)
+  })
+}
+// 积分商城-分类管理
+const orderManage = resolve => {
+  import('page/shopppingMall/order_manage').then(module => {
+    resolve(module)
+  })
+}
 export default [
   {
     path: '/',
@@ -504,6 +534,18 @@ export default [
         children: [
           { path: 'account_refund', component: FinanceAccountRefund },
           { path: 'account_balance', component: FinanceAccountBalance }
+        ]
+      },
+      {
+        path: '/shopppingMall',
+        name: 'shopppingMall',
+        component: ShopppingMall,
+        redirect: '/shopppingMall/banner_manage',
+        children: [
+          { path: 'banner_manage', component: bannerManage },
+          { path: 'product_manage', component: productManage },
+          { path: 'sort_manage', component: sortManage },
+          { path: 'order_manage', component: orderManage }
         ]
       }
     ]

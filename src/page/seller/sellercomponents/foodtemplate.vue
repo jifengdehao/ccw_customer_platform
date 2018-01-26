@@ -169,7 +169,7 @@
       </Form>
       <div slot="footer">
          <Button type="info" value="提交" @click="addtemplate('templateItem',templateItem)">保存模板</Button>
-           <Button type="error" value="提交" @click="addtemplate('templateItem',templateItem)">删除模板</Button>
+         <Button type="error" value="提交" @click="delTemplate" v-if="templateItem.spTemplateId">删除模板</Button>
       </div>
     </Modal>
     <Modal v-model="moveModal" title="移动至分类" @on-ok="movetemplate(formItem)" class="vm-clearfix"  :mask-closable = "false">
@@ -427,6 +427,20 @@ export default {
             this.templateModal = false
             this.$Message.success('修改成功')
           })
+      }
+    },
+    // 删除模板
+    delTemplate() {
+      if (this.templateItem.spTemplateId) {
+        let classData = {
+          parentCatId: this.templateItem.spCategoryParentId,
+          catId: this.templateItem.spCategoryId
+        }
+        api.delTemplate(this.templateItem.spTemplateId).then(res => {
+          this.searchtemplate(classData)
+          this.templateModal = false
+          this.$Message.success(res.msg)
+        })
       }
     },
     // 增加重量单位
