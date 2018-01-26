@@ -475,19 +475,19 @@ export const activtyCouponList = (id, params) => {
   return ax.g(`/activity/coupon/list/${id}`, params)
 }
 // 终结优惠券/activity/coupon
-export const activityCouponDelete = (params) => {
+export const activityCouponDelete = params => {
   return ax.pa(`/activity/coupon/`, params)
 }
 // 新增优惠券POST /activity/coupon
-export const addCoupon = (params) => {
+export const addCoupon = params => {
   return ax.p('/activity/coupon', params)
 }
 // 查看优惠券详情/activity/coupon/{couponId}
-export const seeCoupon = (Id) => {
+export const seeCoupon = Id => {
   return ax.g(`/activity/coupon/${Id}`)
 }
 // 修改优惠券
-export const resiveCoupon = (params) => {
+export const resiveCoupon = params => {
   return ax.u('/activity/coupon/', params)
 }
 
@@ -513,6 +513,13 @@ export const getUsersList = (params, pageNo) => {
 
 export const getOrderSeed = id => {
   return ax.g(`order/seed/${id}`)
+}
+
+/**
+ * 获取省区
+ */
+export const getProvinceList = () => {
+  return ax.g(`/customer/index`)
 }
 
 /**
@@ -624,8 +631,8 @@ export const saveMarketData = params => {
 /**
  * 获取配送价列表
  */
-export const getPirse = params => {
-  return ax.g(`/customer/expense`, params)
+export const getPirse = (_params, params) => {
+  return ax.g(`/customer/expense/${_params.id}/${_params.pageNum}`, params)
 }
 
 /**
@@ -666,8 +673,8 @@ export const getAccountMoney = params => {
 /**
  * 查看用户账户
  */
-export const loopAccount = params => {
-  return ax.g(`/customer/account/${params.custId}`)
+export const loopAccount = (_params, params) => {
+  return ax.g(`/customer/account/${_params.custId}`, params)
 }
 
 /**

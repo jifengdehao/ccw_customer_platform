@@ -6,178 +6,126 @@
  */
 
 <template>
-  <div>延期功能
-    <!-- <div class="searchInput">
-      <input type="text">
-      <Button type="primary" icon="ios-search">搜索</Button>
-    </div>
-    <div class="tabs">
-      <Tabs @on-click="onUserName" :animated="false">
-        <TabPane v-for="tab in tabPaneValue" :key="tab.id" :label="tab.label">
-          <Table :columns="columns" :data="userDate"></Table>
-        </TabPane>
+  <div>
+    <p class="search">
+      <input type="text" placeholder="用户ID/用户昵称/用户手机号">
+      <Button type="primary">搜索</Button>
+    </p>
+    <div class="content">
+      <Tabs>
+        <TabPane label="用户端"></TabPane>
+        <TabPane label="商户端"></TabPane>
+        <TabPane label="配送端"></TabPane>
       </Tabs>
-    </div> -->
+      <Table border :columns="keys" :data="tabData"></Table>
+      <Page style="float:right;margin-top:20px;" :total="100" show-total></Page>
+    </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
 export default {
   data() {
     return {
-      tabPaneValue: [
-        // table值
-        {
-          label: '全部',
-          name: 'allTab'
-        },
-        {
-          label: '正常用户',
-          name: 'normalUser'
-        },
-        {
-          label: '异常用户',
-          name: 'exceptiongUser'
-        },
-        {
-          label: '已冻结用户',
-          name: 'forzenUser'
-        }
-      ],
-      columns: [
+      keys: [
         {
           title: '用户ID',
-          key: 'userId',
-          width: '110',
+          key: 'name',
           align: 'center'
         },
         {
-          title: '手机号码',
-          key: 'phoneNum'
+          title: '用户昵称',
+          key: 'age',
+          align: 'center'
+        },
+        {
+          title: '用户手机',
+          key: 'address',
+          align: 'center'
         },
         {
           title: '菜一代数量',
-          key: 'oneUserNum',
+          key: 'name',
           align: 'center'
         },
         {
           title: '菜二代数量',
-          key: 'twoUserNum',
+          key: 'age',
           align: 'center'
         },
         {
-          title: '菜一代收益（菜城币）',
-          key: 'oneProfit',
+          title: '菜一代收益(现金)',
+          key: 'address',
           align: 'center'
         },
         {
-          title: '菜一代收益（菜城币）',
-          key: 'twoProfit',
+          title: '菜二代收益(现金)',
+          key: 'name',
           align: 'center'
         },
         {
-          title: '总收益（菜城币）',
-          key: 'totalIncome',
+          title: '菜一代收益(菜城币)',
+          key: 'age',
+          align: 'center'
+        },
+        {
+          title: '菜二代收益(菜城币)',
+          key: 'address',
+          align: 'center'
+        },
+        {
+          title: '总收益(菜城币)',
+          key: 'address',
           align: 'center'
         },
         {
           title: '操作',
-          key: 'operation',
+          key: 'operate',
           align: 'center',
           render: (h, params) => {
-            return h('div', [
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.$router.push(
-                        '/distribution/distributionUserInfo?userId=' +
-                          params.row.userId
-                      )
-                    }
-                  }
+            return h(
+              'Button',
+              {
+                props: {
+                  type: 'primary',
+                  size: 'small'
                 },
-                '查看'
-              )
-            ])
+                on: {
+                  click: () => {
+                    console.log(params)
+                  }
+                }
+              },
+              '查看'
+            )
           }
         }
       ],
-      data: [
-        {
-          userId: '1',
-          phoneNum: '13113277667',
-          oneUserNum: '11111',
-          twoUserNum: '2232',
-          oneProfit: '1112',
-          twoProfit: '22231',
-          totalIncome: '43431'
-        },
-        {
-          userId: '2',
-          phoneNum: '13113277667',
-          oneUserNum: '11111',
-          twoUserNum: '2232',
-          oneProfit: '1112',
-          twoProfit: '22231',
-          totalIncome: '43431'
-        },
-        {
-          userId: '3',
-          phoneNum: '13113277667',
-          oneUserNum: '11111',
-          twoUserNum: '2232',
-          oneProfit: '1112',
-          twoProfit: '22231',
-          totalIncome: '43431'
-        }
-      ],
-      data2: [],
-      data3: [],
-      data4: [],
-      userDate: [] // 保存数据
+      tabData: []
     }
   },
-  created: function() {
-    // 初始化渲染第一个table数据
-    this.userDate = this.data
-  },
-  methods: {
-    // 获取ID 判断当前点击table 渲染数据
-    onUserName(index) {
-      switch (index) {
-        case 0:
-          this.userDate = this.data
-          break
-        case 1:
-          this.userDate = this.data2
-          break
-        case 2:
-          this.userDate = this.data3
-          break
-        case 3:
-          this.userDate = this.data4
-          break
-      }
-    }
-  }
+  created() {},
+  methods: {}
 }
 </script>
 
 <style scoped lang="css" >
-.searchInput {
-  margin-bottom: 40px;
+p.search{
+  float:right;
+  height:30px;
 }
 
-.searchInput input {
-  width: 220px;
-  height: 32px;
-  padding-left: 5px;
-  margin-right: 6px;
-  outline: none;
+p.search>input[type='text']{
+  width:200px;
+  height:30px;
+  text-indent:5px;
+  margin-right:10px;
+}
+
+p>*{
+  vertical-align: sub;
+}
+
+div.content{
+  clear: both;
 }
 </style>
