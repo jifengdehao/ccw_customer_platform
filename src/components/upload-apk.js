@@ -72,7 +72,7 @@ export function uploadpic(file) {
     accessKeyId: ossInfo.accessKeyId,
     accessKeySecret: ossInfo.accessKeySecret,
     stsToken: ossInfo.securityToken,
-    bucket: 'cc-tech'
+    bucket: 'ccw-tech-test'
   })
   // 根据guid命名图片的名字
   var imgName = guid()
