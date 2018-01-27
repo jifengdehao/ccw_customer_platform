@@ -439,7 +439,7 @@ export default {
         api.delTemplate(this.templateItem.spTemplateId).then(res => {
           this.searchtemplate(classData)
           this.templateModal = false
-          this.$Message.success(res.msg)
+          alert(res)
         })
       }
     },
