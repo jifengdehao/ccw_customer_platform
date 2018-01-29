@@ -777,3 +777,18 @@ export const getFinanceList = (pageNo, params) => {
 export const getFinanceBill = Id => {
   return ax.pa('/finance/seller/bill', Id)
 }
+/**
+ * 积分商城相关接口
+ */
+/**
+ * 商品管理 分类管理
+ * by hushangjun
+ */
+// 积分商城商品管理
+export const getproductList = (pageNo, params) => {
+  return ax.g(`/integralMall/product/list/${pageNo}`, params)
+}
+// 积分商城商品管理
+export const getCategoryList = () => {
+  return ax.g(`/integralMall/category/list`)
+}
