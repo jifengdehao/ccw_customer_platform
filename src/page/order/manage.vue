@@ -7,8 +7,8 @@
 <template>
   <div class="order-manage">
     <i-form inline label-position="left">
-      <FormItem label="手机号" :label-width="80">
-        <Input type="text" v-model="phone" placeholder="请输入手机号"></Input>
+      <FormItem>
+        <Input type="text" v-model.tirm="seek" placeholder="订单编号/用户ID/收货人手机" style="width: 200px"></Input>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="handleSubmit()">搜索</Button>
@@ -16,7 +16,7 @@
     </i-form>
     <Tabs value="0" @on-click="selectTab" :animated="false">
       <Tab-pane label="全部订单" name="0">
-        <Table :columns="columns" :data="data" :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToOrderDetails"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -29,7 +29,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待付款" name="1">
-        <Table :columns="columns" :data="data" :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToOrderDetails"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -42,7 +42,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待接单" name="2">
-        <Table :columns="columns" :data="data" :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToOrderDetails"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -55,7 +55,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待发货" name="3">
-        <Table :columns="columns" :data="data" :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToOrderDetails"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -68,7 +68,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="配送中" name="4">
-        <Table :columns="columns" :data="data" :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToOrderDetails"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -81,7 +81,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="待评价" name="5">
-        <Table :columns="columns" :data="data" :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToOrderDetails"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -94,7 +94,7 @@
         </Col>
       </Tab-pane>
       <Tab-pane label="已完成" name="6">
-        <Table :columns="columns" :data="data" :loading="loading"></Table>
+        <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToOrderDetails"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -106,8 +106,8 @@
         ></Page>
         </Col>
       </Tab-pane>
-      <Tab-pane label="取消订单" name="7">
-        <Table :columns="columns" :data="data" :loading="loading"></Table>
+      <Tab-pane label="已取消" name="7">
+        <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToOrderDetails"></Table>
         <Col span="24" class="mt20">
         <Page
           :total="tableTotal"
@@ -132,10 +132,21 @@
         <Button type="primary" long :loading="modal_loading" @click="exportData()">确定</Button>
       </div>
     </Modal>
+    <Modal v-model="cancel_order"
+           width="400">
+      <h3 slot="header" class="vm-textCenter">确定取消此订单?</h3>
+      <Input v-model="cancelOrderDec"
+             type="textarea" :autosize="{minRows: 5,maxRows: 5}"
+             :autofocus="true"
+             placeholder="请输入备注信息(字数不得超过50字)"></Input>
+      <div slot="footer">
+        <Button type="text" size="large" @click.stop="clearOrderDec">取消</Button>
+        <Button type="primary" size="large" @click.stop="cancelOrder">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import expandRow from 'components/table/expand-row'
   import * as api from 'api/common.js'
   import * as time from '@/until/time'
 
@@ -144,41 +155,47 @@
     data () {
       return {
         curr: 1, // 当前页
-        pageNum: 10, // 当前页的显示的数据数量
+        pageNum: 20, // 当前页的显示的数据数量
         tableTotal: 0, // 当前页的数据总数
         status: 0, // 状态
-        phone: '',
+        seek: '',
         loading: true,
         exportModal: false, // 弹出导出表格
         startTime: '', // 导出表格开始时间
         endTime: '', // 导出表格结束时间
         modal_loading: false, // 导出表格加载
+        cancel_order: false, // 弹出取消订单modal
+        cancelOrderDec: '', // 取消订单备注
+        cancelOrderId: '', // 取消订单ID
         columns: [
-          {
-            type: 'expand',
-            width: 50,
-            render: (h, params) => {
-              let orderId = params.row.orderId
-              return h(expandRow, {
-                props: {
-                  orderId: orderId
-                }
-              })
-            }
-          },
           {
             title: '订单编号',
             key: 'orderId',
             align: 'center'
           },
           {
-            title: '收货人手机',
-            key: 'contactNumber',
+            title: '用户ID',
+            key: 'mcCustomerId',
             align: 'center'
           },
           {
-            title: '收货人',
-            key: 'receiver',
+            title: '订单状态',
+            key: 'statusChinese',
+            align: 'center'
+          },
+          {
+            title: '配送状态',
+            key: 'deliveryModeName',
+            align: 'center'
+          },
+          {
+            title: '商品缺货时',
+            key: 'onOutName',
+            align: 'center'
+          },
+          {
+            title: '期待送达时间',
+            key: 'deliveryDate',
             align: 'center'
           },
           {
@@ -190,8 +207,18 @@
             }
           },
           {
-            title: '订单状态',
-            key: 'statusChinese',
+            title: '收货人',
+            key: 'receiver',
+            align: 'center'
+          },
+          {
+            title: '收货人手机',
+            key: 'contactNumber',
+            align: 'center'
+          },
+          {
+            title: '收货人地址',
+            key: 'addressEnd',
             align: 'center'
           },
           {
@@ -200,41 +227,27 @@
             align: 'center',
             render: (h, params) => {
               let orderId = params.row.orderId
-              let status = params.row.status
-              let isabled
-              if (status === 6) {
-                isabled = false
+              let isCancel = params.row.isCancel
+              let disabled
+              if (isCancel === 0) {
+                disabled = true
               } else {
-                isabled = true
+                disabled = false
               }
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      this.$router.push('/order/orderInfo/' + orderId + '?options=see')
-                    }
+              let that = this
+              return h('Button', {
+                props: {
+                  type: 'error',
+                  disabled: disabled
+                },
+                on: {
+                  click: (e) => {
+                    e.stopPropagation()
+                    that.cancelOrderId = orderId
+                    that.cancel_order = true
                   }
-                }, '查看'),
-                h('Button', {
-                  props: {
-                    type: 'error',
-                    size: 'small',
-                    disabled: isabled
-                  },
-                  on: {
-                    click: () => {
-                      this.$router.push('/order/orderInfo/' + orderId + '?options=edit')
-                    }
-                  }
-                }, '编辑')
-              ])
+                }
+              }, '取消订单')
             }
           }
         ],
@@ -264,7 +277,7 @@
             startTime: this.startTime,
             endTime: this.endTime,
             status: this.status,
-            mobileno: this.mobileno
+            seek: this.seek
           }
           console.log(params)
           api.exportOrderList(params).then((res) => {
@@ -280,24 +293,48 @@
         this.curr = index
         this._getOrderData()
       },
+      // 取消订单
+      cancelOrder () {
+        if (this.cancelOrderDec) {
+          let params = {
+            orderId: this.cancelOrderId,
+            reason: this.cancelOrderDec
+          }
+          api.cancelOrder(params).then((res) => {
+            if (res) {
+              console.log(res)
+              this.clearOrderDec()
+              this._getOrderData()
+            }
+          })
+        }
+      },
+      // 清除数据和关闭modal
+      clearOrderDec () {
+        this.cancelOrderDec = ''
+        this.cancelOrderId = ''
+        this.cancel_order = false
+      },
+      // 查看详情
+      goToOrderDetails (params, index) {
+        this.$router.push('/order/orderInfo/' + params.orderId)
+      },
       _getOrderData () {
         let params = {
           pageSize: this.pageNum,
           status: this.status,
-          mobileno: this.phone
+          seek: this.seek
         }
         this.loading = true
         api.getOrderList(params, this.curr).then((res) => {
           if (res) {
+            console.log(res)
             this.loading = false
             this.tableTotal = res.total
             this.data = res.records
           }
         })
       }
-    },
-    components: {
-      expandRow
     }
   }
 </script>

@@ -7,8 +7,8 @@
 <template>
   <div class="order-evaluate">
     <i-form inline label-position="left">
-      <FormItem label="手机号" :label-width="80">
-        <Input type="text" v-model="phone" placeholder="请输入手机号"></Input>
+      <FormItem>
+        <Input type="text" v-model="seek" placeholder="用户ID/用户昵称/用户手机/内容关键词" style="width: 300px"></Input>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="handleSubmit()">搜索</Button>
@@ -48,6 +48,17 @@
           class="vm-fr mt20"
         ></Page>
       </Tab-pane>
+      <Tab-pane label="屏蔽词" name="3">
+        <Form ref="formValidate" :model="formValidate" :rules="ruleValidate">
+          <FormItem prop="desc">
+            <Input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 20,maxRows: 30}"
+                   placeholder="请输入..."></Input>
+          </FormItem>
+          <FormItem>
+            <Button type="primary" @click="handleSubmitSw('formValidate')">提交</Button>
+          </FormItem>
+        </Form>
+      </Tab-pane>
       <Button type="primary" class="vm-fr" @click="exportModal=true" slot="extra">导出</Button>
     </Tabs>
     <Modal v-model="exportModal" width="300">
@@ -72,7 +83,7 @@
     data () {
       return {
         curr: 1, // 当前分页
-        pageNum: 10, // 当前页的显示的数据数量
+        pageNum: 20, // 当前页的显示的数据数量
         tableTotal: 0, // 总数
         status: '0', // 状态 0===>商户评价 1====>配送员评价  2====>差评订单
         loading1: true,
@@ -82,7 +93,16 @@
         startTime: '', // 导出表格开始时间
         endTime: '', // 导出表格结束时间
         modal_loading: false, // 导出表格加载
-        phone: '', // 搜索手机号
+        seek: '', // 搜索条件
+        formValidate: {
+          dateTime: new Date(),
+          rkShieldWordId: ''
+        },
+        ruleValidate: {
+          desc: [
+            {required: true, message: '请输入屏蔽词', trigger: 'blur'}
+          ]
+        },
         columns1: [
           {
             title: '用户ID',
@@ -415,8 +435,50 @@
     },
     created () {
       this.getSellerEvalList()
+      this.getSwData()
     },
     methods: {
+      // 修改屏蔽词
+      handleSubmitSw (name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            // 发送数据
+            let params = {
+              content: this.formValidate.desc,
+              rkShieldWordId: this.formValidate.rkShieldWordId
+            }
+            api.postOrderSw(params).then((res) => {
+              if (res) {
+                let that = this
+                that.$Notice.success({
+                  title: '更新成功！',
+                  onClose () {
+                    that.getSwData()
+                  }
+                })
+              } else {
+                this.$Notice.error({
+                  title: '更新失败！'
+                })
+              }
+            })
+          } else {
+            this.$Notice.error({
+              title: '更新失败！'
+            })
+          }
+        })
+      },
+      // 获取屏蔽词
+      getSwData () {
+        api.getOrderSw().then((res) => {
+          if (res) {
+            console.log(res)
+            this.formValidate.desc = res.content
+            this.formValidate.rkShieldWordId = res.rkShieldWordId
+          }
+        })
+      },
       // 搜索
       handleSubmit () {
         this.curr = 1
@@ -460,7 +522,6 @@
       // 切换
       selectTab (name) {
         this.status = name
-        this.phone = ''
         this.curr = 1
         if (this.status === '0') {
           this.getSellerEvalList()
@@ -474,7 +535,7 @@
       getSellerEvalList () {
         let params = {
           pageSize: this.pageNum,
-          mobileno: this.phone
+          seek: this.seek
         }
         api.getOrderSellerListEval(params, this.curr).then(res => {
           if (res) {
@@ -488,7 +549,7 @@
       getDeliverEval () {
         let params = {
           pageSize: this.pageNum,
-          mobileno: this.phone
+          seek: this.seek
         }
         api.getOrderDeliverListeEval(params, this.curr).then(res => {
           if (res) {
@@ -502,7 +563,7 @@
       getBadEval () {
         let params = {
           pageSize: this.pageNum,
-          mobileno: this.phone
+          seek: this.seek
         }
         api.getOrderBadListEval(params, this.curr).then(res => {
           if (res) {
