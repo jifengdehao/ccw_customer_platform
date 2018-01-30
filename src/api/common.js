@@ -805,3 +805,23 @@ export const getproductList = (pageNo, params) => {
 export const getCategoryList = () => {
   return ax.g(`/integralMall/category/list`)
 }
+// 积分商城商品上、下架
+export const integralMall = (params) => {
+  return ax.pa(`/integralMall/product`, params)
+}
+// 获取积分商城商品信息
+export const productinfo = (jfProductId) => {
+  return ax.g(`/integralMall/product/${jfProductId}`)
+}
+// 获取积分商城商品增加，编辑
+export const editProduct = (params) => {
+  return ax.p(`/integralMall/product`, params)
+}
+// 积分商城分类增加，编辑
+export const editCategory = (params) => {
+  return ax.p(`/integralMall/category`, params)
+}
+// 删除类目
+export const delCategory = (jfCategoryId) => {
+  return ax.d(`/integralMall/category/${jfCategoryId}`)
+}
