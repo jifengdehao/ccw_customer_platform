@@ -407,7 +407,7 @@ export const modifyProductTemplate = (params, templateId) => {
   return ax.u(`product/template/${templateId}`, params)
 }
 // 删除模板
-export const delTemplate = (templateId) => {
+export const delTemplate = templateId => {
   return ax.d(`/product/template/${templateId}`)
 }
 // 获取系统参数列表
