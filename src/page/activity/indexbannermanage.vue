@@ -18,35 +18,37 @@
             <tbody>
               <tr v-if="params.status === 1" v-for="data in bannerData" :key="data.id">
                 <td>
-                  <p v-if="data.isUpdate === 0"> {{ formatDateTime(data.createAt) }} ~ {{ formatDateTime(data.endTime) }} </p>
-                  <div v-if="data.isUpdate === 1">
-                    <p> <span>开始时间</span> <DatePicker type="datetime" placement="bottom" v-model="data.createAt" :value="data.createAt" :transfer="true" style="width: 200px; margin-bottom: 5px;" placeholder="选择开始日期和时间"></DatePicker> </p> 
-                    <p> <span>结束时间</span> <DatePicker type="datetime" placement="bottom" v-model="data.endTime" :value="data.endTime" :transfer="true" style="width: 200px" placeholder="选择结束日期和时间"></DatePicker> </p>
-                  </div>
+                  <p> <span>开始时间</span> <DatePicker type="datetime" placement="bottom" :disabled="data.isUpdate === 0" v-model="data.createAt" :value="data.createAt" :transfer="true" style="width: 200px; margin-bottom: 5px;" placeholder="选择开始日期和时间"></DatePicker> </p> 
+                  <p> <span>结束时间</span> <DatePicker type="datetime" placement="bottom" :disabled="data.isUpdate === 0" v-model="data.endTime" :value="data.endTime" :transfer="true" style="width: 200px" placeholder="选择结束日期和时间"></DatePicker> </p>
                 </td>
                 <td>
-                  <div v-if="data.isUpdate === 0">{{ data.spCategoryName }}</div>
-                  <Select v-model="data.spCategoryId" :transfer="true" v-if="data.isUpdate === 1">
+                  <Select v-model="data.spCategoryId" :transfer="true" :disabled="data.isUpdate === 0">
                     <Option v-for="item in cityList" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
                   </Select>
                 </td>
                 <td>
-                  <p v-if="data.isUpdate === 0"> {{ data.linkUrl }} </p>
-                  <p v-if="data.isUpdate === 1"> <input type="text" :value="data.linkUrl"> </p>
+                  <p> <input :disabled="data.isUpdate === 0" type="text" :value="data.linkUrl"> </p>
                 </td>
                 <td>
-                  <p v-if="data.isUpdate === 0"> {{ data.remark }} </p>
-                  <p v-if="data.isUpdate === 1"> <input type="text" :value="data.remark"> </p>
+                  <p> <input :disabled="data.isUpdate === 0" type="text" :value="data.remark"> </p>
                 </td>
-                <td style="width: 10%">
-                  <upload></upload>
+                <td style="width: 12%">
+                  <div class="pic" v-if="showMask">
+                    <div class="pic-mask">
+                      <input type="file" @change="onUpload($event, data)" value="重新上传" accept="image/*">重新上传
+                    </div>
+                    <img :src="data.picUrl" alt="">
+                  </div>
+                  <div class="upload" v-if="bePic">
+                    <input type="file" @change="onUpload($event, data)" value="上传图片" accept="image/*">上传图片
+                  </div>
                 </td>
                 <td>{{ formatDateTime(data.createAt) }}</td>
                 <td>{{ data.createName }}</td>
                 <td>{{ filterStatus(data.isUpdate) }}</td>
                 <td>
-                  <Button type="primary" v-if="data.isUpdate === 0">终止</Button>
-                  <Button type="error" v-if="data.isUpdate === 1">删除</Button>
+                  <Button type="primary">终止</Button>
+                  <!-- <Button type="error">删除</Button> -->
                 </td>
               </tr>
               <!-- start已结束 -->
@@ -55,7 +57,7 @@
                 <td> {{ data.spCategoryName }} </td>
                 <td> {{ data.linkUrl }} </td>
                 <td> {{ data.remark }} </td>
-                <td> <img style="width: 100%; height: 156px;" :src="data.picUrl" alt=""> </td>
+                <td> <img style="width: 100%; height: 150px;" :src="data.picUrl" alt=""> </td>
                 <td> {{ formatDateTime(data.startTime) }} </td>
                 <td> {{ data.createName }} </td>
                 <td> {{ formatDateTime(data.endTime) }} </td>
@@ -66,35 +68,38 @@
             </tbody>
           </table>
         </TabPane>
-        <Button type="primary" slot="extra" v-if="params.status === 1">新增</Button>
+        <Button type="primary" slot="extra" v-if="params.status === 1" @click="addBanner">新增</Button>
     </Tabs>
+    <div class="save-change" v-if="bannerData !== null && bannerData.length > 0  && params.status === 1" style="margin-bottom: 40px;">
+      <Button @click="getSaveChanges" type="primary" size="large">保存修改</Button>
+    </div>
    </div>
  </template>
  <script>
-import upload from './upload'
+import { uploadpic } from 'components/upload-pic'
 import * as api from 'api/common.js'
 export default {
-  components: { upload },
+  components: { },
   data() {
     return {
       bannerMenu: ['未开始', '已结束'], // tabs标签页
       bannerTableTH: [
-        { key: '生效周期', style: '18%' },
-        { key: '关联位置', style: '' },
-        { key: '跳转链接', style: '10%' },
-        { key: '上传说明', style: '10%' },
-        { key: '图片', style: '' },
-        { key: '创建时间', style: '8%' },
-        { key: '创建人', style: '8%' },
-        { key: '状态', style: '' },
-        { key: '操作', style: '' }
+        { key: '生效周期', style: '14%' },
+        { key: '关联位置', style: '10%' },
+        { key: '跳转链接', style: '12%' },
+        { key: '上传说明', style: '12%' },
+        { key: '图片', style: '12%' },
+        { key: '创建时间', style: '6%' },
+        { key: '创建人', style: '6%' },
+        { key: '状态', style: '6%' },
+        { key: '操作', style: '6%' }
       ],
       bannerTableTHs: [
         { key: '生效周期', style: '' },
         { key: '关联位置', style: '' },
         { key: '跳转链接', style: '' },
         { key: '上传说明', style: '' },
-        { key: '图片', style: '10%' },
+        { key: '图片', style: '14%' },
         { key: '创建时间', style: '' },
         { key: '创建人', style: '' },
         { key: '终止时间', style: '' },
@@ -109,7 +114,9 @@ export default {
         pageNo: 1
       },
       bannerData: [], // 列表数据
-      total: null // 列表总页数
+      total: null, // 列表总页数
+      bePic: false, // 控制上传button显示
+      showMask: true // 遮罩层
     }
   },
   created: function() {
@@ -165,6 +172,33 @@ export default {
         second = second < 10 ? '0' + second : second
         return y + '.' + m + '.' + d + ' ' + h + ':' + minute + ':' + second
       }
+    },
+    // 上传图片
+    onUpload(e, data) {
+      console.log(e.target.files[0])
+      uploadpic(e.target.files[0]).then(res => {
+        if (res) {
+          // console.log(res[0].indexOf('?') ? res[0].split('?')[0] : res[0])
+          data.picUrl = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+        }
+      })
+    },
+    // 新增banner图
+    addBanner() {
+      this.bannerData.push({
+        isUPdate: 1,
+        picUrl: '',
+        endTime: '',
+        linkUrl: '',
+        startTime: '',
+        remark: '',
+        addStatus: false
+      })
+      console.log(this.addBanner)
+    },
+    // 保存修改
+    getSaveChanges() {
+      console.log(this.bannerData, '1')
     }
   }
 }
@@ -173,4 +207,60 @@ export default {
 .sp-grid-import{border-collapse: collapse;width:100%; border:1px solid #E1E6EB; border-left:none;}
 .sp-grid-import thead th{line-height:20px;padding:8px 12px; border-bottom:1px solid #E1E6EB; border-left:1px solid #E1E6EB; white-space: nowrap; text-align:center; font-weight:normal !important;letter-spacing:1px;}
 .sp-grid-import tbody td{position: relative;text-align: center;line-height:20px;padding:8px 10px;font-size:13px;border-bottom:1px solid #E1E6EB; border-left:1px solid #E1E6EB;}
+.save-change{ text-align: center; margin-top: 20px; }
+input { width: 100%; }
+.upload {
+  /* width: 120px;
+  height: 33px;
+  line-height: 30px; */
+  padding: 6px 10px;
+  display: inline-block;
+  border-radius: 4px;
+  color: #fff;
+  border: 1px solid #2d8cf0;
+  background-color: #2d8cf0;
+  outline: none;
+}
+
+.upload > input[type='file'] {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+/* 图片 */
+.pic {
+  height: 156px;
+  position: relative;
+}
+.pic > img {
+  width: 100%;
+  height: 100%;
+}
+.pic > .pic-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, .58);
+  display: none;
+  color: #fff;
+  line-height: 156px;
+}
+.pic:hover .pic-mask {
+  display: inline-block !important;
+}
+
+.pic > .pic-mask > input {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
  </style>
