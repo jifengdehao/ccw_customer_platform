@@ -19,7 +19,7 @@
               <th style="width:6%;">状态</th>
               <th style="width:6%;">操作</th>
             </tr>
-            <tr v-for="(banner,index) in bannerData">
+            <tr v-for="(banner,index) in bannerData" :key="index">
               <td>
                 <p>
                   <span>开始时间</span>
