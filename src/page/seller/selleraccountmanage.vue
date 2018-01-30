@@ -105,7 +105,11 @@
                 </Select>
               </FormItem>
               <FormItem label="营业时间：" prop="businessHour">
-                <Input size="small"  v-model="shopMessage.businessHour"  placeholder="请输入" style="width: 150px"></Input>
+                <div style="display:inline" v-for="(time,index) in shopMessage.businessHour" :key="index">
+                  <Input size="small"  v-model="shopMessage.businessHour[index]"   placeholder="按‘00:00 - 00:00’格式输入" style="width: 150px"></Input>
+                  <Button size="small" v-if="shopMessage.businessHour.length === 2" shape="circle" @click="deltimeInput(index)">-</Button>
+                </div>
+                <Button size="small" v-if="shopMessage.businessHour.length === 1" shape="circle" @click="addtimeInput">+</Button>
               </FormItem>
               <FormItem label="店铺电话：" prop="mobileno">
                 <Input size="small"  v-model="shopMessage.mobileno"  placeholder="请输入" style="width: 150px"></Input>
@@ -231,7 +235,7 @@ export default {
         shopOwerName: '',
         shopNo: '',
         businessDictCode: [],
-        businessHour: '',
+        businessHour: [],
         mobileno: '',
         notice: '',
         stallAddress: '', // 市场名称
@@ -429,7 +433,18 @@ export default {
     hidde() {
       this.shopMessageModal = false
     },
-
+    // 删除营业时间输入框
+    deltimeInput(index) {
+      if (this.shopMessage.businessHour.length === 2) {
+        this.shopMessage.businessHour.splice(index, 1)
+      }
+    },
+    // 增加营业时间输入框
+    addtimeInput() {
+      if (this.shopMessage.businessHour.length === 1) {
+        this.shopMessage.businessHour.push('')
+      }
+    },
     // 更新商家信息
     modifySellerInfo(shopMessage) {
       if (
@@ -471,10 +486,10 @@ export default {
         this.$Message.error('营业状态不能为空')
         return false
       }
-      if (!shopMessage.businessHour) {
-        this.$Message.error('营业时间不能为空')
-        return false
-      }
+      // if (!shopMessage.businessHour) {
+      //   this.$Message.error('营业时间不能为空')
+      //   return false
+      // }
       if (!shopMessage.stallAddress) {
         this.$Message.error('店铺地址不能为空')
         return false
