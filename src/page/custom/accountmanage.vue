@@ -26,7 +26,7 @@
         <span>{{count.totalCustomer}}</span>
       </label>
     </i-form>
-    <Table stripe border :columns="allUsersTitle" :data="usersDatas.records"></Table>
+    <Table stripe border :columns="allUsersTitle" :data="usersDatas.records" @on-row-click="jumpTo"></Table>
     <Page :total="usersDatas.total" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
     <Modal v-if="tabIndex == 0" v-model="modalBoolean" :styles="{top: '40px'}" @on-ok="isOkDelete" @on-cancel="modalBoolean=false;">
       <p>设置冻结时间
@@ -35,6 +35,9 @@
           <option value="7">7天</option>
           <option value="-1">永久</option>
         </select>
+      </p>
+      <p>
+        <textarea v-model="changeStatus.freezeReason" maxlength="50" style="width:200px" placeholder="请输入备注信息(字数不得超过50字)"></textarea>
       </p>
       <p>温馨提醒：如若误操作可在封停用</p>
     </Modal>
@@ -55,7 +58,7 @@ export default {
       count: null, //  用户量
       params: {
         status: '0',
-        mobileno: '',
+        key: '',
         pageSize: 10
       },
       pageNo: 1,
@@ -76,7 +79,8 @@ export default {
       changeStatus: {
         //  冻结与恢复账户
         custId: '',
-        frezonTime: 3
+        frezonTime: 3,
+        freezeReason: ''
       },
       formInline: {
         phone: ''
@@ -128,26 +132,26 @@ export default {
           align: 'center',
           render: (h, params) => {
             return h('div', [
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      this.$router.push(
-                        `account_detail/${params.row.mcCustomerId}`
-                      )
-                    }
-                  }
-                },
-                '查看'
-              ),
+              // h(
+              //   'Button',
+              //   {
+              //     props: {
+              //       type: 'primary',
+              //       size: 'small'
+              //     },
+              //     style: {
+              //       marginRight: '5px'
+              //     },
+              //     on: {
+              //       click: () => {
+              //         this.$router.push(
+              //           `account_detail/${params.row.mcCustomerId}`
+              //         )
+              //       }
+              //     }
+              //   },
+              //   '查看'
+              // ),
               h(
                 'Button',
                 {
@@ -167,12 +171,15 @@ export default {
                         this.changeStatus.frezonTime = null
                         http.changeStatus(this.changeStatus).then(data => {
                           this.getUsersList()
+                          this.changeStatus.freezeReason = ''
                         })
                       }
                     }
                   }
                 },
-                params.row.status === 2 || params.row.status === 3 ? '恢复' : '冻结'
+                params.row.status === 2 || params.row.status === 3
+                  ? '恢复'
+                  : '冻结'
               )
             ])
           }
@@ -207,6 +214,10 @@ export default {
         this.usersDatas = data
       })
     },
+    //  查看
+    jumpTo(params) {
+      this.$router.push(`account_detail/${params.mcCustomerId}`)
+    },
     //  获取用户端昨日新增用户量和当前用户量
     getCustomerCount() {
       http.getCustomerCount().then(data => {
@@ -217,7 +228,7 @@ export default {
     chooseTabs(index) {
       if (this.tabIndex === index) return
       this.tabIndex = index
-      this.params.mobileno = this.formInline.phone = ''
+      this.params.key = this.formInline.phone = ''
       switch (index) {
         case 0:
           //  请求获取所有用户请求
@@ -242,6 +253,7 @@ export default {
           //   return
           // }
           this.getUsersList()
+          this.changeStatus.freezeReason = ''
         }, this)
       })
     },
@@ -259,8 +271,8 @@ export default {
       //   return
       // }
       for (let i in this.params) {
-        if (i === 'mobileno') {
-          this.params.mobileno = this.formInline.phone
+        if (i === 'key') {
+          this.params.key = this.formInline.phone
           break
         }
       }
@@ -269,7 +281,7 @@ export default {
       this.getUsersList()
     },
     selectLoad() {
-      this.params.mobileno = ''
+      this.params.key = ''
       this.formInline.phone = ''
       this.pageNo = 1
       this.getUsersList()
@@ -290,7 +302,9 @@ export default {
         seconds:
           date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       }
-      return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
+      return `${params.year}/${params.month}/${params.day} ${params.hour}:${
+        params.minutes
+      }:${params.seconds}`
     }
   },
   filter: {},

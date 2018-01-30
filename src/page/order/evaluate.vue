@@ -6,16 +6,27 @@
 */
 <template>
   <div class="order-evaluate">
-    <i-form inline label-position="left">
-      <FormItem label="手机号" :label-width="80">
-        <Input type="text" v-model="phone" placeholder="请输入手机号"></Input>
+    <Form inline label-position="left">
+      <FormItem>
+        <Select v-model="evaluateType" style="width: 200px;">
+          <Option v-for="item in evaluateList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
       </FormItem>
       <FormItem>
-        <Button type="primary" @click="handleSubmit()">搜索</Button>
+        <Input type="text" v-model="customerTel" placeholder="用户手机" style="width: 200px"></Input>
       </FormItem>
-    </i-form>
+      <FormItem>
+        <Input type="text" v-model="sellerTel" placeholder="档口手机" style="width: 200px"></Input>
+      </FormItem>
+      <!--<FormItem>-->
+      <!--<Input type="text" v-model="seek" placeholder="用户ID/用户昵称/用户手机/内容关键词" style="width: 300px"></Input>-->
+      <!--</FormItem>-->
+      <FormItem>
+        <Button type="primary" @click="handleSubmit">搜索</Button>
+      </FormItem>
+    </Form>
     <Tabs :animated="false" @on-click="selectTab" :value="this.status">
-      <Tab-pane label="商户评价" name="0">
+      <Tab-pane label="全部评价" name="0">
         <Table :columns="columns1" :data="data1" ref="table" :loading="loading1"></Table>
         <Page
           :total="tableTotal"
@@ -26,7 +37,7 @@
           class="vm-fr mt20"
         ></Page>
       </Tab-pane>
-      <Tab-pane label="配送员评价" name="1">
+      <Tab-pane label="差评评价" name="1">
         <Table :columns="columns2" :data="data2" ref="table" :loading="loading2"></Table>
         <Page
           :total="tableTotal"
@@ -37,7 +48,7 @@
           class="vm-fr mt20"
         ></Page>
       </Tab-pane>
-      <Tab-pane label="差评订单" name="2">
+      <Tab-pane label="差评排行榜" name="2">
         <Table :columns="columns3" :data="data3" ref="table" :loading="loading3"></Table>
         <Page
           :total="tableTotal"
@@ -48,6 +59,17 @@
           class="vm-fr mt20"
         ></Page>
       </Tab-pane>
+      <!--<Tab-pane label="屏蔽词" name="3">-->
+        <!--<Form ref="formValidate" :model="formValidate" :rules="ruleValidate">-->
+          <!--<FormItem prop="desc">-->
+            <!--<Input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 20,maxRows: 30}"-->
+                   <!--placeholder="请输入..."></Input>-->
+          <!--</FormItem>-->
+          <!--<FormItem>-->
+            <!--<Button type="primary" @click="handleSubmitSw('formValidate')">提交</Button>-->
+          <!--</FormItem>-->
+        <!--</Form>-->
+      <!--</Tab-pane>-->
       <Button type="primary" class="vm-fr" @click="exportModal=true" slot="extra">导出</Button>
     </Tabs>
     <Modal v-model="exportModal" width="300">
@@ -69,10 +91,23 @@
 
   export default {
     name: 'evaluate',
-    data () {
+    data() {
       return {
+        sellerTel: '',   // 档口手机
+        customerTel: '', // 用户手机
+        evaluateType: 0, // 评价类型
+        evaluateList: [  // 评价列表
+          {
+            value: 0,
+            label: '商户评价'
+          },
+          {
+            value: 1,
+            label: '骑士评价'
+          }
+        ],
         curr: 1, // 当前分页
-        pageNum: 10, // 当前页的显示的数据数量
+        pageNum: 20, // 当前页的显示的数据数量
         tableTotal: 0, // 总数
         status: '0', // 状态 0===>商户评价 1====>配送员评价  2====>差评订单
         loading1: true,
@@ -82,7 +117,16 @@
         startTime: '', // 导出表格开始时间
         endTime: '', // 导出表格结束时间
         modal_loading: false, // 导出表格加载
-        phone: '', // 搜索手机号
+        seek: '', // 搜索条件
+        formValidate: {
+          dateTime: new Date(),
+          rkShieldWordId: ''
+        },
+        ruleValidate: {
+          desc: [
+            {required: true, message: '请输入屏蔽词', trigger: 'blur'}
+          ]
+        },
         columns1: [
           {
             title: '用户ID',
@@ -171,7 +215,7 @@
                       if (!isDelete) {
                         this.$Modal.confirm({
                           content: '确定隐藏这评价？',
-                          onOk () {
+                          onOk() {
                             // api 操作
                             api.putOrderSellerEval(rkShopId).then(res => {
                               if (res) {
@@ -278,7 +322,7 @@
                       if (!isDetlete) {
                         this.$Modal.confirm({
                           content: '确定隐藏这评价？',
-                          onOk () {
+                          onOk() {
                             // api 操作
                             api.putOrderDeliverEval(rkDeliverId).then(res => {
                               if (res) {
@@ -391,7 +435,7 @@
                         if (!isDelete) {
                           this.$Modal.confirm({
                             content: '确定隐藏这评价？',
-                            onOk () {
+                            onOk() {
                               // api 操作
                               api.putOrderSellerEval(rkShopId).then(res => {
                                 if (res) {
@@ -413,12 +457,54 @@
         data3: []
       }
     },
-    created () {
+    created() {
       this.getSellerEvalList()
+      this.getSwData()
     },
     methods: {
+      // 修改屏蔽词
+      handleSubmitSw(name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            // 发送数据
+            let params = {
+              content: this.formValidate.desc,
+              rkShieldWordId: this.formValidate.rkShieldWordId
+            }
+            api.postOrderSw(params).then((res) => {
+              if (res) {
+                let that = this
+                that.$Notice.success({
+                  title: '更新成功！',
+                  onClose() {
+                    that.getSwData()
+                  }
+                })
+              } else {
+                this.$Notice.error({
+                  title: '更新失败！'
+                })
+              }
+            })
+          } else {
+            this.$Notice.error({
+              title: '更新失败！'
+            })
+          }
+        })
+      },
+      // 获取屏蔽词
+      getSwData() {
+        api.getOrderSw().then((res) => {
+          if (res) {
+            console.log(res)
+            this.formValidate.desc = res.content
+            this.formValidate.rkShieldWordId = res.rkShieldWordId
+          }
+        })
+      },
       // 搜索
-      handleSubmit () {
+      handleSubmit() {
         this.curr = 1
         if (this.status === '0') {
           this.getSellerEvalList()
@@ -429,7 +515,7 @@
         }
       },
       // 分页
-      changePage (index) {
+      changePage(index) {
         this.curr = index
         if (this.status === '0') {
           this.getSellerEvalList()
@@ -440,7 +526,7 @@
         }
       },
       // 导出表格
-      exportData () {
+      exportData() {
         if (this.startTime !== '' && this.endTime !== '') {
           this.modal_loading = true
           let params = {
@@ -458,9 +544,8 @@
         }
       },
       // 切换
-      selectTab (name) {
+      selectTab(name) {
         this.status = name
-        this.phone = ''
         this.curr = 1
         if (this.status === '0') {
           this.getSellerEvalList()
@@ -471,10 +556,10 @@
         }
       },
       // 获取商户评价数据
-      getSellerEvalList () {
+      getSellerEvalList() {
         let params = {
           pageSize: this.pageNum,
-          mobileno: this.phone
+          seek: this.seek
         }
         api.getOrderSellerListEval(params, this.curr).then(res => {
           if (res) {
@@ -485,10 +570,10 @@
         })
       },
       // 获取配送员评价数据
-      getDeliverEval () {
+      getDeliverEval() {
         let params = {
           pageSize: this.pageNum,
-          mobileno: this.phone
+          seek: this.seek
         }
         api.getOrderDeliverListeEval(params, this.curr).then(res => {
           if (res) {
@@ -499,10 +584,10 @@
         })
       },
       // 获取差评数据
-      getBadEval () {
+      getBadEval() {
         let params = {
           pageSize: this.pageNum,
-          mobileno: this.phone
+          seek: this.seek
         }
         api.getOrderBadListEval(params, this.curr).then(res => {
           if (res) {
