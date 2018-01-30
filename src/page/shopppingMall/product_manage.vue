@@ -30,10 +30,10 @@
       </section>
     <!-- 按钮 和分页 -->
       <section>
-        <div class="buttons">
+        <div class="buttons" v-if="showButton !== 0">
           <Button @click="handleSelectAll(true)">全选</Button>
-          <Button type="success" @click="pass" :disabled="showButton === 1" >上架</Button>
-          <Button type="warning" @click="notPass" :disabled="showButton === 2">下架</Button>
+          <Button type="success" @click="pass" v-if="showButton === 2" >上架</Button>
+          <Button type="warning" @click="notPass" v-if="showButton === 1" >下架</Button>
           <!--  -->
         </div>
         <div>
@@ -42,19 +42,20 @@
       </section>
     </div>
    <div v-else>
-     <product-message @product-manage='isShowProductMessage'></product-message>
+     <product-message :jfProductId="productId" @product-manage="isShowProductMessage"></product-message>
    </div>
    <!-- 上下架弹框 -->
-   <Modal v-model="changeModal" :mask-closable="false">
+   <Modal v-model="changeModal" :mask-closable="false" @on-ok="integralMall">
       <h2>确定将产品<span>{{changeValue}}</span></h2>
     </Modal>
   </div>
 </template>
 <script>
+import tableImg from '../seller/sellercomponents/tableimage'
 import * as api from 'api/common.js'
 import ProductMessage from './productMessage'
 export default {
-  components: { ProductMessage },
+  components: { ProductMessage, tableImg },
   props: {},
   data() {
     return {
@@ -72,6 +73,12 @@ export default {
         pageSize: 10,
         seek: '' // 搜索内容
       },
+      groundingParams: {
+        // 上、下架参数
+        jfProductId: [], // id组成的数组
+        status: 0
+      },
+      productId: null, // 传入编辑模板的数据id
       refundColumns: [
         {
           type: 'selection',
@@ -106,12 +113,30 @@ export default {
         {
           title: '商品主图',
           key: 'mianPicture',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.mianPicture
+                }
+              })
+            ])
+          }
         },
         {
           title: '商品详情',
           key: 'detailsPicture',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.detailsPicture
+                }
+              })
+            ])
+          }
         },
         {
           title: '商品库存',
@@ -144,6 +169,9 @@ export default {
                   on: {
                     click: () => {
                       this.changeModal = true
+                      this.groundingParams.jfProductId = [
+                        params.row.jfProductId
+                      ]
                       this.changeValue =
                         params.row.statusName === '上架' ? '下架' : '上架'
                     }
@@ -165,27 +193,11 @@ export default {
                   on: {
                     click: () => {
                       this.showProductMessage = true
+                      this.productId = params.row.jfProductId
                     }
                   }
                 },
                 '编辑'
-              ),
-              h(
-                'Button',
-                {
-                  props: {
-                    type: 'info',
-                    size: 'small'
-                  },
-                  style: {
-                    width: '50px',
-                    display: 'none'
-                  },
-                  on: {
-                    click: () => {}
-                  }
-                },
-                '查看'
               )
             ])
           }
@@ -203,6 +215,7 @@ export default {
   methods: {
     // 切换tab
     changeTable(index) {
+      this.groundingParams.jfProductId = []
       this.showButton = index
       if (index === 0) {
         this.params.status = null
@@ -234,22 +247,48 @@ export default {
     },
     // 选中的数据
     changeData(selection) {
-      this.selection = selection.map(item => {
-        if (item.mcAccountRefundId) {
-          return item.mcAccountRefundId
-        }
+      this.groundingParams.jfProductId = selection.map(item => {
+        return item.jfProductId
       })
     },
     // 增加
     handleTabsAdd() {
       this.showProductMessage = true
+      this.productId = null
     },
-    // 批量通过
-    pass() {},
-    // 批量不通过
-    notPass() {},
+    // 上架 、下架
+    integralMall() {
+      if (this.changeValue === '上架') {
+        this.groundingParams.status = 1
+      } else if (this.changeValue === '下架') {
+        this.groundingParams.status = 2
+      }
+      // alert(this.groundingParams.jfProductId)
+      api.integralMall(this.groundingParams).then(res => {
+        this.getproductList()
+      })
+    },
+    // 批量上架
+    pass() {
+      if (this.groundingParams.jfProductId.length > 0) {
+        this.changeModal = true
+        this.changeValue = '上架'
+      } else {
+        alert('没有选择')
+      }
+    },
+    // 批量下架
+    notPass() {
+      if (this.groundingParams.jfProductId.length > 0) {
+        this.changeModal = true
+        this.changeValue = '下架'
+      } else {
+        alert('没有选择')
+      }
+    },
     isShowProductMessage() {
       this.showProductMessage = false
+      this.getproductList()
     }
   },
   filfter: {},

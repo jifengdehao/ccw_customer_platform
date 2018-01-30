@@ -411,6 +411,7 @@ export default {
   methods: {
     changedata(index) {
       this.current = index
+      this.selectiondata = []  // 清空上一个table的多选
       if (index === 0) {
         this.columns = this.producttitle
         this.productParams.updateStartTime = this.formItem.startdate
@@ -496,7 +497,7 @@ export default {
         if (this.current === 0) {
           return item.spProductId
         } else {
-          return item.item.msShopId
+          return item.msShopId
         }
       })
     },
