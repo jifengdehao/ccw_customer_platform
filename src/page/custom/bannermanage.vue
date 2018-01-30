@@ -33,11 +33,11 @@
                   <input type="file" class="input-file" @change="onUpload($event,data)" title="上传图片" accept="image/*">
                 </td>
                 <td style="width: 20%;">
-                  <input v-model="data.linkUrl" type="text" style="width:60%;" :value="data.linkUrl">
+                  <input v-model="data.linkUrl" type="text" style="width:60%;">
                   <a :href="filterLink(data.linkUrl)">跳转链接</a>
                 </td>
                 <td style="width: 20%">
-                  <input v-model="data.remark" type="text" :value="data.remark">
+                  <input v-model="data.remark" type="text">
                 </td>
                 <td style="width: 18%">
                   <DatePicker type="datetime" placeholder="选择日期和时间" placement="left"

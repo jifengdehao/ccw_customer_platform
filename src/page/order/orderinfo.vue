@@ -41,7 +41,8 @@
     </Row>
     <Modal v-model="refundModal"
            width="400">
-      <h3 slot="header" class="vm-textCenter">确定退还此商品金额？</h3>
+      <h3 slot="header" class="vm-textCenter" v-if="foodId">确定退还此商品金额？</h3>
+      <h3 slot="header" class="vm-textCenter" v-else>确定退还此订单金额？</h3>
       <Input v-model="refundDec"
              type="textarea" :autosize="{minRows: 5,maxRows: 5}"
              :autofocus="true"
@@ -58,16 +59,17 @@
   import * as time from '@/until/time'
 
   export default {
-    data () {
+    data() {
       return {
-        orderId: (() => {
+        orderId: (() => {  // 订单ID
           return this.$route.params.id
         })(),
         options: (() => {
           return this.$route.query.options
         })(),
-        refundModal: false,
-        refundDec: '',
+        foodId: null, // 商品ID
+        refundModal: false, // 退款弹窗
+        refundDec: '',  // 退款备注
         columns1: [
           {
             title: '订单编号',
@@ -134,6 +136,7 @@
             key: 'coExpressId',
             align: 'center'
           },
+          /*
           {
             title: '配送方式',
             key: '',
@@ -144,6 +147,7 @@
             key: '',
             align: 'center'
           },
+          */
           {
             title: '接单时间',
             key: 'orderTime',
@@ -306,7 +310,7 @@
             align: 'center',
             render: (h, params) => {
               let text = params.row.price / 100
-              return ('span', '¥' + text)
+              return ('¥' + text)
             }
           },
           {
@@ -320,7 +324,7 @@
             align: 'center',
             render: (h, params) => {
               let text = params.row.amount / 100
-              return ('span', '¥' + text)
+              return ('¥' + text)
             }
           },
           {
@@ -329,7 +333,7 @@
             align: 'center',
             render: (h, params) => {
               let text = params.row.discountsAmount / 100
-              return ('span', '¥' + text)
+              return ('¥' + text)
             }
           },
           {
@@ -338,7 +342,7 @@
             align: 'center',
             render: (h, params) => {
               let text = params.row.realPayAmount / 100
-              return ('span', '¥' + text)
+              return ('¥' + text)
             }
           },
           {
@@ -362,11 +366,15 @@
                   },
                   on: {
                     click: () => {
+                      console.log(foodId)
+//                      this.foodId = foodId
+//                      this.refundModal = true
+
                       let _this = this // 这里有个bug this指向重新来
                       this.$Modal.confirm({
                         content: '确定退还此商品金额？',
                         // loading: true,
-                        onOk () {
+                        onOk() {
                           // api 操作
                           api.putRefundOrder(foodId).then((res) => {
                             if (res) {
@@ -382,7 +390,7 @@
                       })
                     }
                   }
-                }, isRefunded === false ? '退款' : params.row.statusName)
+                }, isRefunded === false ? '退款' : '已退款')
               ])
             }
           },
@@ -411,7 +419,7 @@
             render: (h, params) => {
               if (params.row.refundAmount) {
                 let text = params.row.refundAmount / 100
-                return ('span', '¥' + text)
+                return ('¥' + text)
               }
             }
           },
@@ -428,12 +436,12 @@
         isAllRefund: false
       }
     },
-    created () {
+    created() {
       this.getOrderDetails()
       this.hiddenOptions()
     },
     watch: {
-      data4 (newValue, oldValue) {
+      data4(newValue, oldValue) {
         let map = []
         newValue.forEach((item, index) => {
           map[index] = item.isRefunded
@@ -447,19 +455,25 @@
     },
     methods: {
       // 确定退款
-      confirmRefundDec () {
+      confirmRefundDec() {
+        // 商品退款
+        if (this.foodId) {
+          // 订单退款
+        } else {
 
+        }
       },
       // 关闭退款填写备注弹窗
-      clearRefundDec () {
+      clearRefundDec() {
         this.refundModal = false
+        this.foodId = ''
         this.refundDec = ''
       },
-      refundAll () {
+      refundAll() {
         let that = this
         this.$Modal.confirm({
           content: '确定退还此订单金额？',
-          onOk () {
+          onOk() {
             // api 操作
             api.putRefundOrderAll(that.orderId).then((res) => {
               if (res) {
@@ -474,10 +488,10 @@
           }
         })
       },
-      close () {
+      close() {
         this.$router.back()
       },
-      getOrderDetails () {
+      getOrderDetails() {
         api.getOrderInfo(this.orderId).then((res) => {
           if (res) {
             console.log(res)
@@ -494,7 +508,7 @@
           }
         })
       },
-      hiddenOptions () {
+      hiddenOptions() {
         if (this.options === 'see') {
           this.columns4.splice(this.columns4.length - 4, 1)
         }

@@ -35,11 +35,11 @@
                     </div>
                   </td>
                   <td class="br link" style="width: 20%">
-                    <input v-model="data.linkUrl" type="text" :value="data.linkUrl">
+                    <input v-model="data.linkUrl" type="text">
                     <a target="_blank" :href="data.linkUrl">跳转链接</a>
                   </td>
                   <td class="br" style="width: 20%">
-                    <input v-model="data.remark" type="text" :value="data.remark">
+                    <input v-model="data.remark" type="text">
                   </td>
                   <td style="width: 18%" class="br">
                     <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 200px; margin-bottom: 5px;" v-model="data.startTime" :value="data.startTime"></DatePicker>

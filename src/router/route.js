@@ -370,7 +370,12 @@ const CustomerService = resolve => {
     resolve(module)
   })
 }
-
+// 新增售后订单管理
+const AddCustomerService = resolve => {
+  import('page/order/addcustomercervice').then(module => {
+    resolve(module)
+  })
+}
 export default [
   {
     path: '/',
@@ -407,7 +412,8 @@ export default [
           {path: 'sw', component: OrderSw},
           {path: 'orderInfo/:id', component: OrderInfo},
           {path: 'complaint', component: Complaint},
-          {path: 'customerService', component: CustomerService}
+          {path: 'customerService', component: CustomerService},
+          {path: 'addCustomerService', component: AddCustomerService}
         ]
       },
       {

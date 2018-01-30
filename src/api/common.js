@@ -287,6 +287,19 @@ export const getOrderBadListEval = (params, pageNo) => {
 export const patchOrderEval = params => {
   return ax.pa('/order/remark', params)
 }
+/**
+ *  获取售后订单列表
+ *  @param
+ */
+export const getCustomerService = (params, pageNo) => {
+  return ax.g(`/order/afterSale/list/${pageNo}`, params)
+}
+/**
+ * 新增售后订单
+ */
+export const addCustomerService = params => {
+  return ax.p('/order/afterSaleList', params)
+}
 
 /** 订单管理 end **/
 
