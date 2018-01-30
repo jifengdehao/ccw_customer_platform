@@ -6,75 +6,139 @@
 */
 
  <template>
-   <div>
-     <Tabs :animated="false" @on-click="onBannerMenu">
-        <TabPane v-for="tabs in bannerMenu" :key="tabs" :label="tabs">
-          <table class="sp-grid-import">
-            <thead>
-              <tr>
-                <th v-for="(tableTH, index) in bannerHead" :key="index" :width="tableTH.style">{{ tableTH.key }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-if="params.status === 1" v-for="data in bannerData" :key="data.id">
-                <td>
-                  <p> <span>开始时间</span> <DatePicker type="datetime" placement="bottom" :disabled="data.isUpdate === 0" v-model="data.createAt" :value="data.createAt" :transfer="true" style="width: 200px; margin-bottom: 5px;" placeholder="选择开始日期和时间"></DatePicker> </p> 
-                  <p> <span>结束时间</span> <DatePicker type="datetime" placement="bottom" :disabled="data.isUpdate === 0" v-model="data.endTime" :value="data.endTime" :transfer="true" style="width: 200px" placeholder="选择结束日期和时间"></DatePicker> </p>
-                </td>
-                <td>
-                  <Select v-model="data.spCategoryId" :transfer="true" :disabled="data.isUpdate === 0">
-                    <Option v-for="item in cityList" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
-                  </Select>
-                </td>
-                <td>
-                  <p> <input :disabled="data.isUpdate === 0" type="text" :value="data.linkUrl"> </p>
-                </td>
-                <td>
-                  <p> <input :disabled="data.isUpdate === 0" type="text" :value="data.remark"> </p>
-                </td>
-                <td style="width: 12%">
-                  <div class="pic" v-if="showMask">
-                    <div class="pic-mask">
-                      <input type="file" @change="onUpload($event, data)" value="重新上传" accept="image/*">重新上传
-                    </div>
-                    <img :src="data.picUrl" alt="">
-                  </div>
-                  <div class="upload" v-if="bePic">
-                    <input type="file" @change="onUpload($event, data)" value="上传图片" accept="image/*">上传图片
-                  </div>
-                </td>
-                <td>{{ formatDateTime(data.createAt) }}</td>
-                <td>{{ data.createName }}</td>
-                <td>{{ filterStatus(data.isUpdate) }}</td>
-                <td>
-                  <Button type="primary">终止</Button>
-                  <!-- <Button type="error">删除</Button> -->
-                </td>
-              </tr>
-              <!-- start已结束 -->
-              <tr v-if="params.status === 2" v-for="data in bannerData" :key="data.id">
-                <td> {{ formatDateTime(data.createAt) }} ~ {{ formatDateTime(data.endTime) }} </td>
-                <td> {{ data.spCategoryName }} </td>
-                <td> {{ data.linkUrl }} </td>
-                <td> {{ data.remark }} </td>
-                <td> <img style="width: 100%; height: 150px;" :src="data.picUrl" alt=""> </td>
-                <td> {{ formatDateTime(data.startTime) }} </td>
-                <td> {{ data.createName }} </td>
-                <td> {{ formatDateTime(data.endTime) }} </td>
-                <td> {{ data.endName }} </td>
-                <td> {{ data.stopReason }} </td>
-              </tr>
-              <!-- end已结束 -->
-            </tbody>
+  <div>
+    <Tabs @on-click="onBannerMenu" :animated="false">
+        <TabPane label="未结束">
+          <table>
+            <tr>
+              <th style="width:15%;">生效周期</th>
+              <th style="width: 10%">关联位置</th>
+              <th style="width:15%;">跳转链接</th>
+              <th style="width:15%;">上传说明</th>
+              <th style="width:210px;">图片</th>
+              <th>创建时间</th>
+              <th>创建人</th>
+              <th style="width:6%;">状态</th>
+              <th style="width:6%;">操作</th>
+            </tr>
+            <tr v-for="(banner,index) in bannerData" :key="index">
+              <td>
+                <p>
+                  <span>开始时间</span>
+                  <DatePicker type="date" v-model="banner.startTime" :disabled="banner.isUpdate === 0" transfer placeholder="请选择开始时间" style="width: 150px"></DatePicker>
+                </p>
+                <p>
+                  <span>结束时间</span>
+                  <DatePicker type="date" v-model="banner.endTime" :disabled="banner.isUpdate === 0" transfer placeholder="请选择结束时间" style="width: 150px"></DatePicker>  
+                </p>
+              </td>
+              <td>
+                <Select v-model="banner.spCategoryId" style="width:147px" :disabled="banner.isUpdate === 0">
+                  <Option v-for="item in cityList" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
+                </Select>
+              </td>
+              <td>
+                <input type="text" v-model="banner.linkUrl" :disabled="banner.isUpdate === 0" :readonly="banner.isUpdate === 0">
+              </td>
+              <td>
+                <input type="text" v-model="banner.remark" :disabled="banner.isUpdate === 0" :readonly="banner.isUpdate === 0">
+              </td>
+              <td style="position:relative;width:220px;" v-hover>
+                <img v-if="banner.picUrl" :src="banner.picUrl" width="200" style="margin:10px auto;">
+                <div class="mask" v-if="banner.picUrl && banner.isUpdate === 1">
+                  <a @click="showInput(banner)">重新上传</a>
+                  <a style="margin-left:10px;" @click="showImg(banner)">查看</a>
+                </div>
+                <a v-if="!banner.picUrl" @click="showInput(banner)">上传</a>
+              </td>
+              <td>{{formatDateTime(banner.createAt)}}</td>
+              <td>{{banner.createName}}</td>
+              <td>{{banner.isUpdate === 0 ? '已开始':'未开始'}}</td>
+              <td><button @click="delOrEnd(banner,index)">{{ (banner.isUpdate === 0 || banner.isUpdate === 1) ? '终止' : '删除'}}</button></td>
+            </tr>
+            <tr v-if="!bannerData" style="height:40px;" >
+              <td colspan="10">暂无数据</td>
+            </tr>
+            <tr>
+              <td colspan="9" style="height:50px;">
+                <button style="width:100px;" @click="addBanner">新增</button>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:20px auto;text-align:center;">
+            <Button type="primary" style="width:150px;height:40px;" @click="saveEdit">保存修改</Button>
+          </p>
+        </TabPane>
+        <TabPane label="已结束">
+          <table>
+            <tr>
+              <th style="width:15%;">生效周期</th>
+              <th style="width: 10%">关联位置</th>
+              <th style="width:15%;">跳转链接</th>
+              <th style="width:15%;">上传说明</th>
+              <th style="width:210px;">图片</th>
+              <th>创建时间</th>
+              <th>创建人</th>
+              <th>终止时间</th>
+              <th>终止人</th>
+              <th>终止原因</th>
+            </tr>
+            <tr v-for="(banner,index) in bannerData" :key="index">
+              <td>
+                <p>
+                  <span>开始时间</span>
+                  <DatePicker type="date" v-model="banner.startTime" disabled transfer placeholder="请选择开始时间" style="width: 150px"></DatePicker>
+                </p>
+                <p>
+                  <span>结束时间</span>
+                  <DatePicker type="date" v-model="banner.endTime" disabled transfer placeholder="请选择结束时间" style="width: 150px"></DatePicker>  
+                </p>
+              </td>
+              <td>
+                <Select v-model="banner.spCategoryId" style="width:147px" disabled>
+                  <Option v-for="item in cityList" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
+                </Select>
+              </td>
+              <td>
+                <input type="text" v-model="banner.linkUrl" disabled readonly>
+              </td>
+              <td>
+                <input type="text" v-model="banner.remark" disabled readonly>
+              </td>
+              <td style="position:relative;width:220px;" v-hover>
+                <img v-if="banner.picUrl" :src="banner.picUrl" width="200" style="margin:10px auto;">
+                <div class="mask">
+                  <a @click="showImg(banner)">查看</a>
+                </div>
+              </td>
+              <td>{{formatDateTime(banner.createAt)}}</td>
+              <td>{{banner.createName}}</td>
+              <td>{{formatDateTime(banner.endAt)}}</td>
+              <td>{{banner.endName}}</td>
+              <td>{{banner.stopReason}}</button></td>
+            </tr>
+            <tr v-if="!bannerData" style="height:40px;">
+              <td colspan="10">暂无数据</td>
+            </tr>
           </table>
         </TabPane>
-        <Button type="primary" slot="extra" v-if="params.status === 1" @click="addBanner">新增</Button>
     </Tabs>
-    <div class="save-change" v-if="bannerData !== null && bannerData.length > 0  && params.status === 1" style="margin-bottom: 40px;">
-      <Button @click="getSaveChanges" type="primary" size="large">保存修改</Button>
+    <Page v-if="bannerData && bannerData.length > 0" style="margin-top: 20px; float: right;" :total="total" :current="params.pageNo" @on-change="onChange"></Page>
+    <input type="file" class="inputFile" ref="file" @change="onUpload">
+    <div class="big-img" v-if="imgUrl">
+      <img :src="imgUrl" />
+      <span @click="closeImg">X</span>
     </div>
-   </div>
- </template>
+    <Modal
+        v-model="modalBoolean"
+        :mask-closable="false"
+        title="提示"
+        @on-ok="bannerOk"
+        @on-cancel="bannerCancel">
+        <textarea v-model="stopReason" maxlength="50" placeholder="请输入备注信息(字数不得超过50字)"></textarea>
+    </Modal>
+  </div>
+</template>
  <script>
 import { uploadpic } from 'components/upload-pic'
 import * as api from 'api/common.js'
@@ -82,68 +146,53 @@ export default {
   components: {},
   data() {
     return {
-      bannerMenu: ['未开始', '已结束'], // tabs标签页
-      bannerTableTH: [
-        { key: '生效周期', style: '14%' },
-        { key: '关联位置', style: '10%' },
-        { key: '跳转链接', style: '12%' },
-        { key: '上传说明', style: '12%' },
-        { key: '图片', style: '12%' },
-        { key: '创建时间', style: '6%' },
-        { key: '创建人', style: '6%' },
-        { key: '状态', style: '6%' },
-        { key: '操作', style: '6%' }
-      ],
-      bannerTableTHs: [
-        { key: '生效周期', style: '' },
-        { key: '关联位置', style: '' },
-        { key: '跳转链接', style: '' },
-        { key: '上传说明', style: '' },
-        { key: '图片', style: '14%' },
-        { key: '创建时间', style: '' },
-        { key: '创建人', style: '' },
-        { key: '终止时间', style: '' },
-        { key: '终止人', style: '' },
-        { key: '终止原因', style: '' }
-      ],
       cityList: [],
-      bannerHead: [], // tableTH数据
       params: {
         status: 1, // banner图状态（未开始1、已结束2）
         pageSize: 10, // 分页参数，表示每页显示多少条
         pageNo: 1
       },
       bannerData: [], // 列表数据
+      imgUrl: '', //  查看图片url
+      modalBoolean: false, // 打开终止弹框
+      stopReason: '', // 获取终止理由
       total: null, // 列表总页数
-      bePic: false, // 控制上传button显示
-      showMask: true // 遮罩层
+      singleData: null
     }
   },
   created: function() {
-    this.bannerHead = this.bannerTableTH
     this.getCurrentListData()
+  },
+  directives: {
+    hover: {
+      inserted(el) {
+        el.onmouseover = function() {
+          if (this.children[1]) {
+            this.children[1].style.visibility = 'visible'
+          }
+        }
+        el.onmouseout = function() {
+          if (this.children[1]) {
+            this.children[1].style.visibility = 'hidden'
+          }
+        }
+      }
+    }
   },
   methods: {
     // 切换table 获取Index
     onBannerMenu(index) {
       this.params.status = index + 1
+      this.params.pageNo = 1
       this.getCurrentListData()
-      switch (this.params.status) {
-        case 1:
-          this.bannerHead = this.bannerTableTH
-          break
-        case 2:
-          this.bannerHead = this.bannerTableTHs
-      }
     },
     // 请求banner列表数据
     getCurrentListData() {
       api.seeBannerList(this.params, this.params.pageNo).then(data => {
-        console.log(data)
         // 请求数据
         this.bannerData = data.page.records
         this.cityList = data.categories
-        this.total = data.total
+        this.total = data.page.total
       })
     },
     // 过滤列表状态
@@ -174,19 +223,41 @@ export default {
       }
     },
     // 上传图片
-    onUpload(e, data) {
-      console.log(e.target.files[0])
-      uploadpic(e.target.files[0]).then(res => {
-        if (res) {
-          // console.log(res[0].indexOf('?') ? res[0].split('?')[0] : res[0])
-          data.picUrl = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
-        }
+    onUpload(e) {
+      uploadpic(e.target.files[0]).then(data => {
+        let res = data[0]
+        res = res.indexOf('?') ? res.split('?')[0] : res
+        this.singleData.picUrl = res
+        e.target.value = ''
+        this.$forceUpdate()
       })
+    },
+    // 重新上传
+    showInput(data) {
+      this.$refs['file'].click()
+      this.singleData = data
+    },
+    //  查看图片
+    showImg(data) {
+      this.imgUrl = data.picUrl
+      this.$forceUpdate()
+    },
+    //  关闭大图
+    closeImg() {
+      this.imgUrl = ''
+    },
+    //  终止还是删除
+    delOrEnd(data, index) {
+      this.singleData = data
+      if (data.addStatus === false) {
+        this.bannerData.splice(index, 1)
+      } else {
+        this.modalBoolean = true
+      }
     },
     // 新增banner图
     addBanner() {
       this.bannerData.push({
-        isUPdate: 1,
         picUrl: '',
         endTime: '',
         linkUrl: '',
@@ -194,73 +265,141 @@ export default {
         remark: '',
         addStatus: false
       })
-      console.log(this.addBanner)
+    },
+    // 确认终止弹框
+    bannerOk() {
+      if (this.stopReason === '') {
+        this.$Message.error('终止失败，请填写终止原因')
+      } else {
+        let endData = {
+          id: this.singleData.ptBannerId,
+          reason: this.stopReason
+        }
+        api.endBanner(endData).then(data => {
+          if (data === true) {
+            this.getCurrentListData()
+            this.$Message.info('终止成功')
+          }
+        })
+      }
+    },
+    // 关闭终止弹框
+    bannerCancel() {
+      this.$Message.info('关闭终止弹框')
     },
     // 保存修改
-    getSaveChanges() {
-      console.log(this.bannerData, '1')
+    saveEdit() {
+      api.addUpdataBanner(this.bannerData).then(data => {
+        if (data === true) {
+          this.getCurrentListData()
+        }
+      })
+    },
+    // 点击分页
+    onChange(page) {
+      this.params.pageNo = page
+      this.getCurrentListData()
     }
   }
 }
 </script>
 <style lang="css" scoped>
-.sp-grid-import{border-collapse: collapse;width:100%; border:1px solid #E1E6EB; border-left:none;}
-.sp-grid-import thead th{line-height:20px;padding:8px 12px; border-bottom:1px solid #E1E6EB; border-left:1px solid #E1E6EB; white-space: nowrap; text-align:center; font-weight:normal !important;letter-spacing:1px;}
-.sp-grid-import tbody td{position: relative;text-align: center;line-height:20px;padding:8px 10px;font-size:13px;border-bottom:1px solid #E1E6EB; border-left:1px solid #E1E6EB;}
-.save-change{ text-align: center; margin-top: 20px; }
-input { width: 100%; }
-.upload {
-  /* width: 120px;
-  height: 33px;
-  line-height: 30px; */
-  padding: 6px 10px;
-  display: inline-block;
-  border-radius: 4px;
-  color: #fff;
-  border: 1px solid #2d8cf0;
-  background-color: #2d8cf0;
+table{
+    width:100%;
+    text-align:center;
+    border-collapse: collapse;
+  }
+
+  table th{
+    background-color:#f8f8f9;
+  }
+
+  table tr:first-child{
+    height:40px;
+  }
+
+  table td,table th{
+    border:1px solid #e9eaec;
+    overflow: hidden;
+  }
+
+  table tr td p{
+    margin:10px auto;
+  }
+
+  table tr td p span{
+    margin-right:5px;
+  }
+
+table tr td button{
+  width:80%;
+  height:30px;
+  color:#fff;
+  border:none;
   outline: none;
+  border-radius:4px;
+  background-color:#2d8cf0;
+  cursor:pointer;
 }
 
-.upload > input[type='file'] {
-  width: 100%;
-  height: 100%;
+table tr td div.mask{
   position: absolute;
-  left: 0;
-  top: 0;
+  top:0;
+  left:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  height:100%;
+  background-color:rgba(0,0,0,.4);
+  visibility: hidden;
+}
+
+table  tr td div.mask a{
+  color:#fff;
+}
+
+.inputFile{
   opacity: 0;
 }
 
-/* 图片 */
-.pic {
-  height: 156px;
-  position: relative;
-}
-.pic > img {
-  width: 100%;
-  height: 100%;
-}
-.pic > .pic-mask {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, .58);
-  display: none;
-  color: #fff;
-  line-height: 156px;
-}
-.pic:hover .pic-mask {
-  display: inline-block !important;
+div.big-img{
+  position:fixed;
+  display: flex;
+  align-items: center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  z-index:9999;
+  background-color:rgba(0,0,0,.4)
 }
 
-.pic > .pic-mask > input {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0;
+div.big-img>img{
+  width:40%;
+}
+
+div.big-img>span{
+  position: fixed;
+  display:block;
+  text-align:center;
+  width:40px;
+  height:40px;
+  line-height:40px;
+  top: 50px;
+  right: 40px;
+  font-size: 20px;
+  border-radius:20px;
+  cursor:pointer;
+  background-color:rgba(255,255,255,.5)
+}
+
+textarea{
+  width:100%;
+  height:140px;
+  resize: none;
+  outline: none;
+  margin:auto;
 }
  </style>

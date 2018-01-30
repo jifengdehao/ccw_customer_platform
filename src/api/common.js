@@ -477,8 +477,8 @@ export const addUpdataBanner = params => {
 }
 
 // 已开始 结束banner
-export const endBanner = Id => {
-  return ax.u(`/activity/banner/${Id}`)
+export const endBanner = params => {
+  return ax.pa('/activity/banner/', params)
 }
 
 // 未开始 删除banner
