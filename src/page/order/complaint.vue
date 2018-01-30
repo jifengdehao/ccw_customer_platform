@@ -8,12 +8,16 @@
   <div class="order-complaint">
     <Row>
       <Col span="24">
-      发起端口&nbsp;&nbsp;
-      <Select style="width:200px;" @on-change="selectPort">
+      发起端口
+      <Select style="width:200px;margin-left: 10px;margin-right: 10px;" @on-change="selectPort">
         <Option v-for="item in portList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
-      &nbsp;&nbsp;投诉时间&nbsp;&nbsp;
-      <DatePicker type="daterange" placeholder="请选择投诉时间" style="width: 200px" @on-change="selectDate"></DatePicker>
+      投诉时间
+      <DatePicker type="daterange" placeholder="请选择投诉时间" style="width: 200px;margin-left: 10px;margin-right: 10px;"
+                  @on-change="selectDate"></DatePicker>
+      <Input placeholder="投诉人手机" v-model="mobileno" style="width: 200px;margin-right: 10px;"></Input>
+      <Input placeholder="被投诉人手机" v-model="contactNumber" style="width: 200px;margin-right: 10px;"></Input>
+      <Button type="primary" @click="handlerSubmit">搜索</Button>
       </Col>
     </Row>
     <Row class="mt20">
@@ -29,7 +33,7 @@
                 class="vm-fr mt20">
           </Page>
         </Tab-pane>
-        <Tab-pane label="已通过" name="1">
+        <Tab-pane label="已审核" name="1">
           <Table :columns="columns" :data="data" :loading="loading"></Table>
           <Page :total="tableTotal"
                 :current="curr"
@@ -39,7 +43,17 @@
                 class="vm-fr mt20">
           </Page>
         </Tab-pane>
-        <Tab-pane label="未通过" name="2">
+        <Tab-pane label="已驳回" name="2">
+          <Table :columns="columns" :data="data" :loading="loading"></Table>
+          <Page :total="tableTotal"
+                :current="curr"
+                :page-size="pageNum"
+                @on-change="changePage"
+                show-total
+                class="vm-fr mt20">
+          </Page>
+        </Tab-pane>
+        <Tab-pane label="已处理" name="3">
           <Table :columns="columns" :data="data" :loading="loading"></Table>
           <Page :total="tableTotal"
                 :current="curr"
@@ -56,7 +70,7 @@
 </template>
 <script type="text/ecmascript-6">
   export default {
-    data () {
+    data() {
       return {
         portList: [
           {
@@ -81,6 +95,16 @@
             align: 'center'
           },
           {
+            title: '投诉编号',
+            key: '',
+            align: 'center'
+          },
+          {
+            title: '投诉人身份',
+            key: '',
+            align: 'center'
+          },
+          {
             title: '投诉人ID',
             key: '',
             align: 'center'
@@ -96,7 +120,7 @@
             align: 'center'
           },
           {
-            title: '投诉对象',
+            title: '被投诉人身份',
             key: '',
             align: 'center'
           },
@@ -122,11 +146,6 @@
           },
           {
             title: '图片凭证',
-            key: '',
-            align: 'center'
-          },
-          {
-            title: '驳回备注',
             key: '',
             align: 'center'
           },
@@ -171,16 +190,19 @@
       }
     },
     methods: {
-      selectDate (date) {
+      // 搜索
+      handlerSubmit() {
+      },
+      selectDate(date) {
         console.log(date)
       },
-      selectPort (value) {
+      selectPort(value) {
         console.log(value)
       },
-      selectTab (name) {
+      selectTab(name) {
         this.types = name
       },
-      changePage (index) {
+      changePage(index) {
         this.curr = index
       }
     }

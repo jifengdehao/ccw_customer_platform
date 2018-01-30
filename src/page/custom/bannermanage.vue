@@ -332,32 +332,32 @@ export default {
 </script>
 
 <style scoped lang="css">
-table{
-  width:100%;
-  text-align:center;
-  border-collapse: collapse;
-}
+  table{
+    width:100%;
+    text-align:center;
+    border-collapse: collapse;
+  }
 
-table th{
-  background-color:#f8f8f9;
-}
+  table th{
+    background-color:#f8f8f9;
+  }
 
-table tr:first-child{
-  height:40px;
-}
+  table tr:first-child{
+    height:40px;
+  }
 
-table td,table th{
-  border:1px solid #e9eaec;
-  overflow: hidden;
-}
+  table td,table th{
+    border:1px solid #e9eaec;
+    overflow: hidden;
+  }
 
-table tr td p{
-  margin:10px auto;
-}
+  table tr td p{
+    margin:10px auto;
+  }
 
-table tr td p span{
-  margin-right:5px;
-}
+  table tr td p span{
+    margin-right:5px;
+  }
 
 table tr td button{
   width:80%;

@@ -6,16 +6,27 @@
 */
 <template>
   <div class="order-evaluate">
-    <i-form inline label-position="left">
+    <Form inline label-position="left">
       <FormItem>
-        <Input type="text" v-model="seek" placeholder="用户ID/用户昵称/用户手机/内容关键词" style="width: 300px"></Input>
+        <Select v-model="evaluateType" style="width: 200px;">
+          <Option v-for="item in evaluateList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
       </FormItem>
       <FormItem>
-        <Button type="primary" @click="handleSubmit()">搜索</Button>
+        <Input type="text" v-model="customerTel" placeholder="用户手机" style="width: 200px"></Input>
       </FormItem>
-    </i-form>
+      <FormItem>
+        <Input type="text" v-model="sellerTel" placeholder="档口手机" style="width: 200px"></Input>
+      </FormItem>
+      <!--<FormItem>-->
+      <!--<Input type="text" v-model="seek" placeholder="用户ID/用户昵称/用户手机/内容关键词" style="width: 300px"></Input>-->
+      <!--</FormItem>-->
+      <FormItem>
+        <Button type="primary" @click="handleSubmit">搜索</Button>
+      </FormItem>
+    </Form>
     <Tabs :animated="false" @on-click="selectTab" :value="this.status">
-      <Tab-pane label="商户评价" name="0">
+      <Tab-pane label="全部评价" name="0">
         <Table :columns="columns1" :data="data1" ref="table" :loading="loading1"></Table>
         <Page
           :total="tableTotal"
@@ -26,7 +37,7 @@
           class="vm-fr mt20"
         ></Page>
       </Tab-pane>
-      <Tab-pane label="配送员评价" name="1">
+      <Tab-pane label="差评评价" name="1">
         <Table :columns="columns2" :data="data2" ref="table" :loading="loading2"></Table>
         <Page
           :total="tableTotal"
@@ -37,7 +48,7 @@
           class="vm-fr mt20"
         ></Page>
       </Tab-pane>
-      <Tab-pane label="差评订单" name="2">
+      <Tab-pane label="差评排行榜" name="2">
         <Table :columns="columns3" :data="data3" ref="table" :loading="loading3"></Table>
         <Page
           :total="tableTotal"
@@ -48,17 +59,17 @@
           class="vm-fr mt20"
         ></Page>
       </Tab-pane>
-      <Tab-pane label="屏蔽词" name="3">
-        <Form ref="formValidate" :model="formValidate" :rules="ruleValidate">
-          <FormItem prop="desc">
-            <Input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 20,maxRows: 30}"
-                   placeholder="请输入..."></Input>
-          </FormItem>
-          <FormItem>
-            <Button type="primary" @click="handleSubmitSw('formValidate')">提交</Button>
-          </FormItem>
-        </Form>
-      </Tab-pane>
+      <!--<Tab-pane label="屏蔽词" name="3">-->
+        <!--<Form ref="formValidate" :model="formValidate" :rules="ruleValidate">-->
+          <!--<FormItem prop="desc">-->
+            <!--<Input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 20,maxRows: 30}"-->
+                   <!--placeholder="请输入..."></Input>-->
+          <!--</FormItem>-->
+          <!--<FormItem>-->
+            <!--<Button type="primary" @click="handleSubmitSw('formValidate')">提交</Button>-->
+          <!--</FormItem>-->
+        <!--</Form>-->
+      <!--</Tab-pane>-->
       <Button type="primary" class="vm-fr" @click="exportModal=true" slot="extra">导出</Button>
     </Tabs>
     <Modal v-model="exportModal" width="300">
@@ -80,8 +91,21 @@
 
   export default {
     name: 'evaluate',
-    data () {
+    data() {
       return {
+        sellerTel: '',   // 档口手机
+        customerTel: '', // 用户手机
+        evaluateType: 0, // 评价类型
+        evaluateList: [  // 评价列表
+          {
+            value: 0,
+            label: '商户评价'
+          },
+          {
+            value: 1,
+            label: '骑士评价'
+          }
+        ],
         curr: 1, // 当前分页
         pageNum: 20, // 当前页的显示的数据数量
         tableTotal: 0, // 总数
@@ -191,7 +215,7 @@
                       if (!isDelete) {
                         this.$Modal.confirm({
                           content: '确定隐藏这评价？',
-                          onOk () {
+                          onOk() {
                             // api 操作
                             api.putOrderSellerEval(rkShopId).then(res => {
                               if (res) {
@@ -298,7 +322,7 @@
                       if (!isDetlete) {
                         this.$Modal.confirm({
                           content: '确定隐藏这评价？',
-                          onOk () {
+                          onOk() {
                             // api 操作
                             api.putOrderDeliverEval(rkDeliverId).then(res => {
                               if (res) {
@@ -411,7 +435,7 @@
                         if (!isDelete) {
                           this.$Modal.confirm({
                             content: '确定隐藏这评价？',
-                            onOk () {
+                            onOk() {
                               // api 操作
                               api.putOrderSellerEval(rkShopId).then(res => {
                                 if (res) {
@@ -433,13 +457,13 @@
         data3: []
       }
     },
-    created () {
+    created() {
       this.getSellerEvalList()
       this.getSwData()
     },
     methods: {
       // 修改屏蔽词
-      handleSubmitSw (name) {
+      handleSubmitSw(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
             // 发送数据
@@ -452,7 +476,7 @@
                 let that = this
                 that.$Notice.success({
                   title: '更新成功！',
-                  onClose () {
+                  onClose() {
                     that.getSwData()
                   }
                 })
@@ -470,7 +494,7 @@
         })
       },
       // 获取屏蔽词
-      getSwData () {
+      getSwData() {
         api.getOrderSw().then((res) => {
           if (res) {
             console.log(res)
@@ -480,7 +504,7 @@
         })
       },
       // 搜索
-      handleSubmit () {
+      handleSubmit() {
         this.curr = 1
         if (this.status === '0') {
           this.getSellerEvalList()
@@ -491,7 +515,7 @@
         }
       },
       // 分页
-      changePage (index) {
+      changePage(index) {
         this.curr = index
         if (this.status === '0') {
           this.getSellerEvalList()
@@ -502,7 +526,7 @@
         }
       },
       // 导出表格
-      exportData () {
+      exportData() {
         if (this.startTime !== '' && this.endTime !== '') {
           this.modal_loading = true
           let params = {
@@ -520,7 +544,7 @@
         }
       },
       // 切换
-      selectTab (name) {
+      selectTab(name) {
         this.status = name
         this.curr = 1
         if (this.status === '0') {
@@ -532,7 +556,7 @@
         }
       },
       // 获取商户评价数据
-      getSellerEvalList () {
+      getSellerEvalList() {
         let params = {
           pageSize: this.pageNum,
           seek: this.seek
@@ -546,7 +570,7 @@
         })
       },
       // 获取配送员评价数据
-      getDeliverEval () {
+      getDeliverEval() {
         let params = {
           pageSize: this.pageNum,
           seek: this.seek
@@ -560,7 +584,7 @@
         })
       },
       // 获取差评数据
-      getBadEval () {
+      getBadEval() {
         let params = {
           pageSize: this.pageNum,
           seek: this.seek

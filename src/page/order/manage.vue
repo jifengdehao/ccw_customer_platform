@@ -11,7 +11,7 @@
         <Input type="text" v-model.tirm="seek" placeholder="订单编号/用户ID/收货人手机" style="width: 200px"></Input>
       </FormItem>
       <FormItem>
-        <Button type="primary" @click="handleSubmit()">搜索</Button>
+        <Button type="primary" @click="handleSubmit">搜索</Button>
       </FormItem>
     </i-form>
     <Tabs value="0" @on-click="selectTab" :animated="false">
@@ -152,7 +152,7 @@
 
   export default {
     name: 'manage',
-    data () {
+    data() {
       return {
         curr: 1, // 当前页
         pageNum: 20, // 当前页的显示的数据数量
@@ -241,8 +241,7 @@
                   disabled: disabled
                 },
                 on: {
-                  click: (e) => {
-                    e.stopPropagation()
+                  click: () => {
                     that.cancelOrderId = orderId
                     that.cancel_order = true
                   }
@@ -254,23 +253,23 @@
         data: []
       }
     },
-    created () {
+    created() {
       this._getOrderData()
     },
     methods: {
       // 搜索
-      handleSubmit () {
+      handleSubmit() {
         this.curr = 1
         this._getOrderData()
       },
       // 选择tab
-      selectTab (name) {
+      selectTab(name) {
         this.status = parseInt(name)
         this.curr = 1
         this._getOrderData()
       },
       // 导出数据
-      exportData () {
+      exportData() {
         if (this.startTime !== '' && this.endTime !== '') {
           this.modal_loading = true
           let params = {
@@ -279,7 +278,6 @@
             status: this.status,
             seek: this.seek
           }
-          console.log(params)
           api.exportOrderList(params).then((res) => {
             if (res) {
               this.modal_loading = false
@@ -289,12 +287,12 @@
         }
       },
       // 分页
-      changePage (index) {
+      changePage(index) {
         this.curr = index
         this._getOrderData()
       },
       // 取消订单
-      cancelOrder () {
+      cancelOrder() {
         if (this.cancelOrderDec) {
           let params = {
             orderId: this.cancelOrderId,
@@ -305,21 +303,25 @@
               console.log(res)
               this.clearOrderDec()
               this._getOrderData()
+            } else {
+              this.$Notice.error({
+                title: '取消订单失败！'
+              })
             }
           })
         }
       },
       // 清除数据和关闭modal
-      clearOrderDec () {
+      clearOrderDec() {
         this.cancelOrderDec = ''
         this.cancelOrderId = ''
         this.cancel_order = false
       },
       // 查看详情
-      goToOrderDetails (params, index) {
+      goToOrderDetails(params, index) {
         this.$router.push('/order/orderInfo/' + params.orderId)
       },
-      _getOrderData () {
+      _getOrderData() {
         let params = {
           pageSize: this.pageNum,
           status: this.status,
