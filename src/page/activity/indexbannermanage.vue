@@ -1,9 +1,9 @@
 /*
- * @Author: ZengFanlu 
- * @Date: 2018-01-25 10:52:15 
- * DeveloperMailbox:   zengfanlu@ccw163.com 
- * FunctionPoint: banner管理迭代功能 
- */
+* @Author: ZengFanlu
+* @Date: 2018-01-25 10:52:15
+* DeveloperMailbox:   zengfanlu@ccw163.com
+* FunctionPoint: banner管理迭代功能
+*/
 
  <template>
    <div>
@@ -79,7 +79,7 @@
 import { uploadpic } from 'components/upload-pic'
 import * as api from 'api/common.js'
 export default {
-  components: { },
+  components: {},
   data() {
     return {
       bannerMenu: ['未开始', '已结束'], // tabs标签页
@@ -203,7 +203,7 @@ export default {
   }
 }
 </script>
- <style lang="css" scoped>
+<style lang="css" scoped>
 .sp-grid-import{border-collapse: collapse;width:100%; border:1px solid #E1E6EB; border-left:none;}
 .sp-grid-import thead th{line-height:20px;padding:8px 12px; border-bottom:1px solid #E1E6EB; border-left:1px solid #E1E6EB; white-space: nowrap; text-align:center; font-weight:normal !important;letter-spacing:1px;}
 .sp-grid-import tbody td{position: relative;text-align: center;line-height:20px;padding:8px 10px;font-size:13px;border-bottom:1px solid #E1E6EB; border-left:1px solid #E1E6EB;}

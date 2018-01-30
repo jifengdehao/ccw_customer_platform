@@ -99,7 +99,9 @@ export default {
         seconds:
           date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       }
-      return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
+      return `${params.year}/${params.month}/${params.day} ${params.hour}:${
+        params.minutes
+      }:${params.seconds}`
     },
     //  过滤方式
     filterType(type, value) {
@@ -125,9 +127,12 @@ export default {
     },
     //  查看用户账户
     loopAccount() {
-      http.loopAccount(this.params).then(data => {
-        this.singleData = data
-      })
+      let selectedType = this.params.accountType === 1 ? 1 : 2
+      http
+        .loopAccount(this.params, { selectTypes: selectedType })
+        .then(data => {
+          this.singleData = data
+        })
     },
     //  查看用户账户变更流水
     getAccountMoneyChange() {

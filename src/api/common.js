@@ -158,7 +158,13 @@ export const getOrderList = (params, pageNo) => {
 export const exportOrderList = params => {
   return ax.g('/order/export/poi', params)
 }
-
+/**
+ * 取消订单
+ * @param params
+ */
+export const cancelOrder = params => {
+  return ax.pa(`/order/order/cancelOrder`, params)
+}
 /**
  * 获取订单详情
  * @param params => {orderId}
@@ -281,6 +287,19 @@ export const getOrderBadListEval = (params, pageNo) => {
 export const patchOrderEval = params => {
   return ax.pa('/order/remark', params)
 }
+/**
+ *  获取售后订单列表
+ *  @param
+ */
+export const getCustomerService = (params, pageNo) => {
+  return ax.g(`/order/afterSale/list/${pageNo}`, params)
+}
+/**
+ * 新增售后订单
+ */
+export const addCustomerService = params => {
+  return ax.p('/order/afterSaleList', params)
+}
 
 /** 订单管理 end **/
 
@@ -401,7 +420,7 @@ export const modifyProductTemplate = (params, templateId) => {
   return ax.u(`product/template/${templateId}`, params)
 }
 // 删除模板
-export const delTemplate = (templateId) => {
+export const delTemplate = templateId => {
   return ax.d(`/product/template/${templateId}`)
 }
 // 获取系统参数列表
@@ -479,19 +498,19 @@ export const activtyCouponList = (id, params) => {
   return ax.g(`/activity/coupon/list/${id}`, params)
 }
 // 终结优惠券/activity/coupon
-export const activityCouponDelete = (params) => {
+export const activityCouponDelete = params => {
   return ax.pa(`/activity/coupon/`, params)
 }
 // 新增优惠券POST /activity/coupon
-export const addCoupon = (params) => {
+export const addCoupon = params => {
   return ax.p('/activity/coupon', params)
 }
 // 查看优惠券详情/activity/coupon/{couponId}
-export const seeCoupon = (Id) => {
+export const seeCoupon = Id => {
   return ax.g(`/activity/coupon/${Id}`)
 }
 // 修改优惠券
-export const resiveCoupon = (params) => {
+export const resiveCoupon = params => {
   return ax.u('/activity/coupon/', params)
 }
 
@@ -517,6 +536,13 @@ export const getUsersList = (params, pageNo) => {
 
 export const getOrderSeed = id => {
   return ax.g(`order/seed/${id}`)
+}
+
+/**
+ * 获取省区
+ */
+export const getProvinceList = () => {
+  return ax.g(`/customer/index`)
 }
 
 /**
@@ -628,8 +654,8 @@ export const saveMarketData = params => {
 /**
  * 获取配送价列表
  */
-export const getPirse = params => {
-  return ax.g(`/customer/expense`, params)
+export const getPirse = (_params, params) => {
+  return ax.g(`/customer/expense/${_params.id}/${_params.pageNum}`, params)
 }
 
 /**
@@ -670,8 +696,8 @@ export const getAccountMoney = params => {
 /**
  * 查看用户账户
  */
-export const loopAccount = params => {
-  return ax.g(`/customer/account/${params.custId}`)
+export const loopAccount = (_params, params) => {
+  return ax.g(`/customer/account/${_params.custId}`, params)
 }
 
 /**
@@ -763,4 +789,39 @@ export const getFinanceList = (pageNo, params) => {
 // 商户结算申请/finance/seller/bill
 export const getFinanceBill = Id => {
   return ax.pa('/finance/seller/bill', Id)
+}
+/**
+ * 积分商城相关接口
+ */
+/**
+ * 商品管理 分类管理
+ * by hushangjun
+ */
+// 积分商城商品管理
+export const getproductList = (pageNo, params) => {
+  return ax.g(`/integralMall/product/list/${pageNo}`, params)
+}
+// 积分商城商品管理
+export const getCategoryList = () => {
+  return ax.g(`/integralMall/category/list`)
+}
+// 积分商城商品上、下架
+export const integralMall = (params) => {
+  return ax.pa(`/integralMall/product`, params)
+}
+// 获取积分商城商品信息
+export const productinfo = (jfProductId) => {
+  return ax.g(`/integralMall/product/${jfProductId}`)
+}
+// 获取积分商城商品增加，编辑
+export const editProduct = (params) => {
+  return ax.p(`/integralMall/product`, params)
+}
+// 积分商城分类增加，编辑
+export const editCategory = (params) => {
+  return ax.p(`/integralMall/category`, params)
+}
+// 删除类目
+export const delCategory = (jfCategoryId) => {
+  return ax.d(`/integralMall/category/${jfCategoryId}`)
 }

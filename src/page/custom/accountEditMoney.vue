@@ -37,7 +37,7 @@
         <p class="money">支付宝账号: <input type="text" v-model="alipayAccount"></p>
         <p class="money"><span style="display:inline-block;vertical-align:top;">退款原因:&nbsp;&nbsp;</span><textarea style="resize:none;height:60px;" v-model="reason"></textarea></p>
         <p>请按照客服退款操作手册进行正确的合算</p>
-    </Modal>
+      </Modal>
   </div>
 </template>
 <script>
@@ -98,7 +98,7 @@ export default {
   methods: {
     //  查看用户账户
     loopAccount() {
-      http.loopAccount(this.params).then(data => {
+      http.loopAccount(this.params, { selectTypes: 1 }).then(data => {
         this.singleData = data
       })
     },
@@ -123,7 +123,9 @@ export default {
             ? '0' + date.getSeconds()
             : date.getSeconds()
       }
-      return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
+      return `${params.year}/${params.month}/${params.day} ${params.hour}:${
+        params.minutes
+      }:${params.seconds}`
     },
     //  过滤方式
     filterType(type, value) {
@@ -236,12 +238,5 @@ table td {
 h3 {
   margin: 20px auto;
   line-height: 20px;
-}
-p {
-  text-align: center;
-}
-p.money {
-  text-align: center;
-  margin: 20px auto;
 }
 </style>

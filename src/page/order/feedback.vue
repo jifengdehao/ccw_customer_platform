@@ -7,8 +7,8 @@
 <template>
   <div class="feedback">
     <Form inline label-position="left">
-      <FormItem label="手机号" :label-width="80">
-        <Input type="text" v-model="phone" placeholder="请输入你的手机号"></Input>
+      <FormItem>
+        <Input type="text" v-model="seek" placeholder="用户ID/用户昵称" style="width: 200px"></Input>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="handleSubmit()">搜索</Button>
@@ -18,7 +18,7 @@
       <Col span="24">
       <Tabs :value="this.types" :animated="false" @on-click="selectTab">
         <Tab-pane label="商户端" name="0">
-          <Table :columns="columns" :data="data" :loading="loading"></Table>
+          <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToFeedbackDetails"></Table>
           <Page :total="tableTotal"
                 :current="curr"
                 :page-size="pageNum"
@@ -28,7 +28,7 @@
           </Page>
         </Tab-pane>
         <Tab-pane label="用户端" name="1">
-          <Table :columns="columns" :data="data" :loading="loading"></Table>
+          <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToFeedbackDetails"></Table>
           <Page :total="tableTotal"
                 :current="curr"
                 :page-size="pageNum"
@@ -38,7 +38,7 @@
           </Page>
         </Tab-pane>
         <Tab-pane label="配送端" name="2">
-          <Table :columns="columns" :data="data" :loading="loading"></Table>
+          <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToFeedbackDetails"></Table>
           <Page :total="tableTotal"
                 :current="curr"
                 :page-size="pageNum"
@@ -73,10 +73,10 @@
     data () {
       return {
         curr: 1, // 当前页
-        pageNum: 10, // 当前页展示的数据量
+        pageNum: 20, // 当前页展示的数据量
         tableTotal: 0, // 数据总数
         types: '0', // 评价类型
-        phone: '', // 手机号
+        seek: '', // 搜索条件
         loading: true, // 表格加载
         exportModal: false, // 弹出导出表格
         startTime: '', // 导出表格开始时间
@@ -89,13 +89,8 @@
             align: 'center'
           },
           {
-            title: '用户名',
+            title: '用户昵称',
             key: 'creatorName',
-            align: 'center'
-          },
-          {
-            title: '手机号',
-            key: 'mobileno',
             align: 'center'
           },
           {
@@ -116,40 +111,6 @@
             align: 'center',
             render: (h, params) => {
               return time.formatDateTime(params.row.createdDt)
-            }
-          },
-          {
-            title: '反馈图片',
-            key: 'noPicture',
-            align: 'center',
-            render: (h, params) => {
-              let noPicture = params.row.noPicture
-              if (noPicture) {
-                return h('span', '有')
-              } else {
-                return h('span', '无')
-              }
-            }
-          },
-          {
-            title: '操作',
-            key: 'options',
-            align: 'center',
-            render: (h, params) => {
-              let id = params.row.pt_feedback_id
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.$router.push('/order/feedbackInfo/' + id)
-                    }
-                  }
-                }, '查看')
-              ])
             }
           }
         ],
@@ -181,7 +142,7 @@
             startTime: this.startTime,
             endTime: this.endTime,
             types: this.types,
-            mobileno: this.mobileno
+            seek: this.seek
           }
           api.exportFeedback(params).then((res) => {
             if (res) {
@@ -191,14 +152,19 @@
           })
         }
       },
+      // 查看详情
+      goToFeedbackDetails (params, index) {
+        this.$router.push('/order/feedbackInfo/' + params.pt_feedback_id)
+      },
       getFeedbackListData () {
         let params = {
           pageSize: this.pageNum,
           types: this.types,
-          mobileno: this.phone
+          seek: this.seek
         }
         api.getFeedBackList(params, this.curr).then((res) => {
           if (res) {
+            console.log(res);
             this.tableTotal = res.total
             this.data = res.records
             this.loading = false

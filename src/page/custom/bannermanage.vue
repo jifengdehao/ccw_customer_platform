@@ -6,112 +6,126 @@
 */
 <template>
   <div>
-    <Tabs @on-click="onBannerMenu" :animated="false" v-model="status">
-      <TabPane v-for="tab in bannerMenu" :key="tab.id" :label="tab">
-        <div class="add-image" v-if="addShow">
-          <Button class="add-button" @click="addImage" type="primary" size="large">新增</Button>
-        </div>
-        <div>
-          <!-- <Table ref="currentRowTable" :columns="changeTitle" :data="bannerData"></Table> -->
-          <table class="table-banner" v-if="status === 0 || status === 1">
-            <tbody>
+    <Tabs v-model="tabIndex" @on-click="showTabIndex">
+        <TabPane label="未结束">
+          <table>
             <tr>
-              <th v-for="tab in bannerTHdata" :key="tab.id" :width="tab.style">{{ tab.key }}</th>
+              <th style="width:15%;">生效周期</th>
+              <th style="width:15%;">跳转链接</th>
+              <th style="width:15%;">上传说明</th>
+              <th style="width:210px;">图片</th>
+              <th>创建时间</th>
+              <th>创建人</th>
+              <th style="width:6%;">状态</th>
+              <th style="width:6%;">操作</th>
             </tr>
-            <tr v-if="bannerData && bannerData.length <= 0" style="height: 40px;">
-              <td colspan="12">暂无数据</td>
-            </tr>
-            </tbody>
-          </table>
-          <draggable class="drag" @update="datadragEnd" v-if="status === 0 || status === 1" v-model="bannerData">
-              <tr v-for="(data,index) in bannerData" :key="data.id" class="draggable">
-                <td style="width:22%;">
-                  <img style="width:100%;padding:0 10px" :src="data.picUrl">
-                </td>
-                <td style="width: 10%">
-                  <input type="button" style="margin-left:0" @change="onUpload($event,data)" value="重新上传">
-                  <input type="file" class="input-file" @change="onUpload($event,data)" title="上传图片" accept="image/*">
-                </td>
-                <td style="width: 20%;">
-                  <input v-model="data.linkUrl" type="text" style="width:60%;" :value="data.linkUrl">
-                  <a :href="filterLink(data.linkUrl)">跳转链接</a>
-                </td>
-                <td style="width: 20%">
-                  <input v-model="data.remark" type="text" :value="data.remark">
-                </td>
-                <td style="width: 18%">
-                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left"
-                              style="width: 180px; margin-bottom: 5px;" v-model="data.startTime"
-                              :value="data.startTime"></DatePicker>
-                  <DatePicker type="datetime" placeholder="选择日期和时间" placement="left" style="width: 180px"
-                              v-model="data.endTime" :value="data.endTime"></DatePicker>
-                </td>
-                <td style="width: 10%;">
-                  <Button type="error" @click="onChangButton(data,index)">{{ bannerState }}</Button>
-                </td>
-              </tr>
-          </draggable>
-          <!-- 已结束start -->
-          <table class="table-banner" v-if="status === 2">
-            <tbody>
-            <tr>
-              <th v-for="tab in bannerThENDdata" :key="tab.id" :width="tab.style">{{ tab.key }}</th>
-            </tr>
-            <tr v-for="(data,index) in bannerData" :key="data.id">
-              <td>{{ index+1 }}</td>
-              <td>{{ data.remark }}</td>
-              <td>{{ filterTime(data.startTime) }}</td>
-              <td>{{ filterTime(data.endTime) }}</td>
+            <tr v-for="(banner,index) in bannerData">
               <td>
-                <Button type="primary" @click="seeModal(data)">查看</Button>
+                <p>
+                  <span>开始时间</span>
+                  <DatePicker type="date" v-model="banner.startTime" :disabled="banner.status === 0" transfer placeholder="请选择开始时间" style="width: 150px"></DatePicker>
+                </p>
+                <p>
+                  <span>结束时间</span>
+                  <DatePicker type="date" v-model="banner.endTime" :disabled="banner.status === 0" transfer placeholder="请选择结束时间" style="width: 150px"></DatePicker>  
+                </p>
+              </td>
+              <td>
+                <input type="text" v-model="banner.linkUrl" :disabled="banner.status === 0" :readonly="banner.status === 0">
+              </td>
+              <td>
+                <input type="text" v-model="banner.remark" :disabled="banner.status === 0" :readonly="banner.status === 0">
+              </td>
+              <td style="position:relative;width:220px;" v-hover>
+                <img v-if="banner.picUrl" :src="banner.picUrl" width="200" style="margin:10px auto;">
+                <div class="mask" v-if="banner.picUrl && banner.status === 1">
+                  <a @click="showInput(banner)">重新上传</a>
+                  <a style="margin-left:10px;" @click="showImg(banner)">查看</a>
+                </div>
+                <a v-if="!banner.picUrl" @click="showInput(banner)">上传</a>
+              </td>
+              <td>{{filterTime(banner.createdAt)}}</td>
+              <td>{{banner.creator}}</td>
+              <td>{{banner.status === 0 ? '已开始':'未开始'}}</td>
+              <td><button @click="delOrEnd(banner,index)">{{banner.createdAt ? '终止' : '删除'}}</button></td>
+            </tr>
+            <tr v-if="!bannerData" style="height:40px;" >
+              <td colspan="8">暂无数据</td>
+            </tr>
+            <tr>
+              <td colspan="8" style="height:50px;">
+                <button style="width:100px;" @click="addBanner">新增</button>
               </td>
             </tr>
-            <tr v-if="bannerData && bannerData.length <= 0" style="height: 40px;">
-              <td colspan="12">暂无数据</td>
-            </tr>
-            </tbody>
           </table>
-          <!-- 已结束end -->
-        </div>
-        <div class="save-change" v-if="saveShow && bannerData.length > 0" style="margin-bottom: 40px;">
-          <Button @click="getSaveChanges" type="primary" size="large">保存修改</Button>
-        </div>
-        <!-- 查看banner模态框start -->
-        <div class="mask-box" v-if="status === 2 && seeBannerClose">
-          <div class="show-box">
-            <div @click="onClose">
-              <Icon style="float: right; margin-bottom: 20px; font-size: 32px; cursor: pointer;"
-                    type="ios-close-empty"></Icon>
-            </div>
-            <table>
-              <tr>
-                <th>banner位置</th>
-                <th>图片</th>
-                <th>跳转链接</th>
-                <th>上传说明</th>
-                <th>时间</th>
-              </tr>
-              <tr>
-                <td>{{ seeBannerData.ptBannerId || seeBannerData.position}}</td>
-                <td>
-                  <img :src="seeBannerData.picUrl" alt="">
-                </td>
-                <td>{{ seeBannerData.linkUrl }}</td>
-                <td>{{ seeBannerData.remark }}</td>
-                <td>
-                  <p>开始时间：{{ filterTime(seeBannerData.startTime) }}</p>
-                  <p>结束时间：{{ filterTime(seeBannerData.endTime) }}</p>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </TabPane>
+          <p style="margin:20px auto;text-align:center;">
+            <Button type="primary" style="width:150px;height:40px;" @click="saveEdit">保存修改</Button>
+          </p>
+        </TabPane>
+        <TabPane label="已结束">
+          <table>
+            <tr>
+              <th style="width:15%;">生效周期</th>
+              <th style="width:15%;">跳转链接</th>
+              <th style="width:15%;">上传说明</th>
+              <th style="width:210px;">图片</th>
+              <th>创建时间</th>
+              <th>创建人</th>
+              <th>终止时间</th>
+              <th>终止人</th>
+              <th>备注信息</th>
+            </tr>
+            <tr v-for="(banner,index) in bannerData" :key="index">
+              <td>
+                <p>
+                  <span>开始时间</span>
+                  <DatePicker type="date" v-model="banner.startTime" :disabled="banner.status === 0 || tabIndex === 1" transfer placeholder="请选择开始时间" style="width: 150px"></DatePicker>
+                </p>
+                <p>
+                  <span>结束时间</span>
+                  <DatePicker type="date" v-model="banner.endTime" :disabled="banner.status === 0 || tabIndex === 1" transfer placeholder="请选择结束时间" style="width: 150px"></DatePicker>  
+                </p>
+              </td>
+              <td>
+                <input type="text" v-model="banner.linkUrl" :disabled="banner.status === 0 || tabIndex === 1" :readonly="banner.status === 0 || tabIndex === 1">
+              </td>
+              <td>
+                <input type="text" v-model="banner.remark" :disabled="banner.status === 0 || tabIndex === 1" :readonly="banner.status === 0 || tabIndex === 1">
+              </td>
+              <td style="position:relative;width:220px;" v-hover>
+                <img v-if="banner.picUrl" :src="banner.picUrl" width="200" style="margin:10px auto;">
+                <div class="mask">
+                  <a @click="showImg(banner)">查看</a>
+                </div>
+              </td>
+              <td>{{filterTime(banner.createdAt)}}</td>
+              <td>{{banner.creator}}</td>
+              <td>{{filterTime(banner.stopedAt)}}</td>
+              <td>{{banner.stopOperator}}</td>
+              <td>{{banner.stopReason}}</button></td>
+            </tr>
+            <tr v-if="!bannerData" style="height:40px;">
+              <td colspan="8">暂无数据</td>
+            </tr>
+          </table>
+        </TabPane>
     </Tabs>
+    <input type="file" class="inputFile" ref="file" @change="onUpload">
+    <div class="big-img" v-if="imgUrl">
+      <img :src="imgUrl" />
+      <span @click="closeImg">X</span>
+    </div>
+    <Modal
+        v-model="modalBoolean"
+        title="提示"
+        @on-ok="bannerOk"
+        @on-cancel="bannerCancel">
+        <textarea v-model="stopReason" placeholder="请输入备注信息(字数不得超过50字)"></textarea>
+    </Modal>
   </div>
 </template>
 <script type="text/ecmascript-6">
-import * as api from 'api/common'
+import * as http from 'api/common'
 import * as upload from 'components/upload-pic'
 import draggable from 'vuedraggable'
 
@@ -120,214 +134,169 @@ export default {
   components: { draggable },
   data() {
     return {
-      bannerMenu: ['已开始', '未开始', '已结束'], // 切换导航数据
-      bannerIndex: 0, // 切换id
-      bannerData: [], // 列表数据
-      addBannerData: [], // 自增列表数据
-      addShow: false, // 显示新增按钮
-      saveShow: true, // 保存按钮
-      changeTitle: [], // 切换table 列表title改变
-      bannerState: '结束', // 操作按钮变更
-      bannerTHdata: [
-        {
-          key: '图片',
-          style: '22%'
-        },
-        {
-          key: '图片管理',
-          style: '10%'
-        },
-        {
-          key: '跳转链接',
-          style: '20%'
-        },
-        {
-          key: '上传说明',
-          style: '20%'
-        },
-        {
-          key: '时间',
-          style: '18%'
-        },
-        {
-          key: '操作',
-          style: '10%'
-        }
-      ], // th title 内容
-      bannerThENDdata: [
-        {
-          key: '序号',
-          style: '20%'
-        },
-        {
-          key: '上传说明',
-          style: '20%'
-        },
-        {
-          key: '开始时间',
-          style: '20%'
-        },
-        {
-          key: '结束时间',
-          style: '20%'
-        },
-        {
-          key: '操作',
-          style: '20%'
-        }
-      ], // th title 已结束内容
-      pageNo: 1, // 当前页面
-      pageSize: 10, // 分页参数，表示每页显示多少条
-      status: 0, // banner图状态（未开始1、已开始0、已结束2）
-      seeBannerClose: false, // 查看banner弹框 默认关闭
-      seeBannerData: [], // 保存查看banner数据
-      formData: {}
+      routeIndex: 1, //  路由名
+      bannerData: [], //  table数据
+      singleData: null, //  传入值
+      tabIndex: 0,
+      imgUrl: '', //  查看图片url
+      modalBoolean: false, //  弹框状态
+      stopReason: '' //  终止原因
     }
   },
-  created: function() {
-    this.changeTitle = this.columns1 // 默认title数据
-    this.getCurrentListData() // 初始化已开始数据
+  directives: {
+    hover: {
+      inserted(el) {
+        el.onmouseover = function() {
+          if (this.children[1]) {
+            this.children[1].style.visibility = 'visible'
+          }
+        }
+        el.onmouseout = function() {
+          if (this.children[1]) {
+            this.children[1].style.visibility = 'hidden'
+          }
+        }
+      }
+    }
+  },
+  created() {
+    this.getDataList()
   },
   methods: {
-    // 点击切换导航tabs
-    onBannerMenu(value) {
-      this.status = value // 保存状态值 根据点击table
-      this.addShow = false // 新增按钮 默认隐藏
-      this.bannerState = '结束' // 操作按钮变更
-      this.changeTitle = this.columns1 // title数据变更
-      this.saveShow = true // 保存按钮 默认显示
-      this.getCurrentListData()
-      switch (value) {
-        case 0:
-          break
+    //  获取数据
+    getDataList() {
+      this.checkRoute()
+      if (this.bannerData) {
+        this.bannerData.length = 0
+      }
+      switch (this.routeIndex) {
         case 1:
-          this.addShow = true // 显示新增按钮
-          this.bannerState = '删除'
+          //  传递参数 -> 未结束1  已结束2
+          http.getBannerList({ status: this.tabIndex + 1 }).then(response => {
+            this.bannerData = response
+            if (!this.bannerData) {
+              return
+            }
+            this.bannerData.forEach(item => {
+              item.isShow = false
+            })
+          })
           break
         case 2:
-          this.changeTitle = this.columns2 // 变更title数据
-          this.saveShow = false // 保存按钮 隐藏
-      }
-    },
-    // 新增对象
-    addImage() {
-      this.bannerData.push({
-        picUrl: '',
-        endTime: '',
-        linkUrl: '',
-        startTime: '',
-        position: '',
-        remark: '',
-        status: 0,
-        types: 1
-      })
-    },
-    // 请求banner列表数据
-    getCurrentListData() {
-      if (this.$route.path.startsWith('/custom/banner_manage')) {
-        //  banner管理
-        api
-          .getBannerList({
-            status: this.status,
-            types: 1
-          })
-          .then(data => {
-            this.bannerData = data
-          })
-      } else if (this.$route.path.startsWith('/custom/market_push')) {
-        //  市场推送
-        api
-          .getMarketlist({
-            status: this.status
-          })
-          .then(data => {
-            this.bannerData = data
-          })
-      }
-    },
-    // 点击操作button 结束 删除
-    onChangButton(data, index) {
-      if (this.$route.path.startsWith('/custom/banner_manage')) {
-        if (this.status === 0) {
-          // 点击结束
-          data.status = 2
-          api.putBannerId(data).then(data => {
-            this.getCurrentListData()
-          })
-        } else if (this.status === 1) {
-          if (data.ptBannerId) {
-            // 点击删除
-            api.delBannerId(data).then(data => {
-              this.getCurrentListData()
+          http.getMarketlist({ status: this.tabIndex + 1 }).then(response => {
+            this.bannerData = response
+            if (!this.bannerData) {
+              return
+            }
+            this.bannerData.forEach(item => {
+              item.isShow = false
             })
-          } else {
-            this.bannerData.splice(index, 1)
-          }
-        }
-      } else if (this.$route.path.startsWith('/custom/market_push')) {
-        if (this.status === 0) {
-          //  点击结束
-          data.status = 2
-          api.putMarketId(data).then(data => {
-            this.getCurrentListData()
           })
-        } else if (this.status === 1) {
-          if (data.ptMarketPushId) {
-            //  点击删除
-            api.delMarketId(data).then(data => {
-              this.getCurrentListData()
-            })
-          } else {
-            this.bannerData.splice(index, 1)
-          }
-        }
+          break
       }
     },
-    // 查看banner弹框数据
-    seeModal(data) {
-      if (this.$route.fullPath.indexOf('market_push') > -1) {
-        this.seeBannerData = data
+    //  tab索引
+    showTabIndex(index) {
+      console.log(index)
+
+      this.getDataList()
+    },
+    //  判断路由
+    checkRoute() {
+      if (this.$route.path.indexOf('/custom/banner_manage') > -1) {
+        this.routeIndex = 1 //  banner图管理
+      } else if (this.$route.path.indexOf('/custom/market_push') > -1) {
+        this.routeIndex = 2 //  市场推送
+      }
+    },
+    //  显示上传框
+    showInput(data) {
+      this.$refs['file'].click()
+      this.singleData = data
+    },
+    //  查看图片
+    showImg(data) {
+      this.imgUrl = data.picUrl
+      this.$forceUpdate()
+    },
+    //  终止还是删除
+    delOrEnd(data, index) {
+      this.singleData = data
+      if (!data.creator) {
+        //  删除
+        this.bannerData.splice(index, 1)
       } else {
-        api.seeBanner(data.ptBannerId).then(data => {
-          this.seeBannerData = data
-        })
+        //  终止
+        this.modalBoolean = true
       }
-      this.seeBannerClose = true // 打开查看bnner模态框
     },
-    //  关闭查看banner弹框
-    onClose() {
-      this.seeBannerClose = false
-    },
-    // 保存修改
-    getSaveChanges() {
-      if (this.$route.path.startsWith('/custom/banner_manage')) {
-        //  banner保存
-        api.saveBannerData(this.bannerData).then(data => {
-          this.getCurrentListData()
-        })
-      } else if (this.$route.path.startsWith('/custom/market_push')) {
-        //  市场保存
-        api.saveMarketData(this.bannerData).then(data => {
-          this.getCurrentListData()
-        })
+    //  模态框确认
+    bannerOk() {
+      this.singleData.stopReason = this.stopReason
+      switch (this.routeIndex) {
+        case 1:
+          //  banner图
+          http.putBannerId(this.singleData).then(response => {
+            this.getDataList()
+            this.stopReason = ''
+          })
+          break
+        case 2:
+          http.putMarketId(this.singleData).then(response => {
+            this.getDataList()
+            this.stopReason = ''
+          })
+          //  市场推送
+          break
       }
+    },
+    //  模态框取消
+    bannerCancel() {
+      this.modalBoolean = false
+      this.stopReason = ''
     },
     // 上传图片
-    onUpload(e, item) {
+    onUpload(e) {
       upload.uploadpic(e.target.files[0]).then(data => {
         let res = data[0]
         res = res.indexOf('?') ? res.split('?')[0] : res
-        item.picUrl = res
+        this.singleData.picUrl = res
         e.target.value = ''
+        this.$forceUpdate()
       })
     },
-    datadragEnd(evt) {
-      console.log('拖动前的索引 :' + evt.oldIndex)
-      console.log('拖动后的索引 :' + evt.newIndex)
-      console.debug(this.bannerData, '22')
+    //  关闭大图
+    closeImg() {
+      this.imgUrl = ''
+    },
+    //  添加新banner
+    addBanner() {
+      this.bannerData.push({
+        startTime: '',
+        endTime: '',
+        linkUrl: '',
+        remark: ''
+      })
+    },
+    //  保存修改
+    saveEdit() {
+      if (this.routeIndex === 1) {
+        //  banner图管理
+        http.saveBannerData(this.bannerData).then(response => {
+          this.getDataList()
+        })
+      } else if (this.routeIndex === 2) {
+        //  市场推送
+        http.saveMarketData(this.bannerData).then(response => {
+          this.getDataList()
+        })
+      }
     },
     //  时间过滤
     filterTime(value) {
+      if (!value) {
+        return
+      }
       let date = new Date(value)
       let params = {
         year: date.getFullYear(),
@@ -342,166 +311,124 @@ export default {
         seconds:
           date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       }
-      return `${params.year}/${params.month}/${params.day} ${params.hour}:${params.minutes}:${params.seconds}`
-    },
-    //  链接过滤
-    filterLink(url) {
-      if (url.startsWith('http://') || url.startsWith('https://')) {
-        return url
-      } else {
-        return `http://${url}`
-      }
+      return `${params.year}/${params.month}/${params.day} ${params.hour}:${
+        params.minutes
+      }:${params.seconds}`
     }
   },
   watch: {
-    $route(to, from) {
-      this.bannerIndex = 0
-      this.status = 0
-      this.addShow = false
-      this.saveShow = true
-      this.getCurrentListData()
+    $route(newValue, oldValue) {
+      if (
+        newValue.path.indexOf('/custom/banner_manage') > -1 ||
+        newValue.path.indexOf('/custom/market_push') > -1
+      ) {
+        this.tabIndex = 0
+        this.getDataList()
+        this.$forceUpdate()
+      }
     }
   }
 }
 </script>
 
 <style scoped lang="css">
-.add-image {
-  text-align: right;
-  margin-bottom: 20px;
-}
+  table{
+    width:100%;
+    text-align:center;
+    border-collapse: collapse;
+  }
 
-.add-image .add-button {
-  background-color: #2d8cf0;
-  border-color: #2d8cf0;
-  color: #fff;
-}
+  table th{
+    background-color:#f8f8f9;
+  }
 
-.save-change {
-  text-align: center;
-  margin-top: 20px;
-}
+  table tr:first-child{
+    height:40px;
+  }
 
-.ivu-table td {
-  height: 190px !important;
-}
+  table td,table th{
+    border:1px solid #e9eaec;
+    overflow: hidden;
+  }
 
-/* table */
-table.table-banner,
-.draggable {
-  font-family: verdana, arial, sans-serif;
-  font-size: 11px;
-  width: 100%;
-  color: #495060;
-  font-size: 12px;
-  border: 1px solid #666666;
-  border-collapse: collapse;
-}
+  table tr td p{
+    margin:10px auto;
+  }
 
-table.table-banner th {
-  padding: 8px;
-  border: 1px solid #e9eaec;
-  background-color: #f8f8f9;
-}
+  table tr td p span{
+    margin-right:5px;
+  }
 
-table.table-banner td,
-.draggable td {
-  position: relative;
-  padding: 8px 0;
-  text-align: center;
-  border: 1px solid #e9eaec;
-  background-color: #ffffff;
-  border-top: 0;
-  border-right: 0;
-  vertical-align: middle;
-}
-
-.draggable td:last-child {
-  border-right: 1px solid #e9eaec;
-}
-
-table.table-banner td > input[type='text'],
-.draggable td > input[type='text'] {
-  width: 200px;
-  padding-left: 5px;
+table tr td button{
+  width:80%;
+  height:30px;
+  color:#fff;
+  border:none;
   outline: none;
+  border-radius:4px;
+  background-color:#2d8cf0;
+  cursor:pointer;
 }
 
-.draggable td > input[type='button'],
-.draggable td > input[type='file'] {
-  padding: 6px 15px 7px 15px;
-  margin-left: 20px;
-  border-radius: 4px;
-  color: #fff;
-  border: 1px solid #2d8cf0;
-  background-color: #2d8cf0;
-  outline: none;
-}
-
-table.table-banner td > input[type='file'],
-.draggable td > input[type='file'] {
+table tr td div.mask{
   position: absolute;
-  left: 26px;
+  top:0;
+  left:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  height:100%;
+  background-color:rgba(0,0,0,.4);
+  visibility: hidden;
+}
+
+table  tr td div.mask a{
+  color:#fff;
+}
+
+.inputFile{
   opacity: 0;
 }
 
-.br {
-  border-top: 0 !important;
-  border-right: 0 !important;
+div.big-img{
+  position:fixed;
+  display: flex;
+  align-items: center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  z-index:9999;
+  background-color:rgba(0,0,0,.4)
 }
 
-/* 查看模态框 */
-.mask-box {
-  width: 100%;
-  height: 100%;
+div.big-img>img{
+  width:40%;
+}
+
+div.big-img>span{
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9998;
-  background-color: rgba(0, 0, 0, 0.3);
+  display:block;
+  text-align:center;
+  width:40px;
+  height:40px;
+  line-height:40px;
+  top: 50px;
+  right: 40px;
+  font-size: 20px;
+  border-radius:20px;
+  cursor:pointer;
+  background-color:rgba(255,255,255,.5)
 }
 
-.show-box {
-  box-sizing: border-box;
-  padding: 20px;
-  width: calc(100% - 400px);
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-top: -140px;
-  margin-left: calc(-50% + 240px);
-  background-color: #fff;
-  overflow: hidden;
+textarea{
+  width:100%;
+  height:140px;
+  resize: none;
+  outline: none;
+  margin:auto;
 }
 
-.show-box table {
-  width: 100%;
-  border: 1px solid #ccc;
-  border-collapse: collapse;
-}
-
-.show-box table tr th {
-  padding: 8px;
-  border: 1px solid #e9eaec;
-  background-color: #f8f8f9;
-}
-
-.show-box table tr td {
-  padding: 8px;
-  text-align: center;
-  border: 1px solid #e9eaec;
-  background-color: #ffffff;
-}
-
-.drag td {
-  border-collapse: collapse;
-}
-
-.input-file {
-  width: 80px !important;
-  height: 33px !important;
-  top: calc((100% - 33px)/2);
-  left: calc(50% - 40px) !important;
-  margin-left: 0 !important;
-}
 </style>

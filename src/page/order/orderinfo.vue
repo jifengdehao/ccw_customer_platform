@@ -17,12 +17,6 @@
     </Row>
     <Row class="mb20">
       <Col span="24">
-      <h2 class="mb10">配送信息</h2>
-      <Table :columns="columns2" :data="data2" :border="true"></Table>
-      </Col>
-    </Row>
-    <Row class="mb20">
-      <Col span="24">
       <h2 class="mb10">支付信息</h2>
       <Table :columns="columns3" :data="data3" :border="true"></Table>
       </Col>
@@ -30,13 +24,34 @@
     <Row class="mb20">
       <Col span="24">
       <h2 class="vm-clearfix mb10">交易信息
-        <Button type="primary" class="vm-fr" @click="refundAll" v-show="options==='edit'? true: false "
+        <Button type="primary"
+                class="ml10"
+                @click="refundAll"
                 :disabled="isAllRefund">全部退款
         </Button>
       </h2>
       <Table :columns="columns4" :data="data4" :border="true"></Table>
       </Col>
     </Row>
+    <Row class="mb20">
+      <Col span="24">
+      <h2 class="mb10">配送信息</h2>
+      <Table :columns="columns2" :data="data2" :border="true"></Table>
+      </Col>
+    </Row>
+    <Modal v-model="refundModal"
+           width="400">
+      <h3 slot="header" class="vm-textCenter" v-if="foodId">确定退还此商品金额？</h3>
+      <h3 slot="header" class="vm-textCenter" v-else>确定退还此订单金额？</h3>
+      <Input v-model="refundDec"
+             type="textarea" :autosize="{minRows: 5,maxRows: 5}"
+             :autofocus="true"
+             placeholder="请输入备注信息(字数不得超过50字)"></Input>
+      <div slot="footer">
+        <Button type="text" size="large" @click.stop="clearRefundDec">取消</Button>
+        <Button type="primary" size="large" @click.stop="confirmRefundDec">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -44,18 +59,46 @@
   import * as time from '@/until/time'
 
   export default {
-    data () {
+    data() {
       return {
-        orderId: (() => {
+        orderId: (() => {  // 订单ID
           return this.$route.params.id
         })(),
         options: (() => {
           return this.$route.query.options
         })(),
+        foodId: null, // 商品ID
+        refundModal: false, // 退款弹窗
+        refundDec: '',  // 退款备注
         columns1: [
           {
             title: '订单编号',
             key: 'orderId',
+            align: 'center'
+          },
+          {
+            title: '用户ID',
+            key: 'mcCustomerId',
+            align: 'center'
+          },
+          {
+            title: '订单状态',
+            key: 'statusChinese',
+            align: 'center'
+          },
+          {
+            title: '配送方式',
+            key: 'deliveryModeName',
+            align: 'center'
+          },
+          {
+            title: '商品缺货时',
+            key: 'onOutName',
+            align: 'center'
+          },
+          {
+            title: '期待送达时间',
+            key: 'deliveryDate',
             align: 'center'
           },
           {
@@ -78,30 +121,40 @@
           },
           {
             title: '收货地址',
-            key: 'address',
+            key: 'addressEnd',
             align: 'center'
           },
           {
-            title: '收货时间段',
-            key: 'deliveryZone',
-            align: 'center'
-          },
-          {
-            title: '收货方式',
-            key: 'deliveryMode',
+            title: '备注',
+            key: 'remark',
             align: 'center'
           }
         ],
         columns2: [
           {
-            title: '配送员ID',
-            key: 'psDeliverId',
+            title: '运单编号',
+            key: 'coExpressId',
+            align: 'center'
+          },
+          /*
+          {
+            title: '配送方式',
+            key: '',
             align: 'center'
           },
           {
-            title: '配送员姓名',
-            key: 'name',
+            title: '配送状态',
+            key: '',
             align: 'center'
+          },
+          */
+          {
+            title: '接单时间',
+            key: 'orderTime',
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.startTime)
+            }
           },
           {
             title: '取货时间',
@@ -118,6 +171,31 @@
             render: (h, params) => {
               return time.formatDateTime(params.row.endTime)
             }
+          },
+          {
+            title: '配送时效(分钟)',
+            key: 'deliveryTime',
+            align: 'center'
+          },
+          {
+            title: '配送员工号',
+            key: 'psDeliverId',
+            align: 'center'
+          },
+          {
+            title: '配送员姓名',
+            key: 'name',
+            align: 'center'
+          },
+          {
+            title: '所属市场',
+            key: 'psMarketName',
+            align: 'center'
+          },
+          {
+            title: '异常原因',
+            key: 'exceptionReason',
+            align: 'center'
           }
         ],
         columns3: [
@@ -148,50 +226,82 @@
               return ('span', '¥' + text)
             }
           },
-//          {
-//            title: '优惠券',
-//            key: 'coupon',
-//            align: 'center'
-//          },
           {
-            title: '实际金额',
+            title: '优惠券',
+            key: 'coupon',
+            align: 'center'
+          },
+          {
+            title: '实际支付金额',
             key: 'realPayAmount',
             align: 'center',
             render: (h, params) => {
               let text = params.row.realPayAmount / 100
               return ('span', '¥' + text)
             }
+          },
+          {
+            title: '支付时间',
+            key: 'payTime',
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.payTime)
+            }
+          },
+          {
+            title: '支付方式',
+            key: 'payWay',
+            align: 'center'
           }
         ],
         columns4: [
           {
-            title: '商户名称',
+            title: '流水号',
+            key: 'subFlowId',
+            align: 'center'
+          },
+          {
+            title: '交易号',
+            key: 'coSubOrderId',
+            align: 'center'
+          },
+          {
+            title: '接单时间',
+            key: 'orderTime',
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.orderTime)
+            }
+          },
+          {
+            title: '备货完成(召唤骑手)时间',
+            key: 'finishTheTime',
+            align: 'center',
+            render: (h, params) => {
+              return time.formatDateTime(params.row.finishTheTime)
+            }
+          },
+          {
+            title: '是否缺货',
+            key: 'status',
+            align: 'center',
+            render: (h, params) => {
+              return params.status === 0 ? '否' : '是'
+            }
+          },
+          {
+            title: '档口名称',
             key: 'shopName',
             align: 'center'
           },
-//          {
-//            title: '交易号',
-//            key: 'transactionNumber',
-//            align: 'center'
-//          },
+          {
+            title: '档口号',
+            key: 'msShopId',
+            align: 'center'
+          },
           {
             title: '商品名称',
             key: 'productName',
-            align: 'center'
-          },
-          {
-            title: '数量',
-            key: 'unit',
-            align: 'center'
-          },
-          {
-            title: '规格',
-            key: 'names',
-            align: 'center'
-          },
-          {
-            title: '属性',
-            key: 'productProperty',
             align: 'center'
           },
           {
@@ -200,8 +310,13 @@
             align: 'center',
             render: (h, params) => {
               let text = params.row.price / 100
-              return ('span', '¥' + text)
+              return ('¥' + text)
             }
+          },
+          {
+            title: '数量',
+            key: 'unit',
+            align: 'center'
           },
           {
             title: '小计',
@@ -209,7 +324,25 @@
             align: 'center',
             render: (h, params) => {
               let text = params.row.amount / 100
-              return ('span', '¥' + text)
+              return ('¥' + text)
+            }
+          },
+          {
+            title: '分摊优惠',
+            key: 'discountsAmount',
+            align: 'center',
+            render: (h, params) => {
+              let text = params.row.discountsAmount / 100
+              return ('¥' + text)
+            }
+          },
+          {
+            title: '实际结算',
+            key: 'realPayAmount',
+            align: 'center',
+            render: (h, params) => {
+              let text = params.row.realPayAmount / 100
+              return ('¥' + text)
             }
           },
           {
@@ -233,11 +366,15 @@
                   },
                   on: {
                     click: () => {
+                      console.log(foodId)
+//                      this.foodId = foodId
+//                      this.refundModal = true
+
                       let _this = this // 这里有个bug this指向重新来
                       this.$Modal.confirm({
                         content: '确定退还此商品金额？',
                         // loading: true,
-                        onOk () {
+                        onOk() {
                           // api 操作
                           api.putRefundOrder(foodId).then((res) => {
                             if (res) {
@@ -253,18 +390,19 @@
                       })
                     }
                   }
-                }, isRefunded === false ? '退款' : params.row.statusName)
+                }, isRefunded === false ? '退款' : '已退款')
               ])
             }
           },
           {
-            title: '退款金额',
-            key: 'refundAmount',
-            align: 'center',
-            render: (h, params) => {
-              let text = params.row.refundAmount / 100
-              return ('span', '¥' + text)
-            }
+            title: '退款方式',
+            key: 'refundedWay',
+            align: 'center'
+          },
+          {
+            title: '备注信息',
+            key: 'subject',
+            align: 'center'
           },
           {
             title: '退款时间',
@@ -275,7 +413,18 @@
             }
           },
           {
-            title: '退款方式',
+            title: '退款金额',
+            key: 'refundAmount',
+            align: 'center',
+            render: (h, params) => {
+              if (params.row.refundAmount) {
+                let text = params.row.refundAmount / 100
+                return ('¥' + text)
+              }
+            }
+          },
+          {
+            title: '退款渠道',
             key: 'payWay',
             align: 'center'
           }
@@ -287,12 +436,12 @@
         isAllRefund: false
       }
     },
-    created () {
+    created() {
       this.getOrderDetails()
       this.hiddenOptions()
     },
     watch: {
-      data4 (newValue, oldValue) {
+      data4(newValue, oldValue) {
         let map = []
         newValue.forEach((item, index) => {
           map[index] = item.isRefunded
@@ -305,11 +454,26 @@
       }
     },
     methods: {
-      refundAll () {
+      // 确定退款
+      confirmRefundDec() {
+        // 商品退款
+        if (this.foodId) {
+          // 订单退款
+        } else {
+
+        }
+      },
+      // 关闭退款填写备注弹窗
+      clearRefundDec() {
+        this.refundModal = false
+        this.foodId = ''
+        this.refundDec = ''
+      },
+      refundAll() {
         let that = this
         this.$Modal.confirm({
           content: '确定退还此订单金额？',
-          onOk () {
+          onOk() {
             // api 操作
             api.putRefundOrderAll(that.orderId).then((res) => {
               if (res) {
@@ -324,16 +488,16 @@
           }
         })
       },
-      close () {
+      close() {
         this.$router.back()
       },
-      getOrderDetails () {
+      getOrderDetails() {
         api.getOrderInfo(this.orderId).then((res) => {
           if (res) {
-            console.log(res.dealInfoList)
+            console.log(res)
             this.data4 = res.dealInfoList
-            if (res.orderInfo) {
-              this.data1 = Array.of(res.orderInfo)
+            if (res.coOrder) {
+              this.data1 = Array.of(res.coOrder)
             }
             if (res.deliverInfo) {
               this.data2 = Array.of(res.deliverInfo)
@@ -344,7 +508,7 @@
           }
         })
       },
-      hiddenOptions () {
+      hiddenOptions() {
         if (this.options === 'see') {
           this.columns4.splice(this.columns4.length - 4, 1)
         }
