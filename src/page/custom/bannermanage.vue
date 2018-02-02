@@ -127,11 +127,10 @@
 <script type="text/ecmascript-6">
 import * as http from 'api/common'
 import * as upload from 'components/upload-pic'
-import draggable from 'vuedraggable'
 
 export default {
   name: 'bannerManage',
-  components: { draggable },
+  components: {},
   data() {
     return {
       routeIndex: 1, //  路由名
