@@ -229,7 +229,7 @@ export default {
       }:${this.date.minute >= 10 ? this.date.minute : '0' + this.date.minute}`
       http.addMessage(this.params).then(response => {
         Object.keys(this.params).map(item => {
-          if (item === 'msgType' && item === 'msgType') {
+          if (item === 'msgType' && item === 'pushType') {
             this.params[item] = ''
           }
         })
