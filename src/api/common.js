@@ -428,7 +428,7 @@ export const modifyProductTemplate = (params, templateId) => {
   return ax.u(`product/template/${templateId}`, params)
 }
 // 删除模板
-export const delTemplate = (templateId) => {
+export const delTemplate = templateId => {
   return ax.d(`/product/template/${templateId}`)
 }
 // 获取系统参数列表
@@ -485,8 +485,8 @@ export const addUpdataBanner = params => {
 }
 
 // 已开始 结束banner
-export const endBanner = Id => {
-  return ax.u(`/activity/banner/${Id}`)
+export const endBanner = params => {
+  return ax.pa('/activity/banner/', params)
 }
 
 // 未开始 删除banner
@@ -812,6 +812,46 @@ export const getproductList = (pageNo, params) => {
 // 积分商城商品管理
 export const getCategoryList = () => {
   return ax.g(`/integralMall/category/list`)
+}
+// 积分商城商品上、下架
+export const integralMall = params => {
+  return ax.pa(`/integralMall/product`, params)
+}
+// 获取积分商城商品信息
+export const productinfo = jfProductId => {
+  return ax.g(`/integralMall/product/${jfProductId}`)
+}
+// 获取积分商城商品增加，编辑
+export const editProduct = params => {
+  return ax.p(`/integralMall/product`, params)
+}
+// 积分商城分类增加，编辑
+export const editCategory = params => {
+  return ax.p(`/integralMall/category`, params)
+}
+// 删除类目
+export const delCategory = jfCategoryId => {
+  return ax.d(`/integralMall/category/${jfCategoryId}`)
+}
+
+/**
+ * @author: Zeng Fanlu
+ * startTIme: 2018/2/01
+ */
+
+// 积分商城列表
+export const shoppingBannerList = (pageNo, params) => {
+  return ax.g(`/integralMall/banner/list/${pageNo}`, params)
+}
+
+// 终止banner
+export const shoppingEndBanner = params => {
+  return ax.pa('/integralMall/banner', params)
+}
+
+// 保存修改
+export const shoppingSaveBanner = params => {
+  return ax.p('/integralMall/banner', params)
 }
 
 /**

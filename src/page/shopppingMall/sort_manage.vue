@@ -15,32 +15,33 @@
     <section class="page">
       <Page :total="total" show-total :page-size="pageSize" @on-change="changepage"></Page>
     </section> -->
-     <Modal v-model="addModal" :title="modalTitle" :mask-closable="false">
+     <Modal v-model="addModal" :title="modalTitle" :mask-closable="false" @on-ok="add">
        <Form :model="formItem" :label-width="80">
         <FormItem label="分类名称:">
-            <Input v-model="formItem.jfProductId" style="width:200px" placeholder="Enter something..." ></Input>
+            <Input v-model="formItem.categoryName" style="width:200px" placeholder="Enter something..." ></Input>
         </FormItem> 
         <FormItem label="分类ICON:">
-          <div class="img vm-fl"  v-for="(url,index) in formItem.mainPic" :key="index">
-                <img :src="url" alt="">
-                <div class="cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView(url)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="mainPicRemove(index)"></Icon>
-                </div>
-              </div>
-              <div class="uploadButton">
-                <input type="file" @change="mainPicUpload" accept="image/*">+
-              </div>
+          <div class="img vm-fl" >
+            <img :src="formItem.iconUrl" alt="" >
+            <div class="cover">
+                  <Icon type="ios-eye-outline" @click.native="handleView(formItem.iconUrl)"></Icon>
+            </div>
+          </div>
+          <div class="uploadButton">
+            <input type="file" @change="iconUrlUpload" accept="image/*">+
+          </div>
         </FormItem>
     </Form>
     </Modal>
-     <Modal v-model="promptModal" :mask-closable="false">
-      <h2>确定将产品</span></h2>
+     <Modal v-model="promptModal" title="删除" :mask-closable="false" @on-ok="delCategory">
+      <h2>确定删除产品？</h2>
     </Modal>
   </div>
 </template>
 <script>
+import tableImg from '../seller/sellercomponents/tableimage'
 import * as api from 'api/common.js'
+import { uploadpic } from '../../components/upload-pic'
 export default {
   components: {},
   props: {},
@@ -49,7 +50,11 @@ export default {
       addModal: false,
       promptModal: false,
       modalTitle: '增加',
-      formItem: {},
+      formItem: {
+        jfCategoryId: null,
+        iconUrl: '',
+        categoryName: ''
+      },
       columns: [
         {
           title: '分类名称',
@@ -59,7 +64,16 @@ export default {
         {
           title: '分类ICON',
           key: 'iconUrl',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h(tableImg, {
+                props: {
+                  picUrls: params.row.iconUrl
+                }
+              })
+            ])
+          }
         },
         {
           title: '操作',
@@ -81,6 +95,7 @@ export default {
                     click: () => {
                       this.addModal = true
                       this.modalTitle = '编辑'
+                      this.formItem = params.row
                     }
                   }
                 },
@@ -100,6 +115,7 @@ export default {
                   on: {
                     click: () => {
                       this.promptModal = true
+                      this.formItem.jfCategoryId = params.row.jfCategoryId
                     }
                   }
                 },
@@ -113,9 +129,7 @@ export default {
     }
   },
   created() {
-    api.getCategoryList().then(res => {
-      this.Data = res
-    })
+    this.getCategoryList()
   },
   mounted() {},
   methods: {
@@ -123,8 +137,42 @@ export default {
     addSort() {
       this.modalTitle = '增加'
       this.addModal = true
+      this.formItem = {
+        jfProductId: '',
+        iconUrl: ''
+      }
     },
-    mainPicUpload() {}
+    getCategoryList() {
+      api.getCategoryList().then(res => {
+        this.Data = res
+      })
+    },
+    iconUrlUpload(e) {
+      var file = e.target.files[0]
+      uploadpic(file).then(res => {
+        if (res) {
+          this.formItem.iconUrl = res[0].indexOf('?')
+            ? res[0].split('?')[0]
+            : res[0]
+        }
+      })
+    },
+    // 添加或修改
+    add() {
+      api.editCategory(this.formItem).then(res => {
+        if (res === true) {
+          this.$Message.success('更新成功')
+          this.getCategoryList()
+        }
+      })
+    },
+    // 删除类目
+    delCategory() {
+      api.delCategory(this.formItem.jfCategoryId).then(res => {
+        this.$Message.error('删除成功')
+        this.getCategoryList()
+      })
+    }
   },
   filfter: {},
   computed: {},
@@ -157,5 +205,38 @@ input[type='file'] {
   display: inline-block;
   *display: inline;
   *zoom: 1;
+}
+.img {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 3px;
+}
+.img img {
+  width: 100%;
+  height: 100%;
+}
+/* 图片的遮罩层 */
+.cover {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+.img:hover .cover {
+  display: block;
+  width: 80px;
+  height: 80px;
+  text-align: center;
+}
+.cover i {
+  color: #fff;
+  font-size: 30px;
+  cursor: pointer;
+  margin: 0 2px;
+  line-height: 80px;
 }
 </style>

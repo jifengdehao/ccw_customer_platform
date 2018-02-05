@@ -8,10 +8,10 @@
   <div class="evaluation-tag-manager" v-if="data">
     <Tabs @on-click="chooseTab">
         <TabPane label="配送评价"></TabPane>
-        <TabPane label="档口评价"></TabPane>
+        <!-- <TabPane label="档口评价"></TabPane> -->
     </Tabs>
     <div class="first-tag tag-box">
-      <h3>一级标签
+      <h3>不满意
         <Button class="right" type="primary" @click="addTags('1')">新增</Button>
       </h3>
       <div class="tag-content">
@@ -25,7 +25,7 @@
       </div>
     </div>
   
-    <div class="second-tag tag-box">
+    <!-- <div class="second-tag tag-box">
       <h3>二级标签
         <Button class="right" type="primary" @click="addTags('2')">新增</Button>
       </h3>
@@ -38,9 +38,9 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
   
-    <div class="third-tag tag-box">
+    <!-- <div class="third-tag tag-box">
       <h3>三级标签
         <Button class="right" type="primary" @click="addTags('3')">新增</Button>
       </h3>
@@ -53,9 +53,9 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
 
-    <div class="four-tag tag-box">
+    <!-- <div class="four-tag tag-box">
       <h3>四级标签
         <Button class="right" type="primary" @click="addTags('4')">新增</Button>
       </h3>
@@ -68,10 +68,10 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
 
     <div class="five-tag tag-box">
-      <h3>五级标签
+      <h3>满意
         <Button class="right" type="primary" @click="addTags('5')">新增</Button>
       </h3>
       <div class="tag-content">
@@ -340,4 +340,3 @@ export default {
   background-color: #f1f1f1;
 }
 </style>
-
