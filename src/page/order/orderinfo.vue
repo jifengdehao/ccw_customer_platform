@@ -26,8 +26,8 @@
       <h2 class="vm-clearfix mb10">交易信息
         <Button type="primary"
                 class="ml10"
-                @click="refundAll"
-                :disabled="isAllRefund">全部退款
+                @click="refundModal=true"
+                :disabled="fullRefund === 0 ? false : true">全部退款
         </Button>
       </h2>
       <Table :columns="columns4" :data="data4" :border="true"></Table>
@@ -64,12 +64,10 @@
         orderId: (() => {  // 订单ID
           return this.$route.params.id
         })(),
-        options: (() => {
-          return this.$route.query.options
-        })(),
         foodId: null, // 商品ID
         refundModal: false, // 退款弹窗
         refundDec: '',  // 退款备注
+        fullRefund: 1, // 全部退款 0 是可以全部退款 1 不可以全部退款
         columns1: [
           {
             title: '订单编号',
@@ -352,46 +350,29 @@
             render: (h, params) => {
               let foodId = params.row.coOrderDetailId
               let isRefunded = params.row.isRefunded
-              if (isRefunded === 0) {
-                isRefunded = false
-              } else if (isRefunded === 1) {
-                isRefunded = true
-              }
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'error',
-                    size: 'small',
-                    disabled: isRefunded
-                  },
-                  on: {
-                    click: () => {
-                      console.log(foodId)
-//                      this.foodId = foodId
-//                      this.refundModal = true
-
-                      let _this = this // 这里有个bug this指向重新来
-                      this.$Modal.confirm({
-                        content: '确定退还此商品金额？',
-                        // loading: true,
-                        onOk() {
-                          // api 操作
-                          api.putRefundOrder(foodId).then((res) => {
-                            if (res) {
-                              _this.getOrderDetails()
-                              _this.$Modal.remove()
-                            } else {
-                              _this.$Notice.error({
-                                title: '退款失败'
-                              })
-                            }
-                          })
-                        }
-                      })
+              if (isRefunded !== -1) {
+                if (isRefunded === 0) {
+                  isRefunded = false
+                } else if (isRefunded === 1) {
+                  isRefunded = true
+                }
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'error',
+                      size: 'small',
+                      disabled: isRefunded
+                    },
+                    on: {
+                      click: () => {
+                        console.log(foodId)
+                        this.foodId = foodId
+                        this.refundModal = true
+                      }
                     }
-                  }
-                }, isRefunded === false ? '退款' : '已退款')
-              ])
+                  }, isRefunded === false ? '退款' : params.row.statusName)
+                ])
+              }
             }
           },
           {
@@ -432,35 +413,41 @@
         data1: [],
         data2: [],
         data3: [],
-        data4: [],
-        isAllRefund: false
+        data4: []
       }
     },
     created() {
       this.getOrderDetails()
-      this.hiddenOptions()
-    },
-    watch: {
-      data4(newValue, oldValue) {
-        let map = []
-        newValue.forEach((item, index) => {
-          map[index] = item.isRefunded
-        })
-        if (map.indexOf(0) > -1) {
-          this.isAllRefund = false
-        } else {
-          this.isAllRefund = true
-        }
-      }
     },
     methods: {
       // 确定退款
       confirmRefundDec() {
         // 商品退款
         if (this.foodId) {
+          let params = {
+            id: this.foodId,
+            reason: this.refundDec
+          }
+          api.putRefundOrder(params).then((res) => {
+            if (res) {
+              console.log(res)
+              this.clearRefundDec()
+              this.getOrderDetails()
+            }
+          })
           // 订单退款
         } else {
-
+          let params = {
+            id: this.orderId,
+            reason: this.refundDec
+          }
+          api.putRefundOrderAll(params).then((res) => {
+            if (res) {
+              console.log(res)
+              this.clearRefundDec()
+              this.getOrderDetails()
+            }
+          })
         }
       },
       // 关闭退款填写备注弹窗
@@ -469,49 +456,30 @@
         this.foodId = ''
         this.refundDec = ''
       },
-      refundAll() {
-        let that = this
-        this.$Modal.confirm({
-          content: '确定退还此订单金额？',
-          onOk() {
-            // api 操作
-            api.putRefundOrderAll(that.orderId).then((res) => {
-              if (res) {
-                console.log(res)
-                that.getOrderDetails()
-              } else {
-                that.$Notice.error({
-                  title: '退款失败'
-                })
-              }
-            })
-          }
-        })
-      },
+      // 关闭详情
       close() {
         this.$router.back()
       },
+      // 获取订单详情
       getOrderDetails() {
         api.getOrderInfo(this.orderId).then((res) => {
           if (res) {
             console.log(res)
             this.data4 = res.dealInfoList
-            if (res.coOrder) {
+            if (res.fullRefund !== null) {
+              this.fullRefund = res.fullRefund
+            }
+            if (res.coOrder !== null) {
               this.data1 = Array.of(res.coOrder)
             }
-            if (res.deliverInfo) {
+            if (res.deliverInfo !== null) {
               this.data2 = Array.of(res.deliverInfo)
             }
-            if (res.paymentInfo) {
+            if (res.paymentInfo !== null) {
               this.data3 = Array.of(res.paymentInfo)
             }
           }
         })
-      },
-      hiddenOptions() {
-        if (this.options === 'see') {
-          this.columns4.splice(this.columns4.length - 4, 1)
-        }
       }
     }
   }

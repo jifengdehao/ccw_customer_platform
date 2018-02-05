@@ -382,9 +382,15 @@ const sortManage = resolve => {
     resolve(module)
   })
 }
-// 积分商城-分类管理
-const orderManage = resolve => {
+// 积分商城-订单管理
+const ShopppingMalOrder = resolve => {
   import('page/shopppingMall/order_manage').then(module => {
+    resolve(module)
+  })
+}
+// 积分商城-订单详情
+const ShopppingMalOrderDetails = resolve => {
+  import('page/shopppingMall/order_details').then(module => {
     resolve(module)
   })
 }
@@ -567,7 +573,8 @@ export default [
           {path: 'banner_manage', component: bannerManage},
           {path: 'product_manage', component: productManage},
           {path: 'sort_manage', component: sortManage},
-          {path: 'order_manage', component: orderManage}
+          {path: 'order_manage', component: ShopppingMalOrder},
+          {path: 'orderDetails/:id', component: ShopppingMalOrderDetails}
         ]
       }
     ]

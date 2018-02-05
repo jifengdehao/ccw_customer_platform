@@ -8,17 +8,17 @@
   <div class="feedback">
     <Form inline label-position="left">
       <FormItem>
-        <Input type="text" v-model="seek" placeholder="用户ID/用户昵称" style="width: 200px"></Input>
+        <Input type="text" v-model.tirm="seek" placeholder="请输入你的手机号"></Input>
       </FormItem>
       <FormItem>
-        <Button type="primary" @click="handleSubmit()">搜索</Button>
+        <Button type="primary" @click="handleSubmit">搜索</Button>
       </FormItem>
     </Form>
     <Row>
       <Col span="24">
       <Tabs :value="this.types" :animated="false" @on-click="selectTab">
         <Tab-pane label="商户端" name="0">
-          <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToFeedbackDetails"></Table>
+          <Table :columns="columns" :data="data" :loading="loading"></Table>
           <Page :total="tableTotal"
                 :current="curr"
                 :page-size="pageNum"
@@ -28,7 +28,7 @@
           </Page>
         </Tab-pane>
         <Tab-pane label="用户端" name="1">
-          <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToFeedbackDetails"></Table>
+          <Table :columns="columns" :data="data" :loading="loading"></Table>
           <Page :total="tableTotal"
                 :current="curr"
                 :page-size="pageNum"
@@ -38,7 +38,7 @@
           </Page>
         </Tab-pane>
         <Tab-pane label="配送端" name="2">
-          <Table :columns="columns" :data="data" :loading="loading" @on-row-dblclick="goToFeedbackDetails"></Table>
+          <Table :columns="columns" :data="data" :loading="loading"></Table>
           <Page :total="tableTotal"
                 :current="curr"
                 :page-size="pageNum"
@@ -89,8 +89,13 @@
             align: 'center'
           },
           {
-            title: '用户昵称',
+            title: '用户名',
             key: 'creatorName',
+            align: 'center'
+          },
+          {
+            title: '手机号',
+            key: 'mobileno',
             align: 'center'
           },
           {
@@ -111,6 +116,40 @@
             align: 'center',
             render: (h, params) => {
               return time.formatDateTime(params.row.createdDt)
+            }
+          },
+          {
+            title: '反馈图片',
+            key: 'noPicture',
+            align: 'center',
+            render: (h, params) => {
+              let noPicture = params.row.noPicture
+              if (noPicture) {
+                return h('span', '有')
+              } else {
+                return h('span', '无')
+              }
+            }
+          },
+          {
+            title: '操作',
+            key: 'options',
+            align: 'center',
+            render: (h, params) => {
+              let id = params.row.pt_feedback_id
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.$router.push('/order/feedbackInfo/' + id)
+                    }
+                  }
+                }, '查看')
+              ])
             }
           }
         ],
@@ -152,10 +191,6 @@
           })
         }
       },
-      // 查看详情
-      goToFeedbackDetails (params, index) {
-        this.$router.push('/order/feedbackInfo/' + params.pt_feedback_id)
-      },
       getFeedbackListData () {
         let params = {
           pageSize: this.pageNum,
@@ -164,7 +199,6 @@
         }
         api.getFeedBackList(params, this.curr).then((res) => {
           if (res) {
-            console.log(res);
             this.tableTotal = res.total
             this.data = res.records
             this.loading = false

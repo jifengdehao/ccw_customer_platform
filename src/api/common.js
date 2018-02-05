@@ -174,18 +174,18 @@ export const getOrderInfo = params => {
 }
 /**
  * 子订单退款
- * @param params => {coOrderDetailId}
+ * @param params
  */
 
 export const putRefundOrder = params => {
-  return ax.u(`/order/order/refund/${params}`)
+  return ax.pa('/order/order/refund', params)
 }
 /**
  * 订单全部退款
- * @param params =>{orderId}
+ * @param params
  */
 export const putRefundOrderAll = params => {
-  return ax.u(`/order/order/refund/all/${params}`)
+  return ax.pa('/order/order/refund/all', params)
 }
 
 /**
@@ -212,6 +212,14 @@ export const getOrderSw = params => {
 export const postOrderSw = params => {
   return ax.u('/order/remark/hidden', params)
 }
+
+/**
+ * 获取订单评价列表
+ */
+export const getOrderEvalList = (pageNo, params) => {
+  return ax.g(`/order/appraise/list/${pageNo}`, params)
+}
+
 /**
  * 导出评价列表
  * @param params =>{startTime,endTime,mobileno,types}
@@ -804,4 +812,34 @@ export const getproductList = (pageNo, params) => {
 // 积分商城商品管理
 export const getCategoryList = () => {
   return ax.g(`/integralMall/category/list`)
+}
+
+/**
+ * 2018/1/31
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com
+ * 功能模块: 获取积分商城订单列表
+ */
+export const getIntegralMallOrder = (pageNo, params) => {
+  return ax.g(`/integralMall/order/list/${pageNo}`, params)
+}
+
+/**
+ * 2018/1/31
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com
+ * 功能模块: 获取积分商城订单详情
+ */
+export const getIntegralMallOrderDetails = id => {
+  return ax.g(`/integralMall/order/${id}`)
+}
+
+/**
+ * 2018/2/5
+ * author: zhangwenlong
+ * email: zhangwenlong@ccw163.com   params.type ==>{1-出库，2-出库完成，3-取消订单}
+ * 功能模块: 积分商城订单可进行操作出库、出库完成和取消订单
+ */
+export const patchIntegralMallOrder = params => {
+  return ax.pa('/integralMall/order', params)
 }
