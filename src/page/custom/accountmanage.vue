@@ -37,7 +37,7 @@
         </select>
       </p>
       <p>
-        <textarea v-model="changeStatus.freezeReason" maxlength="50" style="width:200px" placeholder="请输入备注信息(字数不得超过50字)"></textarea>
+        <textarea v-model="changeStatus.freezeReason" maxlength="50" style="width:200px;resize:none" placeholder="请输入备注信息(字数不得超过50字)"></textarea>
       </p>
       <p>温馨提醒：如若误操作可在封停用</p>
     </Modal>
@@ -160,7 +160,8 @@ export default {
                     size: 'small'
                   },
                   on: {
-                    click: () => {
+                    click: e => {
+                      e.cancelBubble = true
                       if (params.row.status === 1) {
                         this.modalBoolean = true
                         this.singleData = params.row
