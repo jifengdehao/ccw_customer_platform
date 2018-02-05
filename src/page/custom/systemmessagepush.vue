@@ -22,7 +22,7 @@
           <TabPane label="已推送"></TabPane>
         </Tabs>
         <Button type="primary" style="position:absolute;top:0;right:0;" @click="addMessage">新增推送</Button>
-        <Table border stripe :columns="messageTitle" :data="messageData.records"></Table>
+        <Table border stripe :columns="messageTitle" :data="messageData.records" @on-row-click="lookMessage"></Table>
         <Page :total="messageData.total" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
       </div>
   </div>
@@ -39,7 +39,10 @@ export default {
         {
           title: '创建时间',
           key: 'createdAt',
-          align: 'center'
+          align: 'center',
+          render: (h, params) => {
+            return h('div', this.filterTime(params.row.createdAt))
+          }
         },
         {
           title: '标题',
@@ -55,6 +58,7 @@ export default {
           title: '推送时间',
           key: 'pushTime',
           align: 'center',
+          sortable: true,
           render: (h, params) => {
             return h('span', this.filterTime(params.row.pushTime))
           }
@@ -153,6 +157,26 @@ export default {
           break
         case 5:
           this.$router.push({ path: 'app_notice_push/addmessage' })
+          break
+      }
+    },
+    //  查看消息
+    lookMessage(value) {
+      switch (this.params.msgType) {
+        //  2系统 3是活动 4菜谱 5应用
+        case 2:
+          this.$router.push({ path: `system_message_push/${value.smMssageId}` })
+          break
+        case 3:
+          this.$router.push({
+            path: `activity_message_push/${value.smMssageId}`
+          })
+          break
+        case 4:
+          this.$router.push({ path: `daily_menu_push/${value.smMssageId}` })
+          break
+        case 5:
+          this.$router.push({ path: `app_notice_push/${value.smMssageId}` })
           break
       }
     },

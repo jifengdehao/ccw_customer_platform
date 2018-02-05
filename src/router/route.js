@@ -463,15 +463,25 @@ export default [
           { path: 'account_detail/:id', component: AccountDetail },
           { path: 'system_message_push', component: SystemMessagePush },
           { path: 'system_message_push/addmessage', component: AddMessagePush },
+          {
+            path: 'system_message_push/:id',
+            component: AddMessagePush
+          },
           { path: 'activity_message_push', component: SystemMessagePush },
           {
             path: 'activity_message_push/addmessage',
             component: AddMessagePush
           },
+          {
+            path: 'activity_message_push/:id',
+            component: AddMessagePush
+          },
           { path: 'daily_menu_push', component: SystemMessagePush },
           { path: 'daily_menu_push/addmessage', component: AddMessagePush },
+          { path: 'daily_menu_push/:id', component: AddMessagePush },
           { path: 'app_notice_push', component: SystemMessagePush },
           { path: 'app_notice_push/addmessage', component: AddMessagePush },
+          { path: 'app_notice_push/:id', component: AddMessagePush },
           { path: 'banner_manage', component: BannerManage },
           { path: 'market_push', component: BannerManage },
           { path: 'start_price_see', component: StartPriceSee },

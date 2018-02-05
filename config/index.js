@@ -21,7 +21,7 @@ module.exports = {
     bundleAnalyzerReport: process.env.npm_config_report
   },
   internal: {
-    env: require('./prod.env'),
+    env: require('./internal.env'),
     index: path.resolve(__dirname, '../test/index.html'),
     assetsRoot: path.resolve(__dirname, '../test'),
     assetsSubDirectory: 'static',

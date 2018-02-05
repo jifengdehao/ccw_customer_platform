@@ -12,32 +12,32 @@
     </div>
     <div class="line-box">
       <label for="">标题</label>
-      <Input style="width:200px;" placeholder="请输入标题" :maxlength="50" v-model="params.title"></Input>
+      <Input :disabled="isDisabled" style="width:200px;" placeholder="请输入标题" :maxlength="50" v-model="params.title"></Input>
     </div>
     <div class="line-box">
       <label for="">推送时间</label>
-      <Select style="width:100px;margin-right:10px;" v-model="params.pushType">
+      <Select style="width:100px;margin-right:10px;" v-model="params.pushType" :disabled="isDisabled">
         <Option value="1" >立即推送</Option>
         <Option value="2" >定时推送</Option>
       </Select>
-      <Select style="width:70px;" v-model="date.year" @on-change="changeDays">
+      <Select style="width:70px;" v-model="date.year" @on-change="changeDays" :disabled="isDisabled">
         <Option value="2018" >2018</Option>
         <Option value="2019" >2019</Option>
       </Select>
       <span>年</span>
-      <Select style="width:70px;" v-model="date.month"  @on-change="changeDays">
+      <Select style="width:70px;" v-model="date.month"  @on-change="changeDays" :disabled="isDisabled">
         <Option v-for="(month,index) in date.months" :value="month" :key="index">{{ month >= 10 ? month : '0'+month }}</Option>
       </Select>
       <span>月</span>
-      <Select style="width:70px" :disabled="date.days <= 0" v-model="date.day">
+      <Select style="width:70px" v-model="date.day">
         <Option v-for="(day,index) in date.days" :value="day" :key="index">{{ day >= 10 ? day : '0'+day }}</Option>
       </Select>
       <span>日</span>
-      <Select style="width:70px" v-model="date.hour">
+      <Select style="width:70px" v-model="date.hour" :disabled="isDisabled">
         <Option v-for="(hour,index) in date.hours" :value="hour" :key="index">{{ hour >= 10 ? hour : '0'+hour }}</Option>
       </Select>
       <span>时</span>
-      <Select style="width:70px" v-model="date.minute">
+      <Select style="width:70px" v-model="date.minute" :disabled="isDisabled">
         <Option v-for="(minute,index) in date.minutes" :value="minute" :key="index">{{ minute >= 10 ? minute : '0'+minute }}</Option>
       </Select>
       <span>分</span>
@@ -46,25 +46,25 @@
     <!-- 活动链接 -->
     <div class="line-box" v-if="index === 1">
       <label for="">活动链接</label>
-      <Input style="width:200px;" placeholder="请输入活动链接" :maxlength="50" v-model="params.actUrl"></Input>
+      <Input style="width:200px;" placeholder="请输入活动链接" :maxlength="50" v-model="params.actUrl" :disabled="isDisabled"></Input>
     </div>
 
     <!-- 活动消息 -->
     <div class="line-box" v-if="index !== 2">
       <label style="float:left;margin-right:24px;" for="">消息内容</label>
-      <textarea style="float:left" placeholder="请输入要推送的系统消息内容" maxlength="100" v-model="params.content"></textarea>
+      <textarea style="float:left" placeholder="请输入要推送的系统消息内容" :disabled="isDisabled" maxlength="100" v-model="params.content"></textarea>
     </div>
 
     <!-- 食材 -->
     <div class="line-box" v-if="index === 2">
       <label for="">食材</label>
-      <Input style="width:200px;" placeholder="请输入食材" :maxlength="100" v-model="params.ingredient"></Input>
+      <Input style="width:200px;" :disabled="isDisabled" placeholder="请输入食材" :maxlength="100" v-model="params.ingredient"></Input>
     </div>
 
     <!-- 烹饪方法 -->
     <div class="line-box" v-if="index === 2">
       <label style="float:left;margin-right:24px;" for="">烹饪方法</label>
-      <textarea style="float:left" placeholder="请输入要推送的烹饪方法" maxlength="200" v-model="params.cookStep"></textarea>
+      <textarea style="float:left" :disabled="isDisabled" placeholder="请输入要推送的烹饪方法" maxlength="200" v-model="params.cookStep"></textarea>
     </div>
 
     <!-- 活动图片 -->
@@ -75,11 +75,11 @@
           <img style="display:inline-block;width:100px;margin-right:10px;" :src="params.picUrl">
           <span class="close" @click="closeImg">x</span>
         </div>
-        <button class="add-btn" v-if="!params.picUrl" @click="addImg">+</button>
+        <button :disabled="isDisabled" class="add-btn" v-if="!params.picUrl" @click="addImg">+</button>
       </div>
     </div>
 
-    <div class="line-box" style="text-indent:180px;">
+    <div class="line-box" style="text-indent:180px;" v-if="!isDisabled">
       <Button type="primary" style="margin-right:20px;" @click="reset">重置</Button>
       <Button type="primary" @click="openDialog">确定</Button>
     </div>
@@ -128,11 +128,11 @@ export default {
       timely: false, //  及时推送
       dialogWord: '', // '本条信息为即时推送消息<br>是否确认推送?' ||  推送时间:2017年12月12日 12:12<br>是否确认推送?
       index: 0, //  当前路由索引
-      name: '' //  路由名
+      name: '', //  路由名
+      isDisabled: false //  是否可选
     }
   },
   created() {
-    this.checkRoute()
     this.getDays()
   },
   mounted() {},
@@ -142,35 +142,57 @@ export default {
   methods: {
     //  检测路由
     checkRoute() {
-      let routeName = this.$route.path
-      switch (routeName) {
-        case '/custom/system_message_push/addmessage': //  系统消息
-          this.index = 0
-          this.params.msgType = 2
-          this.name = '系统消息'
-          break
-        case '/custom/activity_message_push/addmessage': //  活动消息
-          this.index = 1
-          this.params.msgType = 3
-          this.name = '活动消息'
-          break
-        case '/custom/daily_menu_push/addmessage': //  每日菜谱
-          this.index = 2
-          this.params.msgType = 4
-          this.name = '每日菜谱'
-          break
-        case '/custom/app_notice_push/addmessage': //  应用通知
-          this.index = 3
-          this.params.msgType = 5
-          this.name = '应用通知'
-          break
+      let routeName = this.$route
+      if (routeName.params.id) {
+        //  查看消息
+        this.isDisabled = true
+        http.lookMessage({ id: routeName.params.id }).then(response => {
+          let that = this
+          Object.keys(this.params).map(item => {
+            that.params[item] = response[item]
+            //  时间处理
+          })
+          let pushTime = new Date(response.pushTime)
+          this.date.year = pushTime.getFullYear()
+          this.date.month = pushTime.getMonth() + 1
+          this.date.day = pushTime.getDate()
+          this.date.hour = pushTime.getHours()
+          this.date.minute = pushTime.getMinutes()
+          console.log(response.pushTime, this.date.day)
+        })
+      } else {
+        switch (routeName.path) {
+          case '/custom/system_message_push/addmessage': //  系统消息
+            this.index = 0
+            this.params.msgType = 2
+            this.name = '系统消息'
+            break
+          case '/custom/activity_message_push/addmessage': //  活动消息
+            this.index = 1
+            this.params.msgType = 3
+            this.name = '活动消息'
+            break
+          case '/custom/daily_menu_push/addmessage': //  每日菜谱
+            this.index = 2
+            this.params.msgType = 4
+            this.name = '每日菜谱'
+            break
+          case '/custom/app_notice_push/addmessage': //  应用通知
+            this.index = 3
+            this.params.msgType = 5
+            this.name = '应用通知'
+            break
+        }
       }
     },
     //  获取当前月的天数
     getDays() {
-      this.date.month = new Date().getMonth() + 1
-      this.date.day = new Date().getDate()
-      this.date.days = new Date(this.date.year, this.date.month, 0).getDate()
+      if (!this.$route.params.id) {
+        this.date.month = new Date().getMonth() + 1
+        this.date.day = new Date().getDate()
+        this.date.days = new Date(this.date.year, this.date.month, 0).getDate()
+      }
+      this.checkRoute()
     },
     //  年或月 发生改变
     changeDays(value) {
@@ -228,10 +250,15 @@ export default {
         this.date.hour >= 10 ? this.date.hour : '0' + this.date.hour
       }:${this.date.minute >= 10 ? this.date.minute : '0' + this.date.minute}`
       http.addMessage(this.params).then(response => {
+        let that = this
         Object.keys(this.params).map(item => {
-          if (item === 'msgType' && item === 'pushType') {
-            this.params[item] = ''
+          if (item !== 'msgType' && item !== 'pushType') {
+            that.params[item] = ''
           }
+        })
+        this.$Modal.success({
+          title: '提示',
+          content: '添加成功'
         })
       })
     },
@@ -242,6 +269,13 @@ export default {
     //  重置
     reset() {
       this.getDays()
+      let that = this
+      Object.keys(this.params).map(function(item) {
+        if (item !== 'msgType' && item !== 'pushType') {
+          that.params[item] = ''
+        }
+      })
+      console.log(this.params)
     }
   },
   filter: {},
