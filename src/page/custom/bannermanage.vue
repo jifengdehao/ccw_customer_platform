@@ -42,7 +42,10 @@
                   <a @click="showInput(banner)">重新上传</a>
                   <a style="margin-left:10px;" @click="showImg(banner)">查看</a>
                 </div>
-                <a v-if="!banner.picUrl" @click="showInput(banner)">上传</a>
+                <div class="mask" v-else>
+                  <a v-if="!banner.picUrl && banner.status !== 0" @click="showInput(banner)">上传</a>
+                  <a style="margin-left:10px;" @click="showImg(banner)">查看</a>
+                </div>
               </td>
               <td>{{filterTime(banner.createdAt)}}</td>
               <td>{{banner.creator}}</td>
