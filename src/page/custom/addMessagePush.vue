@@ -29,7 +29,7 @@
         <Option v-for="(month,index) in date.months" :value="month" :key="index">{{ month >= 10 ? month : '0'+month }}</Option>
       </Select>
       <span>月</span>
-      <Select style="width:70px" v-model="date.day">
+      <Select style="width:70px" v-model="date.day" :disabled="isDisabled">
         <Option v-for="(day,index) in date.days" :value="day" :key="index">{{ day >= 10 ? day : '0'+day }}</Option>
       </Select>
       <span>日</span>
@@ -109,7 +109,7 @@ export default {
         minutes: 60,
         year: '2018', // 年
         month: 1, //  月
-        day: 1, //  日
+        day: 2, //  日
         hour: '', // 时
         minute: '' //  分
       },
@@ -155,10 +155,14 @@ export default {
           let pushTime = new Date(response.pushTime)
           this.date.year = pushTime.getFullYear()
           this.date.month = pushTime.getMonth() + 1
+          this.date.days = new Date(
+            this.date.year,
+            pushTime.getMonth() + 1,
+            0
+          ).getDate()
           this.date.day = pushTime.getDate()
           this.date.hour = pushTime.getHours()
           this.date.minute = pushTime.getMinutes()
-          console.log(response.pushTime, this.date.day)
         })
       } else {
         switch (routeName.path) {
@@ -202,7 +206,6 @@ export default {
         this.date.month = parseInt(value) //  月
       }
       this.date.days = new Date(this.date.year, this.date.month, 0).getDate()
-      this.date.day = 1
     },
     //  打开弹框
     openDialog() {

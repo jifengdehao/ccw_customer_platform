@@ -174,6 +174,7 @@ export default {
           http.getBannerList({ status: this.tabIndex + 1 }).then(response => {
             this.bannerData = response
             if (!this.bannerData) {
+              this.bannerData = []
               return
             }
             this.bannerData.forEach(item => {
@@ -185,6 +186,7 @@ export default {
           http.getMarketlist({ status: this.tabIndex + 1 }).then(response => {
             this.bannerData = response
             if (!this.bannerData) {
+              this.bannerData = []
               return
             }
             this.bannerData.forEach(item => {
