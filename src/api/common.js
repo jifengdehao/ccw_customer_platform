@@ -297,7 +297,6 @@ export const patchOrderEval = params => {
 }
 /**
  *  获取售后订单列表
- *  @param
  */
 export const getCustomerService = (params, pageNo) => {
   return ax.g(`/order/afterSale/list/${pageNo}`, params)
@@ -307,6 +306,18 @@ export const getCustomerService = (params, pageNo) => {
  */
 export const addCustomerService = params => {
   return ax.p('/order/afterSaleList', params)
+}
+/**
+ * 获取投诉列表
+ */
+export const getComplaintList = (pageNo, params) => {
+  return ax.g(`/order/complaints/list/${pageNo}`, params)
+}
+/**
+ * 投诉操作
+ */
+export const patchComplaintOptions = params => {
+  return ax.pa('/order/complaints', params)
 }
 
 /** 订单管理 end **/

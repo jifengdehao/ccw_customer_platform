@@ -85,21 +85,23 @@
           {
             title: '订单金额',
             align: 'center',
-            key: 'amount'
+            key: 'amount',
+            render: (h, params) => {
+              return (params.row.amount + '菜城币')
+            }
           },
           {
             title: '配送费',
             align: 'center',
-            key: 'transCost',
-            render: (h, params) => {
-              let text = params.row.transCost / 100
-              return ('span', '¥' + text)
-            }
+            key: 'transCost'
           },
           {
             title: '商品实付',
             align: 'center',
-            key: 'exchangeCost'
+            key: 'exchangeCost',
+            render: (h, params) => {
+              return (params.row.exchangeCost + '菜城币')
+            }
           },
           {
             title: '支付时间',
@@ -137,7 +139,10 @@
           {
             title: '退款金额',
             align: 'center',
-            key: 'refundAmount'
+            key: 'refundAmount',
+            render: (h, params) => {
+              return (params.row.refundAmount + '菜城币')
+            }
           },
           {
             title: '退款时间',
@@ -167,7 +172,10 @@
           {
             title: '单价',
             align: 'center',
-            key: 'unitPrice'
+            key: 'unitPrice',
+            render: (h, params) => {
+              return (params.row.unitPrice + '菜城币')
+            }
           },
           {
             title: '数量',
@@ -176,7 +184,11 @@
           },
           {
             title: '总计',
-            align: 'center'
+            align: 'center',
+            key: 'totalPrice',
+            render: (h, params) => {
+              return (params.row.totalPrice + '菜城币')
+            }
           }
         ],
         columns5: [
@@ -188,12 +200,12 @@
           {
             title: '配送方式',
             align: 'center',
-            key: ''
+            key: 'deliveryModeName'
           },
           {
             title: '配送状态',
             align: 'center',
-            key: ''
+            key: 'deliveryStatus'
           },
           {
             title: '接单时间',
@@ -222,10 +234,7 @@
           {
             title: '配送时效(分钟)',
             align: 'center',
-            key: 'takeTime',
-            render: (h, params) => {
-              return time.formatDateTime(params.row.takeTime)
-            }
+            key: 'takeTime'
           },
           {
             title: '配送员工号',

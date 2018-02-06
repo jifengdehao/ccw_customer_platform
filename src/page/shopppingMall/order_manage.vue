@@ -67,6 +67,7 @@
         loading: false,
         cancel_order: false, // 取消订单
         cancelOrderDec: '', // 取消订单备注
+        orderId: '', // 订单Id
         formValidate: {
           status: 0, // 订单状态
           orderId: '', // 订单编号
@@ -168,6 +169,25 @@
                     },
                     style: {
                       marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        let that = this
+                        this.$Modal.confirm({
+                          content: '确定此订单出库？',
+                          onOk: () => {
+                            let params = {
+                              type: 1,
+                              id: orderId
+                            }
+                            api.patchIntegralMallOrder(params).then((res) => {
+                              if (res) {
+                                that.getOrderList()
+                              }
+                            })
+                          }
+                        })
+                      }
                     }
                   }, '出库'),
                   h('Button', {
@@ -181,6 +201,7 @@
                     on: {
                       click: () => {
                         this.cancel_order = true
+                        this.orderId = orderId
                       }
                     }
                   }, '取消订单'),
@@ -209,6 +230,25 @@
                     },
                     style: {
                       marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        let that = this
+                        this.$Modal.confirm({
+                          content: '确定此订单出库完成？',
+                          onOk: () => {
+                            let params = {
+                              type: 2,
+                              id: orderId
+                            }
+                            api.patchIntegralMallOrder(params).then((res) => {
+                              if (res) {
+                                that.getOrderList()
+                              }
+                            })
+                          }
+                        })
+                      }
                     }
                   }, '出库完成'),
                   h('Button', {
@@ -218,36 +258,11 @@
                     },
                     style: {
                       marginRight: '5px'
-                    }
-                  }, '取消订单'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
                     },
                     on: {
                       click: () => {
-                        this.$router.push('/shopppingMall/orderDetails/' + orderId)
-                      }
-                    }
-                  }, '查看')
-                ])
-              }
-              if (status === 8) {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
+                        this.cancel_order = true
+                        this.orderId = orderId
                       }
                     }
                   }, '取消订单'),
@@ -267,7 +282,7 @@
                   }, '查看')
                 ])
               }
-              if (status === 4) {
+              if (status === 8 || status === 4) {
                 return h('div', [
                   h('Button', {
                     props: {
@@ -276,6 +291,12 @@
                     },
                     style: {
                       marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.cancel_order = true
+                        this.orderId = orderId
+                      }
                     }
                   }, '取消订单'),
                   h('Button', {
@@ -322,11 +343,13 @@
       this.getOrderList()
     },
     methods: {
+      // 切换状态
       selectStatus(value) {
         this.formValidate.status = value
         this.pageNo = 1
         this.getOrderList()
       },
+      // 搜索
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
@@ -335,6 +358,7 @@
           }
         })
       },
+      // 分页
       changePage(index) {
         this.pageNo = index
         this.getOrderList()
@@ -355,15 +379,18 @@
       clearOrderDec() {
         this.cancelOrderDec = ''
         this.cancel_order = false
+        this.orderId = ''
       },
       // 确定取消订单
       cancelOrder() {
         let params = {
           type: 3,
+          reason: this.cancelOrderDec,
           id: this.orderId
         }
         api.patchIntegralMallOrder(params).then((res) => {
           if (res) {
+            console.log(res)
             this.clearOrderDec()
             this.getOrderList()
           }

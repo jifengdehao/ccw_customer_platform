@@ -8,7 +8,7 @@
   <div id="productMessage">
     <h1>商品信息</h1>
        <Form :model="messageData" :label-width="80">
-        <FormItem label="商品编号:">
+        <FormItem label="商品编号:" v-if="jfProductId">
             <Input v-model="messageData.jfProductId" style="width:200px" placeholder="Enter something..." ></Input>
         </FormItem> 
         <FormItem label="商品名称:">
@@ -34,13 +34,13 @@
               <i>现金:</i><Input v-model="messageData.inventory" size="small" style="width:50px" ></Input>
             </Checkbox>
           </CheckboxGroup> -->
-          <Checkbox v-model="single"> <i>积分:</i><Input v-model="messageData.exchangeCost" size="small" style="width:100px" ></Input></Checkbox> <br>
+          <Checkbox > <i>积分:</i><Input v-model="messageData.exchangeCost" size="small" style="width:100px" :disabled="messageData.exchangeInteger != 1"></Input></Checkbox> <br>
         </FormItem>
         <FormItem label="商品状态:">
-           <RadioGroup v-model="messageData.status">
+           <Radio-group v-model="messageData.status">
                 <Radio label="1">上架</Radio>
                 <Radio label="2">下架</Radio>
-            </RadioGroup>
+            </Radio-group>
         </FormItem>
         <FormItem label="商品主图:">
           <div class="img vm-fl"  v-for="(url,index) in messageData.mianPicture" :key="index">
@@ -67,7 +67,7 @@
               </div>
         </FormItem>
         <FormItem>
-            <Button type="primary" @click="save">保存</Button>
+            <Button type="primary" @click="save" :disabled="isSave">保存</Button>
             <Button type="ghost" style="margin-left: 8px" @click="toProductManage($event)">返回</Button>
         </FormItem>
     </Form>
@@ -93,8 +93,13 @@ export default {
       picModal: false,
       bigImgUrl: '',
       data: [],
+      isSave: false, // 保存按钮，点击提交置灰
       categorys: [],
-      messageData: {}
+      messageData: {
+        mianPicture: [],
+        detailsPicture: [],
+        exchangeInteger: 1
+      }
     }
   },
   created() {
@@ -107,11 +112,15 @@ export default {
       api.productinfo(this.jfProductId).then(res => {
         this.messageData = res
       })
+    } else {
+      this.messageData.exchangeInteger = 1
     }
   },
   methods: {
+    // 返回
     toProductManage(event) {
-      this.$emit('product-manage')
+      // this.$emit('product-manage')
+      console.log(this.messageData.status)
     },
     // 主图上传
     mainPicUpload(e) {
@@ -160,9 +169,40 @@ export default {
     },
     // 保存
     save(event) {
-      api.editProduct(this.messageData).then(res => {
-        this.$emit('product-manage')
-      })
+      if (!this.messageData.productName) {
+        this.$Message.error('小伙请填写商品名称')
+        return false
+      }
+      if (!this.messageData.labels) {
+        this.$Message.error('小伙请填写商品关键词')
+        return false
+      }
+      if (!this.messageData.categoryId) {
+        this.$Message.error('小伙请选择商品所属分类')
+        return false
+      }
+      if (!this.messageData.inventory) {
+        this.$Message.error('小伙请填写商品库存')
+        return false
+      }
+      if (!this.messageData.exchangeInteger || !this.messageData.exchangeCost) {
+        this.$Message.error('小伙请填写兑换方式和兑换积分')
+        return false
+      }
+      if (!this.messageData.status) {
+        this.$Message.error('小伙请选择商品状态')
+        return false
+      }
+      this.isSave = true
+      api
+        .editProduct(this.messageData)
+        .then(res => {
+          this.isSave = false
+          this.$emit('product-manage')
+        })
+        .catch(res => {
+          this.isSave = false
+        })
     }
   },
   filfter: {},
