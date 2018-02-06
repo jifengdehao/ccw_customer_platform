@@ -25,7 +25,7 @@
       </Form>
     <!-- 表格内容 -->
     <div class="vm-fr">
-      <Button type="primary" @click="showModal">添加模板</Button>
+      <Button type="primary" @click="showModal" :disabled="isDisabled">添加模板</Button>
       <Button @click="showmoveModal">批量转移</Button>
       <Button @click="saveSort">保存顺序调整</Button>
     </div>
@@ -117,7 +117,7 @@
           <Input v-model="templateItem.originPlace" :value="templateItem.originPlace" size="small" style="width: 200px"></Input> <br>
         </FormItem>
         <FormItem label="是否为标品:">
-          <Select v-model="templateItem.isStandard"  size="small" style="width:100px">
+          <Select v-model="templateItem.isStandard"  size="small" style="width:100px" @on-change="changIsStandard">
             <Option  :value="1" :key="1">标品</Option>
             <Option  :value="0" :key="0">非标品</Option>
           </Select> <br>
@@ -127,13 +127,13 @@
             <FormItem label="商品规格:" >
               <td><h4>重量单位</h4></td>
               <td  v-for="(weightitem,index) in templateItem.weightUnit" :key="index">
-                  <Select size="small" style="width:80px" v-model="weightitem.attributeCode" >
+                  <Select size="small" style="width:80px" v-model="weightitem.attributeCode" :disabled="templateItem.isStandard !== 1">
                   <Option v-for="item in weightdata" :value="item.code" :key="item.code">{{ item.name }}</Option>
                 </Select>
-                <Button size="small" type="error" @click="delWeight(index)">删除</Button>
+                <Button size="small" type="error" @click="delWeight(index)" v-if="templateItem.isStandard !== 0">删除</Button>
               </td>
               <td>
-                <Button size="small" @click="addWeight">增加</Button>
+                <Button size="small" @click="addWeight" v-if="templateItem.isStandard !== 0">增加</Button>
               </td> <br>
               <td><h4>重量属性</h4></td>
               <td  v-for="(item,index) in  templateItem.packAttr" :key="index">
@@ -243,6 +243,7 @@ export default {
         productAttr: [{ attributeType: 3 }],
         productDesc: []
       },
+      isDisabled: false, // 添加按钮是否置灰
       templateModal: false,
       moveModal: false,
       sortModal: false,
@@ -298,6 +299,7 @@ export default {
         spCategoryId: null,
         mainPic: [],
         picLib: [],
+        isStandard: 1,
         originPlace: '',
         weightUnit: [{ attributeType: 1 }],
         packAttr: [{ attributeType: 2 }],
@@ -407,6 +409,7 @@ export default {
         }
       }
       // // 验证成功  执行下面的代码
+      this.isDisabled = true // 按钮置灰 防止重复提交
       let classData = {
         parentCatId: templateItem.spCategoryParentId,
         catId: templateItem.spCategoryId
@@ -414,11 +417,17 @@ export default {
       this.formItem = classData
       templateItem.specification = this.specification
       if (this.templateTitle === '增加商品模板') {
-        api.addProductTemplate(templateItem).then(response => {
-          this.searchtemplate(classData)
-          this.$Message.success('添加成功')
-          this.templateModal = false
-        })
+        api
+          .addProductTemplate(templateItem)
+          .then(response => {
+            this.searchtemplate(classData)
+            this.$Message.success('添加成功')
+            this.templateModal = false
+            this.isDisabled = false
+          })
+          .catch(res => {
+            this.isDisabled = false
+          })
       } else if (this.templateTitle === '修改商品模板') {
         api
           .modifyProductTemplate(templateItem, templateItem.spTemplateId)
@@ -426,6 +435,11 @@ export default {
             this.searchtemplate(classData)
             this.templateModal = false
             this.$Message.success('修改成功')
+            this.isDisabled = true
+            this.isDisabled = false
+          })
+          .catch(res => {
+            this.isDisabled = false
           })
       }
     },
@@ -491,6 +505,11 @@ export default {
         this.searchtemplate(formItem)
         this.$Message.success('批量修改成功')
       })
+    },
+    changIsStandard() {
+      if (this.templateItem.isStandard === 0) {
+        this.templateItem.weightUnit[0].attributeCode = 4
+      }
     },
     // 全选
     clickAll() {
