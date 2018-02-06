@@ -58,15 +58,25 @@ export default {
           title: '推送时间',
           key: 'pushTime',
           align: 'center',
-          sortable: true,
+          // sortable: true,
           render: (h, params) => {
             return h('span', this.filterTime(params.row.pushTime))
           }
         },
         {
           title: '推送状态',
-          key: 'pushType',
-          align: 'center'
+          key: 'status',
+          align: 'center',
+          render: (h, params) => {
+            return h(
+              'span',
+              params.row.status === 1
+                ? '推送成功'
+                : params.row.status === 2
+                  ? '推送失败'
+                  : params.row.status === 0 ? '未推送' : ''
+            )
+          }
         },
         {
           title: '操作人员',
