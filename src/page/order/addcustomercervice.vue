@@ -113,10 +113,6 @@
                 })
               }
             })
-          } else {
-            this.$Notice.error({
-              title: '新增失败！'
-            })
           }
         })
       },
