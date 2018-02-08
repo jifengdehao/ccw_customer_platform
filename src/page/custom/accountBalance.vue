@@ -26,7 +26,7 @@
         本功能点延期
       </TabPane>
     </Tabs>
-    <Page :total="usersDatas.total" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
+    <Page :total="usersDatas.total" :page-size="20" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
     <Modal
       v-model="isBoolean"
       :closable="false" @on-ok="refundMoney" @on-cancel="resetSome">
@@ -51,7 +51,7 @@ export default {
       tabIndex: 0, //  tab索引
       params: {
         mobileno: '',
-        pageSize: 10,
+        pageSize: 20,
         pageNo: 1,
         selectTypes: 1
       }, //  传递参数
@@ -205,7 +205,7 @@ export default {
       this.tabIndex = name
       this.params = {
         mobileno: '',
-        pageSize: 10,
+        pageSize: 20,
         pageNo: 1,
         selectTypes: this.tabIndex + 1
       }

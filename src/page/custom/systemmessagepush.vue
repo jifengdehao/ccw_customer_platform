@@ -23,7 +23,7 @@
         </Tabs>
         <Button type="primary" style="position:absolute;top:0;right:0;" @click="addMessage">新增推送</Button>
         <Table border stripe :columns="messageTitle" :data="messageData.records" @on-row-click="lookMessage"></Table>
-        <Page :total="messageData.total" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
+        <Page :total="messageData.total" :page-size="params.pageSize" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
       </div>
   </div>
 </template>
@@ -229,12 +229,12 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.message-top{
-  line-height:1.5;
-  margin-bottom:40px;
+.message-top {
+  line-height: 1.5;
+  margin-bottom: 40px;
 }
 
-.contain{
+.contain {
   position: relative;
 }
 </style>

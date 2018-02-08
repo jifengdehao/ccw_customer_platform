@@ -68,7 +68,7 @@ export default {
   data() {
     return {
       total: 1,
-      pageSize: 10,
+      pageSize: 20,
       formItem: {},
       modelFormItem: {},
       allCharge: [],

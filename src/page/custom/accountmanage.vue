@@ -9,7 +9,6 @@
     <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
       <FormItem prop="phone" label="手机号码" :label-width="80">
         <Input type="text" v-model="formInline.phone" placeholder="请输入手机号"></Input>
-        
       </FormItem>
       <FormItem>
         <Select v-model="params.status" style="width:140px" @on-change="selectLoad">
@@ -27,7 +26,7 @@
       </label>
     </i-form>
     <Table stripe border :columns="allUsersTitle" :data="usersDatas.records" @on-row-click="jumpTo"></Table>
-    <Page :total="usersDatas.total" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
+    <Page :total="usersDatas.total" :current="pageNo" :page-size="20" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
     <Modal v-if="tabIndex == 0" v-model="modalBoolean" :styles="{top: '40px'}" @on-ok="isOkDelete" @on-cancel="modalBoolean=false;">
       <p>设置冻结时间
         <select name="" v-model="changeStatus.frezonTime">
@@ -59,7 +58,7 @@ export default {
       params: {
         status: '0',
         key: '',
-        pageSize: 10
+        pageSize: 20
       },
       pageNo: 1,
       UserList: [
@@ -277,7 +276,7 @@ export default {
           break
         }
       }
-      this.params.pageSize = 10
+      this.params.pageSize = 20
       this.pageNo = 1
       this.getUsersList()
     },

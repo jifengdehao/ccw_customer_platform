@@ -44,7 +44,7 @@ export default {
       messgeIndex: '', // 保存切换ID
       total: '', // 总页数
       pageNo: 1, // 当前页
-      pageSize: 10, // 每页数据
+      pageSize: 20, // 每页数据
       data: [],
       pushButton: '确定',
       single: {

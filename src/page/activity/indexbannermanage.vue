@@ -123,7 +123,7 @@
           </table>
         </TabPane>
     </Tabs>
-    <Page v-if="bannerData && bannerData.length > 0" style="margin-top: 20px; float: right;" :total="total" :current="params.pageNo" @on-change="onChange"></Page>
+    <Page v-if="bannerData && bannerData.length > 0" style="margin-top: 20px; float: right;" :page-size="20" show-total :total="total" :current="params.pageNo" @on-change="onChange"></Page>
     <input type="file" class="inputFile" ref="file" @change="onUpload">
     <div class="big-img" v-if="imgUrl">
       <img :src="imgUrl" />
@@ -149,7 +149,7 @@ export default {
       cityList: [],
       params: {
         status: 1, // banner图状态（未开始1、已结束2）
-        pageSize: 10, // 分页参数，表示每页显示多少条
+        pageSize: 20, // 分页参数，表示每页显示多少条
         pageNo: 1
       },
       bannerData: [], // 列表数据
@@ -163,6 +163,7 @@ export default {
   created: function() {
     this.getCurrentListData()
   },
+  // 鼠标进入图片 不同hover状态
   directives: {
     hover: {
       inserted(el) {
