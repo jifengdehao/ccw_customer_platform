@@ -252,12 +252,25 @@ export const getOrderSellerDetails = params => {
 }
 
 /**
- * 隐藏商家评价
- * @param params =>{rkShopId}
+ * 隐藏商家评价 解除隐藏商家评价
+ * @param params
  */
-export const putOrderSellerEval = params => {
-  return ax.u(`/order/remarkShop/${params}`)
+export const patchOrderSellerEval = params => {
+  return ax.pa('/order/remarkShop', params)
 }
+/**
+ * 判定配送差评是否是恶意差评
+ */
+export const patchOrderDeliverEvalVerify = params => {
+  return ax.pa('/order/verify/deliver', params)
+}
+/**
+ * 判定商户差评是否是恶意差评
+ */
+export const patchOrderSellerEvalVerify = params => {
+  return ax.pa('/order/verify/shop', params)
+}
+
 /**
  * 获取配送员的评价列表
  * @param params =>{pageSize,pageNo,mobileno,orderId}
@@ -266,11 +279,11 @@ export const getOrderDeliverListeEval = (params, pageNo) => {
   return ax.g(`/order/remark/deliver/list/${pageNo}`, params)
 }
 /**
- * 隐藏配送员评价
- * @param params=>{rkDeliverId}
+ * 隐藏配送员评价 解除隐藏配送员评价
+ * @param params
  */
-export const putOrderDeliverEval = params => {
-  return ax.u(`/order/remarkDeliver/${params}`)
+export const patchOrderDeliverEval = params => {
+  return ax.pa('/order/remarkDeliver', params)
 }
 /**
  * 获取配送员评价详情
@@ -307,6 +320,43 @@ export const getCustomerService = (params, pageNo) => {
 export const addCustomerService = params => {
   return ax.p('/order/afterSaleList', params)
 }
+/**
+ * 驳回售后订单
+ */
+export const patchRejectOrder = params => {
+  return ax.pa('/order/afterSaleList/reject', params)
+}
+/**
+ * 完成售后订单
+ */
+export const putServiceOrder = params => {
+  return ax.pa('/order/afterSaleList', params)
+}
+/**
+ * 售后订单 同意退款
+ */
+export const putAgreeServiceOrder = asAfterSaleId => {
+  return ax.u(`/order/afterSaleList/${asAfterSaleId}`)
+}
+/**
+ * 售后订单 不同意退款
+ */
+export const patchDisagreeServiceOrder = params => {
+  return ax.pa('/order/afterSaleList/repulse', params)
+}
+/**
+ * 获取售后划分责任
+ */
+export const getCustomerServiceDutyData = (asAfterSaleId, duty) => {
+  return ax.g(`/order/afterSale/${asAfterSaleId}/${duty}`)
+}
+/**
+ * 划分售后责任
+ */
+export const patchCustomerServiceDuty = params => {
+  return ax.pa('/order/afterSale/pass', params)
+}
+
 /**
  * 获取投诉列表
  */
