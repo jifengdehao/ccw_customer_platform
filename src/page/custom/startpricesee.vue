@@ -12,8 +12,8 @@
         <Option v-for="item in provinceList" :value="item.provinceId" :key="item.provinceId">{{ item.provinceName }}</Option>
       </Select>  
     </p>
-    <Table border :columns="priceTitle" :data="priceData.records"></Table>
-    <Page :total="priceData.total" :current="pageNum" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
+    <Table border stripe :columns="priceTitle" :data="priceData.records"></Table>
+    <Page :total="priceData.total" :current="pageNum" :page-size="20" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -66,7 +66,7 @@ export default {
         return
       }
       http
-        .getPirse({ id: this.id, pageNum: this.pageNum }, { pageSize: 10 })
+        .getPirse({ id: this.id, pageNum: this.pageNum }, { pageSize: 20 })
         .then(data => {
           this.priceData = data
         })
