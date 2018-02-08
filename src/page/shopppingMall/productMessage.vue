@@ -37,10 +37,10 @@
           <Checkbox > <i>积分:</i><Input v-model="messageData.exchangeCost" size="small" style="width:100px" :disabled="messageData.exchangeInteger != 1"></Input></Checkbox> <br>
         </FormItem>
         <FormItem label="商品状态:">
-           <Radio-group v-model="messageData.status">
+          <Radio-group v-model="messageData.status">
                 <Radio label="1">上架</Radio>
                 <Radio label="2">下架</Radio>
-            </Radio-group>
+          </Radio-group>
         </FormItem>
         <FormItem label="商品主图:">
           <div class="img vm-fl"  v-for="(url,index) in messageData.mianPicture" :key="index">

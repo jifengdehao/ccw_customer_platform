@@ -223,7 +223,7 @@ export default {
   data() {
     return {
       total: 1,
-      pageSize: 10,
+      pageSize: 20,
       disabled: true,
       sellerId: 0,
       shopId: 0,
@@ -257,7 +257,7 @@ export default {
       sellerAccountData: [],
       accountListParams: {
         // 搜索参数
-        pageSize: 10,
+        pageSize: 20,
         shopName: '',
         mobileno: '',
         sellerId: '',

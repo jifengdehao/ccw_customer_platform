@@ -63,14 +63,14 @@ export default {
       changeValue: '上架',
       showProductMessage: false, // 是否显示产品信息页
       pageNo: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: 0,
       showButton: 0,
       selection: [], // 选中的数据
       tabs: [{ title: '全部' }, { title: '上架' }, { title: '下架' }],
       params: {
         status: null, // 不传就是查询全部 上架 1、下架 2
-        pageSize: 10,
+        pageSize: 20,
         seek: '' // 搜索内容
       },
       groundingParams: {

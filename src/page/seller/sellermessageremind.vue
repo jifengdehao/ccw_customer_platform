@@ -9,7 +9,7 @@
     <!-- 表格内容 -->
     <section class="seller-message-remind-tab">
       <Tabs :animated="false"  @on-click="changeTable">
-        <TabPane v-for="tab in tabs" key :label="tab.title">
+        <TabPane v-for="(tab,index) in tabs" :key="index" :label="tab.title">
           <Table border :columns="remindColumns" :data="remindData"></Table>
         </TabPane>
       </Tabs>
@@ -31,7 +31,7 @@ export default {
       datavalue: true,
       total: 1,
       current: 0,
-      pageSize: 10,
+      pageSize: 20,
       status: '待处理',
       tabs: [{ title: '待处理' }, { title: '已处理' }, { title: '全部' }],
       remindColumns: [
@@ -113,7 +113,7 @@ export default {
     }
   },
   created() {
-    this.getAlertsMessageList(1, 10, 0)
+    this.getAlertsMessageList(1, 20, 0)
   },
   // mounted: {},
   activited: {},
@@ -142,21 +142,21 @@ export default {
     changeTable(index) {
       this.current = index
       if (index === 0) {
-        this.getAlertsMessageList(1, 10, 0)
+        this.getAlertsMessageList(1, 20, 0)
       } else if (index === 1) {
-        this.getAlertsMessageList(1, 10, 1)
+        this.getAlertsMessageList(1, 20, 1)
       } else if (index === 2) {
-        this.getAlertsMessageList(1, 10)
+        this.getAlertsMessageList(1, 20)
       }
     },
     // 分页切换
     changepage(index) {
       if (this.current === 0) {
-        this.getAlertsMessageList(index, 10, 0)
+        this.getAlertsMessageList(index, 20, 0)
       } else if (this.current === 1) {
-        this.getAlertsMessageList(index, 10, 1)
+        this.getAlertsMessageList(index, 20, 1)
       } else if (this.current === 2) {
-        this.getAlertsMessageList(index, 10)
+        this.getAlertsMessageList(index, 20)
       }
     }
   },

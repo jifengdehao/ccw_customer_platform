@@ -71,7 +71,7 @@ export default {
       PassModal: false, // 通过时弹窗
       total: 1,
       currentPage: 1,
-      pageSize: 10,
+      pageSize: 20,
       current: 0,
       selectiondata: [],
       sellervideodata: [],
@@ -82,13 +82,13 @@ export default {
       },
       productParams: {
         // 获取商品图片列表审核传参
-        pageSize: 10,
+        pageSize: 20,
         updateStartTime: '',
         updateEndTime: ''
       },
       shopParams: {
         // 获取档口或头像图片列表审核传参
-        pageSize: 10,
+        pageSize: 20,
         picType: 1, // 档口图片类型 (1 档口图片，2 档口头像）
         updateStartTime: '',
         updateEndTime: ''
