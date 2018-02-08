@@ -28,7 +28,7 @@
       </FormItem>
     </Form>
     <div v-if="evaluateType === 1">
-      <Tabs :animated="false" @on-click="selectTab" :value="status">
+      <Tabs :animated="false" @on-click="selectTab">
         <Tab-pane label="全部评价" name="1">
           <Table :columns="columns" :data="data" :loading="loading"></Table>
           <Page
@@ -52,7 +52,7 @@
           ></Page>
         </Tab-pane>
         <Tab-pane label="差评排行榜" name="3">
-          <Table :columns="columns1" :data="data1" :loading="loading"></Table>
+          <Table :columns="columns1" :data="data" :loading="loading"></Table>
           <Page
             :total="tableTotal"
             :current="curr"
@@ -66,9 +66,9 @@
       </Tabs>
     </div>
     <div v-else>
-      <Tabs :animated="false" @on-click="selectTab" :value="status">
+      <Tabs :animated="false" @on-click="selectTab">
         <Tab-pane label="全部评价" name="1">
-          <Table :columns="columns2" :data="data2" :loading="loading"></Table>
+          <Table :columns="columns2" :data="data" :loading="loading"></Table>
           <Page
             :total="tableTotal"
             :current="curr"
@@ -79,7 +79,7 @@
           ></Page>
         </Tab-pane>
         <Tab-pane label="差评评价" name="2">
-          <Table :columns="columns2" :data="data2" :loading="loading"></Table>
+          <Table :columns="columns2" :data="data" :loading="loading"></Table>
           <Page
             :total="tableTotal"
             :current="curr"
@@ -90,7 +90,7 @@
           ></Page>
         </Tab-pane>
         <Tab-pane label="差评排行榜" name="3">
-          <Table :columns="columns3" :data="data3" :loading="loading"></Table>
+          <Table :columns="columns3" :data="data" :loading="loading"></Table>
           <Page
             :total="tableTotal"
             :current="curr"
@@ -129,10 +129,10 @@
     <Modal v-model="verify_modal" width="400">
       <h3 slot="header">核实差评</h3>
       <RadioGroup v-model="verify" vertical>
-        <Radio label="1">
+        <Radio label="2">
           <span>情况属实</span>
         </Radio>
-        <Radio label="2">
+        <Radio label="1">
           <span>恶意差评(原路退还罚金)</span>
         </Radio>
       </RadioGroup>
@@ -152,7 +152,7 @@
     name: 'evaluate',
     data() {
       return {
-        verify: '1', // 默认情况属实
+        verify: '2', // 默认情况属实
         verify_modal: false, // 核实弹窗
         hide_modal: false, // 隐藏弹窗
         hideDec: '',  // 隐藏备注
@@ -174,7 +174,7 @@
         curr: 1, // 当前分页
         pageNum: 20, // 当前页的显示的数据数量
         tableTotal: 0, // 总数
-        status: '1', // 状态
+        status: 1, // 状态
         loading: false, // 表格loading
         exportModal: false, // 弹出导出表格
         startTime: '', // 导出表格开始时间
@@ -215,13 +215,13 @@
             align: 'center'
           },
           {
-            title: '用户手机号',
-            key: 'mcMobileno',
+            title: '用户昵称',
+            key: 'custName',
             align: 'center'
           },
           {
-            title: '用户昵称',
-            key: 'custName',
+            title: '用户手机号',
+            key: 'mcMobileno',
             align: 'center'
           },
           {
@@ -260,12 +260,46 @@
           {
             title: '评价星级',
             key: 'starLevel',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              let starLevel = params.row.starLevel
+              switch (starLevel) {
+                case 1:
+                  return '1(很差)';
+                case 2:
+                  return '2(一般)';
+                case 3:
+                  return '3(满意)';
+                case 4:
+                  return '4(非常满意)';
+                case 5:
+                  return '5(无可挑剔)';
+                default:
+                  return '';
+              }
+            }
           },
           {
             title: '质量星级',
             align: 'center',
-            key: 'qualityLevel'
+            key: 'qualityLevel',
+            render: (h, params) => {
+              let starLevel = params.row.qualityLevel
+              switch (starLevel) {
+                case 1:
+                  return '1(很差)';
+                case 2:
+                  return '2(一般)';
+                case 3:
+                  return '3(满意)';
+                case 4:
+                  return '4(非常满意)';
+                case 5:
+                  return '5(无可挑剔)';
+                default:
+                  return '';
+              }
+            }
           },
           {
             title: '数量评价',
@@ -311,7 +345,7 @@
               let id = params.row.id
               let isMalicious = params.row.isMalicious
               if (isMalicious !== 0) {
-                if (isMalicious === 1) {
+                if (isMalicious === 4) {
                   return h('div', [
                     h('Button', {
                       props: {
@@ -501,13 +535,13 @@
             align: 'center'
           },
           {
-            title: '用户手机号',
-            key: 'mcMobileno',
+            title: '用户昵称',
+            key: 'custName',
             align: 'center'
           },
           {
-            title: '用户昵称',
-            key: 'custName',
+            title: '用户手机号',
+            key: 'mcMobileno',
             align: 'center'
           },
           {
@@ -576,7 +610,7 @@
               let id = params.row.id
               let isMalicious = params.row.isMalicious
               if (isMalicious !== 0) {
-                if (isMalicious === 1) {
+                if (isMalicious === 4) {
                   return h('div', [
                     h('Button', {
                       props: {
@@ -722,7 +756,7 @@
           },
           {
             title: '累计差评',
-            align: '',
+            align: 'center',
             key: 'badCount'
           },
           {
@@ -745,6 +779,7 @@
       clearVerify() {
         this.verify_modal = false
         this.evalId = ''
+        this.verify = '2'
       },
       // 评价核实
       confirmVerify() {
@@ -805,7 +840,7 @@
       },
       // 切换
       selectTab(name) {
-        this.status = name
+        this.status = parseInt(name)
         this.curr = 1
         this.getOrderEvalList()
       },
@@ -853,9 +888,6 @@
             this.tableTotal = res.total
             this.loading = false
             this.data = res.records
-            this.data1 = res.records
-            this.data2 = res.records
-            this.data3 = res.records
           }
         })
       }

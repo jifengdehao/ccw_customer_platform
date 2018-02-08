@@ -419,7 +419,12 @@ const AddCustomerService = resolve => {
     resolve(module)
   })
 }
-
+// 反馈管理修改
+const TestFeedback = resolve => {
+  import('page/order/testfeedback').then(module => {
+    resolve(module)
+  })
+}
 export default [
   {
     path: '/',
@@ -457,7 +462,8 @@ export default [
           {path: 'orderInfo/:id', component: OrderInfo},
           {path: 'complaint', component: Complaint},
           {path: 'customerService', component: CustomerService},
-          {path: 'addCustomerService', component: AddCustomerService}
+          {path: 'addCustomerService', component: AddCustomerService},
+          {path: 'testFeedback', component: TestFeedback}
         ]
       },
       {
