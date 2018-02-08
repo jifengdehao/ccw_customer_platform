@@ -81,7 +81,6 @@
         <Button type="primary" size="large" @click.stop="confirmReject">确定</Button>
       </div>
     </Modal>
-
     <Modal v-model="punish_modal"
            width="400">
       <h3 slot="header">冻结周期
@@ -209,14 +208,14 @@
             title: '图片凭证',
             key: 'picList',
             align: 'center',
-            width: 120,
+            width: 160,
             render: (h, params) => {
               return h('div', [
                 h(tableImg, {
                   props: {
                     imgUrl: params.row.picList,
-                    width: '20px',
-                    height: '20px'
+                    width: '30px',
+                    height: '30px'
                   }
                 })
               ])
@@ -336,14 +335,14 @@
             title: '图片凭证',
             key: 'picList',
             align: 'center',
-            width: 120,
+            width: 160,
             render: (h, params) => {
               return h('div', [
                 h(tableImg, {
                   props: {
                     imgUrl: params.row.picList,
-                    width: '20px',
-                    height: '20px'
+                    width: '30px',
+                    height: '30px'
                   }
                 })
               ])
@@ -455,14 +454,14 @@
             title: '图片凭证',
             key: 'picList',
             align: 'center',
-            width: 120,
+            width: 160,
             render: (h, params) => {
               return h('div', [
                 h(tableImg, {
                   props: {
                     imgUrl: params.row.picList,
-                    width: '20px',
-                    height: '20px'
+                    width: '30px',
+                    height: '30px'
                   }
                 })
               ])
@@ -550,14 +549,14 @@
             title: '图片凭证',
             key: 'picList',
             align: 'center',
-            width: 120,
+            width: 160,
             render: (h, params) => {
               return h('div', [
                 h(tableImg, {
                   props: {
                     imgUrl: params.row.picList,
-                    width: '20px',
-                    height: '20px'
+                    width: '30px',
+                    height: '30px'
                   }
                 })
               ])

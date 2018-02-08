@@ -202,7 +202,7 @@
             key: 'amount',
             align: 'center',
             render: (h, params) => {
-              let text = params.row.amount / 100
+              let text = params.row.realPayAmount / 100
               return ('span', '¥' + text)
             }
           },
@@ -234,7 +234,7 @@
             key: 'realPayAmount',
             align: 'center',
             render: (h, params) => {
-              let text = params.row.realPayAmount / 100
+              let text = params.row.amount / 100
               return ('span', '¥' + text)
             }
           },

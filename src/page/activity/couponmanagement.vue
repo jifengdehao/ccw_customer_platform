@@ -38,7 +38,7 @@
           <Table border stripe :columns="couponLists" :data="data1" @on-row-dblclick="onTabTh"></Table>
         </TabPane>
     </Tabs>
-    <Page class="page" v-if="data1 && data1.length > 0" :total="total" :current="pageNo" @on-change="changePage"></Page>
+    <Page class="page" v-if="data1 && data1.length > 0" :page-size="20" show-total :total="total" :current="pageNo" @on-change="changePage"></Page>
     </div>
     
     <!-- 终止弹框 -->
@@ -89,7 +89,7 @@ export default {
         status: 0,
         types: '0', // 优惠券value值
         ptUserName: '全部', // 创建人员
-        pageSize: '10',
+        pageSize: '20',
         endName: '全部',
         seek: '' // 搜索框内容
       },

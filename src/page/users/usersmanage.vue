@@ -18,7 +18,7 @@
       <div>
         <Table stripe :columns="columns1" :data="userDate" ref="all_order"></Table>
       </div>
-        <Page v-if="userDate && userDate.length > 0" :curent="pageNo" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
+        <Page v-if="userDate && userDate.length > 0" :page-size="20" show-total :curent="pageNo" style="margin-top: 20px; float: right;" :total="total" @on-change="onChange"></Page>
     </div>
     <!-- 导出数据弹框start -->
     <Modal v-model="exportModal" width="300">
@@ -90,7 +90,7 @@ export default {
       userMenu: ['正常用户', '冻结用户'], // 导航 table切换数据
       userDate: [], // 列表数据
       status: '0', // 默认切换teble 状态
-      pageSize: 10, // 分页参数，表示每页显示多少条记录
+      pageSize: 20, // 分页参数，表示每页显示多少条记录
       pageNo: 1, // 分页参数，表示当前页
       total: '', // 总页数
       exportModal: false, // 显示弹出弹框

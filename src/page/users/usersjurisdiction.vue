@@ -12,7 +12,7 @@
     <div>
       <Table stripe :columns="columns1" :data="userList" ref="all_order"></Table>
     </div>
-    <Page v-if="userList && userList.length > 0" style="margin-top: 20px; float: right;" :current="pageNo" :total="total" @on-change="onChange"></Page>
+    <Page v-if="userList && userList.length > 0" :page-size="20" show-total style="margin-top: 20px; float: right;" :current="pageNo" :total="total" @on-change="onChange"></Page>
     <!-- 导出数据弹框start -->
     <Modal v-model="exportModal" width="300">
       <div class="vm-textCenter">
@@ -40,7 +40,7 @@ export default {
       endTime: '', // 导出结束时间
       pageNo: 1, // 当前页
       params: {
-        pageSize: 10,
+        pageSize: 20,
         mobileno: '' // 手机号码
       }, // 请求参数
       columns1: [

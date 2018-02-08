@@ -1,17 +1,17 @@
 /*
-* @Author: WuFengliang
-* @Date: 2017-10-18 10:34:07
-* DeveloperMailbox:   wufengliang@ccw163.com
-* FunctionPoint: banner图管理、市场推送
-*/
-<template>
+ * @Author: WuFengliang 
+ * @Date: 2018-02-06 16:51:21 
+ * DeveloperMailbox:   wufengliang@ccw163.com 
+ * FunctionPoint:  市场推送
+ */
+ <template>
   <div>
     <Tabs v-model="tabIndex" @on-click="showTabIndex">
         <TabPane label="未结束">
           <table>
             <tr>
               <th style="width:15%;">生效周期</th>
-              <th style="width:15%;">跳转链接</th>
+              <th style="width:30%;">绑定菜市场</th>
               <th style="width:15%;">上传说明</th>
               <th style="width:210px;">图片</th>
               <th>创建时间</th>
@@ -31,7 +31,26 @@
                 </p>
               </td>
               <td>
-                <input type="text" v-model="banner.linkUrl" :disabled="banner.status === 0" :readonly="banner.status === 0">
+                <p v-if="banner.status === 0">
+                  {{banner.provinceName ? banner.provinceName : ''}} - {{banner.cityName ? banner.cityName : ''}} - {{banner.areaName ? banner.areaName : ''}} - {{banner.marketName ? banner.marketName : ''}}
+                </p>
+                <p v-else>
+                  <Select v-model="banner.provinceId" style="width:120px" @on-change="getCityData($event,index)">
+                    <Option v-for="(province,index) in provinceData" :value="province.provinceId" :key="index">{{ province.provinceName}}</Option>
+                  </Select>
+                  <span>-</span>
+                  <Select v-model="banner.cityId" style="width:70px" @on-change="getAreaData($event,index)">
+                    <Option v-for="(_city,index) in banner.cityData" :value="_city.cityId" :key="index">{{ _city.cityName }}</Option>
+                  </Select>
+                  <span>-</span>
+                  <Select v-model="banner.areaId" style="width:100px" @on-change="getMarketData($event,index)">
+                    <Option v-for="(_area,index) in banner.areaData" :value="_area.areaId" :key="index">{{ _area.areaName}}</Option>
+                  </Select>
+                  <span>-</span>
+                  <Select v-model="banner.psMarketId" style="width:150px">
+                    <Option v-for="(market,index) in banner.marketData" :value="market.marketId" :key="index">{{ market.marketName }}</Option>
+                  </Select>
+                </p>
               </td>
               <td>
                 <input type="text" v-model="banner.remark" :disabled="banner.status === 0" :readonly="banner.status === 0">
@@ -61,7 +80,7 @@
               </td>
             </tr>
           </table>
-          <p style="margin:20px auto;text-align:center;" v-if="bannerData.length > 0">
+          <p style="margin:20px auto;text-align:center;"  v-if="bannerData.length > 0">
             <Button type="primary" style="width:150px;height:40px;" @click="saveEdit">保存修改</Button>
           </p>
         </TabPane>
@@ -69,7 +88,7 @@
           <table>
             <tr>
               <th style="width:15%;">生效周期</th>
-              <th style="width:15%;">跳转链接</th>
+              <th style="width:20%;">绑定菜市场</th>
               <th style="width:15%;">上传说明</th>
               <th style="width:210px;">图片</th>
               <th>创建时间</th>
@@ -90,7 +109,7 @@
                 </p>
               </td>
               <td>
-                <input type="text" v-model="banner.linkUrl" :disabled="banner.status === 0 || tabIndex === 1" :readonly="banner.status === 0 || tabIndex === 1">
+                {{banner.provinceName ? banner.provinceName : ''}} - {{banner.cityName ? banner.cityName : ''}} - {{banner.areaName ? banner.areaName : ''}} - {{banner.marketName ? banner.marketName : ''}}
               </td>
               <td>
                 <input type="text" v-model="banner.remark" :disabled="banner.status === 0 || tabIndex === 1" :readonly="banner.status === 0 || tabIndex === 1">
@@ -132,7 +151,7 @@ import * as http from 'api/common'
 import * as upload from 'components/upload-pic'
 
 export default {
-  name: 'bannerManage',
+  name: 'marketManage',
   components: {},
   data() {
     return {
@@ -140,6 +159,12 @@ export default {
       bannerData: [], //  table数据
       singleData: null, //  传入值
       tabIndex: 0,
+      provinceData: [], //  省份集合
+      cityData: [], //  城市集合
+      areaData: [], //  区域集合
+      province: '',
+      city: '',
+      area: '',
       imgUrl: '', //  查看图片url
       modalBoolean: false, //  弹框状态
       stopReason: '' //  终止原因
@@ -167,51 +192,86 @@ export default {
   methods: {
     //  获取数据
     getDataList() {
-      this.checkRoute()
       if (this.bannerData) {
         this.bannerData.length = 0
       }
-      switch (this.routeIndex) {
-        case 1:
-          //  传递参数 -> 未结束1  已结束2
-          http.getBannerList({ status: this.tabIndex + 1 }).then(response => {
-            this.bannerData = response
-            if (!this.bannerData) {
-              this.bannerData = []
-              return
-            }
-            this.bannerData.forEach(item => {
-              item.isShow = false
-            })
-          })
-          break
-        case 2:
-          http.getMarketlist({ status: this.tabIndex + 1 }).then(response => {
-            this.bannerData = response
-            if (!this.bannerData) {
-              this.bannerData = []
-              return
-            }
-            this.bannerData.forEach(item => {
-              item.isShow = false
-            })
-          })
-          break
+
+      http.getMarketlist({ status: this.tabIndex + 1 }).then(response => {
+        this.getProvinceData()
+        this.bannerData = response
+        if (!this.bannerData) {
+          this.bannerData = []
+          return
+        }
+        this.bannerData.forEach((item, index) => {
+          item.isShow = false
+          if (item.status !== 0) {
+            item.cityData = item.areaData = item.marketData = []
+            this.getCityData(item.provinceId, index)
+            this.getAreaData(item.cityId, index)
+            this.getMarketData(item.areaId, index)
+          }
+        })
+      })
+    },
+    //  获取省份
+    getProvinceData(fn) {
+      http.getProvinceList().then(response => {
+        this.provinceData = response
+        this.$forceUpdate()
+        fn && fn()
+      })
+    },
+    //  省份值变化
+    getCityData(provinceId, index, fn) {
+      let obj = this.bannerData[index]
+      if (!provinceId) {
+        return
       }
+      obj.cityData = []
+      http
+        .getCityList({
+          provinceId
+        })
+        .then(response => {
+          obj.areaData = obj.marketData = []
+          obj.cityData = response
+          this.$forceUpdate()
+          fn && fn()
+        })
+    },
+    //  区域值变化
+    getAreaData(cityId, index, fn) {
+      let obj = this.bannerData[index]
+      if (!cityId) {
+        return
+      }
+      obj.areaData = []
+      http.getAreaList({ cityId }).then(response => {
+        obj.areaData = response
+        this.$forceUpdate()
+        fn && fn()
+      })
+    },
+    //  获取菜市场
+    getMarketData(areaId, index) {
+      let obj = this.bannerData[index]
+      if (!areaId) {
+        return
+      }
+      obj.marketData = []
+      http
+        .getMarketList({
+          areaId
+        })
+        .then(response => {
+          obj.marketData = response
+          this.$forceUpdate()
+        })
     },
     //  tab索引
     showTabIndex(index) {
-      console.log(index)
-
       this.getDataList()
-    },
-    //  判断路由
-    checkRoute() {
-      if (this.$route.path.indexOf('/custom/banner_manage') > -1) {
-        this.routeIndex = 1 //  banner图管理
-      } else if (this.$route.path.indexOf('/custom/market_push') > -1) {
-        this.routeIndex = 2 //  市场推送
-      }
     },
     //  显示上传框
     showInput(data) {
@@ -237,22 +297,11 @@ export default {
     //  模态框确认
     bannerOk() {
       this.singleData.stopReason = this.stopReason
-      switch (this.routeIndex) {
-        case 1:
-          //  banner图
-          http.putBannerId(this.singleData).then(response => {
-            this.getDataList()
-            this.stopReason = ''
-          })
-          break
-        case 2:
-          http.putMarketId(this.singleData).then(response => {
-            this.getDataList()
-            this.stopReason = ''
-          })
-          //  市场推送
-          break
-      }
+
+      http.putMarketId(this.singleData).then(response => {
+        this.getDataList()
+        this.stopReason = ''
+      })
     },
     //  模态框取消
     bannerCancel() {
@@ -278,23 +327,24 @@ export default {
       this.bannerData.push({
         startTime: '',
         endTime: '',
-        linkUrl: '',
-        remark: ''
+        remark: '',
+        areaId: '',
+        psMarketId: null,
+        cityId: null,
+        provinceId: null,
+        cityData: [],
+        areaData: [],
+        marketData: []
       })
     },
     //  保存修改
     saveEdit() {
-      if (this.routeIndex === 1) {
-        //  banner图管理
-        http.saveBannerData(this.bannerData).then(response => {
-          this.getDataList()
-        })
-      } else if (this.routeIndex === 2) {
-        //  市场推送
-        http.saveMarketData(this.bannerData).then(response => {
-          this.getDataList()
-        })
-      }
+      //  市场推送
+      http.saveMarketData(this.bannerData).then(response => {
+        console.log(this.bannerData)
+        this.bannerData.length = 0
+        this.getDataList()
+      })
     },
     //  时间过滤
     filterTime(value) {
@@ -320,18 +370,7 @@ export default {
       }:${params.seconds}`
     }
   },
-  watch: {
-    $route(newValue, oldValue) {
-      if (
-        newValue.path.indexOf('/custom/banner_manage') > -1 ||
-        newValue.path.indexOf('/custom/market_push') > -1
-      ) {
-        this.tabIndex = 0
-        this.getDataList()
-        this.$forceUpdate()
-      }
-    }
-  }
+  watch: {}
 }
 </script>
 

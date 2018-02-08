@@ -23,7 +23,7 @@
         </Tabs>
         <Button type="primary" style="position:absolute;top:0;right:0;" @click="addMessage">新增推送</Button>
         <Table border stripe :columns="messageTitle" :data="messageData.records" @on-row-click="lookMessage"></Table>
-        <Page :total="messageData.total" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
+        <Page :total="messageData.total" :page-size="params.pageSize" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
       </div>
   </div>
 </template>
@@ -58,15 +58,25 @@ export default {
           title: '推送时间',
           key: 'pushTime',
           align: 'center',
-          sortable: true,
+          // sortable: true,
           render: (h, params) => {
             return h('span', this.filterTime(params.row.pushTime))
           }
         },
         {
           title: '推送状态',
-          key: 'pushType',
-          align: 'center'
+          key: 'status',
+          align: 'center',
+          render: (h, params) => {
+            return h(
+              'span',
+              params.row.status === 1
+                ? '推送成功'
+                : params.row.status === 2
+                  ? '推送失败'
+                  : params.row.status === 0 ? '未推送' : ''
+            )
+          }
         },
         {
           title: '操作人员',
@@ -219,12 +229,12 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.message-top{
-  line-height:1.5;
-  margin-bottom:40px;
+.message-top {
+  line-height: 1.5;
+  margin-bottom: 40px;
 }
 
-.contain{
+.contain {
   position: relative;
 }
 </style>

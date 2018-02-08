@@ -8,73 +8,61 @@
 <template>
   <div>
     <p class="search">
-      <input type="text" placeholder="用户ID/用户昵称/用户手机号">
-      <Button type="primary">搜索</Button>
+      <input style="width:100px;" type="text" placeholder="用户ID" v-model="condition.userId">
+      <input style="width:100px;" type="text" placeholder="用户昵称" v-model="condition.nickName">
+      <input style="width:100px;" type="text" placeholder="用户手机号" v-model="condition.phone">
+      <Button type="primary" @click="search">搜索</Button>
     </p>
     <div class="content">
-      <Tabs>
+      <Tabs v-model="tabIndex" @on-click="showTabIndex">
         <TabPane label="用户端"></TabPane>
         <TabPane label="商户端"></TabPane>
         <TabPane label="配送端"></TabPane>
       </Tabs>
-      <Table border :columns="keys" :data="tabData"></Table>
-      <Page style="float:right;margin-top:20px;" :total="100" show-total></Page>
+      <Table v-if="tabData" border stripe :columns="keys" :data="tabData.records"></Table>
+      <Page v-if="tabData" style="float:right;margin-top:20px;" :total="tabData.total" show-total></Page>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+import * as http from 'api/common'
 export default {
   data() {
     return {
       keys: [
         {
           title: '用户ID',
-          key: 'name',
-          align: 'center'
-        },
-        {
-          title: '用户昵称',
-          key: 'age',
+          key: 'userId',
           align: 'center'
         },
         {
           title: '用户手机',
-          key: 'address',
+          key: 'phoneNo',
           align: 'center'
         },
         {
           title: '菜一代数量',
-          key: 'name',
+          key: 'levelOneCount',
           align: 'center'
         },
         {
           title: '菜二代数量',
-          key: 'age',
-          align: 'center'
-        },
-        {
-          title: '菜一代收益(现金)',
-          key: 'address',
-          align: 'center'
-        },
-        {
-          title: '菜二代收益(现金)',
-          key: 'name',
+          key: 'levelTwoCount',
           align: 'center'
         },
         {
           title: '菜一代收益(菜城币)',
-          key: 'age',
+          key: 'levelOneCoins',
           align: 'center'
         },
         {
           title: '菜二代收益(菜城币)',
-          key: 'address',
+          key: 'levelTwoCoins',
           align: 'center'
         },
         {
           title: '总收益(菜城币)',
-          key: 'address',
+          key: 'totalCoins',
           align: 'center'
         },
         {
@@ -91,7 +79,12 @@ export default {
                 },
                 on: {
                   click: () => {
-                    console.log(params)
+                    this.$router.push({
+                      path: 'distribution_people_manage/distribution_detail',
+                      query: {
+                        id: params.row.userId
+                      }
+                    })
                   }
                 }
               },
@@ -100,32 +93,67 @@ export default {
           }
         }
       ],
-      tabData: []
+      tabData: null,
+      pageNo: 1,
+      params: {
+        type: 1,
+        condition1: '', // id
+        condition2: '', //  手机号
+        condition3: '', //  昵称
+        pageSize: 20
+      },
+      tabIndex: 0,
+      condition: {
+        userId: '',
+        nickName: '',
+        phone: ''
+      }
     }
   },
-  created() {},
-  methods: {}
+  created() {
+    this.getDataList()
+  },
+  methods: {
+    //  获取分销数据
+    getDataList() {
+      http.getDistributionList(this.pageNo, this.params).then(response => {
+        this.tabData = response
+      })
+    },
+    //  tab点击
+    showTabIndex(index) {
+      this.params.type = parseInt(index) + 1
+      this.getDataList()
+    },
+    //  搜索
+    search() {
+      this.params.condition1 = this.condition.userId
+      this.params.condition2 = this.condition.phone
+      this.params.condition3 = this.condition.nickName
+      this.getDataList()
+    }
+  }
 }
 </script>
 
 <style scoped lang="css" >
-p.search{
-  float:right;
-  height:30px;
+p.search {
+  float: right;
+  height: 30px;
 }
 
-p.search>input[type='text']{
-  width:200px;
-  height:30px;
-  text-indent:5px;
-  margin-right:10px;
+p.search > input[type='text'] {
+  width: 200px;
+  height: 30px;
+  text-indent: 5px;
+  margin-right: 10px;
 }
 
-p>*{
+p > * {
   vertical-align: sub;
 }
 
-div.content{
+div.content {
   clear: both;
 }
 </style>
