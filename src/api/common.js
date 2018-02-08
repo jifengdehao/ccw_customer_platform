@@ -565,6 +565,27 @@ export const getProvinceList = () => {
 }
 
 /**
+ * 获取该省下的市区
+ */
+export const getCityList = params => {
+  return ax.g(`/customer/province/${params.provinceId}`)
+}
+
+/**
+ * 获取该市下的区域
+ */
+export const getAreaList = params => {
+  return ax.g(`/customer/city/${params.cityId}`)
+}
+
+/**
+ * 获取区域下的菜市场
+ */
+export const getMarketList = params => {
+  return ax.g(`/customer/areaMarket/${params.areaId}`)
+}
+
+/**
  * 获取用户端昨日新增用户量和当前用户量
  */
 export const getCustomerCount = params => {
@@ -738,6 +759,37 @@ export const refundMoney = params => {
 
 /**
  * 用户端相关接口
+ * @author by WuFengliang
+ */
+
+/**
+ * 分销接口
+ * @author by WuFengliang
+ */
+
+/**
+ * 获取分销用户列表
+ */
+export const getDistributionList = (pageNo, params) => {
+  return ax.g(`/distribution/ftAccount/list/${pageNo}`, params)
+}
+
+/**
+ * 查看我的收益
+ */
+export const getUserEarnings = params => {
+  return ax.g(`/distribution/ftAccount/${params.id}/myIncome`)
+}
+
+/**
+ * 查看账户流水/查看分销用户下级收益信息
+ */
+export const getLookUserCoin = (id, params) => {
+  return ax.g(`/distribution/ftAccount/${id}/inferiors`, params)
+}
+
+/**
+ * 分销接口
  * @author by WuFengliang
  */
 
