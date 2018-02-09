@@ -6,7 +6,7 @@
 */
 <template>
   <div class="order-manage">
-    <i-form inline label-position="left">
+    <i-form inline>
       <FormItem>
         <Input type="text" v-model.tirm="seek" placeholder="订单编号/用户ID/收货人手机" style="width: 200px"></Input>
       </FormItem>
@@ -158,8 +158,8 @@
         pageNum: 20, // 当前页的显示的数据数量
         tableTotal: 0, // 当前页的数据总数
         status: 0, // 状态
-        seek: '',
-        loading: true,
+        seek: '',   // 搜索
+        loading: true,  // 表格加载
         exportModal: false, // 弹出导出表格
         startTime: '', // 导出表格开始时间
         endTime: '', // 导出表格结束时间
@@ -227,14 +227,12 @@
             align: 'center',
             render: (h, params) => {
               let orderId = params.row.orderId
-              let isCancel = params.row.isCancel
               let disabled
-              if (isCancel === 0) {
+              if (params.row.isCancel === 0) {
                 disabled = true
               } else {
                 disabled = false
               }
-              let that = this
               return h('Button', {
                 props: {
                   type: 'error',
@@ -242,8 +240,8 @@
                 },
                 on: {
                   click: () => {
-                    that.cancelOrderId = orderId
-                    that.cancel_order = true
+                    this.cancelOrderId = orderId
+                    this.cancel_order = true
                   }
                 }
               }, '取消订单')
@@ -254,19 +252,19 @@
       }
     },
     created() {
-      this._getOrderData()
+      this.getOrderListData()
     },
     methods: {
       // 搜索
       handleSubmit() {
         this.curr = 1
-        this._getOrderData()
+        this.getOrderListData()
       },
       // 选择tab
       selectTab(name) {
         this.status = parseInt(name)
         this.curr = 1
-        this._getOrderData()
+        this.getOrderListData()
       },
       // 导出数据
       exportData() {
@@ -280,6 +278,7 @@
           }
           api.exportOrderList(params).then((res) => {
             if (res) {
+              console.log(res)
               this.modal_loading = false
               window.open(res)
             }
@@ -289,7 +288,7 @@
       // 分页
       changePage(index) {
         this.curr = index
-        this._getOrderData()
+        this.getOrderListData()
       },
       // 取消订单
       cancelOrder() {
@@ -302,7 +301,7 @@
             if (res) {
               console.log(res)
               this.clearOrderDec()
-              this._getOrderData()
+              this.getOrderListData()
             } else {
               this.$Notice.error({
                 title: '取消订单失败！'
@@ -319,9 +318,11 @@
       },
       // 查看详情
       goToOrderDetails(params, index) {
+        console.log(index)
         this.$router.push('/order/orderInfo/' + params.orderId)
       },
-      _getOrderData() {
+      // 获取订单列表
+      getOrderListData() {
         let params = {
           pageSize: this.pageNum,
           status: this.status,
@@ -330,7 +331,7 @@
         this.loading = true
         api.getOrderList(params, this.curr).then((res) => {
           if (res) {
-            console.log(res)
+            console.log(res.records)
             this.loading = false
             this.tableTotal = res.total
             this.data = res.records

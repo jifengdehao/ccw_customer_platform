@@ -9,36 +9,20 @@
     <div class="close" @click="close">
       <Button type="text" icon="close"></Button>
     </div>
-    <Row class="mb20">
-      <Col span="24">
-      <h2 class="mb10">订单信息</h2>
-      <Table :columns="columns1" :data="data1" :border="true"></Table>
-      </Col>
-    </Row>
-    <Row class="mb20">
-      <Col span="24">
-      <h2 class="mb10">支付信息</h2>
-      <Table :columns="columns3" :data="data3" :border="true"></Table>
-      </Col>
-    </Row>
-    <Row class="mb20">
-      <Col span="24">
-      <h2 class="vm-clearfix mb10">交易信息
-        <Button type="primary"
-                class="ml10"
-                @click="refundModal=true"
-                :disabled="fullRefund === 0 ? false : true">全部退款
-        </Button>
-      </h2>
-      <Table :columns="columns4" :data="data4" :border="true"></Table>
-      </Col>
-    </Row>
-    <Row class="mb20">
-      <Col span="24">
-      <h2 class="mb10">配送信息</h2>
-      <Table :columns="columns2" :data="data2" :border="true"></Table>
-      </Col>
-    </Row>
+    <h2 class="mb10">订单信息</h2>
+    <Table :columns="columns1" :data="data1" border></Table>
+    <h2 class="mtb10">支付信息</h2>
+    <Table :columns="columns3" :data="data3" border></Table>
+    <h2 class="mtb10">交易信息
+      <Button type="primary"
+              class="ml10"
+              @click="refundModal=true"
+              :disabled="fullRefund === 0 ? false : true">全部退款
+      </Button>
+    </h2>
+    <Table :columns="columns4" :data="data4" border></Table>
+    <h2 class="mtb10">配送信息</h2>
+    <Table :columns="columns2" :data="data2" border></Table>
     <Modal v-model="refundModal"
            width="400">
       <h3 slot="header" class="vm-textCenter" v-if="foodId">确定退还此商品金额？</h3>
@@ -64,7 +48,7 @@
         orderId: (() => {  // 订单ID
           return this.$route.params.id
         })(),
-        foodId: null, // 商品ID
+        foodId: '', //  商品ID
         refundModal: false, // 退款弹窗
         refundDec: '',  // 退款备注
         fullRefund: 1, // 全部退款 0 是可以全部退款 1 不可以全部退款
@@ -137,12 +121,12 @@
           /*
           {
             title: '配送方式',
-            key: '',
+            key: 'deliveryModeName',
             align: 'center'
           },
           {
             title: '配送状态',
-            key: '',
+            key: 'deliveryStatus',
             align: 'center'
           },
           */
@@ -151,7 +135,7 @@
             key: 'orderTime',
             align: 'center',
             render: (h, params) => {
-              return time.formatDateTime(params.row.startTime)
+              return time.formatDateTime(params.row.orderTime)
             }
           },
           {
@@ -199,7 +183,7 @@
         columns3: [
           {
             title: '订单金额',
-            key: 'amount',
+            key: 'realPayAmount',
             align: 'center',
             render: (h, params) => {
               let text = params.row.realPayAmount / 100
@@ -231,7 +215,7 @@
           },
           {
             title: '实际支付金额',
-            key: 'realPayAmount',
+            key: 'amount',
             align: 'center',
             render: (h, params) => {
               let text = params.row.amount / 100
@@ -284,7 +268,7 @@
             key: 'status',
             align: 'center',
             render: (h, params) => {
-              return params.status === 0 ? '否' : '是'
+              return params.status === 0 ? '是' : '否'
             }
           },
           {
