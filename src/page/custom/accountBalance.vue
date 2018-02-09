@@ -7,8 +7,8 @@
   <template>
   <div>
     <i-form ref="formInline" :model="formInline" :rules="ruleInline" inline label-position="left">
-      <FormItem prop="phone" label="手机号码" :label-width="80">
-        <Input type="text" v-model="formInline.phone" placeholder="请输入手机号"></Input>
+      <FormItem prop="phone" label="搜索关键词" :label-width="100">
+        <Input type="text" style="width:180px" v-model="formInline.phone" placeholder="请输入用户ID/手机号/昵称"></Input>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="search">搜索</Button>
@@ -19,7 +19,7 @@
         <Table border stripe :columns="accountBalance" :data="usersDatas.records" @on-row-click="jumpTo"></Table>
       </TabPane>
       <TabPane label="账户积分">
-        <Table border stripe :columns="accountCoins" :data="usersDatas.records"></Table>
+        <Table border stripe :columns="accountCoins" :data="usersDatas.records" @on-row-click="coinsTo"></Table>
       </TabPane>
       <TabPane label="账户延期">
         <!-- <Table border :columns="accountBalance" :data="usersDatas.records"></Table> -->
@@ -27,6 +27,7 @@
       </TabPane>
     </Tabs>
     <Page :total="usersDatas.total" :page-size="20" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
+    <!-- 账户余额 -->
     <Modal
       v-model="isBoolean"
       :closable="false" @on-ok="refundMoney" @on-cancel="resetSome">
@@ -34,6 +35,16 @@
       <p class="money">支付宝姓名: <input type="text" v-model="alipayName"></p>
       <p class="money">支付宝账号: <input type="text" v-model="alipayAccount"></p>
       <p class="money"><span style="display:inline-block;vertical-align:top;">退款原因:&nbsp;&nbsp;</span><textarea style="resize:none;height:60px;" v-model="reason"></textarea></p>
+    </Modal>
+
+    <!-- 账户积分 -->
+    <Modal
+        v-model="isCoins"
+        title="提示"
+        @on-ok="coinsOk"
+        @on-cancel="coinsCancel">
+        <p class="money">调整积分:<input type="number" v-model="amount" style="margin-left:10px;"></p>
+        <p class="money"><textarea style="resize:none;height:80px;margin-left:60px;" maxlength="50" placeholder="请输入备注信息(字数不得超过50字)" v-model="reason"></textarea></p>
     </Modal>
   </div>
 </template>
@@ -55,7 +66,8 @@ export default {
         pageNo: 1,
         selectTypes: 1
       }, //  传递参数
-      isBoolean: false, //  弹框boolean值
+      isBoolean: false, //  账户余额弹框boolean值
+      isCoins: false, //  账户积分弹框boolean值
       custId: '', // 用户ID
       amount: '', //  退款金额
       alipayName: '', //  支付宝姓名
@@ -64,11 +76,7 @@ export default {
       ruleInline: {
         phone: [
           {
-            required: true,
-            message: '请填写正确的手机号',
-            trigger: 'blur',
-            pattern:
-              '^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$'
+            required: true
           }
         ]
       },
@@ -90,7 +98,15 @@ export default {
           align: 'center'
         },
         {
-          title: '余额(元)',
+          title: '账户账户',
+          key: 'status',
+          align: 'center',
+          render: (h, params) => {
+            return h('span', params.row.status === 1 ? '正常' : '异常')
+          }
+        },
+        {
+          title: '账户余额',
           key: 'balance',
           align: 'center',
           render: (h, params) => {
@@ -171,15 +187,14 @@ export default {
                     marginRight: '5px'
                   },
                   on: {
-                    click: () => {
-                      this.$router.push({
-                        name: 'balance_detail',
-                        query: { custId: params.row.custId, accountType: 2 }
-                      })
+                    click: event => {
+                      this.custId = params.row.custId
+                      event.cancelBubble = true
+                      this.isCoins = true
                     }
                   }
                 },
-                '查看'
+                '调整积分'
               )
             ])
           }
@@ -230,9 +245,16 @@ export default {
         }
       })
     },
-    //  跳转查看
+    //  账户余额跳转查看
     jumpTo(params) {
       this.$router.push(`/custom/account_balance/edit/${params.custId}`)
+    },
+    //  账户积分跳转查看
+    coinsTo(params) {
+      this.$router.push({
+        name: 'balance_detail',
+        query: { custId: params.custId, accountType: 2 }
+      })
     },
     //  确定退款
     refundMoney() {
@@ -257,11 +279,12 @@ export default {
       this.amount = this.toFixed(this.amount)
       http
         .refundMoney({
-          mcCustomerId: this.params.custId,
+          mcCustomerId: this.custId,
           amount: this.amount,
           alipayAccount: this.alipayAccount,
           alipayName: this.alipayName,
-          reason: this.reason
+          reason: this.reason,
+          types: 1 //  余额是1，积分是2
         })
         .then(data => {
           this.amount = this.alipayName = this.alipayAccount = this.reason = ''
@@ -269,8 +292,7 @@ export default {
             title: '提示',
             content: '已发起申请退款',
             onOk: () => {
-              this.loopAccount()
-              this.getAccountMoneyChange()
+              this.loadData()
             }
           })
         })
@@ -278,6 +300,29 @@ export default {
     //  取消
     resetSome() {
       this.amount = this.alipayName = this.alipayAccount = this.reason = ''
+    },
+    //  账户积分
+    coinsOk() {
+      http
+        .refundMoney({
+          mcCustomerId: this.custId,
+          amount: this.amount,
+          reason: this.reason,
+          types: 2 //  余额是1，积分是2
+        })
+        .then(data => {
+          this.amount = this.reason = ''
+          this.$Modal.success({
+            title: '提示',
+            content: '已调整积分',
+            onOk: () => {
+              this.loadData()
+            }
+          })
+        })
+    },
+    coinsCancel() {
+      this.amount = this.reason = ''
     },
     //  精准度缺失解决办法
     toFixed(value) {
