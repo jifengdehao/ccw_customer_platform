@@ -158,7 +158,8 @@ export default {
         {
           title: '提交时间',
           key: 'applyDate',
-          width: 150,
+          width: 130,
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h('span', {}, this.formatDateTime(params.row.applyDate))
@@ -169,7 +170,7 @@ export default {
           title: '负责人',
           key: 'chargeman',
           align: 'center',
-          width: 80
+          width: 50
         },
         {
           title: '操作',
@@ -208,7 +209,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    width: '50px'
+                    width: '50px',
+                    display: params.row.isPay === 0 ? 'none' : 'inline-block'
                   },
                   on: {
                     click: () => {
