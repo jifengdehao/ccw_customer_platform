@@ -156,7 +156,6 @@
         refundDec: '', // 退款备注
         adopt: 2,  // 通过状态
         adopt_modal: false, // 通过弹窗
-
         refuse_modal: false, // 拒绝退款弹窗
         refuseDec: '', // 拒绝退款备注
         serviceAll: [],  // 已退款全选的数据
@@ -666,7 +665,7 @@
           {
             title: '平台审核结果',
             align: 'center',
-            key: 'ptHandleActionName'
+            key: 'ptAuditStatusName'
           },
           {
             title: '平台审核时间',
@@ -860,7 +859,7 @@
           {
             title: '平台审核结果',
             align: 'center',
-            key: 'ptHandleActionName'
+            key: 'ptAuditStatusName'
           },
           {
             title: '平台审核时间',
@@ -1030,7 +1029,7 @@
           {
             title: '平台审核结果',
             align: 'center',
-            key: 'ptHandleActionName'
+            key: 'ptAuditStatusName'
           },
           {
             title: '平台审核时间',
@@ -1104,17 +1103,19 @@
       },
       // 获取售后划分责任
       getDutyData() {
-        api.getCustomerServiceDutyData(this.serviceId, this.adopt).then((res) => {
-          if (res) {
-            console.log(res)
-            if (res.couponList) {
-              this.couponList = res.couponList
+        if (this.serviceId) {
+          api.getCustomerServiceDutyData(this.serviceId, this.adopt).then((res) => {
+            if (res) {
+              console.log(res)
+              if (res.couponList) {
+                this.couponList = res.couponList
+              }
+              if (res.actualAmount) {
+                this.actualAmount = res.actualAmount
+              }
             }
-            if (res.actualAmount) {
-              this.actualAmount = res.actualAmount
-            }
-          }
-        })
+          })
+        }
       },
       // 关闭通过弹窗
       clearAdopt() {
@@ -1171,12 +1172,6 @@
           })
         }
       },
-      // 关闭拒绝退款弹窗
-      clearRefuse() {
-        this.refuse_modal = false
-        this.refuseDec = ''
-        this.serviceId = ''
-      },
       // 关闭驳回弹窗
       clearReject() {
         this.reject_modal = false
@@ -1195,6 +1190,12 @@
             this.getCustomerService()
           }
         })
+      },
+      // 关闭拒绝退款弹窗
+      clearRefuse() {
+        this.refuse_modal = false
+        this.refuseDec = ''
+        this.serviceId = ''
       },
       // 确定拒绝退款
       confirmRefuse() {
@@ -1259,5 +1260,3 @@
     }
   }
 </script>
-University of Science and Technology of China (CLASSROOM)
-DTXRAnPn1P65Rt0xB4eTQ+4bF5IUF0gu0X9XBEUhM4QxY0DRFJxYEmgh4nyh7RtL

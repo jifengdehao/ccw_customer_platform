@@ -6,7 +6,7 @@
 */
 <template>
   <div class="feedback">
-    <Form inline label-position="left">
+    <Form inline>
       <FormItem>
         <Input type="text" v-model.tirm="seek" placeholder="请输入你的手机号"></Input>
       </FormItem>
@@ -16,7 +16,7 @@
     </Form>
     <Row>
       <Col span="24">
-      <Tabs :value="this.types" :animated="false" @on-click="selectTab">
+      <Tabs :value="0" :animated="false" @on-click="selectTab">
         <Tab-pane label="商户端" name="0">
           <Table :columns="columns" :data="data" :loading="loading"></Table>
           <Page :total="tableTotal"
@@ -75,7 +75,7 @@
         curr: 1, // 当前页
         pageNum: 20, // 当前页展示的数据量
         tableTotal: 0, // 数据总数
-        types: '0', // 评价类型
+        types: 0, // 评价类型
         seek: '', // 搜索条件
         loading: true, // 表格加载
         exportModal: false, // 弹出导出表格
@@ -169,7 +169,7 @@
         this.getFeedbackListData()
       },
       selectTab (name) {
-        this.types = name
+        this.types = parseInt(name)
         this.curr = 1
         this.getFeedbackListData()
       },
@@ -199,6 +199,7 @@
         }
         api.getFeedBackList(params, this.curr).then((res) => {
           if (res) {
+            console.log(res)
             this.tableTotal = res.total
             this.data = res.records
             this.loading = false

@@ -66,7 +66,7 @@ export default {
       },
       applyParams: {
         // 获取入驻审核列表传参
-        pageSize: 10,
+        pageSize: 20,
         applyStatus: 1, // 申请的状态
         chargeMan: '', // 负责人
         applyStartTime: '',
@@ -148,9 +148,18 @@ export default {
           align: 'center'
         },
         {
+          title: '是否缴费',
+          key: 'isPay',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [h('span', params.row.isPay === 0 ? '未交费' : '已缴费')])
+          }
+        },
+        {
           title: '提交时间',
           key: 'applyDate',
-          width: 150,
+          width: 130,
+          align: 'center',
           render: (h, params) => {
             return h('div', [
               h('span', {}, this.formatDateTime(params.row.applyDate))
@@ -161,7 +170,7 @@ export default {
           title: '负责人',
           key: 'chargeman',
           align: 'center',
-          width: 80
+          width: 50
         },
         {
           title: '操作',
@@ -180,7 +189,8 @@ export default {
                   },
                   style: {
                     marginRight: '5px',
-                    width: '50px'
+                    width: '50px',
+                    display: params.row.isPay === 0 ? 'none' : 'inline-block'
                   },
                   on: {
                     click: () => {
@@ -199,7 +209,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    width: '50px'
+                    width: '50px',
+                    display: params.row.isPay === 0 ? 'none' : 'inline-block'
                   },
                   on: {
                     click: () => {
@@ -285,6 +296,14 @@ export default {
           title: '档口介绍',
           key: 'shopDesc',
           align: 'center'
+        },
+        {
+          title: '是否缴费',
+          key: 'isPay',
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [h('span', params.row.isPay === 0 ? '未交费' : '已缴费')])
+          }
         },
         {
           title: '提交时间',

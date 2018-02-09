@@ -38,7 +38,7 @@ export default {
   data() {
     return {
       pageNo: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: 0,
       showButton: 0,
       selection: [], // 选中的数据
@@ -52,7 +52,7 @@ export default {
       params: {
         auditStatus: 0, // 审核状态 (0待审核1审核通过2审核不通过)
         status: null, // 退款状态 (1退款中2退款完成3退款失败)
-        pageSize: 10
+        pageSize: 20
       },
       refundColumns: [],
       refundColumns1: [
