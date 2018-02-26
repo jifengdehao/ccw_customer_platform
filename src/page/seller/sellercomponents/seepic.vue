@@ -6,18 +6,18 @@
  */
 <template>
   <div class="tableImg vm-clearfix">
-    <Row> 
-      <h3>证件图片</h3>
-      <div  v-for="(item, index) in picUrls.qualificationList" :key="index" class="vm-fl">
-      <img  :src="item.url"  @click="seeimg(item.url)" class="imgs">
-      <p>{{item.name}}</p>
-    </div>
+    <Row > 
+        <h3>证件图片</h3>
+        <div  v-for="(item, index) in picUrls.qualificationList" :key="index" class="vm-fl" v-if="item.url">
+          <img  :src="item.url"  @click="seeimg(item.url)" class="imgs">
+          <p>{{item.name}}</p>
+        </div>
     </Row>   
-   <Row v-if="picUrls.protocol"> 
+    <Row > 
       <h3>合同图片</h3>
-      <div  v-for="(item, index) in picUrls.protocol" :key="index" class="vm-fl">
-      <img  :src="item"  @click="seeimg(item)" class="imgs2">
-    </div>
+      <div  v-for="(item, index) in picUrls.protocol" :key="index" class="vm-fl" v-if="item.url">
+        <img  :src="item"  @click="seeimg(item)" class="imgs2">
+      </div>
     </Row>   
     <Modal
         v-model="modal"

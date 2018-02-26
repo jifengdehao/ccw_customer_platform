@@ -78,7 +78,7 @@
             <span>档口图片：</span>
             <div class="img" style="marginLeft:13px">
                <img :src="shopMessage.headUrl"  alt="">
-              <div class="qualification" style="width:100px;top:85px;lineHeight:20px">
+                <div class="qualification headUrl" style="width:100px;top:85px;lineHeight:20px">
                 <input type="file" @change="headUrlUpload" accept="image/*">上传图片
               </div>
             </div>
@@ -145,7 +145,6 @@
             <h3>营业资质</h3>
             <ul>
               <li v-for="(item,index) in qulification.qualificationList" :key="index">
-                <div class="" >
                   <div class="img">
                     <img :src="item.url" alt="">
                     <div class="cover">
@@ -155,7 +154,7 @@
                   <div class="qualification">
                     <input type="file" @change="qualificationUpload($event,index)" accept="image/*">上传图片
                   </div>
-                </div>
+                
                 <p>{{item.name}}</p>
               </li>
             </ul>
@@ -637,7 +636,7 @@ h3 {
 }
 .shopMessagemModal-qualification li {
   position: relative;
-  width: 30%;
+  width: 45%;
   height: 160px;
   /* border: 1px solid #ddd; */
   margin: 5px;
@@ -645,7 +644,7 @@ h3 {
 }
 .shopMessagemModal-qualification li .img {
   display: block;
-  width: 150px;
+  width: 200px;
   height: 130px;
   border: 1px solid #ddd;
 }
@@ -697,15 +696,17 @@ input[type='file'] {
 }
 .qualification {
   position: absolute;
-  left: 5px;
+  left: 19px;
   bottom: 20px;
-  width: 150px;
+  width: 200px;
   height: 20px;
   line-height: 20px;
   background-color: #e6dfbe;
   text-align: center;
 }
-
+.headUrl{
+  left: 5px;
+}
 .uploadButton {
   width: 120px;
   height: 120px;
