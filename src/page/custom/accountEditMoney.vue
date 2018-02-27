@@ -13,7 +13,6 @@
         <th>用户昵称</th>
         <th>用户余额</th>
         <th>账户状态</th>
-        <th>操作</th>
       </tr>
       <tr>
         <td>{{singleData.custId}}</td>
@@ -21,7 +20,6 @@
         <td>{{singleData.custName}}</td>
         <td v-if="params.accountType == 1">{{singleData.balance/100}}</td>
         <td>{{singleData.status === 1 ? '正常':'冻结'}}</td>
-        <td><a @click="editAccount">编辑</a></td>
       </tr>
     </table>
     <div class="account-money-detail">
@@ -29,15 +27,6 @@
       <Table v-if="data" border :columns="changeTitle" :data="data.records"></Table>   
       <Page v-if="data" :total="data.total" :current="params.pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
     </div>
-      <Modal
-        v-model="isBoolean"
-        :closable="false" @on-ok="refundMoney" @on-cancel="resetSome">
-        <p class="money">退款金额:¥<input type="number" v-model="amount" style="margin-left:10px;"></p>
-        <p class="money">支付宝姓名: <input type="text" v-model="alipayName"></p>
-        <p class="money">支付宝账号: <input type="text" v-model="alipayAccount"></p>
-        <p class="money"><span style="display:inline-block;vertical-align:top;">退款原因:&nbsp;&nbsp;</span><textarea style="resize:none;height:60px;" v-model="reason"></textarea></p>
-        <p>请按照客服退款操作手册进行正确的合算</p>
-      </Modal>
   </div>
 </template>
 <script>
@@ -52,11 +41,6 @@ export default {
         pageSize: 10,
         pageNo: 1
       },
-      isBoolean: false, //  弹框boolean值
-      amount: '', //  退款金额
-      alipayName: '', //  支付宝姓名
-      reason: '', //  退款原因
-      alipayAccount: '', // 支付宝账号
       singleData: null, //  查看用户获取到的数据
       changeTitle: [
         {
@@ -159,55 +143,6 @@ export default {
     loadNext(num) {
       this.params.pageNo = num
       this.getAccountMoneyChange()
-    },
-    //  编辑用户
-    editAccount() {
-      this.isBoolean = true
-    },
-    //  确定退款
-    refundMoney() {
-      if (
-        !this.params.custId ||
-        !this.alipayAccount ||
-        (!this.amount || this.amount < 0) ||
-        !this.alipayName ||
-        !this.reason
-      ) {
-        this.$Modal.error({
-          title: '提示',
-          content: '您输入的有误，请重新来过',
-          onOk: () => {
-            this.amount = this.alipayName = this.alipayAccount = this.reason =
-              ''
-          }
-        })
-        return
-      }
-
-      this.amount = this.toFixed(this.amount)
-      http
-        .refundMoney({
-          mcCustomerId: this.params.custId,
-          amount: this.amount,
-          alipayAccount: this.alipayAccount,
-          alipayName: this.alipayName,
-          reason: this.reason
-        })
-        .then(data => {
-          this.amount = this.alipayAccount = ''
-          this.$Modal.success({
-            title: '提示',
-            content: '已发起申请退款',
-            onOk: () => {
-              this.loopAccount()
-              this.getAccountMoneyChange()
-            }
-          })
-        })
-    },
-    //  取消
-    resetSome() {
-      this.amount = this.alipayName = this.alipayAccount = this.reason = ''
     },
     //  精准度缺失解决办法
     toFixed(value) {
