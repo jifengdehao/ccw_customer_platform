@@ -15,7 +15,7 @@
     </Row>   
     <Row > 
       <h3>合同图片</h3>
-      <div  v-for="(item, index) in picUrls.protocol" :key="index" class="vm-fl" v-if="item.url">
+      <div  v-for="(item, index) in picUrls.protocol" :key="index" class="vm-fl">
         <img  :src="item"  @click="seeimg(item)" class="imgs2">
       </div>
     </Row>   
