@@ -189,8 +189,8 @@ export default {
                   },
                   style: {
                     marginRight: '5px',
-                    width: '50px',
-                    display: params.row.isPay === 0 ? 'none' : 'inline-block'
+                    width: '50px'
+                    // display: params.row.isPay === 0 ? 'none' : 'inline-block'
                   },
                   on: {
                     click: () => {
@@ -209,8 +209,8 @@ export default {
                     size: 'small'
                   },
                   style: {
-                    width: '50px',
-                    display: params.row.isPay === 0 ? 'none' : 'inline-block'
+                    width: '50px'
+                    // display: params.row.isPay === 0 ? 'none' : 'inline-block'
                   },
                   on: {
                     click: () => {
