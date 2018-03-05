@@ -119,8 +119,8 @@ export default {
   methods: {
     // 返回
     toProductManage(event) {
-      // this.$emit('product-manage')
-      console.log(this.messageData.status)
+      this.$emit('product-manage')
+      // console.log(this.messageData.status)
     },
     // 主图上传
     mainPicUpload(e) {

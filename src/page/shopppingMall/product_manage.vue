@@ -37,7 +37,7 @@
           <!--  -->
         </div>
         <div>
-          <Page class="page-style" :current="pageNo" show-total :total="total" @on-change="changePage"></Page>
+          <Page class="page-style" :page-size="params.pageSize" :current="pageNo" show-total :total="total" @on-change="changePage"></Page>
         </div>
       </section>
     </div>
@@ -63,7 +63,7 @@ export default {
       changeValue: '上架',
       showProductMessage: false, // 是否显示产品信息页
       pageNo: 1,
-      pageSize: 20,
+      // pageSize: 20,
       total: 0,
       showButton: 0,
       selection: [], // 选中的数据
@@ -222,6 +222,7 @@ export default {
       } else {
         this.params.status = index
       }
+      this.pageNo = 1
       this.getproductList()
     },
     // 切换分页

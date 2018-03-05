@@ -21,7 +21,7 @@
             <Input v-model="formItem.categoryName" style="width:200px" placeholder="Enter something..." ></Input>
         </FormItem> 
         <FormItem label="分类ICON:">
-          <div class="img vm-fl" >
+          <div class="img vm-fl" v-if="formItem.iconUrl">
             <img :src="formItem.iconUrl" alt="" >
             <div class="cover">
                   <Icon type="ios-eye-outline" @click.native="handleView(formItem.iconUrl)"></Icon>
@@ -33,8 +33,16 @@
         </FormItem>
     </Form>
     </Modal>
-     <Modal v-model="promptModal" title="删除" :mask-closable="false" @on-ok="delCategory">
+    <Modal v-model="promptModal" title="删除" :mask-closable="false" @on-ok="delCategory">
       <h2>确定删除产品？</h2>
+    </Modal>
+    <!-- 查看大图 -->
+    <Modal
+        v-model="imgModal"
+        title="查看大图"
+        width="900"
+        class="bigimgs vm-clearfix">
+        <img class="bigimg" :src="bigImgUrl" alt="">
     </Modal>
   </div>
 </template>
@@ -49,6 +57,7 @@ export default {
     return {
       addModal: false,
       promptModal: false,
+      imgModal: false,
       modalTitle: '增加',
       formItem: {
         jfCategoryId: null,
@@ -125,7 +134,8 @@ export default {
           }
         }
       ],
-      Data: []
+      Data: [],
+      bigImgUrl: '' // 查看大图地址
     }
   },
   created() {
@@ -172,6 +182,11 @@ export default {
         this.$Message.error('删除成功')
         this.getCategoryList()
       })
+    },
+    // 查看大图
+    handleView(url) {
+      this.imgModal = true
+      this.bigImgUrl = url
     }
   },
   filfter: {},
@@ -238,5 +253,8 @@ input[type='file'] {
   cursor: pointer;
   margin: 0 2px;
   line-height: 80px;
+}
+.bigimg {
+  max-width: 850px;
 }
 </style>
