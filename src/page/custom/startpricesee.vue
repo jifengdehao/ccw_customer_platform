@@ -88,6 +88,7 @@ export default {
     //  省份发生改变
     changeValue(value) {
       this.id = value
+      this.pageNum = 1
       this.loadData()
     }
   }
