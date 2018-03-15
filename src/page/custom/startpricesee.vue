@@ -8,7 +8,7 @@
   <div class="start-price-see">
     <p style="margin-bottom:20px;">
       <span>省区:</span>
-      <Select v-model="id" style="width:200px;margin-left:10px;">
+      <Select v-model="id" style="width:200px;margin-left:10px;" @on-change="changeValue">
         <Option v-for="item in provinceList" :value="item.provinceId" :key="item.provinceId">{{ item.provinceName }}</Option>
       </Select>  
     </p>
@@ -65,6 +65,7 @@ export default {
       if (!this.id) {
         return
       }
+      this.priceData = []
       http
         .getPirse({ id: this.id, pageNum: this.pageNum }, { pageSize: 20 })
         .then(data => {
@@ -82,6 +83,11 @@ export default {
     //  加载下一页
     loadNext(name) {
       this.pageNum = name
+      this.loadData()
+    },
+    //  省份发生改变
+    changeValue(value) {
+      this.id = value
       this.loadData()
     }
   }
