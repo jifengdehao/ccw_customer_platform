@@ -1,8 +1,8 @@
 /*
- * @Author: WuFengliang 
- * @Date: 2017-10-13 14:45:08 
- * DeveloperMailbox:   wufengliang@ccw163.com 
- * FunctionPoint: 系统消息推送 
+ * @Author: WuFengliang
+ * @Date: 2017-10-13 14:45:08
+ * DeveloperMailbox:   wufengliang@ccw163.com
+ * FunctionPoint: 系统消息推送
  */
 
 <template>
@@ -22,7 +22,7 @@
           <TabPane label="已推送"></TabPane>
         </Tabs>
         <Button type="primary" style="position:absolute;top:0;right:0;" @click="addMessage">新增推送</Button>
-        <Table border stripe :columns="messageTitle" :data="messageData.records" @on-row-click="lookMessage"></Table>
+        <Table border stripe :columns="messageTitle" :data="messageData.records" @on-row-dblclick="lookMessage"></Table>
         <Page :total="messageData.total" :page-size="params.pageSize" :current="pageNo" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
       </div>
   </div>

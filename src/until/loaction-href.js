@@ -16,7 +16,6 @@ export function isMobile () {
     IOS: function () {
       return ua.match(/iPhone|iPad|iPod/i) ? true : false
     },
-
     Windows: function () {
       return ua.match(/IEMobile/i) ? true : false
     },

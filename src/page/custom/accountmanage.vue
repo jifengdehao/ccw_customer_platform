@@ -1,8 +1,8 @@
 /*
- * @Author: WuFengliang 
- * @Date: 2017-10-13 10:15:25 
- * DeveloperMailbox:   wufengliang@ccw163.com 
- * FunctionPoint: 账户管理  
+ * @Author: WuFengliang
+ * @Date: 2017-10-13 10:15:25
+ * DeveloperMailbox:   wufengliang@ccw163.com
+ * FunctionPoint: 账户管理
  */
 <template>
   <div>
@@ -25,7 +25,7 @@
         <span>{{count.totalCustomer}}</span>
       </label>
     </i-form>
-    <Table stripe border :columns="allUsersTitle" :data="usersDatas.records" @on-row-click="jumpTo"></Table>
+    <Table stripe border :columns="allUsersTitle" :data="usersDatas.records" @on-row-dblclick="jumpTo"></Table>
     <Page :total="usersDatas.total" :current="pageNo" :page-size="20" :styles="{margin:'20px auto',float:'right'}" show-total @on-change="loadNext"></Page>
     <Modal v-if="tabIndex == 0" v-model="modalBoolean" :styles="{top: '40px'}" @on-ok="isOkDelete" @on-cancel="modalBoolean=false;">
       <p>设置冻结时间
