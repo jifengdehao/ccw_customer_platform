@@ -1220,6 +1220,7 @@
       selectStatus(value) {
         console.log(value)
         this.status = value
+        this.pageNo = 1
         this.getCustomerService()
       },
       // 选择时间

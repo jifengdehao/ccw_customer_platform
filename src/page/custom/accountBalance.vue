@@ -1,8 +1,8 @@
 /*
- * @Author: WuFengliang 
- * @Date: 2017-10-23 09:43:11 
- * DeveloperMailbox:   wufengliang@ccw163.com 
- * FunctionPoint: 账户余额 
+ * @Author: WuFengliang
+ * @Date: 2017-10-23 09:43:11
+ * DeveloperMailbox:   wufengliang@ccw163.com
+ * FunctionPoint: 账户余额
  */
   <template>
   <div>
@@ -16,10 +16,10 @@
     </i-form>
     <Tabs @on-click='chooseTabs'>
       <TabPane label="账户余额">
-        <Table border stripe :columns="accountBalance" :data="usersDatas.records" @on-row-click="jumpTo"></Table>
+        <Table border stripe :columns="accountBalance" :data="usersDatas.records" @on-row-dblclick="jumpTo"></Table>
       </TabPane>
       <TabPane label="账户积分">
-        <Table border stripe :columns="accountCoins" :data="usersDatas.records" @on-row-click="coinsTo"></Table>
+        <Table border stripe :columns="accountCoins" :data="usersDatas.records" @on-row-dblclick="coinsTo"></Table>
       </TabPane>
       <TabPane label="账户延期">
         <!-- <Table border :columns="accountBalance" :data="usersDatas.records"></Table> -->

@@ -9,7 +9,10 @@ import qs from 'qs'
 import iview from 'iview'
 import hash from 'js-md5'
 
-var ax = axios.create({
+// const configPath = '/api'
+// window.configPath = configPath
+
+const ax = axios.create({
   baseURL: process.env.BASE_API,
   timeout: 30000,
   withCredentials: true, // 跨域携带证书

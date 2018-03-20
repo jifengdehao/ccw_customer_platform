@@ -24,7 +24,7 @@
         </Select>
       </FormItem>
       <FormItem label="原因明细" prop="memo">
-        <Input v-model.tirm="formValidate.memo" placeholder="请输入退款原因明细" type="textarea"
+        <Input v-model.tirm="formValidate.memo" placeholder="字数不超过50字" type="textarea"
                :autosize="{minRows: 5,maxRows: 5}"></Input>
       </FormItem>
       <FormItem label="申请退款金额(元)" prop="refundAmount">
@@ -82,7 +82,8 @@
             {required: true, message: '请输入申请退款金额', trigger: 'blur'}
           ],
           memo: [
-            {required: true, message: '请输入退款原因明细', trigger: 'blur'}
+            {required: true, message: '请输入退款原因明细', trigger: 'blur'},
+            { type: 'string', max: 50, message: '原因明细不可以超过50字', trigger: 'blur' }
           ]
         }
       }

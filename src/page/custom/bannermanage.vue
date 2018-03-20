@@ -38,12 +38,13 @@
               </td>
               <td style="position:relative;width:220px;" v-hover>
                 <img v-if="banner.picUrl" :src="banner.picUrl" width="200" style="margin:10px auto;">
+                <a v-else  @click="showInput(banner)">上传</a>
                 <div class="mask" v-if="banner.picUrl && banner.status === 1">
                   <a @click="showInput(banner)">重新上传</a>
                   <a style="margin-left:10px;" @click="showImg(banner)">查看</a>
                 </div>
                 <div class="mask" v-else>
-                  <a v-if="!banner.picUrl && banner.status !== 0" @click="showInput(banner)">上传</a>
+                  <a v-if="!banner.picUrl || banner.status !== 1" @click="showInput(banner)">上传</a>
                   <a style="margin-left:10px;" @click="showImg(banner)">查看</a>
                 </div>
               </td>
@@ -149,12 +150,12 @@ export default {
     hover: {
       inserted(el) {
         el.onmouseover = function() {
-          if (this.children[1]) {
+          if (this.children[1] && this.children[0].src) {
             this.children[1].style.visibility = 'visible'
           }
         }
         el.onmouseout = function() {
-          if (this.children[1]) {
+          if (this.children[1] && this.children[0].src) {
             this.children[1].style.visibility = 'hidden'
           }
         }
@@ -201,8 +202,6 @@ export default {
     },
     //  tab索引
     showTabIndex(index) {
-      console.log(index)
-
       this.getDataList()
     },
     //  判断路由
@@ -281,6 +280,7 @@ export default {
         linkUrl: '',
         remark: ''
       })
+      console.log(this.bannerData)
     },
     //  保存修改
     saveEdit() {
@@ -336,103 +336,103 @@ export default {
 </script>
 
 <style scoped lang="css">
-  table{
-    width:100%;
-    text-align:center;
-    border-collapse: collapse;
-  }
-
-  table th{
-    background-color:#f8f8f9;
-  }
-
-  table tr:first-child{
-    height:40px;
-  }
-
-  table td,table th{
-    border:1px solid #e9eaec;
-    overflow: hidden;
-  }
-
-  table tr td p{
-    margin:10px auto;
-  }
-
-  table tr td p span{
-    margin-right:5px;
-  }
-
-table tr td button{
-  width:80%;
-  height:30px;
-  color:#fff;
-  border:none;
-  outline: none;
-  border-radius:4px;
-  background-color:#2d8cf0;
-  cursor:pointer;
+table {
+  width: 100%;
+  text-align: center;
+  border-collapse: collapse;
 }
 
-table tr td div.mask{
+table th {
+  background-color: #f8f8f9;
+}
+
+table tr:first-child {
+  height: 40px;
+}
+
+table td,
+table th {
+  border: 1px solid #e9eaec;
+  overflow: hidden;
+}
+
+table tr td p {
+  margin: 10px auto;
+}
+
+table tr td p span {
+  margin-right: 5px;
+}
+
+table tr td button {
+  width: 80%;
+  height: 30px;
+  color: #fff;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  background-color: #2d8cf0;
+  cursor: pointer;
+}
+
+table tr td div.mask {
   position: absolute;
-  top:0;
-  left:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  width:100%;
-  height:100%;
-  background-color:rgba(0,0,0,.4);
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
   visibility: hidden;
 }
 
-table  tr td div.mask a{
-  color:#fff;
+table tr td div.mask a {
+  color: #fff;
 }
 
-.inputFile{
+.inputFile {
   opacity: 0;
 }
 
-div.big-img{
-  position:fixed;
+div.big-img {
+  position: fixed;
   display: flex;
   align-items: center;
-  justify-content:center;
-  width:100%;
-  height:100%;
-  top:0;
-  left:0;
-  z-index:9999;
-  background-color:rgba(0,0,0,.4)
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
-div.big-img>img{
-  width:40%;
+div.big-img > img {
+  width: 40%;
 }
 
-div.big-img>span{
+div.big-img > span {
   position: fixed;
-  display:block;
-  text-align:center;
-  width:40px;
-  height:40px;
-  line-height:40px;
+  display: block;
+  text-align: center;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   top: 50px;
   right: 40px;
   font-size: 20px;
-  border-radius:20px;
-  cursor:pointer;
-  background-color:rgba(255,255,255,.5)
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
-textarea{
-  width:100%;
-  height:140px;
+textarea {
+  width: 100%;
+  height: 140px;
   resize: none;
   outline: none;
-  margin:auto;
+  margin: auto;
 }
-
 </style>
