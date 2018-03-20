@@ -25,7 +25,7 @@
       </Form>
     <!-- 表格内容 -->
     <div class="vm-fr">
-      <Button type="primary" @click="showModal" :disabled="isDisabled">添加模板</Button>
+      <Button type="primary" @click="showModal" >添加模板</Button>
       <Button @click="showmoveModal">批量转移</Button>
       <Button @click="saveSort">保存顺序调整</Button>
     </div>
@@ -168,7 +168,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-         <Button type="info" value="提交" @click="addtemplate('templateItem',templateItem)">保存模板</Button>
+         <Button type="info" value="提交" @click="addtemplate('templateItem',templateItem)" :disabled="isDisabled">保存模板</Button>
          <Button type="error" value="提交" @click="delTemplate" v-if="templateItem.spTemplateId">删除模板</Button>
       </div>
     </Modal>
@@ -435,7 +435,6 @@ export default {
             this.searchtemplate(classData)
             this.templateModal = false
             this.$Message.success('修改成功')
-            this.isDisabled = true
             this.isDisabled = false
           })
           .catch(res => {
