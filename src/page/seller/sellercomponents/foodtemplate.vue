@@ -169,7 +169,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-         <Button type="info" value="提交" @click="addtemplate('templateItem',templateItem)" :disabled="isDisabled">保存模板</Button>
+         <Button type="info" value="提交" @click="addtemplate('templateItem',templateItem)" :disabled="isDisabled">{{buttonText}}</Button>
          <Button type="error" value="提交" @click="delTemplate" v-if="templateItem.spTemplateId">删除模板</Button>
       </div>
     </Modal>
@@ -219,6 +219,7 @@ export default {
       formItem: {},
       childdata: [],
       weightdata: [],
+      buttonText: '保存模板',
       // specification: [
       // {
       //   attributeType: 1
@@ -411,6 +412,7 @@ export default {
       }
       // // 验证成功  执行下面的代码
       this.isDisabled = true // 按钮置灰 防止重复提交
+      this.buttonText = '提交中...'
       let classData = {
         parentCatId: templateItem.spCategoryParentId,
         catId: templateItem.spCategoryId
@@ -425,9 +427,11 @@ export default {
             this.$Message.success('添加成功')
             this.templateModal = false
             this.isDisabled = false
+            this.buttonText = '保存模板'
           })
           .catch(res => {
             this.isDisabled = false
+            this.buttonText = '保存模板'
           })
       } else if (this.templateTitle === '修改商品模板') {
         api
@@ -437,9 +441,11 @@ export default {
             this.templateModal = false
             this.$Message.success('修改成功')
             this.isDisabled = false
+            this.buttonText = '保存模板'
           })
           .catch(res => {
             this.isDisabled = false
+            this.buttonText = '保存模板'
           })
       }
     },
