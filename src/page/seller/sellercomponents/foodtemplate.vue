@@ -102,7 +102,7 @@
                 <input type="file" @change="mainPicUpload" accept="image/*">+
               </div>
         </FormItem>
-        <FormItem label="图片库(批量上传):">
+        <FormItem label="图片库(支持批量):">
               <div class="img vm-fl" v-for="(url,index) in templateItem.picLib" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
@@ -155,7 +155,7 @@
             </FormItem>
           </table> <br>
         </div>
-        <FormItem label="商品详情(批量上传):">
+        <FormItem label="商品详情(支持批量):">
               <div class="img vm-fl"  v-for="(url,index) in templateItem.productDesc" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
