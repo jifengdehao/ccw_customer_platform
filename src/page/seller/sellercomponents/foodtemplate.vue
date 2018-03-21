@@ -28,6 +28,7 @@
       <Button type="primary" @click="showModal" >添加模板</Button>
       <Button @click="showmoveModal">批量转移</Button>
       <Button @click="saveSort">保存顺序调整</Button>
+     
     </div>
      </section>
      <!-- 表格 -->
@@ -72,7 +73,7 @@
     </section> -->
     <!-- 增加和编辑的模板 -->
     <Modal v-model="templateModal" :title="templateTitle" width="900" :mask-closable = "false">
-      <Form :model="templateItem" ref="templateItem"  class="templateModal-from modelForm" label-postion="left" :label-width="100">
+      <Form :model="templateItem" ref="templateItem"  class="templateModal-from modelForm" label-postion="left" :label-width="120">
         <FormItem label="一级分类:" prop="spCategoryParentId" >
           <Select v-model="templateItem.spCategoryParentId"  size="small" style="width:100px" @on-change="searchParent(templateItem.spCategoryParentId)">
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
@@ -101,7 +102,7 @@
                 <input type="file" @change="mainPicUpload" accept="image/*">+
               </div>
         </FormItem>
-        <FormItem label="图片库:">
+        <FormItem label="图片库(批量上传):">
               <div class="img vm-fl" v-for="(url,index) in templateItem.picLib" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
@@ -110,7 +111,7 @@
                 </div>
               </div>
               <div class="uploadButton ">
-                <input type="file" @change="picLibUpload" accept="image/*">+
+                <input type="file" @change="picLibUpload" multiple accept="image/*">+
               </div>
         </FormItem>
         <FormItem label="产地默认值:">
@@ -154,7 +155,7 @@
             </FormItem>
           </table> <br>
         </div>
-        <FormItem label="商品详情:">
+        <FormItem label="商品详情(批量上传):">
               <div class="img vm-fl"  v-for="(url,index) in templateItem.productDesc" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
@@ -163,7 +164,7 @@
                 </div>
               </div>
               <div class="uploadButton ">
-                <input type="file" @change="productDescUpload" accept="image/*">+
+                <input type="file" @change="productDescUpload" multiple accept="image/*">+
               </div>
         </FormItem>
       </Form>
@@ -531,10 +532,14 @@ export default {
         }
       })
     },
+    piliang(e) {
+      console.log(e.target.files)
+    },
     // 图片上传
     mainPicUpload(e) {
       if (this.templateItem.mainPic.length < 3) {
         var file = e.target.files[0]
+        console.log(e.target.files)
         uploadpic(file).then(res => {
           if (res) {
             res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
@@ -547,25 +552,30 @@ export default {
     },
     // 图片库
     picLibUpload(e) {
-      var file = e.target.files[0]
-      uploadpic(file).then(res => {
-        if (res) {
-          res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
-          this.templateItem.picLib = this.templateItem.picLib.concat(res)
-        }
-      })
+      var file = e.target.files
+      for (let i in file) {
+        // console.log(file[i])
+        uploadpic(file[i]).then(res => {
+          if (res) {
+            res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+            this.templateItem.picLib = this.templateItem.picLib.concat(res)
+          }
+        })
+      }
     },
     // 商品详情
     productDescUpload(e) {
-      var file = e.target.files[0]
-      uploadpic(file).then(res => {
-        if (res) {
-          res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
-          this.templateItem.productDesc = this.templateItem.productDesc.concat(
-            res
-          )
-        }
-      })
+      var file = e.target.files
+      for (let i in file) {
+        uploadpic(file[i]).then(res => {
+          if (res) {
+            res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+            this.templateItem.productDesc = this.templateItem.productDesc.concat(
+              res
+            )
+          }
+        })
+      }
     },
     // 查看大图
     handleView(url) {
@@ -700,7 +710,7 @@ input[type='file'] {
   position: relative;
   width: 100px;
   height: 100px;
-  margin: 0 3px;
+  margin: 3px 3px;
 }
 .img img {
   width: 100%;
