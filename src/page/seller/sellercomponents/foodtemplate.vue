@@ -25,9 +25,10 @@
       </Form>
     <!-- 表格内容 -->
     <div class="vm-fr">
-      <Button type="primary" @click="showModal" :disabled="isDisabled">添加模板</Button>
+      <Button type="primary" @click="showModal" >添加模板</Button>
       <Button @click="showmoveModal">批量转移</Button>
       <Button @click="saveSort">保存顺序调整</Button>
+     
     </div>
      </section>
      <!-- 表格 -->
@@ -72,7 +73,7 @@
     </section> -->
     <!-- 增加和编辑的模板 -->
     <Modal v-model="templateModal" :title="templateTitle" width="900" :mask-closable = "false">
-      <Form :model="templateItem" ref="templateItem"  class="templateModal-from modelForm" label-postion="left" :label-width="100">
+      <Form :model="templateItem" ref="templateItem"  class="templateModal-from modelForm" label-postion="left" :label-width="120">
         <FormItem label="一级分类:" prop="spCategoryParentId" >
           <Select v-model="templateItem.spCategoryParentId"  size="small" style="width:100px" @on-change="searchParent(templateItem.spCategoryParentId)">
             <Option v-for="item in parentdata" :value="item.spCategoryId" :key="item.spCategoryId">{{ item.name }}</Option>
@@ -101,7 +102,7 @@
                 <input type="file" @change="mainPicUpload" accept="image/*">+
               </div>
         </FormItem>
-        <FormItem label="图片库:">
+        <FormItem label="图片库(支持批量):">
               <div class="img vm-fl" v-for="(url,index) in templateItem.picLib" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
@@ -110,7 +111,7 @@
                 </div>
               </div>
               <div class="uploadButton ">
-                <input type="file" @change="picLibUpload" accept="image/*">+
+                <input type="file" @change="picLibUpload" multiple accept="image/*">+
               </div>
         </FormItem>
         <FormItem label="产地默认值:">
@@ -154,7 +155,7 @@
             </FormItem>
           </table> <br>
         </div>
-        <FormItem label="商品详情:">
+        <FormItem label="商品详情(支持批量):">
               <div class="img vm-fl"  v-for="(url,index) in templateItem.productDesc" :key="index">
                 <img :src="url" alt="">
                 <div class="cover">
@@ -163,12 +164,12 @@
                 </div>
               </div>
               <div class="uploadButton ">
-                <input type="file" @change="productDescUpload" accept="image/*">+
+                <input type="file" @change="productDescUpload" multiple accept="image/*">+
               </div>
         </FormItem>
       </Form>
       <div slot="footer">
-         <Button type="info" value="提交" @click="addtemplate('templateItem',templateItem)">保存模板</Button>
+         <Button type="info" value="提交" @click="addtemplate('templateItem',templateItem)" :disabled="isDisabled">{{buttonText}}</Button>
          <Button type="error" value="提交" @click="delTemplate" v-if="templateItem.spTemplateId">删除模板</Button>
       </div>
     </Modal>
@@ -218,6 +219,7 @@ export default {
       formItem: {},
       childdata: [],
       weightdata: [],
+      buttonText: '保存模板',
       // specification: [
       // {
       //   attributeType: 1
@@ -410,6 +412,7 @@ export default {
       }
       // // 验证成功  执行下面的代码
       this.isDisabled = true // 按钮置灰 防止重复提交
+      this.buttonText = '提交中...'
       let classData = {
         parentCatId: templateItem.spCategoryParentId,
         catId: templateItem.spCategoryId
@@ -424,9 +427,11 @@ export default {
             this.$Message.success('添加成功')
             this.templateModal = false
             this.isDisabled = false
+            this.buttonText = '保存模板'
           })
           .catch(res => {
             this.isDisabled = false
+            this.buttonText = '保存模板'
           })
       } else if (this.templateTitle === '修改商品模板') {
         api
@@ -435,11 +440,12 @@ export default {
             this.searchtemplate(classData)
             this.templateModal = false
             this.$Message.success('修改成功')
-            this.isDisabled = true
             this.isDisabled = false
+            this.buttonText = '保存模板'
           })
           .catch(res => {
             this.isDisabled = false
+            this.buttonText = '保存模板'
           })
       }
     },
@@ -532,10 +538,14 @@ export default {
         }
       })
     },
+    piliang(e) {
+      console.log(e.target.files)
+    },
     // 图片上传
     mainPicUpload(e) {
       if (this.templateItem.mainPic.length < 3) {
         var file = e.target.files[0]
+        console.log(e.target.files)
         uploadpic(file).then(res => {
           if (res) {
             res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
@@ -548,25 +558,30 @@ export default {
     },
     // 图片库
     picLibUpload(e) {
-      var file = e.target.files[0]
-      uploadpic(file).then(res => {
-        if (res) {
-          res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
-          this.templateItem.picLib = this.templateItem.picLib.concat(res)
-        }
-      })
+      var file = e.target.files
+      for (let i in file) {
+        // console.log(file[i])
+        uploadpic(file[i]).then(res => {
+          if (res) {
+            res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+            this.templateItem.picLib = this.templateItem.picLib.concat(res)
+          }
+        })
+      }
     },
     // 商品详情
     productDescUpload(e) {
-      var file = e.target.files[0]
-      uploadpic(file).then(res => {
-        if (res) {
-          res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
-          this.templateItem.productDesc = this.templateItem.productDesc.concat(
-            res
-          )
-        }
-      })
+      var file = e.target.files
+      for (let i in file) {
+        uploadpic(file[i]).then(res => {
+          if (res) {
+            res = res[0].indexOf('?') ? res[0].split('?')[0] : res[0]
+            this.templateItem.productDesc = this.templateItem.productDesc.concat(
+              res
+            )
+          }
+        })
+      }
     },
     // 查看大图
     handleView(url) {
@@ -701,7 +716,7 @@ input[type='file'] {
   position: relative;
   width: 100px;
   height: 100px;
-  margin: 0 3px;
+  margin: 3px 3px;
 }
 .img img {
   width: 100%;

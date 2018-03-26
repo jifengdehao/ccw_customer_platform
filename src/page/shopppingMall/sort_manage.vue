@@ -256,5 +256,6 @@ input[type='file'] {
 }
 .bigimg {
   max-width: 850px;
+  min-width: 300px;
 }
 </style>
