@@ -45,13 +45,12 @@ module.exports = {
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {
-      // http代理
+    proxyTable: {  // 设置代理接口
       // '/api': {
-      //   target: 'http://192.158.0.158:8093',
+      //   target: 'http://192.168.0.219:30140/globalpt',
       //   changeOrigin: true,
       //   pathRewrite: {
-      //     '^/api': '/'
+      //     '^/api': ''
       //   }
       // }
     },
